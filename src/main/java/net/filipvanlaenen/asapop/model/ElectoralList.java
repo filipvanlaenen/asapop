@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Class representing an electoral list.
  */
-public final class ElectoralList {
+final class ElectoralList {
     /**
      * A map with all the instances.
      */
