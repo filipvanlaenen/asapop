@@ -24,6 +24,8 @@ final class OpinionPoll {
 
     /**
      * Constructor using a builder instance as its parameter.
+     *
+     * @param builder A builder instance.
      */
     private OpinionPoll(final Builder builder) {
         this.pollingFirm = builder.pollingFirm;
@@ -50,14 +52,20 @@ final class OpinionPoll {
 
         /**
          * Adds a result.
+         *
+         * @param electoralListKey The key of an electoral list.
+         * @param result The result.
+         * @return This builder instance.
          */
-        Builder addResult(final String electoralList, final String result) {
-            results.put(ElectoralList.get(electoralList), result);
+        Builder addResult(final String electoralListKey, final String result) {
+            results.put(ElectoralList.get(electoralListKey), result);
             return this;
         }
 
         /**
          * Builds an opinion poll based on the current state of the builder instance.
+         *
+         * @return The resulting opinion poll.
          */
         OpinionPoll build() {
             return new OpinionPoll(this);
@@ -65,28 +73,34 @@ final class OpinionPoll {
 
         /**
          * Sets the polling firm.
+         *
+         * @param pollingFirmName The name of the polling firm.
+         * @return This builder instance.
          */
-        Builder setPollingFirm(final String pollingFirm) {
-            this.pollingFirm = pollingFirm;
+        Builder setPollingFirm(final String pollingFirmName) {
+            this.pollingFirm = pollingFirmName;
             return this;
         }
 
         /**
-         * Sets the publication date.
+         * Sets the publication date from a string.
+         *
+         * @param publicationDateString A string representing the publication date.
+         * @return This builder instance.
          */
-        Builder setPublicationDate(final String publicationDate) {
-            this.publicationDate = LocalDate.parse(publicationDate);
+        Builder setPublicationDate(final String publicationDateString) {
+            this.publicationDate = LocalDate.parse(publicationDateString);
             return this;
         }
     }
 
-    // TODO: Override hashcode also.
     // TODO: Handle null values.
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
             OpinionPoll other = (OpinionPoll) obj;
-            return other.pollingFirm.equals(pollingFirm) && other.publicationDate.equals(publicationDate) && other.results.equals(results);
+            return other.pollingFirm.equals(pollingFirm) && other.publicationDate.equals(publicationDate)
+                   && other.results.equals(results);
         } else {
             return false;
         }
