@@ -32,7 +32,7 @@ final class OpinionPolls {
         for(String line : lines) {
             OpinionPoll.Builder builder = new OpinionPoll.Builder();
             String remainder = parseMetadata(builder, line);
-            remainder = parseResults(builder, remainder);
+            parseResults(builder, remainder);
             result.addOpinionPoll(builder.build());
         }
         return result;
@@ -62,7 +62,7 @@ final class OpinionPolls {
     /**
      * Parses the results for an opinion poll from a line.
      */
-    private static String parseResults(final OpinionPoll.Builder builder, final String line) {
+    private static void parseResults(final OpinionPoll.Builder builder, final String line) {
         String remainder = line;
         Matcher resultsMatcher = RESULTS_PATTERN.matcher(remainder);
         while (resultsMatcher.find()) {
@@ -75,7 +75,6 @@ final class OpinionPolls {
             }
             resultsMatcher = RESULTS_PATTERN.matcher(remainder);
         }
-        return remainder;
     }
 
     /**
