@@ -79,4 +79,16 @@ final class OpinionPoll {
             return this;
         }
     }
+
+    // TODO: Override hashcode also.
+    // TODO: Handle null values.
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OpinionPoll) {
+            OpinionPoll other = (OpinionPoll) obj;
+            return other.pollingFirm.equals(pollingFirm) && other.publicationDate.equals(publicationDate) && other.results.equals(results);
+        } else {
+            return false;
+        }
+    }
 }
