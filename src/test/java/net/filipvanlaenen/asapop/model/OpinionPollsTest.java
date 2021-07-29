@@ -41,7 +41,7 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies that uper case letters with diacritics and similar can be used as keys for the electoral lists.
+     * Verifies that upper case letters with diacritics and similar can be used as keys for the electoral lists.
      */
     @Test
     public void shouldHandleElectoralListKeysWithDiacritics() {
@@ -49,6 +49,19 @@ public class OpinionPollsTest {
         List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                                                     .addResult("Ä", "55").addResult("Æ", "45").build();
+        polls.add(poll);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
+
+    /**
+     * Verifies that upper case Greek and Cyrillic letters can be used as keys for the electoral lists.
+     */
+    @Test
+    public void shouldHandleElectoralListKeysWithGreekAndCyrillicLetters() {
+        String content = "•PF: ACME •PD: 2021-07-27 Б:55 Ω:45";
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                    .addResult("Б", "55").addResult("Ω", "45").build();
         polls.add(poll);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
