@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class representing an opinion poll.
@@ -94,7 +95,6 @@ final class OpinionPoll {
         }
     }
 
-    // TODO: Handle null values.
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
@@ -143,5 +143,10 @@ final class OpinionPoll {
      */
     String getResult(final String electoralListKey) {
         return results.get(ElectoralList.get(electoralListKey));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pollingFirm, publicationDate, results);
     }
 }

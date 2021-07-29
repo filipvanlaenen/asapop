@@ -64,12 +64,31 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that calling hashCode twice returns the same result.
+      */
+     @Test
+     void callingHashCodeTwiceShouldReturnSameResult() {
+        OpinionPoll poll = new OpinionPoll.Builder().build();
+        assertEquals(poll.hashCode(), poll.hashCode());
+     }
+
+
+     /**
       * Verifies that an opinion poll is equal to another opinion poll built from the same builder.
       */
      @Test
      public void anOpinionPollShouldBeEqualToAnotherInstanceBuiltFromSameBuilder() {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         assertEquals(builder.build(), builder.build());
+     }
+
+     /**
+      * Verifies that calling hashCode on opinion polls built from the same builder returns the same result.
+      */
+     @Test
+     void hashCodeShouldBeEqualForOpinionPollsBuiltFromSameBuilder() {
+        OpinionPoll.Builder builder = new OpinionPoll.Builder();
+        assertEquals(builder.build().hashCode(), builder.build().hashCode());
      }
 
      /**
@@ -80,6 +99,16 @@ public class OpinionPollTest {
         OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").build();
         assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different polling firms.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentPollingFirm() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 
      /**
@@ -113,6 +142,16 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that opinion polls have different hash codes if they have different publication dates.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentPublicationDate() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPublicationDate("2021-07-28").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
       * Verifies that an opinion poll is not equal to another opinion poll with a different result.
       */
      @Test
@@ -120,5 +159,15 @@ public class OpinionPollTest {
         OpinionPoll poll1 = new OpinionPoll.Builder().addResult("A", "55").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().addResult("A", "56").build();
         assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different results.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResult() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().addResult("A", "55").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().addResult("A", "56").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 }
