@@ -99,7 +99,8 @@ final class OpinionPoll {
     public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
             OpinionPoll other = (OpinionPoll) obj;
-            return equalsOrBothNull(pollingFirm, other.pollingFirm) && equalsOrBothNull(publicationDate, other.publicationDate)
+            return equalsOrBothNull(pollingFirm, other.pollingFirm)
+                   && equalsOrBothNull(publicationDate, other.publicationDate)
                    && other.results.equals(results);
         } else {
             return false;

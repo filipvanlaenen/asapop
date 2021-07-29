@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
  */
 final class OpinionPolls {
     /**
+     * The integer number three.
+     */
+    private static final int THREE = 3;
+    /**
      * The pattern to match metadata.
      */
     private static final Pattern METADATA_PATTERN = Pattern.compile("^\\s*•([A-Z]+):\\s*([^•]+?)\\s*(•?[A-Z]+:.*)$");
@@ -60,8 +64,9 @@ final class OpinionPolls {
                     break;
                 case "PD": builder.setPublicationDate(value);
                     break;
+                // The default case should be handled as part of issue #9.
             }
-            remainder = metadataMatcher.group(3);
+            remainder = metadataMatcher.group(THREE);
             metadataMatcher = METADATA_PATTERN.matcher(remainder);
         }
         return remainder;
@@ -80,7 +85,7 @@ final class OpinionPolls {
             String key = resultsMatcher.group(1);
             String value = resultsMatcher.group(2);
             builder.addResult(key, value);
-            remainder = resultsMatcher.group(3);
+            remainder = resultsMatcher.group(THREE);
             if (remainder == null) {
                 remainder = "";
             }

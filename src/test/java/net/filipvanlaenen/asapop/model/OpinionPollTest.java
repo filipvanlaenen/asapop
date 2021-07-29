@@ -28,7 +28,8 @@ public class OpinionPollTest {
      }
 
      /**
-      * Verifies that the setPublicationDate method in the builder class is wired correctly to the getPublicationDate method.
+      * Verifies that the setPublicationDate method in the builder class is wired correctly to the getPublicationDate
+      * method.
       */
      @Test
      public void setPublicationDateInBuilderShouldBeWiredCorrectlyToGetPublicationDate() {
