@@ -15,13 +15,30 @@ final class OpinionPolls {
      */
     private static final int THREE = 3;
     /**
+     * The string for the pattern to match a metadata key.
+     */
+    private static final String METADATA_KEY_PATTERN = "\\p{Upper}+";
+    /**
+     * The string for the pattern to match the key of an electoral list.
+     */
+    private static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
+    /**
+     * The string for the pattern to match either a metadata key or a key of an electoral list.
+     */
+    private static final String METADATA_OR_ELECTORAL_LIST_KEY_PATTERN = "(•" + METADATA_KEY_PATTERN + "|"
+                                                                         + ELECTORAL_LIST_KEY_PATTERN + ")";
+    /**
      * The pattern to match metadata.
      */
-    private static final Pattern METADATA_PATTERN = Pattern.compile("^\\s*•([A-Z]+):\\s*([^•]+?)\\s*(•?[A-Z]+:.*)$");
+    private static final Pattern METADATA_PATTERN = Pattern.compile("^\\s*•(" + METADATA_KEY_PATTERN
+                                                                    + "):\\s*([^•]+?)\\s*("
+                                                                    + METADATA_OR_ELECTORAL_LIST_KEY_PATTERN + ":.*)$");
     /**
      * The pattern to match results data.
      */
-    private static final Pattern RESULTS_PATTERN = Pattern.compile("^\\s*([A-Z]+):\\s*([^A-Z]+?)\\s*([A-Z]+:.*)?$");
+    private static final Pattern RESULTS_PATTERN = Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN
+                                                                   + "):\\s*([^\\p{javaUpperCase}]+?)\\s*("
+                                                                   + ELECTORAL_LIST_KEY_PATTERN + ":.*)?$");
     /**
      * The list with the opinion polls.
      */
