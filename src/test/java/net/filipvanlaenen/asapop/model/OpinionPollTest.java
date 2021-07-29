@@ -3,19 +3,24 @@ package net.filipvanlaenen.asapop.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests on the class <code>OpinionPoll</code>.
  */
 public class OpinionPollTest {
-    /**
-     * Verifies that the addResult method in the builder class is wired correctly to the getResult method.
-     */
+     /**
+      * Verifies that the addCommissioner method in the builder class is wired correctly to the getCommissioners method.
+      */
      @Test
-     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
-        OpinionPoll poll = new OpinionPoll.Builder().addResult("A", "55").build();
-        assertEquals("55", poll.getResult("A"));
+     public void addCommissionerInBuilderShouldBeWiredCorrectlyToGetCommissioners() {
+        OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        Set<String> expected = new HashSet<String>();
+        expected.add("The Times");
+        assertEquals(expected, poll.getCommissioners());
      }
 
      /**
@@ -35,6 +40,15 @@ public class OpinionPollTest {
      public void setPublicationDateInBuilderShouldBeWiredCorrectlyToGetPublicationDate() {
         OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
         assertEquals("2021-07-27", poll.getPublicationDate().toString());
+     }
+
+    /**
+     * Verifies that the addResult method in the builder class is wired correctly to the getResult method.
+     */
+     @Test
+     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
+        OpinionPoll poll = new OpinionPoll.Builder().addResult("A", "55").build();
+        assertEquals("55", poll.getResult("A"));
      }
 
      /**
@@ -90,6 +104,26 @@ public class OpinionPollTest {
      void hashCodeShouldBeEqualForOpinionPollsBuiltFromSameBuilder() {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         assertEquals(builder.build().hashCode(), builder.build().hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different commissioner.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentCommissioner() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().addCommissioner("The Post").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different commissioners.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentCommissioner() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().addCommissioner("The Post").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 
      /**

@@ -77,6 +77,8 @@ final class OpinionPolls {
             String key = metadataMatcher.group(1);
             String value = metadataMatcher.group(2);
             switch (key) {
+                case "C": builder.addCommissioner(value);
+                    break;
                 case "PF": builder.setPollingFirm(value);
                     break;
                 case "PD": builder.setPublicationDate(value);
