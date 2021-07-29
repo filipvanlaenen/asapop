@@ -99,10 +99,49 @@ final class OpinionPoll {
     public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
             OpinionPoll other = (OpinionPoll) obj;
-            return other.pollingFirm.equals(pollingFirm) && other.publicationDate.equals(publicationDate)
+            return equalsOrBothNull(pollingFirm, other.pollingFirm) && equalsOrBothNull(publicationDate, other.publicationDate)
                    && other.results.equals(results);
         } else {
             return false;
         }
+    }
+
+    /**
+     * Returns true if both objects are equal or both are null.
+     *
+     * @param obj1 The first object.
+     * @param obj2 The second object.
+     * @return True if both objects are equal or both are null, false otherwise.
+     */
+    private boolean equalsOrBothNull(final Object obj1, final Object obj2) {
+        return obj1 == null && obj2 == null || obj1.equals(obj2);
+    }
+
+    /**
+     * Returns the polling firm.
+     *
+     * @return The polling firm.
+     */
+    String getPollingFirm() {
+        return pollingFirm;
+    }
+
+    /**
+     * Returns the publication date.
+     *
+     * @return The publication date.
+     */
+    LocalDate getPublicationDate() {
+        return publicationDate;
+    }
+
+    /**
+     * Returns the result for an electoral list.
+     *
+     * @param electoralListKey The key of an electoral list.
+     * @return The result for the electoral list.
+     */
+    String getResult(final String electoralListKey) {
+        return results.get(ElectoralList.get(electoralListKey));
     }
 }
