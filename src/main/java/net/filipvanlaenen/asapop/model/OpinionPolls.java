@@ -83,6 +83,8 @@ final class OpinionPolls {
                     break;
                 case "PD": builder.setPublicationDate(value);
                     break;
+                case "SS": builder.setSampleSize(value);
+                    break;
                 // The default case should be handled as part of issue #9.
             }
             remainder = metadataMatcher.group(THREE);

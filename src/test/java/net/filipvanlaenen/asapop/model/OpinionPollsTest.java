@@ -67,7 +67,7 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies an opinion poll with a commissioner can be parsed.
+     * Verifies that an opinion poll with a commissioner can be parsed.
      */
     @Test
     public void shouldParseAnOpinionPollWithACommissioner() {
@@ -81,7 +81,7 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies an opinion poll with two commissioners can be parsed.
+     * Verifies that an opinion poll with two commissioners can be parsed.
      */
     @Test
     public void shouldParseAnOpinionPollWithTwoCommissioners() {
@@ -90,6 +90,20 @@ public class OpinionPollsTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                                                     .addCommissioner("The Times").addCommissioner("The Post")
                                                     .addResult("A", "55").addResult("B", "45").build();
+        polls.add(poll);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
+
+    /**
+     * Verifies that an opinion poll with a sample size can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithASampleSize() {
+        String content = "•PF: ACME •PD: 2021-07-27 •SS: 1000 A:55 B:45";
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                    .setSampleSize("1000").addResult("A", "55")
+                                                    .addResult("B", "45").build();
         polls.add(poll);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
