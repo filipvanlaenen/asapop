@@ -28,6 +28,10 @@ final class OpinionPoll {
      * The results.
      */
     private final Map<ElectoralList, String> results;
+    /**
+     * The sample size.
+     */
+    private String sampleSize;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -39,6 +43,7 @@ final class OpinionPoll {
         this.pollingFirm = builder.pollingFirm;
         this.publicationDate = builder.publicationDate;
         this.results = Collections.unmodifiableMap(builder.results);
+        this.sampleSize =  builder.sampleSize;
     }
 
     /**
@@ -61,6 +66,10 @@ final class OpinionPoll {
          * The results.
          */
         private final Map<ElectoralList, String> results = new HashMap<ElectoralList, String>();
+        /**
+         * The sample size.
+         */
+        private String sampleSize;
 
         /**
          * Adds a result.
@@ -115,6 +124,17 @@ final class OpinionPoll {
             this.publicationDate = LocalDate.parse(publicationDateString);
             return this;
         }
+
+        /**
+         * Sets the sample size.
+         *
+         * @param sampleSizeString The sample size as a string.
+         * @return This builder instance.
+         */
+        Builder setSampleSize(final String sampleSizeString) {
+            this.sampleSize = sampleSizeString;
+            return this;
+        }
     }
 
     @Override
@@ -124,7 +144,8 @@ final class OpinionPoll {
             return other.commissioners.equals(commissioners)
                    && equalsOrBothNull(pollingFirm, other.pollingFirm)
                    && equalsOrBothNull(publicationDate, other.publicationDate)
-                   && other.results.equals(results);
+                   && other.results.equals(results)
+                   && equalsOrBothNull(sampleSize, other.sampleSize);
         } else {
             return false;
         }
@@ -178,8 +199,17 @@ final class OpinionPoll {
         return results.get(ElectoralList.get(electoralListKey));
     }
 
+    /**
+     * Returns the sample size.
+     *
+     * @return The sample size.
+     */
+    String getSampleSize() {
+        return sampleSize;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(commissioners, pollingFirm, publicationDate, results);
+        return Objects.hash(commissioners, pollingFirm, publicationDate, results, sampleSize);
     }
 }

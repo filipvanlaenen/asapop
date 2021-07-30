@@ -52,6 +52,16 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that the setSampleSize method in the builder class is wired correctly to the getSampleSize
+      * method.
+      */
+     @Test
+     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize() {
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
+        assertEquals("1000", poll.getSampleSize());
+     }
+
+     /**
       * Verifies that an opinion poll is not equal to null.
       */
      @Test
@@ -203,6 +213,36 @@ public class OpinionPollTest {
      public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResult() {
         OpinionPoll poll1 = new OpinionPoll.Builder().addResult("A", "55").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().addResult("A", "56").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different sample size.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentSampleSize() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize("800").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll missing the sample size.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheSampleSize() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different sample sizes.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentSampleSize() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize("800").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 }
