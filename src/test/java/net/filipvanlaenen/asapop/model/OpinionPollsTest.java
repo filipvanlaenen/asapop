@@ -107,4 +107,17 @@ public class OpinionPollsTest {
         polls.add(poll);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
+
+    /**
+     * Verifies that an opinion poll with a result for other can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAResultForOther() {
+        String content = "•PF: ACME •PD: 2021-07-27 •O: 2 A:55 B:43";
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                    .addResult("A", "55").addResult("B", "43").setOther("2").build();
+        polls.add(poll);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
 }

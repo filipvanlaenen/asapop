@@ -24,6 +24,15 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that the setOther method in the builder class is wired correctly to the getOther method.
+      */
+     @Test
+     public void setOtherInBuilderShouldBeWiredCorrectlyToGetOther() {
+        OpinionPoll poll = new OpinionPoll.Builder().setOther("2").build();
+        assertEquals("2", poll.getOther());
+     }
+
+     /**
       * Verifies that the setPollingFirm method in the builder class is wired correctly to the getPollingFirm method.
       */
      @Test
@@ -134,6 +143,36 @@ public class OpinionPollTest {
         OpinionPoll poll1 = new OpinionPoll.Builder().addCommissioner("The Times").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().addCommissioner("The Post").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different result for other.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentResultForOther() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setOther("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setOther("3").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different result for other.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResultForOther() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setOther("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setOther("3").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll missing the result for other.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForOther() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setOther("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
      }
 
      /**

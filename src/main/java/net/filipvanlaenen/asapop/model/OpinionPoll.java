@@ -17,6 +17,10 @@ final class OpinionPoll {
      */
     private final Set<String> commissioners;
     /**
+     * The result for other.
+     */
+    private String other;
+    /**
      * The name of the polling firm.
      */
     private String pollingFirm;
@@ -40,6 +44,7 @@ final class OpinionPoll {
      */
     private OpinionPoll(final Builder builder) {
         this.commissioners = Collections.unmodifiableSet(builder.commissioners);
+        this.other = builder.other;
         this.pollingFirm = builder.pollingFirm;
         this.publicationDate = builder.publicationDate;
         this.results = Collections.unmodifiableMap(builder.results);
@@ -54,6 +59,10 @@ final class OpinionPoll {
          * The commissioners.
          */
         private final Set<String> commissioners = new HashSet<String>();
+        /**
+         * The result for other.
+         */
+        private String other;
         /**
          * The name of the polling firm.
          */
@@ -104,6 +113,17 @@ final class OpinionPoll {
         }
 
         /**
+         * Sets the result for other.
+         *
+         * @param otherString The result for other.
+         * @return This builder instance.
+         */
+        Builder setOther(final String otherString) {
+            this.other = otherString;
+            return this;
+        }
+
+        /**
          * Sets the polling firm.
          *
          * @param pollingFirmName The name of the polling firm.
@@ -140,12 +160,13 @@ final class OpinionPoll {
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
-            OpinionPoll other = (OpinionPoll) obj;
-            return other.commissioners.equals(commissioners)
-                   && equalsOrBothNull(pollingFirm, other.pollingFirm)
-                   && equalsOrBothNull(publicationDate, other.publicationDate)
-                   && other.results.equals(results)
-                   && equalsOrBothNull(sampleSize, other.sampleSize);
+            OpinionPoll otherOpinionPoll = (OpinionPoll) obj;
+            return otherOpinionPoll.commissioners.equals(commissioners)
+                   && equalsOrBothNull(other, otherOpinionPoll.other)
+                   && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
+                   && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
+                   && otherOpinionPoll.results.equals(results)
+                   && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize);
         } else {
             return false;
         }
@@ -169,6 +190,15 @@ final class OpinionPoll {
      */
     Set<String> getCommissioners() {
         return commissioners;
+    }
+
+    /**
+     * Returns the result for other.
+     *
+     * @return The result for other.
+     */
+    String getOther() {
+        return other;
     }
 
     /**
@@ -210,6 +240,6 @@ final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(commissioners, pollingFirm, publicationDate, results, sampleSize);
+        return Objects.hash(commissioners, other, pollingFirm, publicationDate, results, sampleSize);
     }
 }

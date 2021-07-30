@@ -79,6 +79,8 @@ final class OpinionPolls {
             switch (key) {
                 case "C": builder.addCommissioner(value);
                     break;
+                case "O": builder.setOther(value);
+                    break;
                 case "PF": builder.setPollingFirm(value);
                     break;
                 case "PD": builder.setPublicationDate(value);
