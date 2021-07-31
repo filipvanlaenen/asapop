@@ -47,7 +47,7 @@ defined so far:
 The following example shows how the all the metadata fields can be used:
 
 ```
-•PF: ACME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SS: 1000 A:55 B:43 •O: 2
+•PF: ACME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SS: 1000 A:55 B:43 •O:2
 ```
 
 Result fields consist of an electoral list key, a colon (":"), and a value. The
