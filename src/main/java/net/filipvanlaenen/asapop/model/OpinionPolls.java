@@ -140,6 +140,8 @@ final class OpinionPolls {
                 break;
             case "PF": builder.setPollingFirm(value);
                 break;
+            case "SC": builder.setScope(value);
+                break;
             case "SS": builder.setSampleSize(value);
                 break;
             // The default case should be handled as part of issue #9.

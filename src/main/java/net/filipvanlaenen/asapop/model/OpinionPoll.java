@@ -44,6 +44,10 @@ final class OpinionPoll {
      * The sample size.
      */
     private String sampleSize;
+    /**
+     * The scope.
+     */
+    private String scope;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -59,6 +63,7 @@ final class OpinionPoll {
         this.publicationDate = builder.publicationDate;
         this.results = Collections.unmodifiableMap(builder.results);
         this.sampleSize =  builder.sampleSize;
+        this.scope = builder.scope;
     }
 
     /**
@@ -97,6 +102,10 @@ final class OpinionPoll {
          * The sample size.
          */
         private String sampleSize;
+        /**
+         * The scope.
+         */
+        private String scope;
 
         /**
          * Adds a result.
@@ -195,6 +204,17 @@ final class OpinionPoll {
             this.sampleSize = sampleSizeString;
             return this;
         }
+
+        /**
+         * Sets the scope.
+         *
+         * @param scopeString The scope as a string.
+         * @return This builder instance.
+         */
+        Builder setScope(final String scopeString) {
+            this.scope = scopeString;
+            return this;
+        }
     }
 
     @Override
@@ -208,7 +228,8 @@ final class OpinionPoll {
                    && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                    && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
                    && otherOpinionPoll.results.equals(results)
-                   && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize);
+                   && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize)
+                   && equalsOrBothNull(scope, otherOpinionPoll.scope);
         } else {
             return false;
         }
@@ -298,9 +319,18 @@ final class OpinionPoll {
         return sampleSize;
     }
 
+    /**
+     * Returns the scope.
+     *
+     * @return The scope.
+     */
+    String getScope() {
+        return scope;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, other, pollingFirm, publicationDate, results,
-                            sampleSize);
+                            sampleSize, scope);
     }
 }

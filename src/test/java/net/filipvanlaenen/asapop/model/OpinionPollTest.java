@@ -91,6 +91,16 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that the setScope method in the builder class is wired correctly to the getScope
+      * method.
+      */
+     @Test
+     public void setScopeInBuilderShouldBeWiredCorrectlyToGetScope() {
+        OpinionPoll poll = new OpinionPoll.Builder().setScope("N").build();
+        assertEquals("N", poll.getScope());
+     }
+
+     /**
       * Verifies that an opinion poll is not equal to null.
       */
      @Test
@@ -362,6 +372,36 @@ public class OpinionPollTest {
      public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentSampleSize() {
         OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize("800").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different scope.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentScope() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setScope("N").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setScope("E").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll missing the scope.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheScope() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setScope("N").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different scopes.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentScope() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setScope("N").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setScope("E").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 }
