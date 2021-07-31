@@ -179,8 +179,14 @@ public final class OpinionPolls {
         return Collections.unmodifiableList(opinionPolls);
     }
 
+    /**
+     * Exports the opinion polls as a string in the PSV file format for EOPAOD.
+     *
+     * @return A string containing the opinion polls in the PSV file format for EOPAOD.
+     */
     public String toEopaodPsvString() {
-        //TODO in issue #30.
-        return "";
+        StringBuffer sb = new StringBuffer();
+        sb.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size | Participation | Precision | NN | Other");
+        return sb.toString();
     }
 }
