@@ -300,6 +300,7 @@ final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, other, pollingFirm, publicationDate, results, sampleSize);
+        return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, other, pollingFirm, publicationDate, results,
+                            sampleSize);
     }
 }
