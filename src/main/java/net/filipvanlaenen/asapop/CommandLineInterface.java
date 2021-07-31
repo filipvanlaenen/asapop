@@ -15,12 +15,13 @@ public final class CommandLineInterface {
     public static void main(final String... args) throws IOException {
         if (args.length < 1) {
             printUsage();
+            return;
         }
-        Command command = Command.valueOf(capitalizeWord(args[0]));
-        if (command == null) {
+        try {
+            Command.valueOf(capitalizeWord(args[0])).execute(args);
+        } catch (IllegalArgumentException iae) {
             printUsage();
         }
-        command.execute(args);
     }
 
     /**
