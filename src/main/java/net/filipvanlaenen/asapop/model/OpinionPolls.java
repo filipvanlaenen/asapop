@@ -136,9 +136,9 @@ final class OpinionPolls {
                 break;
             case "O": builder.setOther(value);
                 break;
-            case "PF": builder.setPollingFirm(value);
-                break;
             case "PD": builder.setPublicationDate(value);
+                break;
+            case "PF": builder.setPollingFirm(value);
                 break;
             case "SS": builder.setSampleSize(value);
                 break;
