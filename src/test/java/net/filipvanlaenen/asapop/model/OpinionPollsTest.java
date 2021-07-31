@@ -113,7 +113,7 @@ public class OpinionPollsTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAResultForOther() {
-        String content = "•PF: ACME •PD: 2021-07-27 •O: 2 A:55 B:43";
+        String content = "•PF: ACME •PD: 2021-07-27 A:55 B:43 •O:2";
         List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                                                     .addResult("A", "55").addResult("B", "43").setOther("2").build();

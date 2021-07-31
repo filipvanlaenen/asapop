@@ -15,6 +15,10 @@ final class OpinionPolls {
      */
     private static final int THREE = 3;
     /**
+     * The string for the pattern to match a metadata marker.
+     */
+    private static final String METADATA_MARKER_PATTERN = "•";
+    /**
      * The string for the pattern to match a metadata key.
      */
     private static final String METADATA_KEY_PATTERN = "\\p{Upper}+";
@@ -23,22 +27,51 @@ final class OpinionPolls {
      */
     private static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
     /**
+     * The string for the pattern to match separator between the key and the value.
+     */
+    private static final String KEY_VALUE_SEPARATOR_PATTERN = ":";
+    /**
      * The string for the pattern to match either a metadata key or a key of an electoral list.
      */
-    private static final String METADATA_OR_ELECTORAL_LIST_KEY_PATTERN = "(•" + METADATA_KEY_PATTERN + "|"
-                                                                         + ELECTORAL_LIST_KEY_PATTERN + ")";
+    private static final String KEY_PATTERN = "(" + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + "|"
+                                                  + ELECTORAL_LIST_KEY_PATTERN + ")";
     /**
-     * The pattern to match metadata.
+     * The string for the pattern to match a key and a value.
      */
-    private static final Pattern METADATA_PATTERN = Pattern.compile("^\\s*•(" + METADATA_KEY_PATTERN
-                                                                    + "):\\s*([^•]+?)\\s*("
-                                                                    + METADATA_OR_ELECTORAL_LIST_KEY_PATTERN + ":.*)$");
+    private static final String KEY_VALUE_PATTERN = KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?";
     /**
-     * The pattern to match results data.
+     * The pattern to match an opinion poll line.
      */
-    private static final Pattern RESULTS_PATTERN = Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN
-                                                                   + "):\\s*([^\\p{javaUpperCase}]+?)\\s*("
-                                                                   + ELECTORAL_LIST_KEY_PATTERN + ":.*)?$");
+    private static final Pattern OPINION_POLL_PATTERN = Pattern.compile("^\\s*" + METADATA_MARKER_PATTERN
+                                                                                + METADATA_KEY_PATTERN
+                                                                                + KEY_VALUE_SEPARATOR_PATTERN
+                                                                                + ".+?(\\s+"
+                                                                                + KEY_VALUE_PATTERN
+                                                                                + ")+$");
+    /**
+     * The pattern to match the key and value of a metadata block.
+     */
+    private static final Pattern METADATA_KEY_VALUE_PATTERN = Pattern.compile("^\\s*" + METADATA_MARKER_PATTERN
+                                                                                      + "("
+                                                                                      + METADATA_KEY_PATTERN
+                                                                                      + ")"
+                                                                                      + KEY_VALUE_SEPARATOR_PATTERN
+                                                                                      + "\\s*(.+?)\\s*$");
+    /**
+     * The pattern to match the key and value of a result block.
+     */
+    private static final Pattern RESULT_KEY_VALUE_PATTERN = Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN
+                                                                                     + ")"
+                                                                                     + KEY_VALUE_SEPARATOR_PATTERN
+                                                                                     + "\\s*(.+?)\\s*$");
+    /**
+     * The pattern to match key and value blocks.
+     */
+    private static final Pattern KEY_VALUES_PATTERN = Pattern.compile("^\\s*(" + KEY_VALUE_PATTERN
+                                                                               + ")((\\s+"
+                                                                               + KEY_VALUE_PATTERN
+                                                                               + ")*)$");
+
     /**
      * The list with the opinion polls.
      */
@@ -55,65 +88,53 @@ final class OpinionPolls {
         String[] lines = content.split("\\r?\\n");
         for (String line : lines) {
             OpinionPoll.Builder builder = new OpinionPoll.Builder();
-            String remainder = parseMetadata(builder, line);
-            parseResults(builder, remainder);
+            String remainder = line;
+            while (!remainder.isEmpty()) {
+                remainder = parseKeyValue(builder, remainder);
+            }
             result.addOpinionPoll(builder.build());
         }
         return result;
     }
 
-    /**
-     * Parses the metadata for an opinion poll from a line into an opinion builder instance and returns the remainder
-     * of the line.
-     *
-     * @param builder The opinion poll builder instance to add the metadata to.
-     * @param line The line to parse the metadata from.
-     * @return The remainder of the line.
-     */
-    private static String parseMetadata(final OpinionPoll.Builder builder, final String line) {
-        String remainder = line;
-        Matcher metadataMatcher = METADATA_PATTERN.matcher(remainder);
-        while (metadataMatcher.find()) {
-            String key = metadataMatcher.group(1);
-            String value = metadataMatcher.group(2);
-            switch (key) {
-                case "C": builder.addCommissioner(value);
-                    break;
-                case "O": builder.setOther(value);
-                    break;
-                case "PF": builder.setPollingFirm(value);
-                    break;
-                case "PD": builder.setPublicationDate(value);
-                    break;
-                case "SS": builder.setSampleSize(value);
-                    break;
-                // The default case should be handled as part of issue #9.
-            }
-            remainder = metadataMatcher.group(THREE);
-            metadataMatcher = METADATA_PATTERN.matcher(remainder);
+    private static String parseKeyValue(final OpinionPoll.Builder builder, final String remainder) {
+        Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
+        keyValuesMatcher.find();
+        String keyValueBlock = keyValuesMatcher.group(1);
+        if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
+            processMetadata(builder, keyValueBlock);
+        } else {
+            processResultData(builder, keyValueBlock);
         }
-        return remainder;
+        return keyValuesMatcher.group(3);
     }
 
-    /**
-     * Parses the results for an opinion poll from a line into an opinion builder instance.
-     *
-     * @param builder The opinion poll builder instance to add the results to.
-     * @param line The line to parse the results from.
-     */
-    private static void parseResults(final OpinionPoll.Builder builder, final String line) {
-        String remainder = line;
-        Matcher resultsMatcher = RESULTS_PATTERN.matcher(remainder);
-        while (resultsMatcher.find()) {
-            String key = resultsMatcher.group(1);
-            String value = resultsMatcher.group(2);
-            builder.addResult(key, value);
-            remainder = resultsMatcher.group(THREE);
-            if (remainder == null) {
-                remainder = "";
-            }
-            resultsMatcher = RESULTS_PATTERN.matcher(remainder);
+    private static void processMetadata(final OpinionPoll.Builder builder, final String keyValueString) {
+        Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
+        keyValueMatcher.find();
+        String key = keyValueMatcher.group(1);
+        String value = keyValueMatcher.group(2);
+        switch (key) {
+            case "C": builder.addCommissioner(value);
+                break;
+            case "O": builder.setOther(value);
+                break;
+            case "PF": builder.setPollingFirm(value);
+                break;
+            case "PD": builder.setPublicationDate(value);
+                break;
+            case "SS": builder.setSampleSize(value);
+                break;
+            // The default case should be handled as part of issue #9.
         }
+    }
+
+    private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString) {
+        Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
+        keyValueMatcher.find();
+        String key = keyValueMatcher.group(1);
+        String value = keyValueMatcher.group(2);
+        builder.addResult(key, value);
     }
 
     /**
