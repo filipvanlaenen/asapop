@@ -24,6 +24,26 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that the setFieldworkEnd method in the builder class is wired correctly to the getFieldworkEnd
+      * method.
+      */
+     @Test
+     public void setFieldworkEndInBuilderShouldBeWiredCorrectlyToGetFieldworkEnd() {
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        assertEquals("2021-07-27", poll.getFieldworkEnd().toString());
+     }
+
+     /**
+      * Verifies that the setFieldworkStart method in the builder class is wired correctly to the getFieldworkStart
+      * method.
+      */
+     @Test
+     public void setFieldworkStartInBuilderShouldBeWiredCorrectlyToGetFieldworkStart() {
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
+        assertEquals("2021-07-27", poll.getFieldworkStart().toString());
+     }
+
+     /**
       * Verifies that the setOther method in the builder class is wired correctly to the getOther method.
       */
      @Test
@@ -142,6 +162,66 @@ public class OpinionPollTest {
      public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentCommissioner() {
         OpinionPoll poll1 = new OpinionPoll.Builder().addCommissioner("The Times").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().addCommissioner("The Post").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different fieldwork end.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentFieldworkEnd() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-28").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll missing the fieldwork end.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheFieldworkEnd() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different fieldwork end.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentFieldworkEnd() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-28").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different fieldwork start.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentFieldworkStart() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkStart("2021-07-28").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll missing the fieldwork start.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheFieldworkStart() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different fieldwork start.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentFieldworkStart() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkStart("2021-07-28").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 

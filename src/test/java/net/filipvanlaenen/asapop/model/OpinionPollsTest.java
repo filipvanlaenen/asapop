@@ -120,4 +120,30 @@ public class OpinionPollsTest {
         polls.add(poll);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
+
+    /**
+     * Verifies that an opinion poll with fieldwork start can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAFieldworkStart() {
+        String content = "•PF: ACME •FS: 2021-07-27 A:55 B:43";
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-27")
+                                                    .addResult("A", "55").addResult("B", "43").build();
+        polls.add(poll);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
+
+    /**
+     * Verifies that an opinion poll with fieldwork end can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAFieldworkEnd() {
+        String content = "•PF: ACME •FE: 2021-07-27 A:55 B:43";
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-07-27")
+                                                    .addResult("A", "55").addResult("B", "43").build();
+        polls.add(poll);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
 }

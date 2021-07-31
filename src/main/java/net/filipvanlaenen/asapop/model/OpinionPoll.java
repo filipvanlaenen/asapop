@@ -17,6 +17,14 @@ final class OpinionPoll {
      */
     private final Set<String> commissioners;
     /**
+     * The fieldwork end.
+     */
+    private LocalDate fieldworkEnd;
+    /**
+     * The fieldwork start.
+     */
+    private LocalDate fieldworkStart;
+    /**
      * The result for other.
      */
     private String other;
@@ -44,6 +52,8 @@ final class OpinionPoll {
      */
     private OpinionPoll(final Builder builder) {
         this.commissioners = Collections.unmodifiableSet(builder.commissioners);
+        this.fieldworkEnd = builder.fieldworkEnd;
+        this.fieldworkStart = builder.fieldworkStart;
         this.other = builder.other;
         this.pollingFirm = builder.pollingFirm;
         this.publicationDate = builder.publicationDate;
@@ -59,6 +69,14 @@ final class OpinionPoll {
          * The commissioners.
          */
         private final Set<String> commissioners = new HashSet<String>();
+        /**
+         * The fieldwork end.
+         */
+        private LocalDate fieldworkEnd;
+        /**
+         * The fieldwork start.
+         */
+        private LocalDate fieldworkStart;
         /**
          * The result for other.
          */
@@ -113,6 +131,28 @@ final class OpinionPoll {
         }
 
         /**
+         * Sets the fieldwork end date from a string.
+         *
+         * @param fieldworkEndString A string representing the fieldwork end date.
+         * @return This builder instance.
+         */
+        Builder setFieldworkEnd(final String fieldworkEndString) {
+            this.fieldworkEnd = LocalDate.parse(fieldworkEndString);
+            return this;
+        }
+
+        /**
+         * Sets the fieldwork start date from a string.
+         *
+         * @param fieldworkStartString A string representing the fieldwork start date.
+         * @return This builder instance.
+         */
+        Builder setFieldworkStart(final String fieldworkStartString) {
+            this.fieldworkStart = LocalDate.parse(fieldworkStartString);
+            return this;
+        }
+
+        /**
          * Sets the result for other.
          *
          * @param otherString The result for other.
@@ -162,6 +202,8 @@ final class OpinionPoll {
         if (obj instanceof OpinionPoll) {
             OpinionPoll otherOpinionPoll = (OpinionPoll) obj;
             return otherOpinionPoll.commissioners.equals(commissioners)
+                   && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
+                   && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
                    && equalsOrBothNull(other, otherOpinionPoll.other)
                    && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                    && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
@@ -190,6 +232,24 @@ final class OpinionPoll {
      */
     Set<String> getCommissioners() {
         return commissioners;
+    }
+
+    /**
+     * Returns the fieldwork end date.
+     *
+     * @return The fieldwork end date.
+     */
+    LocalDate getFieldworkEnd() {
+        return fieldworkEnd;
+    }
+
+    /**
+     * Returns the fieldwork start date.
+     *
+     * @return The fieldwork start date.
+     */
+    LocalDate getFieldworkStart() {
+        return fieldworkStart;
     }
 
     /**
@@ -240,6 +300,6 @@ final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(commissioners, other, pollingFirm, publicationDate, results, sampleSize);
+        return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, other, pollingFirm, publicationDate, results, sampleSize);
     }
 }
