@@ -97,6 +97,13 @@ final class OpinionPolls {
         return result;
     }
 
+    /**
+     * Processes a key and value from a part of a line.
+     *
+     * @param builder The opinion builder to build on.
+     * @param remainder The remainder of a line to parse a key and value from.
+     * @return The unprocessed part of the line.
+     */
     private static String parseKeyValue(final OpinionPoll.Builder builder, final String remainder) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
@@ -106,9 +113,15 @@ final class OpinionPolls {
         } else {
             processResultData(builder, keyValueBlock);
         }
-        return keyValuesMatcher.group(3);
+        return keyValuesMatcher.group(THREE);
     }
 
+    /**
+     * Processes a data block with metadata.
+     *
+     * @param builder The opinion builder to build on.
+     * @param keyValueString The data block to process.
+     */
     private static void processMetadata(final OpinionPoll.Builder builder, final String keyValueString) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
@@ -129,6 +142,12 @@ final class OpinionPolls {
         }
     }
 
+    /**
+     * Processes a data block with results.
+     *
+     * @param builder The opinion builder to build on.
+     * @param keyValueString The data block to process.
+     */
     private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
