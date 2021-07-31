@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * Class representing a list of opinion polls.
  */
-final class OpinionPolls {
+public final class OpinionPolls {
     /**
      * The integer number three.
      */
@@ -78,14 +78,13 @@ final class OpinionPolls {
     private final List<OpinionPoll> opinionPolls = new ArrayList<OpinionPoll>();
 
     /**
-     * Parses a multiline string into an OpinionPolls instance.
+     * Parses a string array into an OpinionPolls instance.
      *
-     * @param content The multiline string to parse.
+     * @param lines The multiline string to parse.
      * @return The OpinionPolls instance.
      */
-    static OpinionPolls parse(final String content) {
+    public static OpinionPolls parse(final String... lines) {
         OpinionPolls result = new OpinionPolls();
-        String[] lines = content.split("\\r?\\n");
         for (String line : lines) {
             OpinionPoll.Builder builder = new OpinionPoll.Builder();
             String remainder = line;
@@ -178,5 +177,10 @@ final class OpinionPolls {
      */
     List<OpinionPoll> getOpinionPollsList() {
         return Collections.unmodifiableList(opinionPolls);
+    }
+
+    public String toEopaodPsvString() {
+        //TODO in issue #30.
+        return "";
     }
 }

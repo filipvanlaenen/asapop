@@ -29,7 +29,7 @@ public class OpinionPollsTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPolls() {
-        String content = "•PF: ACME •PD: 2021-07-27 A:55 B:45\n•PF: BCME •PD: 2021-07-28 A:56 C:43";
+        String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 A:55 B:45", "•PF: BCME •PD: 2021-07-28 A:56 C:43"};
         List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                                                     .addResult("A", "55").addResult("B", "45").build();
