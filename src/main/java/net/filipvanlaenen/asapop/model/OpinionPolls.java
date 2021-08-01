@@ -27,9 +27,13 @@ public final class OpinionPolls {
      */
     private static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
     /**
-     * The string for the pattern to match separator between the key and the value.
+     * The string for the pattern to match the separator between the key and the value.
      */
     private static final String KEY_VALUE_SEPARATOR_PATTERN = ":";
+    /**
+     * The string for the pattern to match the marker for a response scenario line.
+     */
+    private static final String RESPONSE_SCENARIO_MARKER_PATTERN = "&";
     /**
      * The string for the pattern to match either a metadata key or a key of an electoral list.
      */
@@ -51,12 +55,12 @@ public final class OpinionPolls {
     /**
      * The pattern to match a response scenario.
      */
-    private static final Pattern RESPONSE_SCENARIO_PATTERN = Pattern.compile("^\\s*" + "&"
-                                                                                     + "\\s*"
+    private static final Pattern RESPONSE_SCENARIO_PATTERN = Pattern.compile("^\\s*" + RESPONSE_SCENARIO_MARKER_PATTERN
+                                                                                     + "\\s*("
                                                                                      + KEY_VALUE_PATTERN
                                                                                      + "(\\s+"
                                                                                      + KEY_VALUE_PATTERN
-                                                                                     + ")*$");
+                                                                                     + ")*)$");
     /**
      * The pattern to match the key and value of a metadata block.
      */
@@ -87,35 +91,40 @@ public final class OpinionPolls {
     private final List<OpinionPoll> opinionPolls = new ArrayList<OpinionPoll>();
 
     /**
+     * Checks whether a line matches a pattern.
+     *
+     * @param pattern The pattern to match against.
+     * @param line The line to match.
+     * @return True if the line matches with the pattern, false otherwise.
+     */
+    private static boolean lineMatchesPattern(final Pattern pattern, final String line) {
+        return pattern.matcher(line).matches();
+    }
+
+    /**
      * Parses a string array into an OpinionPolls instance.
      *
      * @param lines The multiline string to parse.
      * @return The OpinionPolls instance.
      */
     public static OpinionPolls parse(final String... lines) {
-        OpinionPolls result = new OpinionPolls();
+        OpinionPolls opinionPolls = new OpinionPolls();
+        OpinionPoll lastOpinionPoll = null;
         for (String line : lines) {
-            Matcher opinionPollMatcher = OPINION_POLL_PATTERN.matcher(line);
-            if (opinionPollMatcher.matches()) {
-                parseOpinionPollLine(result, line);
+            if (lineMatchesPattern(OPINION_POLL_PATTERN, line)) {
+                lastOpinionPoll = parseOpinionPollLine(line);
+                opinionPolls.addOpinionPoll(lastOpinionPoll);
+            } else if (lineMatchesPattern(RESPONSE_SCENARIO_PATTERN, line)) {
+                lastOpinionPoll.addResponseScenario(parseResponseScenarioLine(line));
             }
         }
-        return result;
-    }
-
-    private static void parseOpinionPollLine(final OpinionPolls result, final String line) {
-        OpinionPoll.Builder builder = new OpinionPoll.Builder();
-        String remainder = line;
-        while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, remainder);
-        }
-        result.addOpinionPoll(builder.build());
+        return opinionPolls;
     }
 
     /**
-     * Processes a key and value from a part of a line.
+     * Processes a key and value from a part of an opinion poll line.
      *
-     * @param builder The opinion builder to build on.
+     * @param builder The opinion poll builder to build on.
      * @param remainder The remainder of a line to parse a key and value from.
      * @return The unprocessed part of the line.
      */
@@ -132,9 +141,60 @@ public final class OpinionPolls {
     }
 
     /**
+     * Processes a key and value from a part of a response scenario line.
+     *
+     * @param builder The response scenario builder to build on.
+     * @param remainder The remainder of a line to parse a key and value from.
+     * @return The unprocessed part of the line.
+     */
+    private static String parseKeyValue(final ResponseScenario.Builder builder, final String remainder) {
+        Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
+        keyValuesMatcher.find();
+        String keyValueBlock = keyValuesMatcher.group(1);
+        if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
+            // processMetadata(builder, keyValueBlock);
+        } else {
+            processResultData(builder, keyValueBlock);
+        }
+        return keyValuesMatcher.group(THREE);
+    }
+
+    /**
+     * Parses an opinion poll line.
+     *
+     * @param line The line to parse an opinion poll from.
+     * @return The opinion poll parsed from the line.
+     */
+    private static OpinionPoll parseOpinionPollLine(final String line) {
+        OpinionPoll.Builder builder = new OpinionPoll.Builder();
+        String remainder = line;
+        while (!remainder.isEmpty()) {
+            remainder = parseKeyValue(builder, remainder);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Parses a response scenario line.
+     *
+     * @param line The line to parse a response scenario from.
+     * @return The response scenario parsed from the line.
+     */
+    private static ResponseScenario parseResponseScenarioLine(final String line) {
+        ResponseScenario.Builder builder = new ResponseScenario.Builder();
+        Matcher responseScenarioMatcher = RESPONSE_SCENARIO_PATTERN.matcher(line);
+        responseScenarioMatcher.find();
+        String remainder = responseScenarioMatcher.group(1);
+        while (!remainder.isEmpty()) {
+            remainder = parseKeyValue(builder, remainder);
+        }
+        return builder.build();
+    }
+
+    /**
      * Processes a data block with metadata.
      *
-     * @param builder The opinion builder to build on.
+     * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
      */
     private static void processMetadata(final OpinionPoll.Builder builder, final String keyValueString) {
@@ -164,12 +224,26 @@ public final class OpinionPolls {
     }
 
     /**
-     * Processes a data block with results.
+     * Processes a data block with results for an opinion poll.
      *
-     * @param builder The opinion builder to build on.
+     * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
      */
     private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString) {
+        Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
+        keyValueMatcher.find();
+        String key = keyValueMatcher.group(1);
+        String value = keyValueMatcher.group(2);
+        builder.addResult(key, value);
+    }
+
+    /**
+     * Processes a data block with results for a response scenario.
+     *
+     * @param builder The response scenario builder to build on.
+     * @param keyValueString The data block to process.
+     */
+    private static void processResultData(final ResponseScenario.Builder builder, final String keyValueString) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);

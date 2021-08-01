@@ -240,7 +240,8 @@ final class OpinionPoll {
     public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
             OpinionPoll otherOpinionPoll = (OpinionPoll) obj;
-            return otherOpinionPoll.commissioners.equals(commissioners)
+            return otherOpinionPoll.alternativeResponseScenarios.equals(alternativeResponseScenarios)
+                   && otherOpinionPoll.commissioners.equals(commissioners)
                    && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
                    && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
                    && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
@@ -349,8 +350,8 @@ final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, mainResponseScenario, other, pollingFirm, publicationDate,
-                            sampleSize, scope);
+        return Objects.hash(alternativeResponseScenarios, commissioners, fieldworkEnd, fieldworkStart,
+                            mainResponseScenario, other, pollingFirm, publicationDate, sampleSize, scope);
     }
 
     /**
