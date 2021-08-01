@@ -159,4 +159,16 @@ public class OpinionPollsTest {
         polls.add(poll);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
+
+    /**
+     * Verifies the correct export of a minimal opinion poll to the PSV file format for EOPAOD.
+     */
+    @Test
+    public void shouldExportMinimalOpinionPollToEopaodPsvFormat() {
+        OpinionPolls opinionPolls = OpinionPolls.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45");
+        StringBuffer expected = new StringBuffer();
+        expected.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size | Participation | Precision | A | B | Other\n");
+        expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | N/A | 55 | 45 | N/A");
+        assertEquals(expected.toString(), opinionPolls.toEopaodPsvString("A", "B"));
+    }
 }

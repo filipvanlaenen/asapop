@@ -184,9 +184,15 @@ public final class OpinionPolls {
      *
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
-    public String toEopaodPsvString() {
+    public String toEopaodPsvString(final String... electoralListKeys) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size | Participation | Precision | NN | Other");
+        sb.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size | Participation | Precision | ");
+        sb.append(String.join(" | ", electoralListKeys));
+        sb.append(" | Other");
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            sb.append("\n");
+            sb.append(opinionPoll.toEopaodPsvString(electoralListKeys));
+        }
         return sb.toString();
     }
 }

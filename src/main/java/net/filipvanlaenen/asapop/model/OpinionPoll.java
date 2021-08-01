@@ -333,4 +333,53 @@ final class OpinionPoll {
         return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, other, pollingFirm, publicationDate, results,
                             sampleSize, scope);
     }
+
+    /**
+     * Exports the opinion poll as a string in the PSV file format for EOPAOD.
+     *
+     * @return A string containing the opinion poll in the PSV file format for EOPAOD.
+     */
+    String toEopaodPsvString(final String... electoralListKeys) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(pollingFirm);
+        sb.append(" | ");
+        sb.append(commissioners.isEmpty() ? "N/A" : String.join(", ", commissioners));
+        sb.append(" | ");
+        if (fieldworkStart == null) {
+            if (fieldworkEnd == null) {
+                sb.append(publicationDate.toString());
+                sb.append(" | ");
+                sb.append(publicationDate.toString());
+            } else {
+                sb.append(fieldworkEnd.toString());
+                sb.append(" | ");
+                sb.append(fieldworkEnd.toString());
+            }
+        } else {
+            if (fieldworkEnd == null) {
+                sb.append(fieldworkStart.toString());
+                sb.append(" | ");
+                sb.append(publicationDate.toString());
+            } else {
+                sb.append(fieldworkStart.toString());
+                sb.append(" | ");
+                sb.append(fieldworkEnd.toString());
+            }
+        }
+        sb.append(" | ");
+        sb.append(scope == null ? "N/A" : scope);
+        sb.append(" | ");
+        sb.append(sampleSize == null ? "N/A" : sampleSize);
+        sb.append(" | ");
+        sb.append("N/A");
+        sb.append(" | ");
+        sb.append("N/A");
+        sb.append(" | ");
+        for (String electoralListKey : electoralListKeys) {
+            sb.append(results.get(ElectoralList.get(electoralListKey)));
+            sb.append(" | ");
+        }
+        sb.append(other == null ? "N/A" : other);
+        return sb.toString();
+    }
 }
