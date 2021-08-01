@@ -49,6 +49,15 @@ public final class OpinionPolls {
                                                                                 + KEY_VALUE_PATTERN
                                                                                 + ")+$");
     /**
+     * The pattern to match a response scenario.
+     */
+    private static final Pattern RESPONSE_SCENARIO_PATTERN = Pattern.compile("^\\s*" + "&"
+                                                                                     + "\\s*"
+                                                                                     + KEY_VALUE_PATTERN
+                                                                                     + "(\\s+"
+                                                                                     + KEY_VALUE_PATTERN
+                                                                                     + ")*$");
+    /**
      * The pattern to match the key and value of a metadata block.
      */
     private static final Pattern METADATA_KEY_VALUE_PATTERN = Pattern.compile("^\\s*" + METADATA_MARKER_PATTERN
@@ -86,14 +95,21 @@ public final class OpinionPolls {
     public static OpinionPolls parse(final String... lines) {
         OpinionPolls result = new OpinionPolls();
         for (String line : lines) {
-            OpinionPoll.Builder builder = new OpinionPoll.Builder();
-            String remainder = line;
-            while (!remainder.isEmpty()) {
-                remainder = parseKeyValue(builder, remainder);
+            Matcher opinionPollMatcher = OPINION_POLL_PATTERN.matcher(line);
+            if (opinionPollMatcher.matches()) {
+                parseOpinionPollLine(result, line);
             }
-            result.addOpinionPoll(builder.build());
         }
         return result;
+    }
+
+    private static void parseOpinionPollLine(final OpinionPolls result, final String line) {
+        OpinionPoll.Builder builder = new OpinionPoll.Builder();
+        String remainder = line;
+        while (!remainder.isEmpty()) {
+            remainder = parseKeyValue(builder, remainder);
+        }
+        result.addOpinionPoll(builder.build());
     }
 
     /**
