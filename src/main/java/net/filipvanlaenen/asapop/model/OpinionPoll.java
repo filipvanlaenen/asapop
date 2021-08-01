@@ -25,6 +25,10 @@ final class OpinionPoll {
      */
     private LocalDate fieldworkStart;
     /**
+     * The main response scenario.
+     */
+    private ResponseScenario mainResponseScenario;
+    /**
      * The result for other.
      */
     private String other;
@@ -36,10 +40,6 @@ final class OpinionPoll {
      * The publication date.
      */
     private LocalDate publicationDate;
-    /**
-     * The results.
-     */
-    private final Map<ElectoralList, String> results;
     /**
      * The sample size.
      */
@@ -58,10 +58,10 @@ final class OpinionPoll {
         this.commissioners = Collections.unmodifiableSet(builder.commissioners);
         this.fieldworkEnd = builder.fieldworkEnd;
         this.fieldworkStart = builder.fieldworkStart;
+        this.mainResponseScenario = builder.responseScenarioBuilder.build();
         this.other = builder.other;
         this.pollingFirm = builder.pollingFirm;
         this.publicationDate = builder.publicationDate;
-        this.results = Collections.unmodifiableMap(builder.results);
         this.sampleSize =  builder.sampleSize;
         this.scope = builder.scope;
     }
@@ -95,9 +95,9 @@ final class OpinionPoll {
          */
         private LocalDate publicationDate;
         /**
-         * The results.
+         * The builder for the response scenario.
          */
-        private final Map<ElectoralList, String> results = new HashMap<ElectoralList, String>();
+        private ResponseScenario.Builder responseScenarioBuilder;
         /**
          * The sample size.
          */
@@ -107,16 +107,8 @@ final class OpinionPoll {
          */
         private String scope;
 
-        /**
-         * Adds a result.
-         *
-         * @param electoralListKey The key of an electoral list.
-         * @param result The result.
-         * @return This builder instance.
-         */
-        Builder addResult(final String electoralListKey, final String result) {
-            results.put(ElectoralList.get(electoralListKey), result);
-            return this;
+        Builder() {
+            responseScenarioBuilder = new ResponseScenario.Builder();
         }
 
         /**
@@ -127,6 +119,18 @@ final class OpinionPoll {
          */
         Builder addCommissioner(final String commissionerName) {
             commissioners.add(commissionerName);
+            return this;
+        }
+
+        /**
+         * Adds a result to the response scenario builder.
+         *
+         * @param electoralListKey The key of an electoral list.
+         * @param result The result.
+         * @return This builder instance.
+         */
+        Builder addResult(final String electoralListKey, final String result) {
+            responseScenarioBuilder.addResult(electoralListKey, result);
             return this;
         }
 
@@ -217,6 +221,14 @@ final class OpinionPoll {
         }
     }
 
+    /**
+     * Adds a response scenario to the list of alternative response scenarios.
+     *
+     * @param responseScenario The response scenario to add.
+     */
+    void addResponseScenario(final ResponseScenario responseScenario) {
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof OpinionPoll) {
@@ -224,10 +236,10 @@ final class OpinionPoll {
             return otherOpinionPoll.commissioners.equals(commissioners)
                    && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
                    && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
+                   && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
                    && equalsOrBothNull(other, otherOpinionPoll.other)
                    && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                    && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
-                   && otherOpinionPoll.results.equals(results)
                    && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize)
                    && equalsOrBothNull(scope, otherOpinionPoll.scope);
         } else {
@@ -307,7 +319,7 @@ final class OpinionPoll {
      * @return The result for the electoral list.
      */
     String getResult(final String electoralListKey) {
-        return results.get(ElectoralList.get(electoralListKey));
+        return mainResponseScenario.getResult(electoralListKey);
     }
 
     /**
@@ -330,7 +342,7 @@ final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, other, pollingFirm, publicationDate, results,
+        return Objects.hash(commissioners, fieldworkEnd, fieldworkStart, mainResponseScenario, other, pollingFirm, publicationDate,
                             sampleSize, scope);
     }
 
@@ -376,7 +388,7 @@ final class OpinionPoll {
         sb.append("N/A");
         sb.append(" | ");
         for (String electoralListKey : electoralListKeys) {
-            sb.append(results.get(ElectoralList.get(electoralListKey)));
+            sb.append(mainResponseScenario.getResult(electoralListKey));
             sb.append(" | ");
         }
         sb.append(other == null ? "N/A" : other);

@@ -25,7 +25,7 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies that String with two lines containing a simple opinion polls can be parsed.
+     * Verifies that two lines containing simple opinion polls can be parsed.
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPolls() {
@@ -157,6 +157,22 @@ public class OpinionPollsTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                                                     .setScope("N").addResult("A", "55").addResult("B", "43").build();
         polls.add(poll);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
+
+    /**
+     * Verifies that two lines containing a simple opinion with an alternative response scenario can be parsed.
+     */
+    @Test
+    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
+        String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 A:55 B:45", "& A:50 B:40 C:10"};
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        polls.add(poll);
+        ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
+                                                                  .addResult("C", "10").build();
+        poll.addResponseScenario(scenario);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
 
