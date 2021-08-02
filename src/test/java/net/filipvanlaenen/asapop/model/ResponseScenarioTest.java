@@ -93,4 +93,26 @@ public class ResponseScenarioTest {
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
      }
 
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with only a publication date to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenario for an opinion poll with a fieldwork period to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                                                    .setFieldworkEnd("2021-08-02").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
+     }
 }
