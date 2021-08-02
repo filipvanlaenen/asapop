@@ -404,4 +404,24 @@ public class OpinionPollTest {
         OpinionPoll poll2 = new OpinionPoll.Builder().setScope("E").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
      }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with only a publication date to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        assertEquals("ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A", poll.toEopaodPsvString("A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with a fieldwork period to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01").setFieldworkEnd("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        assertEquals("ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A", poll.toEopaodPsvString("A", "B"));
+     }
 }
