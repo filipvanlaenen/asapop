@@ -73,4 +73,24 @@ public class ResponseScenarioTest {
         assertEquals(builder.build().hashCode(), builder.build().hashCode());
      }
 
+     /**
+      * Verifies that a response scenario is not equal to another response scenario with a different result.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addResult("A", "55").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addResult("A", "56").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that response scenarios have different hash codes if they have different results.
+      */
+     @Test
+     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addResult("A", "55").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addResult("A", "56").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
+     }
+
 }
