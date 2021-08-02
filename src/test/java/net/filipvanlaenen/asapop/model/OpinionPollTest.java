@@ -412,7 +412,8 @@ public class OpinionPollTest {
      public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .addResult("A", "55").addResult("B", "45").build();
-        assertEquals("ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A", poll.toEopaodPsvString("A", "B"));
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, poll.toEopaodPsvString("A", "B"));
      }
 
      /**
@@ -420,8 +421,10 @@ public class OpinionPollTest {
       */
      @Test
      public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01").setFieldworkEnd("2021-08-02")
-                                                    .addResult("A", "55").addResult("B", "45").build();
-        assertEquals("ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A", poll.toEopaodPsvString("A", "B"));
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, poll.toEopaodPsvString("A", "B"));
      }
 }

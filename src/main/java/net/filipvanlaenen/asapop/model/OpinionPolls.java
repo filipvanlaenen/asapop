@@ -272,11 +272,13 @@ public final class OpinionPolls {
     /**
      * Exports the opinion polls as a string in the PSV file format for EOPAOD.
      *
+     * @param electoralListKeys An array with the keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
     public String toEopaodPsvString(final String... electoralListKeys) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size | Participation | Precision | ");
+        sb.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
+        sb.append(" | Participation | Precision | ");
         sb.append(String.join(" | ", electoralListKeys));
         sb.append(" | Other");
         for (OpinionPoll opinionPoll : opinionPolls) {

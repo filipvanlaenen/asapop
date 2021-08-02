@@ -111,6 +111,9 @@ final class OpinionPoll {
          */
         private String scope;
 
+        /**
+         * Default constructor.
+         */
         Builder() {
             responseScenarioBuilder = new ResponseScenario.Builder();
         }
@@ -355,6 +358,7 @@ final class OpinionPoll {
     /**
      * Exports the opinion poll as a string in the PSV file format for EOPAOD.
      *
+     * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
     String toEopaodPsvString(final String... electoralListKeys) {
