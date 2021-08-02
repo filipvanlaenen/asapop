@@ -396,10 +396,15 @@ final class OpinionPoll {
         sb.append("N/A");
         sb.append(" | ");
         for (String electoralListKey : electoralListKeys) {
-            sb.append(mainResponseScenario.getResult(electoralListKey));
+            String result = mainResponseScenario.getResult(electoralListKey);
+            sb.append(result == null ? "N/A" : result);
             sb.append(" | ");
         }
         sb.append(other == null ? "N/A" : other);
+        for (ResponseScenario responseScenario : alternativeResponseScenarios) {
+            sb.append("\n");
+            sb.append(responseScenario.toEopaodPsvString(this, electoralListKeys));
+        }
         return sb.toString();
     }
 }

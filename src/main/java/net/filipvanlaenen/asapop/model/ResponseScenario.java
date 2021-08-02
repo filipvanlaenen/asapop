@@ -75,4 +75,54 @@ final class ResponseScenario {
     public int hashCode() {
         return Objects.hash(results);
     }
+
+    /**
+     * Exports the response scenario as a string in the PSV file format for EOPAOD.
+     *
+     * @return A string containing the response scenario in the PSV file format for EOPAOD.
+     */
+    String toEopaodPsvString(final OpinionPoll opinionPoll, final String... electoralListKeys) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(opinionPoll.getPollingFirm());
+        sb.append(" | ");
+        sb.append(opinionPoll.getCommissioners().isEmpty() ? "N/A" : String.join(", ", opinionPoll.getCommissioners()));
+        sb.append(" | ");
+        if (opinionPoll.getFieldworkStart() == null) {
+            if (opinionPoll.getFieldworkEnd() == null) {
+                sb.append(opinionPoll.getPublicationDate().toString());
+                sb.append(" | ");
+                sb.append(opinionPoll.getPublicationDate().toString());
+            } else {
+                sb.append(opinionPoll.getFieldworkEnd().toString());
+                sb.append(" | ");
+                sb.append(opinionPoll.getFieldworkEnd().toString());
+            }
+        } else {
+            if (opinionPoll.getFieldworkEnd() == null) {
+                sb.append(opinionPoll.getFieldworkStart().toString());
+                sb.append(" | ");
+                sb.append(opinionPoll.getPublicationDate().toString());
+            } else {
+                sb.append(opinionPoll.getFieldworkStart().toString());
+                sb.append(" | ");
+                sb.append(opinionPoll.getFieldworkEnd().toString());
+            }
+        }
+        sb.append(" | ");
+        sb.append(opinionPoll.getScope() == null ? "N/A" : opinionPoll.getScope());
+        sb.append(" | ");
+        sb.append(opinionPoll.getSampleSize() == null ? "N/A" : opinionPoll.getSampleSize());
+        sb.append(" | ");
+        sb.append("N/A");
+        sb.append(" | ");
+        sb.append("N/A");
+        sb.append(" | ");
+        for (String electoralListKey : electoralListKeys) {
+            String result = getResult(electoralListKey);
+            sb.append(result == null ? "N/A" : result);
+            sb.append(" | ");
+        }
+        sb.append(opinionPoll.getOther() == null ? "N/A" : opinionPoll.getOther());
+        return sb.toString();
+    }
 }
