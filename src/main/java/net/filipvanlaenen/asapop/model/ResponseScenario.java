@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Class representing a response scenario.
+ */
 final class ResponseScenario {
     /**
      * The results.
@@ -79,6 +82,8 @@ final class ResponseScenario {
     /**
      * Exports the response scenario as a string in the PSV file format for EOPAOD.
      *
+     * @param opinionPoll The opinion poll this response scenario relates to.
+     * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
     String toEopaodPsvString(final OpinionPoll opinionPoll, final String... electoralListKeys) {
