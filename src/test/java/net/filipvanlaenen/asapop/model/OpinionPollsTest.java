@@ -177,6 +177,23 @@ public class OpinionPollsTest {
     }
 
     /**
+     * Verifies that two lines containing a simple opinion with an alternative response scenario with a result for other
+     * can be parsed.
+     */
+    @Test
+    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseWithResultForOtherScenario() {
+        String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 A:55 B:45", "& A:50 B:40 C:8 •O: 2"};
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        polls.add(poll);
+        ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
+                                                                  .addResult("C", "8").setOther("2").build();
+        poll.addResponseScenario(scenario);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
+
+    /**
      * Verifies the correct export of a minimal opinion poll to the PSV file format for EOPAOD.
      */
     @Test

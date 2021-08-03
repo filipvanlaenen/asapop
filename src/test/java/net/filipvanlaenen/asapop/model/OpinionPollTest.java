@@ -427,4 +427,15 @@ public class OpinionPollTest {
         String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
         assertEquals(expected, poll.toEopaodPsvString("A", "B"));
      }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with a result for other to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithOtherResultCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "43").setOther("2").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 43 | 2";
+        assertEquals(expected, poll.toEopaodPsvString("A", "B"));
+     }
 }

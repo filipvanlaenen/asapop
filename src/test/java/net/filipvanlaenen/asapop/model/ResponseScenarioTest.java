@@ -18,6 +18,15 @@ public class ResponseScenarioTest {
         assertEquals("55", responseScenario.getResult("A"));
      }
 
+    /**
+     * Verifies that the setOther method in the builder class is wired correctly to the getOther method.
+     */
+     @Test
+     public void setOtherInBuilderShouldBeWiredCorrectlyToGetOther() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setOther("5").build();
+        assertEquals("5", responseScenario.getOther());
+     }
+
      /**
       * Verifies that a response scenario is not equal to null.
       */
@@ -94,11 +103,41 @@ public class ResponseScenarioTest {
      }
 
      /**
+      * Verifies that a response scenario is not equal to another response scenario with a different result for others.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentOtherResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("6").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that response scenarios have different hash codes if they have different results for other.
+      */
+     @Test
+     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentOtherResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("6").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
+     }
+
+     /**
+      * Verifies that a response scenario is not equal to another response scenario missing the result for others.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheOtherResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
       * Verifies the correct export of a simple response scenatio for an opinion poll with only a publication date to
       * the EOPAOD PSV file format.
       */
      @Test
-     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
+     public void shouldExportSimpleResponseScenarioWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
                                                                           .build();
@@ -111,12 +150,25 @@ public class ResponseScenarioTest {
       * EOPAOD PSV file format.
       */
      @Test
-     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
+     public void shouldExportSimpleResponseScenarioWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
                                                     .setFieldworkEnd("2021-08-02").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
                                                                           .build();
         String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with a result for other to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithOtherResultCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .setOther("2").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 43 | 2";
         assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
      }
 }

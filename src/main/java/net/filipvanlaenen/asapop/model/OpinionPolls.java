@@ -152,7 +152,7 @@ public final class OpinionPolls {
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            // processMetadata(builder, keyValueBlock);
+            processMetadata(builder, keyValueBlock);
         } else {
             processResultData(builder, keyValueBlock);
         }
@@ -192,7 +192,7 @@ public final class OpinionPolls {
     }
 
     /**
-     * Processes a data block with metadata.
+     * Processes a data block with metadata for an opinon poll.
      *
      * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
@@ -218,6 +218,24 @@ public final class OpinionPolls {
             case "SC": builder.setScope(value);
                 break;
             case "SS": builder.setSampleSize(value);
+                break;
+            // The default case should be handled as part of issue #9.
+        }
+    }
+
+    /**
+     * Processes a data block with metadata for a response scenario.
+     *
+     * @param builder The response scenario builder to build on.
+     * @param keyValueString The data block to process.
+     */
+    private static void processMetadata(final ResponseScenario.Builder builder, final String keyValueString) {
+        Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
+        keyValueMatcher.find();
+        String key = keyValueMatcher.group(1);
+        String value = keyValueMatcher.group(2);
+        switch (key) {
+            case "O": builder.setOther(value);
                 break;
             // The default case should be handled as part of issue #9.
         }

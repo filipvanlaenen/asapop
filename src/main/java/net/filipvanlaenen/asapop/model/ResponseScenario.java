@@ -10,6 +10,10 @@ import java.util.Objects;
  */
 final class ResponseScenario {
     /**
+     * The result for other.
+     */
+    private String other;
+    /**
      * The results.
      */
     private final Map<ElectoralList, String> results;
@@ -20,6 +24,7 @@ final class ResponseScenario {
      * @param builder A builder instance.
      */
     private ResponseScenario(final Builder builder) {
+        this.other = builder.other;
         this.results = Collections.unmodifiableMap(builder.results);
     }
 
@@ -27,6 +32,10 @@ final class ResponseScenario {
      * Builder class.
      */
     static class Builder {
+        /**
+         * The result for other.
+         */
+        private String other;
         /**
          * The results.
          */
@@ -52,16 +61,39 @@ final class ResponseScenario {
         ResponseScenario build() {
             return new ResponseScenario(this);
         }
+
+        /**
+         * Sets the result for other.
+         *
+         * @param otherString The result for other.
+         * @return This builder instance.
+         */
+        Builder setOther(final String otherString) {
+            this.other = otherString;
+            return this;
+        }
     }
 
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof ResponseScenario) {
             ResponseScenario otherResponseScenario = (ResponseScenario) obj;
-            return otherResponseScenario.results.equals(results);
+            return equalsOrBothNull(other, otherResponseScenario.other)
+                   && otherResponseScenario.results.equals(results);
         } else {
             return false;
         }
+    }
+
+    /**
+     * Returns true if both objects are equal or both are null.
+     *
+     * @param obj1 The first object.
+     * @param obj2 The second object.
+     * @return True if both objects are equal or both are null, false otherwise.
+     */
+    private boolean equalsOrBothNull(final Object obj1, final Object obj2) {
+        return obj1 == null && obj2 == null || obj1.equals(obj2);
     }
 
     /**
@@ -74,9 +106,18 @@ final class ResponseScenario {
         return results.get(ElectoralList.get(electoralListKey));
     }
 
+    /**
+     * Returns the result for other.
+     *
+     * @return The result for other.
+     */
+    String getOther() {
+        return other;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(results);
+        return Objects.hash(other, results);
     }
 
     /**
@@ -127,7 +168,7 @@ final class ResponseScenario {
             sb.append(result == null ? "N/A" : result);
             sb.append(" | ");
         }
-        sb.append(opinionPoll.getOther() == null ? "N/A" : opinionPoll.getOther());
+        sb.append(other == null ? "N/A" : other);
         return sb.toString();
     }
 }
