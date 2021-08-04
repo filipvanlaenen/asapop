@@ -143,7 +143,8 @@ public class ResponseScenarioTest {
      }
 
      /**
-      * Verifies that a response scenario without a result for others is not equal to another response scenario with a result for others.
+      * Verifies that a response scenario without a result for others is not equal to another response scenario with a
+      * result for others.
       */
      @Test
      public void aResponseScenarioMissingOtherResutShouldNotBeEqualToAnotherResponseScenarioWithOtherResult() {
@@ -228,7 +229,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void shouldExportSimpleResponseScenarioWithSameScopeCorrectlyToEopaodPsvFormat() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setScope("N").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setScope("N").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
                                                                           .build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | N/A | 55 | 43 | N/A";
@@ -241,7 +243,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectlyToEopaodPsvFormat() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setScope("N").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setScope("N").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
                                                                           .setScope("E").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | N/A | 55 | 43 | N/A";
