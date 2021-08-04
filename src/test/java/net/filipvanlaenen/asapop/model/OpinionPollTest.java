@@ -196,6 +196,16 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that an opinion poll missing the fieldwork end is not equal to another opinion poll having one.
+      */
+     @Test
+     public void anOpinionPollMissingFieldworkEndShouldNotBeEqualToAnotherOpinionPollHavingAFieldworkEnd() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
       * Verifies that opinion polls have different hash codes if they have different fieldwork end.
       */
      @Test

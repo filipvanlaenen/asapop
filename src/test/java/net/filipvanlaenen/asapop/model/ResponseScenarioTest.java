@@ -143,6 +143,16 @@ public class ResponseScenarioTest {
      }
 
      /**
+      * Verifies that a response scenario without a result for others is not equal to another response scenario with a result for others.
+      */
+     @Test
+     public void aResponseScenarioMissingOtherResutShouldNotBeEqualToAnotherResponseScenarioWithOtherResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("5").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
       * Verifies that a response scenario is not equal to another response scenario with a different scope.
       */
      @Test
