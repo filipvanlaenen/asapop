@@ -264,7 +264,7 @@ final class OpinionPoll {
      * @return True if both objects are equal or both are null, false otherwise.
      */
     private boolean equalsOrBothNull(final Object obj1, final Object obj2) {
-        return obj1 == null && obj2 == null || obj1.equals(obj2);
+        return obj1 == null && obj2 == null || obj1 != null && obj1.equals(obj2);
     }
 
     /**

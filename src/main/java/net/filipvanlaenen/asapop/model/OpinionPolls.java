@@ -237,6 +237,8 @@ public final class OpinionPolls {
         switch (key) {
             case "O": builder.setOther(value);
                 break;
+            case "SC": builder.setScope(value);
+                break;
             // The default case should be handled as part of issue #9.
         }
     }

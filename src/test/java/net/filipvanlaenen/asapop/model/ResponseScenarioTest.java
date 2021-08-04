@@ -28,6 +28,16 @@ public class ResponseScenarioTest {
      }
 
      /**
+      * Verifies that the setScope method in the builder class is wired correctly to the getScope
+      * method.
+      */
+     @Test
+     public void setScopeInBuilderShouldBeWiredCorrectlyToGetScope() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setScope("N").build();
+        assertEquals("N", responseScenario.getScope());
+     }
+
+     /**
       * Verifies that a response scenario is not equal to null.
       */
      @Test
@@ -133,6 +143,36 @@ public class ResponseScenarioTest {
      }
 
      /**
+      * Verifies that a response scenario is not equal to another response scenario with a different scope.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentScope() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope("N").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope("E").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that a response scenario is not equal to another response scenario missing the scope.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheScope() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope("N").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that response scenarios have different hash codes if they have different scopes.
+      */
+     @Test
+     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentScope() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope("N").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope("E").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
+     }
+
+     /**
       * Verifies the correct export of a simple response scenatio for an opinion poll with only a publication date to
       * the EOPAOD PSV file format.
       */
@@ -169,6 +209,32 @@ public class ResponseScenarioTest {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
                                                                           .setOther("2").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 43 | 2";
+        assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setScope("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | N/A | 55 | 43 | N/A";
+        assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with a different scope to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setScope("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .setScope("E").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | N/A | 55 | 43 | N/A";
         assertEquals(expected, responseScenario.toEopaodPsvString(poll, "A", "B"));
      }
 }

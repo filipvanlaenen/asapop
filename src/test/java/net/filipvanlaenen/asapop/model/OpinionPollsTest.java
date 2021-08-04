@@ -181,7 +181,7 @@ public class OpinionPollsTest {
      * can be parsed.
      */
     @Test
-    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseWithResultForOtherScenario() {
+    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenarioWithResultForOther() {
         String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 A:55 B:45", "& A:50 B:40 C:8 •O: 2"};
         List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
@@ -189,6 +189,23 @@ public class OpinionPollsTest {
         polls.add(poll);
         ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
                                                                   .addResult("C", "8").setOther("2").build();
+        poll.addResponseScenario(scenario);
+        assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
+    }
+
+    /**
+     * Verifies that two lines containing a simple opinion with an alternative response scenario with a different scope
+     * can be parsed.
+     */
+    @Test
+    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenarioWithDifferentScope() {
+        String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:45", "& •SC: E A:60 B:40"};
+        List<OpinionPoll> polls = new ArrayList<OpinionPoll>();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                    .setScope("N").addResult("A", "55").addResult("B", "45").build();
+        polls.add(poll);
+        ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "60").addResult("B", "40")
+                                                                  .setScope("E").build();
         poll.addResponseScenario(scenario);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }

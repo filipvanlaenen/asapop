@@ -17,6 +17,10 @@ final class ResponseScenario {
      * The results.
      */
     private final Map<ElectoralList, String> results;
+    /**
+     * The scope.
+     */
+    private String scope;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -26,6 +30,7 @@ final class ResponseScenario {
     private ResponseScenario(final Builder builder) {
         this.other = builder.other;
         this.results = Collections.unmodifiableMap(builder.results);
+        this.scope = builder.scope;
     }
 
     /**
@@ -40,6 +45,10 @@ final class ResponseScenario {
          * The results.
          */
         private final Map<ElectoralList, String> results = new HashMap<ElectoralList, String>();
+        /**
+         * The scope.
+         */
+        private String scope;
 
         /**
          * Adds a result.
@@ -72,6 +81,17 @@ final class ResponseScenario {
             this.other = otherString;
             return this;
         }
+
+        /**
+         * Sets the scope.
+         *
+         * @param scopeString The scope as a string.
+         * @return This builder instance.
+         */
+        Builder setScope(final String scopeString) {
+            this.scope = scopeString;
+            return this;
+        }
     }
 
     @Override
@@ -79,7 +99,8 @@ final class ResponseScenario {
         if (obj instanceof ResponseScenario) {
             ResponseScenario otherResponseScenario = (ResponseScenario) obj;
             return equalsOrBothNull(other, otherResponseScenario.other)
-                   && otherResponseScenario.results.equals(results);
+                   && otherResponseScenario.results.equals(results)
+                   && equalsOrBothNull(scope, otherResponseScenario.scope);
         } else {
             return false;
         }
@@ -93,7 +114,16 @@ final class ResponseScenario {
      * @return True if both objects are equal or both are null, false otherwise.
      */
     private boolean equalsOrBothNull(final Object obj1, final Object obj2) {
-        return obj1 == null && obj2 == null || obj1.equals(obj2);
+        return obj1 == null && obj2 == null || obj1 != null && obj1.equals(obj2);
+    }
+
+    /**
+     * Returns the result for other.
+     *
+     * @return The result for other.
+     */
+    String getOther() {
+        return other;
     }
 
     /**
@@ -107,17 +137,17 @@ final class ResponseScenario {
     }
 
     /**
-     * Returns the result for other.
+     * Returns the scope.
      *
-     * @return The result for other.
+     * @return The scope.
      */
-    String getOther() {
-        return other;
+    String getScope() {
+        return scope;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(other, results);
+        return Objects.hash(other, results, scope);
     }
 
     /**
@@ -155,7 +185,7 @@ final class ResponseScenario {
             }
         }
         sb.append(" | ");
-        sb.append(opinionPoll.getScope() == null ? "N/A" : opinionPoll.getScope());
+        sb.append(scope == null ? (opinionPoll.getScope() == null ? "N/A" : opinionPoll.getScope()) : scope);
         sb.append(" | ");
         sb.append(opinionPoll.getSampleSize() == null ? "N/A" : opinionPoll.getSampleSize());
         sb.append(" | ");
