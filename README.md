@@ -82,13 +82,13 @@ The table below gives an overview over the metadata fields and their use:
 
 | Abbreviation | Description      | Type | Cardinality | Response Scenario |
 |--------------|------------------|------|-------------|-------------------|
-| C            | Commissioner     | Text | 0...n       | No                |
-| FE           | Fieldwork end    | Date | 0...1       | No                |
-| FS           | Fieldwork start  | Date | 0...1       | No                |
-| O            | Result for other | Text | 0...1       | Yes¹              |
-| PD           | Publication date | Date | 0...1       | No                |
-| PF           | Polling firm     | Text | 0...1       | No                |
-| SC           | Scope            | Text | 0...1       | Yes               |
-| SS           | Sample size      | Text | 0...1       | No                |
+| C            | Commissioner     | Text | 0…_n_       | No                |
+| FE           | Fieldwork end    | Date | 0…1         | No                |
+| FS           | Fieldwork start  | Date | 0…1         | No                |
+| O            | Result for other | Text | 0…1         | Yes¹              |
+| PD           | Publication date | Date | 0…1         | No                |
+| PF           | Polling firm     | Text | 0…1         | No                |
+| SC           | Scope            | Text | 0…1         | Yes               |
+| SS           | Sample size      | Text | 0…1         | No                |
 
 ¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
