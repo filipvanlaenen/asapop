@@ -185,7 +185,7 @@ final class ResponseScenario {
             }
         }
         sb.append(" | ");
-        sb.append(scope == null ? (opinionPoll.getScope() == null ? "N/A" : opinionPoll.getScope()) : scope);
+        sb.append(scope == null ? opinionPoll.getScope() == null ? "N/A" : opinionPoll.getScope() : scope);
         sb.append(" | ");
         sb.append(opinionPoll.getSampleSize() == null ? "N/A" : opinionPoll.getSampleSize());
         sb.append(" | ");
