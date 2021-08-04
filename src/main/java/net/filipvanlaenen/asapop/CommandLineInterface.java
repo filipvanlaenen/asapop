@@ -12,6 +12,11 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
  */
 public final class CommandLineInterface {
     /**
+     * The integer number three.
+     */
+    private static final int THREE = 3;
+
+    /**
      * The main entry point for the command line interface.
      *
      * @param args The arguments.
@@ -65,9 +70,9 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException {
                 String inputFileName = args[1];
                 String outputFileName = args[2];
-                String[] electoralListKeys = new String[args.length - 3];
-                for (int i = 0; i < args.length - 3; i++) {
-                    electoralListKeys[i] = args[i + 3];
+                String[] electoralListKeys = new String[args.length - THREE];
+                for (int i = 0; i < args.length - THREE; i++) {
+                    electoralListKeys[i] = args[i + THREE];
                 }
                 String[] ropfContent = readFile(inputFileName);
                 OpinionPolls opinionPolls = OpinionPolls.parse(ropfContent);
