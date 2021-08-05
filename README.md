@@ -91,4 +91,22 @@ The table below gives an overview over the metadata fields and their use:
 | SC           | Scope            | Text | 0…1         | Yes               |
 | SS           | Sample size      | Text | 0…1         | No                |
 
-¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
+¹ As for the regular results, the result for other is not inherited by a
+response scenario if absent.
+
+## Conversion from ROPF to PSV
+
+An ROPF file can be converted to EOPAOD's PSV file using the following command:
+
+```
+convert <ropf-file-name> <psv-file-name> <electoral-list-key>+
+```
+
+Assume the opinion polls have been stored in a file called `nn.ropf`, and you
+want to convert them to a file called `nn.psv`, and the electoral lists have
+keys `ABC`, `DEF` and `GHI`, then you can use the following command to do the
+conversion:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI
+```
