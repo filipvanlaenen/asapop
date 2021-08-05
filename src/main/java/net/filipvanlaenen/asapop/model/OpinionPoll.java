@@ -73,7 +73,7 @@ public final class OpinionPoll {
     /**
      * Builder class.
      */
-    static class Builder {
+    public static class Builder {
         /**
          * The commissioners.
          */
@@ -114,7 +114,7 @@ public final class OpinionPoll {
         /**
          * Default constructor.
          */
-        Builder() {
+        public Builder() {
             responseScenarioBuilder = new ResponseScenario.Builder();
         }
 
@@ -124,7 +124,7 @@ public final class OpinionPoll {
          * @param commissionerName The name of a commissioner.
          * @return This builder instance.
          */
-        Builder addCommissioner(final String commissionerName) {
+        public Builder addCommissioner(final String commissionerName) {
             commissioners.add(commissionerName);
             return this;
         }
@@ -136,7 +136,7 @@ public final class OpinionPoll {
          * @param result The result.
          * @return This builder instance.
          */
-        Builder addResult(final String electoralListKey, final String result) {
+        public Builder addResult(final String electoralListKey, final String result) {
             responseScenarioBuilder.addResult(electoralListKey, result);
             return this;
         }
@@ -146,7 +146,7 @@ public final class OpinionPoll {
          *
          * @return The resulting opinion poll.
          */
-        OpinionPoll build() {
+        public OpinionPoll build() {
             return new OpinionPoll(this);
         }
 
@@ -156,7 +156,7 @@ public final class OpinionPoll {
          * @param fieldworkEndString A string representing the fieldwork end date.
          * @return This builder instance.
          */
-        Builder setFieldworkEnd(final String fieldworkEndString) {
+        public Builder setFieldworkEnd(final String fieldworkEndString) {
             this.fieldworkEnd = LocalDate.parse(fieldworkEndString);
             return this;
         }
@@ -167,7 +167,7 @@ public final class OpinionPoll {
          * @param fieldworkStartString A string representing the fieldwork start date.
          * @return This builder instance.
          */
-        Builder setFieldworkStart(final String fieldworkStartString) {
+        public Builder setFieldworkStart(final String fieldworkStartString) {
             this.fieldworkStart = LocalDate.parse(fieldworkStartString);
             return this;
         }
@@ -178,7 +178,7 @@ public final class OpinionPoll {
          * @param otherString The result for other.
          * @return This builder instance.
          */
-        Builder setOther(final String otherString) {
+        public Builder setOther(final String otherString) {
             this.other = otherString;
             return this;
         }
@@ -189,7 +189,7 @@ public final class OpinionPoll {
          * @param pollingFirmName The name of the polling firm.
          * @return This builder instance.
          */
-        Builder setPollingFirm(final String pollingFirmName) {
+        public Builder setPollingFirm(final String pollingFirmName) {
             this.pollingFirm = pollingFirmName;
             return this;
         }
@@ -200,7 +200,7 @@ public final class OpinionPoll {
          * @param publicationDateString A string representing the publication date.
          * @return This builder instance.
          */
-        Builder setPublicationDate(final String publicationDateString) {
+        public Builder setPublicationDate(final String publicationDateString) {
             this.publicationDate = LocalDate.parse(publicationDateString);
             return this;
         }
@@ -211,7 +211,7 @@ public final class OpinionPoll {
          * @param sampleSizeString The sample size as a string.
          * @return This builder instance.
          */
-        Builder setSampleSize(final String sampleSizeString) {
+        public Builder setSampleSize(final String sampleSizeString) {
             this.sampleSize = sampleSizeString;
             return this;
         }
@@ -222,7 +222,7 @@ public final class OpinionPoll {
          * @param scopeString The scope as a string.
          * @return This builder instance.
          */
-        Builder setScope(final String scopeString) {
+        public Builder setScope(final String scopeString) {
             this.scope = scopeString;
             return this;
         }
@@ -268,11 +268,20 @@ public final class OpinionPoll {
     }
 
     /**
+     * Returns an unmodifiable list with the alternative response scenarios.
+     *
+     * @return An unmodifiable list with the alternative response scenarios.
+     */
+    public List<ResponseScenario> getAlternativeResponseScenarios() {
+        return Collections.unmodifiableList(alternativeResponseScenarios);
+    }
+
+    /**
      * Returns the commissioners.
      *
      * @return The commissioners.
      */
-    Set<String> getCommissioners() {
+    public Set<String> getCommissioners() {
         return commissioners;
     }
 
@@ -281,7 +290,7 @@ public final class OpinionPoll {
      *
      * @return The fieldwork end date.
      */
-    LocalDate getFieldworkEnd() {
+    public LocalDate getFieldworkEnd() {
         return fieldworkEnd;
     }
 
@@ -290,7 +299,7 @@ public final class OpinionPoll {
      *
      * @return The fieldwork start date.
      */
-    LocalDate getFieldworkStart() {
+    public LocalDate getFieldworkStart() {
         return fieldworkStart;
     }
 
@@ -299,7 +308,7 @@ public final class OpinionPoll {
      *
      * @return The result for other.
      */
-    String getOther() {
+    public String getOther() {
         return other;
     }
 
@@ -308,7 +317,7 @@ public final class OpinionPoll {
      *
      * @return The polling firm.
      */
-    String getPollingFirm() {
+    public String getPollingFirm() {
         return pollingFirm;
     }
 
@@ -317,7 +326,7 @@ public final class OpinionPoll {
      *
      * @return The publication date.
      */
-    LocalDate getPublicationDate() {
+    public LocalDate getPublicationDate() {
         return publicationDate;
     }
 
@@ -327,7 +336,7 @@ public final class OpinionPoll {
      * @param electoralListKey The key of an electoral list.
      * @return The result for the electoral list.
      */
-    String getResult(final String electoralListKey) {
+    public String getResult(final String electoralListKey) {
         return mainResponseScenario.getResult(electoralListKey);
     }
 
@@ -336,7 +345,7 @@ public final class OpinionPoll {
      *
      * @return The sample size.
      */
-    String getSampleSize() {
+    public String getSampleSize() {
         return sampleSize;
     }
 
@@ -345,7 +354,7 @@ public final class OpinionPoll {
      *
      * @return The scope.
      */
-    String getScope() {
+    public String getScope() {
         return scope;
     }
 
@@ -353,60 +362,5 @@ public final class OpinionPoll {
     public int hashCode() {
         return Objects.hash(alternativeResponseScenarios, commissioners, fieldworkEnd, fieldworkStart,
                             mainResponseScenario, other, pollingFirm, publicationDate, sampleSize, scope);
-    }
-
-    /**
-     * Exports the opinion poll as a string in the PSV file format for EOPAOD.
-     *
-     * @param electoralListKeys An array with the keys of the electoral lists to be exported.
-     * @return A string containing the opinion poll in the PSV file format for EOPAOD.
-     */
-    public String toEopaodPsvString(final String... electoralListKeys) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(pollingFirm);
-        sb.append(" | ");
-        sb.append(commissioners.isEmpty() ? "N/A" : String.join(", ", commissioners));
-        sb.append(" | ");
-        if (fieldworkStart == null) {
-            if (fieldworkEnd == null) {
-                sb.append(publicationDate.toString());
-                sb.append(" | ");
-                sb.append(publicationDate.toString());
-            } else {
-                sb.append(fieldworkEnd.toString());
-                sb.append(" | ");
-                sb.append(fieldworkEnd.toString());
-            }
-        } else {
-            if (fieldworkEnd == null) {
-                sb.append(fieldworkStart.toString());
-                sb.append(" | ");
-                sb.append(publicationDate.toString());
-            } else {
-                sb.append(fieldworkStart.toString());
-                sb.append(" | ");
-                sb.append(fieldworkEnd.toString());
-            }
-        }
-        sb.append(" | ");
-        sb.append(scope == null ? "N/A" : scope);
-        sb.append(" | ");
-        sb.append(sampleSize == null ? "N/A" : sampleSize);
-        sb.append(" | ");
-        sb.append("N/A");
-        sb.append(" | ");
-        sb.append("N/A");
-        sb.append(" | ");
-        for (String electoralListKey : electoralListKeys) {
-            String result = mainResponseScenario.getResult(electoralListKey);
-            sb.append(result == null ? "N/A" : result);
-            sb.append(" | ");
-        }
-        sb.append(other == null ? "N/A" : other);
-        for (ResponseScenario responseScenario : alternativeResponseScenarios) {
-            sb.append("\n");
-            sb.append(responseScenario.toEopaodPsvString(this, electoralListKeys));
-        }
-        return sb.toString();
     }
 }

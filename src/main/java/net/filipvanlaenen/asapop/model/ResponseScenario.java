@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Class representing a response scenario.
  */
-final class ResponseScenario {
+public final class ResponseScenario {
     /**
      * The result for other.
      */
@@ -36,7 +36,7 @@ final class ResponseScenario {
     /**
      * Builder class.
      */
-    static class Builder {
+    public static class Builder {
         /**
          * The result for other.
          */
@@ -57,7 +57,7 @@ final class ResponseScenario {
          * @param result The result.
          * @return This builder instance.
          */
-        Builder addResult(final String electoralListKey, final String result) {
+        public Builder addResult(final String electoralListKey, final String result) {
             results.put(ElectoralList.get(electoralListKey), result);
             return this;
         }
@@ -67,7 +67,7 @@ final class ResponseScenario {
          *
          * @return The resulting response scenario.
          */
-        ResponseScenario build() {
+        public ResponseScenario build() {
             return new ResponseScenario(this);
         }
 
@@ -77,7 +77,7 @@ final class ResponseScenario {
          * @param otherString The result for other.
          * @return This builder instance.
          */
-        Builder setOther(final String otherString) {
+        public Builder setOther(final String otherString) {
             this.other = otherString;
             return this;
         }
@@ -88,7 +88,7 @@ final class ResponseScenario {
          * @param scopeString The scope as a string.
          * @return This builder instance.
          */
-        Builder setScope(final String scopeString) {
+        public Builder setScope(final String scopeString) {
             this.scope = scopeString;
             return this;
         }
@@ -122,7 +122,7 @@ final class ResponseScenario {
      *
      * @return The result for other.
      */
-    String getOther() {
+    public String getOther() {
         return other;
     }
 
@@ -132,7 +132,7 @@ final class ResponseScenario {
      * @param electoralListKey The key of an electoral list.
      * @return The result for the electoral list.
      */
-    String getResult(final String electoralListKey) {
+    public String getResult(final String electoralListKey) {
         return results.get(ElectoralList.get(electoralListKey));
     }
 
@@ -141,64 +141,12 @@ final class ResponseScenario {
      *
      * @return The scope.
      */
-    String getScope() {
+    public String getScope() {
         return scope;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(other, results, scope);
-    }
-
-    /**
-     * Exports the response scenario as a string in the PSV file format for EOPAOD.
-     *
-     * @param opinionPoll The opinion poll this response scenario relates to.
-     * @param electoralListKeys An array with the keys of the electoral lists to be exported.
-     * @return A string containing the response scenario in the PSV file format for EOPAOD.
-     */
-    String toEopaodPsvString(final OpinionPoll opinionPoll, final String... electoralListKeys) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(opinionPoll.getPollingFirm());
-        sb.append(" | ");
-        sb.append(opinionPoll.getCommissioners().isEmpty() ? "N/A" : String.join(", ", opinionPoll.getCommissioners()));
-        sb.append(" | ");
-        if (opinionPoll.getFieldworkStart() == null) {
-            if (opinionPoll.getFieldworkEnd() == null) {
-                sb.append(opinionPoll.getPublicationDate().toString());
-                sb.append(" | ");
-                sb.append(opinionPoll.getPublicationDate().toString());
-            } else {
-                sb.append(opinionPoll.getFieldworkEnd().toString());
-                sb.append(" | ");
-                sb.append(opinionPoll.getFieldworkEnd().toString());
-            }
-        } else {
-            if (opinionPoll.getFieldworkEnd() == null) {
-                sb.append(opinionPoll.getFieldworkStart().toString());
-                sb.append(" | ");
-                sb.append(opinionPoll.getPublicationDate().toString());
-            } else {
-                sb.append(opinionPoll.getFieldworkStart().toString());
-                sb.append(" | ");
-                sb.append(opinionPoll.getFieldworkEnd().toString());
-            }
-        }
-        sb.append(" | ");
-        sb.append(scope == null ? opinionPoll.getScope() == null ? "N/A" : opinionPoll.getScope() : scope);
-        sb.append(" | ");
-        sb.append(opinionPoll.getSampleSize() == null ? "N/A" : opinionPoll.getSampleSize());
-        sb.append(" | ");
-        sb.append("N/A");
-        sb.append(" | ");
-        sb.append("N/A");
-        sb.append(" | ");
-        for (String electoralListKey : electoralListKeys) {
-            String result = getResult(electoralListKey);
-            sb.append(result == null ? "N/A" : result);
-            sb.append(" | ");
-        }
-        sb.append(other == null ? "N/A" : other);
-        return sb.toString();
     }
 }

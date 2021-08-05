@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.ResponseScenario;
 
 /**
  * Unit tests on the class <code>EopaodPsvExporter</code>.
@@ -36,4 +38,106 @@ public class EopaodPsvExporterTest {
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | N/A | 50 | 40 | 10 | N/A");
         assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, "A", "B", "C"));
     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with only a publication date to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with a fieldwork period to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with a result for other to the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithOtherResultCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "43").setOther("2").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 43 | 2";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with only a publication date to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithPublicationDateOnlyCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
+                                                                          .build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenario for an opinion poll with a fieldwork period to the
+      * EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithFieldworkPeriodCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                                                    .setFieldworkEnd("2021-08-02").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
+                                                                          .build();
+        String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 45 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with a result for other to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithOtherResultCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .setOther("2").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | N/A | 55 | 43 | 2";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setScope("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | N/A | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with a different scope to
+      * the EOPAOD PSV file format.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectlyToEopaodPsvFormat() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setScope("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .setScope("E").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | N/A | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+     }
 }
