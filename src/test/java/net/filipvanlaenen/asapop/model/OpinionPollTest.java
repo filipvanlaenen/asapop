@@ -2,8 +2,11 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -98,6 +101,29 @@ public class OpinionPollTest {
      public void setScopeInBuilderShouldBeWiredCorrectlyToGetScope() {
         OpinionPoll poll = new OpinionPoll.Builder().setScope("N").build();
         assertEquals("N", poll.getScope());
+     }
+
+
+     /**
+      * Verifies that by default, no alternative response scenarios are returned.
+      */
+     @Test
+     public void byDefaultNoAlternativeResponseScenariosShouldBePresent() {
+        OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        assertTrue(poll.getAlternativeResponseScenarios().isEmpty());
+     }
+
+     /**
+      * Verifies that when an alternative response scenario is added, it is also returned by the get method.
+      */
+     @Test
+     public void getAlternativeResponseScenariosShouldBeWiredCorrectlyToAddResponseScenario() {
+        OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").build();
+        poll.addAlternativeResponseScenario(responseScenario);
+        List<ResponseScenario> expected = new ArrayList<ResponseScenario>();
+        expected.add(responseScenario);
+        assertEquals(expected, poll.getAlternativeResponseScenarios());
      }
 
      /**

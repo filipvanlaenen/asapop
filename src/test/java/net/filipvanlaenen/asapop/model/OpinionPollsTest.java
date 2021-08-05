@@ -172,7 +172,7 @@ public class OpinionPollsTest {
         polls.add(poll);
         ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
                                                                   .addResult("C", "10").build();
-        poll.addResponseScenario(scenario);
+        poll.addAlternativeResponseScenario(scenario);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
 
@@ -189,7 +189,7 @@ public class OpinionPollsTest {
         polls.add(poll);
         ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
                                                                   .addResult("C", "8").setOther("2").build();
-        poll.addResponseScenario(scenario);
+        poll.addAlternativeResponseScenario(scenario);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
 
@@ -206,7 +206,7 @@ public class OpinionPollsTest {
         polls.add(poll);
         ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "60").addResult("B", "40")
                                                                   .setScope("E").build();
-        poll.addResponseScenario(scenario);
+        poll.addAlternativeResponseScenario(scenario);
         assertEquals(polls, OpinionPolls.parse(content).getOpinionPollsList());
     }
 }

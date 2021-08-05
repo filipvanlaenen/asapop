@@ -115,7 +115,7 @@ public final class OpinionPolls {
                 lastOpinionPoll = parseOpinionPollLine(line);
                 opinionPolls.addOpinionPoll(lastOpinionPoll);
             } else if (lineMatchesPattern(RESPONSE_SCENARIO_PATTERN, line)) {
-                lastOpinionPoll.addResponseScenario(parseResponseScenarioLine(line));
+                lastOpinionPoll.addAlternativeResponseScenario(parseResponseScenarioLine(line));
             }
         }
         return opinionPolls;
