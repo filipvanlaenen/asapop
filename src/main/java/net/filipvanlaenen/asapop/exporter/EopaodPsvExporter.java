@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.exporter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,7 +72,7 @@ public final class EopaodPsvExporter {
         elements.add(naIfNull(opinionPoll.getScope()));
         elements.add(naIfNull(opinionPoll.getSampleSize()));
         elements.add("N/A");
-        elements.add("N/A");
+        elements.add(calculatePrecision(extractResults(opinionPoll, electoralListKeys)));
         for (String electoralListKey : electoralListKeys) {
             elements.add(naIfNull(opinionPoll.getResult(electoralListKey)));
         }
@@ -106,7 +107,7 @@ public final class EopaodPsvExporter {
         }
         elements.add(naIfNull(opinionPoll.getSampleSize()));
         elements.add("N/A");
-        elements.add("N/A");
+        elements.add(calculatePrecision(extractResults(responseScenario, electoralListKeys)));
         for (String electoralListKey : electoralListKeys) {
             elements.add(naIfNull(responseScenario.getResult(electoralListKey)));
         }
@@ -167,5 +168,45 @@ public final class EopaodPsvExporter {
      */
     private static String naIfNull(final String s) {
         return s == null ? "N/A" : s;
+    }
+
+    private static String calculatePrecision(final Set<String> numbers) {
+        String result = "1";
+        for (String number : numbers) {
+            if (number.contains(".")) {
+                if (number.endsWith(".5")) {
+                    if (result.equals("1")) {
+                        result = "0.5";
+                    }
+                } else if (!number.endsWith(".0")) {
+                    result = "0.1";
+                }
+            }
+        }
+        return result;
+    }
+
+    private static Set<String> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
+        Set<String> result = new HashSet<String>();
+        for (String electoralListKey : electoralListKeys) {
+            addToSetUnlessNull(result, opinionPoll.getResult(electoralListKey));
+        }
+        addToSetUnlessNull(result, opinionPoll.getOther());
+        return result;
+    }
+
+    private static Set<String> extractResults(final ResponseScenario responseScenario, final String... electoralListKeys) {
+        Set<String> result = new HashSet<String>();
+        for (String electoralListKey : electoralListKeys) {
+            addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));
+        }
+        addToSetUnlessNull(result, responseScenario.getOther());
+        return result;
+    }
+
+    private static void addToSetUnlessNull(final Set<String> set, final String s) {
+        if (s != null) {
+            set.add(s);
+        }
     }
 }
