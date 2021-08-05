@@ -285,26 +285,7 @@ public final class OpinionPolls {
      *
      * @return An unmodifiable list with the opinion polls.
      */
-    List<OpinionPoll> getOpinionPollsList() {
+    public List<OpinionPoll> getOpinionPollsList() {
         return Collections.unmodifiableList(opinionPolls);
-    }
-
-    /**
-     * Exports the opinion polls as a string in the PSV file format for EOPAOD.
-     *
-     * @param electoralListKeys An array with the keys for the electoral lists to be exported.
-     * @return A string containing the opinion polls in the PSV file format for EOPAOD.
-     */
-    public String toEopaodPsvString(final String... electoralListKeys) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
-        sb.append(" | Participation | Precision | ");
-        sb.append(String.join(" | ", electoralListKeys));
-        sb.append(" | Other");
-        for (OpinionPoll opinionPoll : opinionPolls) {
-            sb.append("\n");
-            sb.append(opinionPoll.toEopaodPsvString(electoralListKeys));
-        }
-        return sb.toString();
     }
 }

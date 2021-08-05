@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 
 /**
@@ -76,7 +77,7 @@ public final class CommandLineInterface {
                 }
                 String[] ropfContent = readFile(inputFileName);
                 OpinionPolls opinionPolls = OpinionPolls.parse(ropfContent);
-                String psvContent = opinionPolls.toEopaodPsvString(electoralListKeys);
+                String psvContent = EopaodPsvExporter.export(opinionPolls, electoralListKeys);
                 writeFile(outputFileName, psvContent);
             }
         };

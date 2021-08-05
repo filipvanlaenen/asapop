@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Class representing an opinion poll.
  */
-final class OpinionPoll {
+public final class OpinionPoll {
     /**
      * The list with alternative response scenarios.
      */
@@ -361,7 +361,7 @@ final class OpinionPoll {
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
-    String toEopaodPsvString(final String... electoralListKeys) {
+    public String toEopaodPsvString(final String... electoralListKeys) {
         StringBuffer sb = new StringBuffer();
         sb.append(pollingFirm);
         sb.append(" | ");
