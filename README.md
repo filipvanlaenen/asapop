@@ -96,7 +96,8 @@ response scenario if absent.
 
 ## Conversion from ROPF to PSV
 
-An ROPF file can be converted to EOPAOD's PSV file using the following command:
+An ROPF file can be converted to EOPAOD's PSV file format using the following
+command:
 
 ```
 convert <ropf-file-name> <psv-file-name> <electoral-list-key>+
