@@ -21,20 +21,37 @@ public final class EopaodPsvExporter {
     }
 
     /**
-     * Sorts and concatenates with commas and an and a set of strings.
+     * Adds a string to a set, unless the string is null.
      *
-     * @param strings The set of strings to be sorted and concatenated.
-     * @return A string listing the elements of the set in alphabetical order.
+     * @param set The set to add to.
+     * @param s The string to add.
      */
-    private static String sortAndConcatenateWithCommasAndAnd(final Set<String> strings) {
-        List<String> sortedStrings = new ArrayList<String>(strings);
-        sortedStrings.sort(String::compareToIgnoreCase);
-        String lastString = sortedStrings.remove(sortedStrings.size() - 1);
-        if (sortedStrings.isEmpty()) {
-            return lastString;
-        } else {
-            return String.join(", ", sortedStrings) + " and " + lastString;
+    private static void addToSetUnlessNull(final Set<String> set, final String s) {
+        if (s != null) {
+            set.add(s);
         }
+    }
+
+    /**
+     * Calculates the precision of a set of numbers.
+     *
+     * @param numbers A set of numbers.
+     * @return The precision as a string.
+     */
+    private static String calculatePrecision(final Set<String> numbers) {
+        String result = "1";
+        for (String number : numbers) {
+            if (number.contains(".")) {
+                if (number.endsWith(".5")) {
+                    if (result.equals("1")) {
+                        result = "0.5";
+                    }
+                } else if (!number.endsWith(".0")) {
+                    result = "0.1";
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -161,31 +178,12 @@ public final class EopaodPsvExporter {
     }
 
     /**
-     * Returns the string if it isn't null, and the string "N/A" otherwise.
+     * Extracts all the results from an opinion poll.
      *
-     * @param s The string.
-     * @return "N/A" if the string is null, and otherwise the string as provided.
+     * @param opinionPoll The opinion poll to extract the results from.
+     * @param electoralListKeys The keys of the electoral lists for which to extract the results.
+     * @return A set of numbers representing the results.
      */
-    private static String naIfNull(final String s) {
-        return s == null ? "N/A" : s;
-    }
-
-    private static String calculatePrecision(final Set<String> numbers) {
-        String result = "1";
-        for (String number : numbers) {
-            if (number.contains(".")) {
-                if (number.endsWith(".5")) {
-                    if (result.equals("1")) {
-                        result = "0.5";
-                    }
-                } else if (!number.endsWith(".0")) {
-                    result = "0.1";
-                }
-            }
-        }
-        return result;
-    }
-
     private static Set<String> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
         Set<String> result = new HashSet<String>();
         for (String electoralListKey : electoralListKeys) {
@@ -195,7 +193,15 @@ public final class EopaodPsvExporter {
         return result;
     }
 
-    private static Set<String> extractResults(final ResponseScenario responseScenario, final String... electoralListKeys) {
+    /**
+     * Extracts all the results from a response scenario.
+     *
+     * @param responseScenario The response scenario to extract the results from.
+     * @param electoralListKeys The keys of the electoral lists for which to extract the results.
+     * @return A set of numbers representing the results.
+     */
+    private static Set<String> extractResults(final ResponseScenario responseScenario,
+                                              final String... electoralListKeys) {
         Set<String> result = new HashSet<String>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));
@@ -204,9 +210,30 @@ public final class EopaodPsvExporter {
         return result;
     }
 
-    private static void addToSetUnlessNull(final Set<String> set, final String s) {
-        if (s != null) {
-            set.add(s);
+    /**
+     * Returns the string if it isn't null, and the string "N/A" otherwise.
+     *
+     * @param s The string.
+     * @return "N/A" if the string is null, and otherwise the string as provided.
+     */
+    private static String naIfNull(final String s) {
+        return s == null ? "N/A" : s;
+    }
+
+    /**
+     * Sorts and concatenates with commas and an and a set of strings.
+     *
+     * @param strings The set of strings to be sorted and concatenated.
+     * @return A string listing the elements of the set in alphabetical order.
+     */
+    private static String sortAndConcatenateWithCommasAndAnd(final Set<String> strings) {
+        List<String> sortedStrings = new ArrayList<String>(strings);
+        sortedStrings.sort(String::compareToIgnoreCase);
+        String lastString = sortedStrings.remove(sortedStrings.size() - 1);
+        if (sortedStrings.isEmpty()) {
+            return lastString;
+        } else {
+            return String.join(", ", sortedStrings) + " and " + lastString;
         }
     }
 }

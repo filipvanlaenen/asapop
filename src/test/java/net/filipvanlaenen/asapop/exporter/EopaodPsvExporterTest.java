@@ -118,7 +118,8 @@ public class EopaodPsvExporterTest {
      @Test
      public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
-                                                    .addResult("A", "55.0").addResult("B", "43").setOther("0.5").build();
+                                                    .addResult("A", "55.0").addResult("B", "43").setOther("0.5")
+                                                    .build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.5 | 55.0 | 43 | 0.5";
         assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
      }
