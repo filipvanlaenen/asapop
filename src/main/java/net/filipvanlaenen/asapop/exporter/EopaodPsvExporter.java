@@ -11,7 +11,13 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
 /**
  * Exporter to the EOPAOD PSV file format.
  */
-public class EopaodPsvExporter {
+public final class EopaodPsvExporter {
+    /**
+     * Private constructor.
+     */
+    private EopaodPsvExporter() {
+    }
+
     /**
      * Exports the opinion polls.
      *
@@ -42,7 +48,7 @@ public class EopaodPsvExporter {
     static String export(final OpinionPoll opinionPoll, final String... electoralListKeys) {
         List<String> elements = new ArrayList<String>();
         elements.add(opinionPoll.getPollingFirm());
-        elements.add(opinionPoll.getCommissioners().isEmpty() ? "N/A" : String.join(", ", opinionPoll.getCommissioners()));
+        elements.add(exportCommissionners(opinionPoll));
         elements.addAll(exportDates(opinionPoll));
         elements.add(naIfNull(opinionPoll.getScope()));
         elements.add(naIfNull(opinionPoll.getSampleSize()));
@@ -64,16 +70,22 @@ public class EopaodPsvExporter {
     /**
      * Exports the response scenario as a string in the PSV file format for EOPAOD.
      *
+     * @param responseScenario The response scenario to export.
      * @param opinionPoll The opinion poll this response scenario relates to.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
-    static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String... electoralListKeys) {
+    static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll,
+                         final String... electoralListKeys) {
         List<String> elements = new ArrayList<String>();
         elements.add(opinionPoll.getPollingFirm());
-        elements.add(opinionPoll.getCommissioners().isEmpty() ? "N/A" : String.join(", ", opinionPoll.getCommissioners()));
+        elements.add(exportCommissionners(opinionPoll));
         elements.addAll(exportDates(opinionPoll));
-        elements.add(responseScenario.getScope() == null ? naIfNull(opinionPoll.getScope()) : responseScenario.getScope());
+        if (responseScenario.getScope() == null) {
+            elements.add(naIfNull(opinionPoll.getScope()));
+        } else {
+            elements.add(responseScenario.getScope());
+        }
         elements.add(naIfNull(opinionPoll.getSampleSize()));
         elements.add("N/A");
         elements.add("N/A");
@@ -82,6 +94,16 @@ public class EopaodPsvExporter {
         }
         elements.add(naIfNull(responseScenario.getOther()));
         return String.join(" | ", elements);
+    }
+
+    /**
+     * Exports the commissionners.
+     *
+     * @param opinionPoll The opinion poll to export the commissioners from.
+     * @return A string representing the commissioners of the opinion poll.
+     */
+    private static String exportCommissionners(final OpinionPoll opinionPoll) {
+        return opinionPoll.getCommissioners().isEmpty() ? "N/A" : String.join(", ", opinionPoll.getCommissioners());
     }
 
     /**
