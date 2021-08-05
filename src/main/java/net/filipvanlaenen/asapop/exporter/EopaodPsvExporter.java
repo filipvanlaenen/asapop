@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.exporter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -16,6 +17,23 @@ public final class EopaodPsvExporter {
      * Private constructor.
      */
     private EopaodPsvExporter() {
+    }
+
+    /**
+     * Sorts and concatenates with commas and an and a set of strings.
+     *
+     * @param strings The set of strings to be sorted and concatenated.
+     * @return A string listing the elements of the set in alphabetical order.
+     */
+    private static String sortAndConcatenateWithCommasAndAnd(final Set<String> strings) {
+        List<String> sortedStrings = new ArrayList<String>(strings);
+        sortedStrings.sort(String::compareToIgnoreCase);
+        String lastString = sortedStrings.remove(sortedStrings.size() - 1);
+        if (sortedStrings.isEmpty()) {
+            return lastString;
+        } else {
+            return String.join(", ", sortedStrings) + " and " + lastString;
+        }
     }
 
     /**
@@ -103,7 +121,11 @@ public final class EopaodPsvExporter {
      * @return A string representing the commissioners of the opinion poll.
      */
     private static String exportCommissionners(final OpinionPoll opinionPoll) {
-        return opinionPoll.getCommissioners().isEmpty() ? "N/A" : String.join(", ", opinionPoll.getCommissioners());
+        if (opinionPoll.getCommissioners().isEmpty()) {
+            return "N/A";
+        } else {
+            return sortAndConcatenateWithCommasAndAnd(opinionPoll.getCommissioners());
+        }
     }
 
     /**
