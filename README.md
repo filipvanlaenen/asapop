@@ -1,5 +1,9 @@
 # Aggregation and Statistical Analysis of Political Opinion Polls
 
+- [Getting Started](#getting-started)
+- [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
+- [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
+
 ## Getting Started
 
 First of all, you need to obtain a copy of the source code and compile it into
