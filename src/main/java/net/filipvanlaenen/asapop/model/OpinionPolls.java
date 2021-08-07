@@ -14,7 +14,7 @@ public final class OpinionPolls {
     private final List<OpinionPoll> opinionPolls;
 
     public OpinionPolls(final List<OpinionPoll> opinionPolls) {
-        this.opinionPolls = opinionPolls;
+        this.opinionPolls = Collections.unmodifiableList(opinionPolls);
     }
 
     /**
@@ -23,6 +23,6 @@ public final class OpinionPolls {
      * @return An unmodifiable list with the opinion polls.
      */
     public List<OpinionPoll> getOpinionPollsList() {
-        return Collections.unmodifiableList(opinionPolls);
+        return opinionPolls;
     }
 }
