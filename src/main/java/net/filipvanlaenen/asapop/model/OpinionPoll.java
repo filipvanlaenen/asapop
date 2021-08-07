@@ -233,7 +233,7 @@ public final class OpinionPoll {
      *
      * @param responseScenario The response scenario to add.
      */
-    void addAlternativeResponseScenario(final ResponseScenario responseScenario) {
+    public void addAlternativeResponseScenario(final ResponseScenario responseScenario) {
         alternativeResponseScenarios.add(responseScenario);
     }
 

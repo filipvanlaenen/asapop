@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
 /**
  * Class implementing a command line interface.
@@ -76,7 +77,7 @@ public final class CommandLineInterface {
                     electoralListKeys[i] = args[i + THREE];
                 }
                 String[] ropfContent = readFile(inputFileName);
-                OpinionPolls opinionPolls = OpinionPolls.parse(ropfContent);
+                OpinionPolls opinionPolls = RichOpinionPollsFile.parse(ropfContent).getOpinionPolls();
                 String psvContent = EopaodPsvExporter.export(opinionPolls, electoralListKeys);
                 writeFile(outputFileName, psvContent);
             }
