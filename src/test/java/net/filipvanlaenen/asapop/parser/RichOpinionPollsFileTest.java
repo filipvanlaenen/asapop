@@ -1,19 +1,18 @@
 package net.filipvanlaenen.asapop.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
+/**
+ * Unit tests on the <code>RichOpinionPollsFile</code> class.
+ */
 public final class RichOpinionPollsFileTest {
     /**
      * Verifies that String with a single line containing a simple opinion poll can be parsed.

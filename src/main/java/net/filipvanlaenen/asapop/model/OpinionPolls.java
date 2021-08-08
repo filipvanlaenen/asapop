@@ -1,9 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,6 +12,11 @@ public final class OpinionPolls {
      */
     private final Set<OpinionPoll> opinionPolls;
 
+    /**
+     * Constructor taking a set of opinion polls as its parameter.
+     *
+     * @param opinionPolls A set of opinion polls.
+     */
     public OpinionPolls(final Set<OpinionPoll> opinionPolls) {
         this.opinionPolls = Collections.unmodifiableSet(opinionPolls);
     }

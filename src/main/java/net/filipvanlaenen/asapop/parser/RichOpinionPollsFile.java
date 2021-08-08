@@ -1,24 +1,15 @@
 package net.filipvanlaenen.asapop.parser;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
-import net.filipvanlaenen.asapop.model.ResponseScenario;
 
 /**
  * Class implementing an ROPF file.
  */
 public final class RichOpinionPollsFile {
-    /**
-     * The integer number three.
-     */
-    private static final int THREE = 3;
     /**
      * The opinion polls extracted from the file.
      */
