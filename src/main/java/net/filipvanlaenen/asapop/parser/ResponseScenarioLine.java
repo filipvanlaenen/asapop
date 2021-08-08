@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
+/**
+ * Class implementing a line representing a response alternative.
+ */
 final class ResponseScenarioLine extends Line {
     /**
      * The integer number three.
@@ -24,16 +27,35 @@ final class ResponseScenarioLine extends Line {
                                                                                      + KEY_VALUE_PATTERN
                                                                                      + ")*)$");
 
+    /**
+     * The response scenario represented by the line.
+     */
     private final ResponseScenario responseScenario;
 
+    /**
+     * Private constructor taking the response scenario as its parameter.
+     *
+     * @param responseScenario The response scenario represented by the line.
+     */
     private ResponseScenarioLine(final ResponseScenario responseScenario) {
         this.responseScenario = responseScenario;
     }
 
+    /**
+     * Returns the response scenario represented by this line.
+     *
+     * @return The response scenario represented by this line.
+     */
     ResponseScenario getResponseScenario() {
         return responseScenario;
     }
 
+    /**
+     * Verifies whether a line is a response scenario line.
+     *
+     * @param line The line to check against the pattern of a response scenario line.
+     * @return True if the line matches the pattern of a response scenario line, false otherwise.
+     */
     static boolean isResponseScenarioLine(final String line) {
         return lineMatchesPattern(RESPONSE_SCENARIO_PATTERN, line);
     }
@@ -42,7 +64,7 @@ final class ResponseScenarioLine extends Line {
      * Parses a response scenario line.
      *
      * @param line The line to parse a response scenario from.
-     * @return The response scenario parsed from the line.
+     * @return A ResponseScenarioLine instance representing the line.
      */
     static ResponseScenarioLine parse(final String line) {
         ResponseScenario.Builder builder = new ResponseScenario.Builder();

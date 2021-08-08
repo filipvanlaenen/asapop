@@ -2,6 +2,9 @@ package net.filipvanlaenen.asapop.parser;
 
 import java.util.regex.Pattern;
 
+/**
+ * Abstract class providing common functionality for all types of lines.
+ */
 abstract class Line {
     /**
      * The string for the pattern to match a metadata marker.

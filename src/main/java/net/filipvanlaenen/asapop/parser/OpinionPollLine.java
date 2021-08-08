@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 
+/**
+ * Class implementing a line representing an opinion poll.
+ */
 final class OpinionPollLine extends Line {
     /**
      * The integer number three.
@@ -20,16 +23,35 @@ final class OpinionPollLine extends Line {
                                                                                 + KEY_VALUE_PATTERN
                                                                                 + ")+$");
 
+    /**
+     * The opinion poll represented by the line.
+     */
     private final OpinionPoll opinionPoll;
 
+    /**
+     * Private constructor taking the opinion poll as its parameter.
+     *
+     * @param opinionPoll The opinion poll represented by the line.
+     */
     private OpinionPollLine(final OpinionPoll opinionPoll) {
         this.opinionPoll = opinionPoll;
     }
 
+    /**
+     * Returns the opinion poll represented by this line.
+     *
+     * @return The opinion poll represented by this line.
+     */
     OpinionPoll getOpinionPoll() {
         return opinionPoll;
     }
 
+    /**
+     * Verifies whether a line is an opinion poll line.
+     *
+     * @param line The line to check against the pattern of an opinion poll line.
+     * @return True if the line matches the pattern of an opinion poll line, false otherwise.
+     */
     static boolean isOpinionPollLine(final String line) {
         return lineMatchesPattern(OPINION_POLL_PATTERN, line);
     }
@@ -38,7 +60,7 @@ final class OpinionPollLine extends Line {
      * Parses an opinion poll line.
      *
      * @param line The line to parse an opinion poll from.
-     * @return The opinion poll parsed from the line.
+     * @return An OpinionPollLine representing the line.
      */
     static OpinionPollLine parse(final String line) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
