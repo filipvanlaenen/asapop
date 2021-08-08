@@ -45,60 +45,6 @@ public final class RichOpinionPollsFileTest {
     }
 
     /**
-     * Verifies that upper case letters with diacritics and similar can be used as keys for the electoral lists.
-     */
-    @Test
-    public void shouldHandleElectoralListKeysWithDiacritics() {
-        String content = "•PF: ACME •PD: 2021-07-27 Ä:55 Æ:45";
-        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addResult("Ä", "55").addResult("Æ", "45").build();
-        polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
-    }
-
-    /**
-     * Verifies that upper case Greek and Cyrillic letters can be used as keys for the electoral lists.
-     */
-    @Test
-    public void shouldHandleElectoralListKeysWithGreekAndCyrillicLetters() {
-        String content = "•PF: ACME •PD: 2021-07-27 Б:55 Ω:45";
-        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addResult("Б", "55").addResult("Ω", "45").build();
-        polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
-    }
-
-    /**
-     * Verifies that an opinion poll with a commissioner can be parsed.
-     */
-    @Test
-    public void shouldParseAnOpinionPollWithACommissioner() {
-        String content = "•PF: ACME •C: The Times •PD: 2021-07-27 A:55 B:45";
-        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addCommissioner("The Times").addResult("A", "55")
-                                                    .addResult("B", "45").build();
-        polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
-    }
-
-    /**
-     * Verifies that an opinion poll with two commissioners can be parsed.
-     */
-    @Test
-    public void shouldParseAnOpinionPollWithTwoCommissioners() {
-        String content = "•PF: ACME •C: The Times •C: The Post •PD: 2021-07-27 A:55 B:45";
-        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addCommissioner("The Times").addCommissioner("The Post")
-                                                    .addResult("A", "55").addResult("B", "45").build();
-        polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
-    }
-
-    /**
      * Verifies that an opinion poll with a sample size can be parsed.
      */
     @Test
