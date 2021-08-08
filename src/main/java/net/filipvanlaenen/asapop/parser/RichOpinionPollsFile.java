@@ -43,7 +43,8 @@ public final class RichOpinionPollsFile {
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
-                lastOpinionPoll.addAlternativeResponseScenario(ResponseScenarioLine.parse(line));
+                ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(line);
+                lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
             }
         }
         return new RichOpinionPollsFile(opinionPolls);

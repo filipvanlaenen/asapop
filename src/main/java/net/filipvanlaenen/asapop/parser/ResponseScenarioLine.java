@@ -24,6 +24,16 @@ final class ResponseScenarioLine extends Line {
                                                                                      + KEY_VALUE_PATTERN
                                                                                      + ")*)$");
 
+    private final ResponseScenario responseScenario;
+
+    private ResponseScenarioLine(final ResponseScenario responseScenario) {
+        this.responseScenario = responseScenario;
+    }
+
+    ResponseScenario getResponseScenario() {
+        return responseScenario;
+    }
+
     static boolean isResponseScenarioLine(final String line) {
         return lineMatchesPattern(RESPONSE_SCENARIO_PATTERN, line);
     }
@@ -34,7 +44,7 @@ final class ResponseScenarioLine extends Line {
      * @param line The line to parse a response scenario from.
      * @return The response scenario parsed from the line.
      */
-    static ResponseScenario parse(final String line) {
+    static ResponseScenarioLine parse(final String line) {
         ResponseScenario.Builder builder = new ResponseScenario.Builder();
         Matcher responseScenarioMatcher = RESPONSE_SCENARIO_PATTERN.matcher(line);
         responseScenarioMatcher.find();
@@ -42,7 +52,7 @@ final class ResponseScenarioLine extends Line {
         while (!remainder.isEmpty()) {
             remainder = parseKeyValue(builder, remainder);
         }
-        return builder.build();
+        return new ResponseScenarioLine(builder.build());
     }
 
     /**
