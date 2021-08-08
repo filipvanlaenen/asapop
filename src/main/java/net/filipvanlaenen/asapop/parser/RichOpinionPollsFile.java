@@ -1,7 +1,9 @@
 package net.filipvanlaenen.asapop.parser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,10 +19,15 @@ public final class RichOpinionPollsFile {
      * The integer number three.
      */
     private static final int THREE = 3;
-
+    /**
+     * The opinion polls extracted from the file.
+     */
     private final OpinionPolls opinionPolls;
 
-    private RichOpinionPollsFile(final List<OpinionPoll> opinionPolls) {
+    /**
+     * Private constructor creating a new instance from a list of opinion polls.
+     */
+    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPolls) {
         this.opinionPolls = new OpinionPolls(opinionPolls);
     }
 
@@ -35,7 +42,7 @@ public final class RichOpinionPollsFile {
      * @return The OpinionPolls instance.
      */
     public static RichOpinionPollsFile parse(final String... lines) {
-        List<OpinionPoll> opinionPolls = new ArrayList<OpinionPoll>();
+        Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
         OpinionPoll lastOpinionPoll = null;
         for (String line : lines) {
             if (OpinionPollLine.isOpinionPollLine(line)) {
@@ -44,7 +51,9 @@ public final class RichOpinionPollsFile {
                 opinionPolls.add(lastOpinionPoll);
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
                 ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(line);
+                opinionPolls.remove(lastOpinionPoll);
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
+                opinionPolls.add(lastOpinionPoll);
             }
         }
         return new RichOpinionPollsFile(opinionPolls);
