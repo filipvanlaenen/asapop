@@ -20,6 +20,16 @@ final class OpinionPollLine extends Line {
                                                                                 + KEY_VALUE_PATTERN
                                                                                 + ")+$");
 
+    private final OpinionPoll opinionPoll;
+
+    private OpinionPollLine(final OpinionPoll opinionPoll) {
+        this.opinionPoll = opinionPoll;
+    }
+
+    OpinionPoll getOpinionPoll() {
+        return opinionPoll;
+    }
+
     static boolean isOpinionPollLine(final String line) {
         return lineMatchesPattern(OPINION_POLL_PATTERN, line);
     }
@@ -30,13 +40,13 @@ final class OpinionPollLine extends Line {
      * @param line The line to parse an opinion poll from.
      * @return The opinion poll parsed from the line.
      */
-    static OpinionPoll parse(final String line) {
+    static OpinionPollLine parse(final String line) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         String remainder = line;
         while (!remainder.isEmpty()) {
             remainder = parseKeyValue(builder, remainder);
         }
-        return builder.build();
+        return new OpinionPollLine(builder.build());
     }
 
     /**

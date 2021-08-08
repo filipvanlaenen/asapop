@@ -39,7 +39,8 @@ public final class RichOpinionPollsFile {
         OpinionPoll lastOpinionPoll = null;
         for (String line : lines) {
             if (OpinionPollLine.isOpinionPollLine(line)) {
-                lastOpinionPoll = OpinionPollLine.parse(line);
+                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line);
+                lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
                 lastOpinionPoll.addAlternativeResponseScenario(ResponseScenarioLine.parse(line));
