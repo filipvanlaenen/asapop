@@ -17,7 +17,7 @@ public class EopaodPsvExporterTest {
      * Verifies the correct export of a minimal opinion poll.
      */
     @Test
-    public void shouldExportMinimalOpinionPollToEopaodPsvFormat() {
+    public void shouldExportMinimalOpinionPoll() {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45").getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
@@ -40,6 +40,29 @@ public class EopaodPsvExporterTest {
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | 1 | 50 | 40 | 10 | N/A");
         assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, "A", "B", "C"));
     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with only a publication date.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with a fieldwork period.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+     }
 
      /**
       * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope.

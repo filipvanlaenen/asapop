@@ -47,6 +47,31 @@ public class EopaodCsvExporterTest {
     }
 
      /**
+      * Verifies the correct export of a simple opinion poll with only a publication date.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "45").build();
+        String expected = "ACME,Not Available,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1,55,45,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple opinion poll with a fieldwork period.
+      */
+     @Test
+     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        String expected = "ACME,Not Available,2021-08-01,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1,55,45,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
+     }
+
+     /**
       * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope.
       */
      @Test
