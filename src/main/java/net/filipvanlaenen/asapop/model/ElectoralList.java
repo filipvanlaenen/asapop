@@ -92,6 +92,6 @@ public final class ElectoralList {
      * @param names The names for the electoral list.
      */
     public void setNames(final Map<String, String> names) {
-        this.names = Collections.unmodifiableMap(names);
+        this.names = new HashMap<String, String>(names);
     }
 }
