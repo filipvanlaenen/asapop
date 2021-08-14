@@ -1,9 +1,12 @@
 package net.filipvanlaenen.asapop.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.asapop.model.ElectoralList;
 
 /**
  * Unit tests on the <code>ElectoralListLine</code> class.
@@ -33,5 +36,25 @@ public final class ElectoralListLineTest {
     @Test
     public void isElectoralListLineShouldDetectNonElectoralListLine() {
         assertFalse(ElectoralListLine.isElectoralListLine("Foo"));
+    }
+
+    /**
+     * Verifies that the abbreviation of an electoral list is updated.
+     */
+    @Test
+    public void shouldUpdateTheAbbreviationOfAnElectoralList() {
+        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: •A: AP •EN: Apple Party");
+        electoralListLine.updateElectoralList();
+        assertEquals("AP", ElectoralList.get("A").getAbbreviation());
+    }
+
+    /**
+     * Verifies that the names of an electoral list are updated.
+     */
+    @Test
+    public void shouldUpdateTheNamesOfAnElectoralList() {
+        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: •A: AP •EN: Apple Party");
+        electoralListLine.updateElectoralList();
+        assertEquals("Apple Party", ElectoralList.get("A").getName("EN"));
     }
 }

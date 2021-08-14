@@ -3,6 +3,9 @@ package net.filipvanlaenen.asapop.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.filipvanlaenen.asapop.model.ElectoralList;
 
 /**
@@ -43,6 +46,10 @@ final class ElectoralListLine extends Line {
      * The key for the electoral list.
      */
     private final String key;
+    /**
+     * The map with the names for the electoral list.
+     */
+    private Map<String, String> names = new HashMap<String, String>();
 
     /**
      * Private constructor taking the key for the electoral list as the parameter.
@@ -75,7 +82,9 @@ final class ElectoralListLine extends Line {
         String key = electoralListKeyMatcher.group(1);
         String remainder = electoralListKeyMatcher.group(2);
         ElectoralListLine electoralListLine = new ElectoralListLine(key);
-        electoralListLine.parseKeyValue(remainder);
+        while (!remainder.isEmpty()) {
+            remainder = electoralListLine.parseKeyValue(remainder);
+        }
         return electoralListLine;
     }
 
@@ -106,7 +115,7 @@ final class ElectoralListLine extends Line {
         switch (key) {
             case "A": abbreviation = value;
                 break;
-            default:
+            default: names.put(key, value);
                 break;
         }
     }
@@ -117,5 +126,6 @@ final class ElectoralListLine extends Line {
     void updateElectoralList() {
         ElectoralList electoralList = ElectoralList.get(key);
         electoralList.setAbbreviation(abbreviation);
+        electoralList.setNames(names);
     }
 }

@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,10 @@ public final class ElectoralList {
      * The key of the electoral list.
      */
     private final String key;
+    /**
+     * The map with the names for the electoral list.
+     */
+    private Map<String, String> names = new HashMap<String, String>();
 
     /**
      * Returns the electoral list with the given key if it already exists, or
@@ -62,8 +67,14 @@ public final class ElectoralList {
         return key;
     }
 
+    /**
+     * Returns the name for electoral list for the given language code.
+     *
+     * @param languageCode The language code.
+     * @return The name for the electoral list for the given language code.
+     */
     public String getName(final String languageCode) {
-        return null;
+        return names.get(languageCode);
     }
 
     /**
@@ -73,5 +84,14 @@ public final class ElectoralList {
      */
     public void setAbbreviation(final String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    /**
+     * Sets the names for the electoral list.
+     *
+     * @param names The names for the electoral list.
+     */
+    public void setNames(final Map<String, String> names) {
+        this.names = Collections.unmodifiableMap(names);
     }
 }

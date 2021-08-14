@@ -97,13 +97,4 @@ public final class RichOpinionPollsFileTest {
         RichOpinionPollsFile.parse("A: •A: AP •EN: Apple Party");
         assertEquals("AP", ElectoralList.get("A").getAbbreviation());
     }
-
-    /**
-     * Verifies that the name of an electoral list is updated.
-     */
-    @Test
-    public void shouldParseALineWithAnElectoralListDefinitionAndAddName() {
-        RichOpinionPollsFile.parse("A: •A: AP •EN: Apple Party");
-        assertEquals("Apple Party", ElectoralList.get("A").getName("EN"));
-    }
 }
