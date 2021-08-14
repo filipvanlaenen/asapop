@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Class representing an electoral list.
  */
-final class ElectoralList {
+public final class ElectoralList {
     /**
      * A map with all the instances.
      */
@@ -24,7 +24,7 @@ final class ElectoralList {
      * @param key Key of the electoral list.
      * @return The electoral list with that key, or a new instance.
      */
-    static ElectoralList get(final String key) {
+    public static ElectoralList get(final String key) {
         if (instances.containsKey(key)) {
             return instances.get(key);
         }
@@ -42,6 +42,10 @@ final class ElectoralList {
         this.key = key;
     }
 
+    public String getAbbreviation() {
+        return null;
+    }
+
     /**
      * Returns the key of the electoral list.
      *
@@ -49,5 +53,9 @@ final class ElectoralList {
      */
     String getKey() {
         return key;
+    }
+
+    public String getName(final String languageCode) {
+        return null;
     }
 }

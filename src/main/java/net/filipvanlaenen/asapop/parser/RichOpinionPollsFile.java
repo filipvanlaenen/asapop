@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.parser;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 
@@ -54,6 +55,9 @@ public final class RichOpinionPollsFile {
                 opinionPolls.remove(lastOpinionPoll);
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
                 opinionPolls.add(lastOpinionPoll);
+            } else if (ElectoralListLine.isElectoralListLine(line)) {
+                ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
+                electoralListLine.updateElectoralList();
             } else if (EmptyLine.isEmptyLine(line)) {
                 // Negating the conditional above produces an equivalent mutant.
                 // Ignore empty lines.

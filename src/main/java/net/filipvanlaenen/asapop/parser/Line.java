@@ -17,7 +17,7 @@ abstract class Line {
     /**
      * The string for the pattern to match the key of an electoral list.
      */
-    private static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
+    static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
     /**
      * The string for the pattern to match either a metadata key or a key of an electoral list.
      */

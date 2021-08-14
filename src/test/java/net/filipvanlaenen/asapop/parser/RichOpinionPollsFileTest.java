@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
@@ -86,5 +87,23 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);
         assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
+    }
+
+    /**
+     * Verifies that a line containing a definition of an electoral list can be parsed and the abbreviation is updated.
+     */
+    @Test
+    public void shouldParseALineWithAnElectoralListDefinitionAndAddAbbreviation() {
+        RichOpinionPollsFile.parse("A: •A: AP •EN: Apple Party");
+        assertEquals("AP", ElectoralList.get("A").getAbbreviation());
+    }
+
+    /**
+     * Verifies that the name of an electoral list is updated.
+     */
+    @Test
+    public void shouldParseALineWithAnElectoralListDefinitionAndAddName() {
+        RichOpinionPollsFile.parse("A: •A: AP •EN: Apple Party");
+        assertEquals("Apple Party", ElectoralList.get("A").getName("EN"));
     }
 }
