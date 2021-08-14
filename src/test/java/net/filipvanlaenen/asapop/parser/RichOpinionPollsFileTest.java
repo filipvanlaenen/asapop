@@ -58,38 +58,4 @@ public final class RichOpinionPollsFileTest {
         polls.add(poll);
         assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
     }
-
-    /**
-     * Verifies that two lines containing a simple opinion with an alternative response scenario with a result for other
-     * can be parsed.
-     */
-    @Test
-    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenarioWithResultForOther() {
-        String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 A:55 B:45", "& A:50 B:40 C:8 •O: 2"};
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addResult("A", "55").addResult("B", "45").build();
-        ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
-                                                                  .addResult("C", "8").setOther("2").build();
-        poll.addAlternativeResponseScenario(scenario);
-        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
-        polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
-    }
-
-    /**
-     * Verifies that two lines containing a simple opinion with an alternative response scenario with a different scope
-     * can be parsed.
-     */
-    @Test
-    public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenarioWithDifferentScope() {
-        String[] content = new String[]{"•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:45", "& •SC: E A:60 B:40"};
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .setScope("N").addResult("A", "55").addResult("B", "45").build();
-        ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "60").addResult("B", "40")
-                                                                  .setScope("E").build();
-        poll.addAlternativeResponseScenario(scenario);
-        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
-        polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
-    }
 }
