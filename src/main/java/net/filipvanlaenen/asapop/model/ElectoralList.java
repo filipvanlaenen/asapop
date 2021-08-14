@@ -11,7 +11,10 @@ public final class ElectoralList {
      * A map with all the instances.
      */
     private static Map<String, ElectoralList> instances = new HashMap<String, ElectoralList>();
-
+    /**
+     * The abbreviation for the electoral list.
+     */
+    private String abbreviation;
     /**
      * The key of the electoral list.
      */
@@ -42,8 +45,12 @@ public final class ElectoralList {
         this.key = key;
     }
 
+    /**
+     * Returns the abbreviation for the electoral list.
+     * @return The abbreviation for the electoral list.
+     */
     public String getAbbreviation() {
-        return null;
+        return abbreviation;
     }
 
     /**
@@ -57,5 +64,14 @@ public final class ElectoralList {
 
     public String getName(final String languageCode) {
         return null;
+    }
+
+    /**
+     * Sets the abbreviation for the electoral list.
+     *
+     * @param abbreviation The abbreviation for the electoral list.
+     */
+    public void setAbbreviation(final String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }
