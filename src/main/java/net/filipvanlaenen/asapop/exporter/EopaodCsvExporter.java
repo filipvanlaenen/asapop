@@ -56,7 +56,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(opinionPoll.getPollingFirm());
         elements.add(notAvailableIfNull(exportCommissionners(opinionPoll)));
         elements.addAll(exportDates(opinionPoll));
-        elements.add(notAvailableIfNull(opinionPoll.getScope()));
+        elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
         elements.add("Not Available");
         elements.add("Not Available");
@@ -89,9 +89,9 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(notAvailableIfNull(exportCommissionners(opinionPoll)));
         elements.addAll(exportDates(opinionPoll));
         if (responseScenario.getScope() == null) {
-            elements.add(notAvailableIfNull(opinionPoll.getScope()));
+            elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
         } else {
-            elements.add(responseScenario.getScope());
+            elements.add(exportScope(responseScenario.getScope()));
         }
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
         elements.add("Not Available");
@@ -105,12 +105,28 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
+     * Exports the scope to the terms used by the EOPAOD CSV format.
+     *
+     * @param scope The scope to convert.
+     * @return A term used by EOPAOD CSV format for the scope.
+     */
+    private static String exportScope(final String scope) {
+        if ("N".equals(scope)) {
+            return "National";
+        } else if ("E".equals(scope)) {
+            return "European";
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns the string if it isn't null, and the string "Not Available" otherwise.
      *
      * @param s The string.
      * @return "Not Available" if the string is null, and otherwise the string as provided.
      */
-    static String notAvailableIfNull(final String s) {
+    private static String notAvailableIfNull(final String s) {
         return s == null ? "Not Available" : s;
     }
 }

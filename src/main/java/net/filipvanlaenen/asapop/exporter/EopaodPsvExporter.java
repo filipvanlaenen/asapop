@@ -104,7 +104,7 @@ public final class EopaodPsvExporter extends Exporter {
      * @param s The string.
      * @return "N/A" if the string is null, and otherwise the string as provided.
      */
-    static String naIfNull(final String s) {
+    private static String naIfNull(final String s) {
         return s == null ? "N/A" : s;
     }
 }

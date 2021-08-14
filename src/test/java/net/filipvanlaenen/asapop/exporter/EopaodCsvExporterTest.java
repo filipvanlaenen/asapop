@@ -45,4 +45,32 @@ public class EopaodCsvExporterTest {
         expected.append(",Not Available,1,50,40,10,Not Available");
         assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, "A", "B", "C"));
     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setScope("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .build();
+        String expected = "ACME,Not Available,2021-08-02,2021-08-02,National,Not Available,Not Available"
+                          + ",Not Available,1,55,43,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
+     }
+
+     /**
+      * Verifies the correct export of a simple response scenatio for an opinion poll with a different scope.
+      */
+     @Test
+     public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setScope("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .setScope("E").build();
+        String expected = "ACME,Not Available,2021-08-02,2021-08-02,European,Not Available,Not Available"
+                          + ",Not Available,1,55,43,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
+     }
 }
