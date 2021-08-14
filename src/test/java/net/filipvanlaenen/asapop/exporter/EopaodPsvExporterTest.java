@@ -31,7 +31,8 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportOpinionPollWithAlternativeResponseScenarioToEopaodPsvFormat() {
-        OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45", "& A:50 B:40 C:10").getOpinionPolls();
+        OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45",
+                                                               "& A:50 B:40 C:10").getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
         expected.append(" | Participation | Precision | A | B | C | Other\n");
