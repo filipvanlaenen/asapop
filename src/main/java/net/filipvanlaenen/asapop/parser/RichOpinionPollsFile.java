@@ -54,6 +54,9 @@ public final class RichOpinionPollsFile {
                 opinionPolls.remove(lastOpinionPoll);
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
                 opinionPolls.add(lastOpinionPoll);
+            } else if (EmptyLine.isEmptyLine(line)) {
+                // Negating the conditional above produces an equivalent mutant.
+                // Ignore empty lines.
             }
         }
         return new RichOpinionPollsFile(opinionPolls);
