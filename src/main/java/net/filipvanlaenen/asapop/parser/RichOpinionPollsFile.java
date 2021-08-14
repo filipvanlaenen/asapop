@@ -3,7 +3,6 @@ package net.filipvanlaenen.asapop.parser;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 
