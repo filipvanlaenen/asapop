@@ -110,12 +110,12 @@ final class ElectoralListLine extends Line {
     private void processKeyValue(final String keyValueString) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
-        String key = keyValueMatcher.group(1);
+        String blockKey = keyValueMatcher.group(1);
         String value = keyValueMatcher.group(2);
-        switch (key) {
+        switch (blockKey) {
             case "A": abbreviation = value;
                 break;
-            default: names.put(key, value);
+            default: names.put(blockKey, value);
                 break;
         }
     }
