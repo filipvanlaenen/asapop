@@ -13,9 +13,10 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
  */
 public final class OpinionPollLineTest {
     /**
-     * Simple opinion poll.
+     * Simple opinion poll line.
      */
     private static final String SIMPLE_OPINION_POLL_LINE = "•PF: ACME •PD: 2021-07-27 A:55 B:45";
+
     /**
      * Verifies that the <code>isOpinionPollLine</code> method can detect an opinion poll line.
      */
