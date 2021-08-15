@@ -22,6 +22,16 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
+     * Returns the string if it isn't null, and the empty string otherwise.
+     *
+     * @param s The string.
+     * @return The empty string if the string is null, and otherwise the string as provided.
+     */
+    private static String emptyIfNull(final String s) {
+        return s == null ? "" : s;
+    }
+
+    /**
      * Escapes commas and quotes in a text block.
      *
      * @param text The text to process.
@@ -68,7 +78,7 @@ public final class EopaodCsvExporter extends Exporter {
     static String export(final OpinionPoll opinionPoll, final String... electoralListKeys) {
         List<String> elements = new ArrayList<String>();
         elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
-        elements.add(escapeCommasAndQuotes(notAvailableIfNull(exportCommissionners(opinionPoll))));
+        elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
@@ -100,7 +110,7 @@ public final class EopaodCsvExporter extends Exporter {
                          final String... electoralListKeys) {
         List<String> elements = new ArrayList<String>();
         elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
-        elements.add(escapeCommasAndQuotes(notAvailableIfNull(exportCommissionners(opinionPoll))));
+        elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         if (responseScenario.getScope() == null) {
             elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
