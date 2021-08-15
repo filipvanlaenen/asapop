@@ -103,8 +103,7 @@ public class ExporterTest {
        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                    .addResult("A", "55.0").addResult("B", "43").setOther("0.5")
                                                    .build();
-       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.5 | 55.0 | 43 | 0.5";
-       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+       assertEquals("0.5", Exporter.calculatePrecision(poll, "A", "B"));
     }
 
     /**
@@ -114,8 +113,7 @@ public class ExporterTest {
     public void shouldExportSimpleOpinionPollWithAResultWithTenthOfAPercent() {
        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                    .addResult("A", "55.4").addResult("B", "43").build();
-       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.1 | 55.4 | 43 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+       assertEquals("0.1", Exporter.calculatePrecision(poll, "A", "B"));
     }
 
     /**
@@ -123,11 +121,9 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithAResultWithHalfAPercentOther() {
-       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55.0").addResult("B", "45")
                                                                          .setOther("0.5").build();
-       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.5 | 55.0 | 45 | 0.5";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+       assertEquals("0.5", Exporter.calculatePrecision(responseScenario, "A", "B"));
     }
 
     /**
@@ -135,15 +131,13 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithAResultWithTenthOfAPercent() {
-       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55.4").addResult("B", "43")
                                                                          .build();
-       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.1 | 55.4 | 43 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+       assertEquals("0.1", Exporter.calculatePrecision(responseScenario, "A", "B"));
     }
 
     /**
-     * Verifies the correct export of a simple response scenatio for an opinion poll with only a publication date.
+     * Verifies the correct export of a simple response scenario for an opinion poll with only a publication date.
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithPublicationDateOnlyCorrectly() {
