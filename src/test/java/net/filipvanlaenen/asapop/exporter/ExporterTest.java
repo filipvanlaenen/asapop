@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
-import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
-import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
 /**
  * Unit tests on the class <code>Exporter</code>.

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
-import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
 /**
@@ -138,7 +137,8 @@ public abstract class Exporter {
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
-    private static Set<String> extractResults(final ResponseScenario responseScenario, final String... electoralListKeys) {
+    private static Set<String> extractResults(final ResponseScenario responseScenario,
+                                              final String... electoralListKeys) {
         Set<String> result = new HashSet<String>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));
