@@ -118,11 +118,22 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithTwoCommissioners() {
-       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                                                   .addCommissioner("The Post").setPublicationDate("2021-08-02")
-                                                   .addResult("A", "55").addResult("B", "43").build();
-       String expected = "ACME | The Post and The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43"
-                         + " | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
+                                                    .addCommissioner("The Post").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "43").build();
+        String expected = "ACME | The Post and The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43"
+                          + " | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with results having half of a percent for other.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55.5").addResult("B", "43").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.5 | 55.5 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
     }
 }
