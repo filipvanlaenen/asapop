@@ -89,4 +89,15 @@ public class EopaodPsvExporterTest {
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
      }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with a result for other.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithOtherResultCorrectly() {
+       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                   .addResult("A", "55").addResult("B", "43").setOther("2").build();
+       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
+       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+    }
 }

@@ -46,36 +46,36 @@ public class EopaodCsvExporterTest {
         assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, "A", "B", "C"));
     }
 
-     /**
-      * Verifies the correct export of a simple opinion poll with only a publication date.
-      */
-     @Test
-     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectly() {
+    /**
+     * Verifies the correct export of a simple opinion poll with only a publication date.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .addResult("A", "55").addResult("B", "45").build();
         String expected = "ACME,Not Available,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                           + ",Not Available,1,55,45,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
-     }
+    }
 
-     /**
-      * Verifies the correct export of a simple opinion poll with a fieldwork period.
-      */
-     @Test
-     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectly() {
+    /**
+     * Verifies the correct export of a simple opinion poll with a fieldwork period.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
                                                     .setFieldworkEnd("2021-08-02").addResult("A", "55")
                                                     .addResult("B", "45").build();
         String expected = "ACME,Not Available,2021-08-01,2021-08-02,Not Available,Not Available,Not Available"
                           + ",Not Available,1,55,45,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
-     }
+    }
 
-     /**
-      * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope.
-      */
-     @Test
-     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectly() {
+    /**
+     * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithSameScopeCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .setScope("N").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
@@ -83,13 +83,13 @@ public class EopaodCsvExporterTest {
         String expected = "ACME,Not Available,2021-08-02,2021-08-02,National,Not Available,Not Available"
                           + ",Not Available,1,55,43,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
-     }
+    }
 
-     /**
-      * Verifies the correct export of a simple response scenatio for an opinion poll with a different scope.
-      */
-     @Test
-     public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectly() {
+    /**
+     * Verifies the correct export of a simple response scenatio for an opinion poll with a different scope.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .setScope("N").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
@@ -97,5 +97,17 @@ public class EopaodCsvExporterTest {
         String expected = "ACME,Not Available,2021-08-02,2021-08-02,European,Not Available,Not Available"
                           + ",Not Available,1,55,43,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
-     }
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with a result for other.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithOtherResultCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                   .addResult("A", "55").addResult("B", "43").setOther("2").build();
+        String expected = "ACME,Not Available,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1,55,43,2";
+        assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
+    }
 }
