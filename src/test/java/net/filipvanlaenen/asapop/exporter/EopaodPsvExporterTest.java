@@ -100,4 +100,29 @@ public class EopaodPsvExporterTest {
        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
     }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with one commissioner.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithOneCommissioner() {
+       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
+                                                   .setPublicationDate("2021-08-02").addResult("A", "55")
+                                                   .addResult("B", "43").build();
+       String expected = "ACME | The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
+       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with two commissioners.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithTwoCommissioners() {
+       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
+                                                   .addCommissioner("The Post").setPublicationDate("2021-08-02")
+                                                   .addResult("A", "55").addResult("B", "43").build();
+       String expected = "ACME | The Post and The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43"
+                         + " | N/A";
+       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+    }
 }
