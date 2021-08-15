@@ -201,4 +201,60 @@ public class EopaodCsvExporterTest {
                           + ",Not Available,1,55,43,2";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
     }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with commas in the polling firm and the commissioner.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithCommasInPollingFirmAndCommissionerCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("AC,ME").addCommissioner("Times, The")
+                                                    .setPublicationDate("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        String expected = "\"AC,ME\",\"Times, The\",2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1,55,45,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple response scenario with commas in the polling firm and the commissioner.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithCommasInPollingFirmAndCommissionerCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("AC,ME").addCommissioner("Times, The")
+                                                    .setPublicationDate("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .build();
+        String expected = "\"AC,ME\",\"Times, The\",2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1,55,43,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with quotes in the polling firm and the commissioner.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithQuotesInPollingFirmAndCommissionerCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("AC\"ME").addCommissioner("Times\" The")
+                                                    .setPublicationDate("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        String expected = "\"AC\"\"ME\",\"Times\"\" The\",2021-08-02,2021-08-02,Not Available,Not Available"
+                          + ",Not Available,Not Available,1,55,45,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple response scenario with quotes in the polling firm and the commissioner.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithQuotesInPollingFirmAndCommissionerCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("AC\"ME").addCommissioner("Times\" The")
+                                                    .setPublicationDate("2021-08-02").addResult("A", "55")
+                                                    .addResult("B", "45").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                          .build();
+        String expected = "\"AC\"\"ME\",\"Times\"\" The\",2021-08-02,2021-08-02,Not Available,Not Available"
+                          + ",Not Available,Not Available,1,55,43,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "A", "B"));
+    }
 }

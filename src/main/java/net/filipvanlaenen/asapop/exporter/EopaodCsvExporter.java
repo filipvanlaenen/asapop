@@ -22,6 +22,20 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
+     * Escapes commas and quotes in a text block.
+     *
+     * @param text The text to process.
+     * @return The original text properly escaped for commas and quotes according to the CSV standard.
+     */
+    private static String escapeCommasAndQuotes(final String text) {
+        if (text.contains(",") || text.contains("\"")) {
+            return "\"" + text.replaceAll("\"",  "\"\"") + "\"";
+        } else {
+            return text;
+        }
+    }
+
+    /**
      * Exports the opinion polls.
      *
      * @param opinionPolls The opinion polls to export.
@@ -53,8 +67,8 @@ public final class EopaodCsvExporter extends Exporter {
      */
     static String export(final OpinionPoll opinionPoll, final String... electoralListKeys) {
         List<String> elements = new ArrayList<String>();
-        elements.add(opinionPoll.getPollingFirm());
-        elements.add(notAvailableIfNull(exportCommissionners(opinionPoll)));
+        elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
+        elements.add(escapeCommasAndQuotes(notAvailableIfNull(exportCommissionners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
@@ -85,8 +99,8 @@ public final class EopaodCsvExporter extends Exporter {
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll,
                          final String... electoralListKeys) {
         List<String> elements = new ArrayList<String>();
-        elements.add(opinionPoll.getPollingFirm());
-        elements.add(notAvailableIfNull(exportCommissionners(opinionPoll)));
+        elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
+        elements.add(escapeCommasAndQuotes(notAvailableIfNull(exportCommissionners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         if (responseScenario.getScope() == null) {
             elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
