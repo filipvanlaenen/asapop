@@ -74,11 +74,11 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
         elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
         elements.add("Not Available");
-        elements.add(calculatePrecision(opinionPoll, electoralListKeys));
+        elements.add(calculatePrecision(opinionPoll, electoralListKeys) + "%");
         for (String electoralListKey : electoralListKeys) {
-            elements.add(notAvailableIfNull(opinionPoll.getResult(electoralListKey)));
+            elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListKey)));
         }
-        elements.add(notAvailableIfNull(opinionPoll.getOther()));
+        elements.add(percentageOrNotAvailable(opinionPoll.getOther()));
         StringBuffer sb = new StringBuffer();
         sb.append(String.join(",", elements));
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
@@ -110,11 +110,11 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
         elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
         elements.add("Not Available");
-        elements.add(calculatePrecision(responseScenario, electoralListKeys));
+        elements.add(calculatePrecision(responseScenario, electoralListKeys) + "%");
         for (String electoralListKey : electoralListKeys) {
-            elements.add(notAvailableIfNull(responseScenario.getResult(electoralListKey)));
+            elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListKey)));
         }
-        elements.add(notAvailableIfNull(responseScenario.getOther()));
+        elements.add(percentageOrNotAvailable(responseScenario.getOther()));
         return String.join(",", elements);
     }
 
@@ -142,5 +142,15 @@ public final class EopaodCsvExporter extends Exporter {
      */
     private static String notAvailableIfNull(final String s) {
         return s == null ? "Not Available" : s;
+    }
+
+    /**
+     * Returns the string with a percentage sign added if it isn't null, and the string "Not Available" otherwise.
+     *
+     * @param s The string.
+     * @return "Not Available" if the string is null, and otherwise the string with a percentage sign added.
+     */
+    private static String percentageOrNotAvailable(final String s) {
+        return s == null ? "Not Available" : s + "%";
     }
 }
