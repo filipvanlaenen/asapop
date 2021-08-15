@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +60,16 @@ public class ExporterTest {
                                                     .addResult("B", "45").build();
         List<String> expected = List.of("2021-08-01", "2021-08-02");
         assertEquals(expected, Exporter.exportDates(poll));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with no commissioner.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithNoCommissioner() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "43").build();
+        assertNull(Exporter.exportCommissionners(poll));
     }
 
     /**
