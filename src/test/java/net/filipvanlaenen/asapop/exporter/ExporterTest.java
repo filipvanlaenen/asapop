@@ -135,41 +135,4 @@ public class ExporterTest {
                                                                          .build();
        assertEquals("0.1", Exporter.calculatePrecision(responseScenario, "A", "B"));
     }
-
-    /**
-     * Verifies the correct export of a simple response scenario for an opinion poll with only a publication date.
-     */
-    @Test
-    public void shouldExportSimpleResponseScenarioWithPublicationDateOnlyCorrectly() {
-       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
-       ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
-                                                                         .build();
-       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
-    }
-
-    /**
-     * Verifies the correct export of a simple response scenario for an opinion poll with a fieldwork period.
-     */
-    @Test
-    public void shouldExportSimpleResponseScenarioWithFieldworkPeriodCorrectly() {
-       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
-                                                   .setFieldworkEnd("2021-08-02").build();
-       ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
-                                                                         .build();
-       String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
-    }
-
-    /**
-     * Verifies the correct export of a simple response scenatio for an opinion poll with a result for other.
-     */
-    @Test
-    public void shouldExportSimpleResponseScenarioWithOtherResultCorrectly() {
-       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
-       ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
-                                                                         .setOther("2").build();
-       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
-    }
 }
