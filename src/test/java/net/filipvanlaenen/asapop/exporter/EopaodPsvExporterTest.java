@@ -91,6 +91,18 @@ public class EopaodPsvExporterTest {
      }
 
     /**
+     * Verifies the correct export of a simple opinion poll with a sample size.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithSampleSizeCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55").addResult("B", "43").setSampleSize("1000")
+                                                    .build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | 1000 | N/A | 1 | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+    }
+
+    /**
      * Verifies the correct export of a simple opinion poll with a result for other.
      */
     @Test
