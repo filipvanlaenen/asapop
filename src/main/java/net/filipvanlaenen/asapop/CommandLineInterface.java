@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
@@ -51,6 +52,7 @@ public final class CommandLineInterface {
      */
     private static void printUsage() {
         System.out.println("Usage:");
+        System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+");
     }
 
@@ -78,8 +80,13 @@ public final class CommandLineInterface {
                 }
                 String[] ropfContent = readFile(inputFileName);
                 OpinionPolls opinionPolls = RichOpinionPollsFile.parse(ropfContent).getOpinionPolls();
-                String psvContent = EopaodPsvExporter.export(opinionPolls, electoralListKeys);
-                writeFile(outputFileName, psvContent);
+                String outputContent = "";
+                if (outputFileName.endsWith(".csv")) {
+                    outputContent = EopaodCsvExporter.export(opinionPolls, electoralListKeys);
+                } else if (outputFileName.endsWith(".psv")) {
+                    outputContent = EopaodPsvExporter.export(opinionPolls, electoralListKeys);
+                }
+                writeFile(outputFileName, outputContent);
             }
         };
 
