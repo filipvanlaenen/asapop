@@ -27,12 +27,34 @@ public abstract class Exporter {
     }
 
     /**
+     * Calculates the precision of an opinion poll.
+     *
+     * @param opinionPoll The opinion poll.
+     * @param electoralListKeys The keys of the electoral lists to export.
+     * @return The precision as a string.
+     */
+    static String calculatePrecision(final OpinionPoll opinionPoll, final String... electoralListKeys) {
+        return calculatePrecision(extractResults(opinionPoll, electoralListKeys));
+    }
+
+    /**
+     * Calculates the precision of a response scenario.
+     *
+     * @param responseScenario The response scenario.
+     * @param electoralListKeys The keys of the electoral lists to export.
+     * @return The precision as a string.
+     */
+    static String calculatePrecision(final ResponseScenario responseScenario, final String... electoralListKeys) {
+        return calculatePrecision(extractResults(responseScenario, electoralListKeys));
+    }
+
+    /**
      * Calculates the precision of a set of numbers.
      *
      * @param numbers A set of numbers.
      * @return The precision as a string.
      */
-    static String calculatePrecision(final Set<String> numbers) {
+    private static String calculatePrecision(final Set<String> numbers) {
         String result = "1";
         for (String number : numbers) {
             if (number.contains(".")) {
@@ -100,7 +122,7 @@ public abstract class Exporter {
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
-    static Set<String> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
+    private static Set<String> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
         Set<String> result = new HashSet<String>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, opinionPoll.getResult(electoralListKey));
@@ -116,7 +138,7 @@ public abstract class Exporter {
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
-    static Set<String> extractResults(final ResponseScenario responseScenario, final String... electoralListKeys) {
+    private static Set<String> extractResults(final ResponseScenario responseScenario, final String... electoralListKeys) {
         Set<String> result = new HashSet<String>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));

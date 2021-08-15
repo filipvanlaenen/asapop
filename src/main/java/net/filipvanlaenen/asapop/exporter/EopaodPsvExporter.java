@@ -55,7 +55,7 @@ public final class EopaodPsvExporter extends Exporter {
         elements.add(naIfNull(opinionPoll.getScope()));
         elements.add(naIfNull(opinionPoll.getSampleSize()));
         elements.add("N/A");
-        elements.add(calculatePrecision(extractResults(opinionPoll, electoralListKeys)));
+        elements.add(calculatePrecision(opinionPoll, electoralListKeys));
         for (String electoralListKey : electoralListKeys) {
             elements.add(naIfNull(opinionPoll.getResult(electoralListKey)));
         }
@@ -90,7 +90,7 @@ public final class EopaodPsvExporter extends Exporter {
         }
         elements.add(naIfNull(opinionPoll.getSampleSize()));
         elements.add("N/A");
-        elements.add(calculatePrecision(extractResults(responseScenario, electoralListKeys)));
+        elements.add(calculatePrecision(responseScenario, electoralListKeys));
         for (String electoralListKey : electoralListKeys) {
             elements.add(naIfNull(responseScenario.getResult(electoralListKey)));
         }

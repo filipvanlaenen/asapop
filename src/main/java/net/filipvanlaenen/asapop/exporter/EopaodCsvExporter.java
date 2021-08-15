@@ -60,7 +60,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
         elements.add("Not Available");
         elements.add("Not Available");
-        elements.add(calculatePrecision(extractResults(opinionPoll, electoralListKeys)));
+        elements.add(calculatePrecision(opinionPoll, electoralListKeys));
         for (String electoralListKey : electoralListKeys) {
             elements.add(notAvailableIfNull(opinionPoll.getResult(electoralListKey)));
         }
@@ -96,7 +96,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
         elements.add("Not Available");
         elements.add("Not Available");
-        elements.add(calculatePrecision(extractResults(responseScenario, electoralListKeys)));
+        elements.add(calculatePrecision(responseScenario, electoralListKeys));
         for (String electoralListKey : electoralListKeys) {
             elements.add(notAvailableIfNull(responseScenario.getResult(electoralListKey)));
         }
