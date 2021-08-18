@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -143,5 +144,29 @@ public class ExporterTest {
        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55.4").addResult("B", "43")
                                                                          .build();
        assertEquals("0.1", Exporter.calculatePrecision(responseScenario, "A", "B"));
+    }
+
+    /**
+     * Verifies that two opinion polls with publication dates are compared correctly.
+     */
+    @Test
+    public void shouldCompareOpinionPollsWithPublicationDatesOnlyCorrectly() {
+       OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-03")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
+    }
+
+    /**
+     * Verifies that two opinion polls with fieldwork end dates are compared correctly.
+     */
+    @Test
+    public void shouldCompareOpinionPollsWithFieldworkEndDatesOnlyCorrectly() {
+       OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-03")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
     }
 }

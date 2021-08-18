@@ -70,6 +70,29 @@ public abstract class Exporter {
     }
 
     /**
+     * Compares two opinion polls for sorting.
+     *
+     * @param op1 The first opinion poll.
+     * @param op2 The second opinion poll.
+     * @return A comparison result usable for sorting.
+     */
+    static int compareOpinionPolls(final OpinionPoll op1, final OpinionPoll op2) {
+        LocalDate endDate1 = getOpinionPollEndDate(op1);
+        LocalDate endDate2 = getOpinionPollEndDate(op2);
+        if (endDate1.equals(endDate2)) {
+            LocalDate startDate1 = getOpinionPollStartDate(op1);
+            LocalDate startDate2 = getOpinionPollStartDate(op2);
+            if (startDate1.equals(startDate2)) {
+                return op2.getSampleSizeValue() - op1.getSampleSizeValue();
+            } else {
+                return startDate2.compareTo(startDate1);
+            }
+        } else {
+            return endDate2.compareTo(endDate1);
+        }
+    }
+
+    /**
      * Exports the commissionners.
      *
      * @param opinionPoll The opinion poll to export the commissioners from.
@@ -148,6 +171,35 @@ public abstract class Exporter {
     }
 
     /**
+     * Returns the end date of an opinion poll, for sorting.
+     *
+     * @param opinionPoll The opinion poll.
+     * @return The end date of the opinion poll, either the fieldword end date or the publication date.
+     */
+    private static LocalDate getOpinionPollEndDate(final OpinionPoll opinionPoll) {
+        if (opinionPoll.getFieldworkEnd() == null) {
+            return opinionPoll.getPublicationDate();
+        } else {
+            return opinionPoll.getFieldworkEnd();
+        }
+    }
+
+    /**
+     * Returns the start date of an opinion poll, for sorting.
+     *
+     * @param opinionPoll The opinion poll.
+     * @return The start date of the opinion poll, either the fieldwork start date or the result of calling
+     *         <code>getOpinionPollEndDate</code>.
+     */
+    private static LocalDate getOpinionPollStartDate(final OpinionPoll opinionPoll) {
+        if (opinionPoll.getFieldworkStart() == null) {
+            return getOpinionPollEndDate(opinionPoll);
+        } else {
+            return opinionPoll.getFieldworkStart();
+        }
+    }
+
+    /**
      * Sorts and concatenates with commas and an and a set of strings.
      *
      * @param strings The set of strings to be sorted and concatenated.
@@ -165,7 +217,7 @@ public abstract class Exporter {
     }
 
     /**
-     * Sorts the opinion polls chronologically, first by end date, then by start date, than by sample size.
+     * Sorts a set of opinion polls chronologically, first by end date, then by start date, than by sample size.
      *
      * @param opinionPolls The set of opinion polls to be sorted.
      * @return A sorted list with the opinion polls.
@@ -174,37 +226,5 @@ public abstract class Exporter {
         List<OpinionPoll> result = new ArrayList<OpinionPoll>(opinionPolls);
         result.sort((op1, op2) -> compareOpinionPolls(op1, op2));
         return result;
-    }
-
-    private static LocalDate getOpinionPollEndDate(final OpinionPoll opinionPoll) {
-        if (opinionPoll.getFieldworkEnd() == null) {
-            return opinionPoll.getPublicationDate();
-        } else {
-            return opinionPoll.getFieldworkEnd();
-        }
-    }
-
-    private static LocalDate getOpinionPollStartDate(final OpinionPoll opinionPoll) {
-        if (opinionPoll.getFieldworkStart() == null) {
-            return getOpinionPollEndDate(opinionPoll);
-        } else {
-            return opinionPoll.getFieldworkStart();
-        }
-    }
-
-    private static int compareOpinionPolls(final OpinionPoll op1, final OpinionPoll op2) {
-        LocalDate endDate1 = getOpinionPollEndDate(op1);
-        LocalDate endDate2 = getOpinionPollEndDate(op2);
-        LocalDate startDate1 = getOpinionPollStartDate(op1);
-        LocalDate startDate2 = getOpinionPollStartDate(op2);
-        if (endDate1.equals(endDate2)) {
-            if (startDate1.equals(startDate2)) {
-                return op2.getSampleSizeValue() - op1.getSampleSizeValue();
-            } else {
-                return startDate2.compareTo(startDate1);
-            }
-        } else {
-            return endDate2.compareTo(endDate1);
-        }
     }
 }
