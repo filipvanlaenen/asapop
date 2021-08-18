@@ -17,7 +17,7 @@ public class EopaodCsvExporterTest {
      * Verifies the correct export of a minimal opinion poll.
      */
     @Test
-    public void shouldExportMinimalOpinionPollToEopaodCsvFormat() {
+    public void shouldExportMinimalOpinionPoll() {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45",
                                                                "A: •A:AP", "B: •A:BL").getOpinionPolls();
         StringBuffer expected = new StringBuffer();
@@ -29,10 +29,31 @@ public class EopaodCsvExporterTest {
     }
 
     /**
+     * Verifies that opinion polls are sorted.
+     */
+    @Test
+    public void shouldSortOpinionPolls() {
+        OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45",
+                                                               "•PF: ACME •PD: 2021-08-15 A:55 B:45",
+                                                               "•PF: ACME •PD: 2021-07-28 A:55 B:45",
+                                                               "A: •A:AP", "B: •A:BL").getOpinionPolls();
+        StringBuffer expected = new StringBuffer();
+        expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
+        expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
+        expected.append("ACME,,2021-08-15,2021-08-15,Not Available,Not Available,Not Available");
+        expected.append(",Not Available,1%,55%,45%,Not Available\n");
+        expected.append("ACME,,2021-07-28,2021-07-28,Not Available,Not Available,Not Available");
+        expected.append(",Not Available,1%,55%,45%,Not Available\n");
+        expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
+        expected.append(",Not Available,1%,55%,45%,Not Available");
+        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, "A", "B"));
+    }
+
+    /**
      * Verifies the correct export of an opinion poll with an alternative response scenario.
      */
     @Test
-    public void shouldExportOpinionPollWithAlternativeResponseScenarioToEopaodPsvFormat() {
+    public void shouldExportOpinionPollWithAlternativeResponseScenario() {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45",
                                                                "& A:50 B:40 C:10", "A: •A:AP", "B: •A:BL", "C: •A:C")
                                                         .getOpinionPolls();

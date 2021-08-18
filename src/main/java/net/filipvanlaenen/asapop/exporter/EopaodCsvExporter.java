@@ -58,7 +58,7 @@ public final class EopaodCsvExporter extends Exporter {
             sb.append(ElectoralList.get(key).getAbbreviation());
         }
         sb.append(",Other");
-        for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
+        for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
             sb.append("\n");
             sb.append(export(opinionPoll, electoralListKeys));
         }

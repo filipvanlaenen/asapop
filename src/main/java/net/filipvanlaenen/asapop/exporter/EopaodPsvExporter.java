@@ -30,7 +30,7 @@ public final class EopaodPsvExporter extends Exporter {
         sb.append(" | Participation | Precision | ");
         sb.append(String.join(" | ", electoralListKeys));
         sb.append(" | Other");
-        for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
+        for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
             sb.append("\n");
             sb.append(export(opinionPoll, electoralListKeys));
         }

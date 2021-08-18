@@ -49,6 +49,10 @@ public final class OpinionPoll {
      */
     private String sampleSize;
     /**
+     * The sample size value.
+     */
+    private int sampleSizeValue;
+    /**
      * The scope.
      */
     private String scope;
@@ -59,15 +63,16 @@ public final class OpinionPoll {
      * @param builder A builder instance.
      */
     private OpinionPoll(final Builder builder) {
-        this.commissioners = Collections.unmodifiableSet(builder.commissioners);
-        this.fieldworkEnd = builder.fieldworkEnd;
-        this.fieldworkStart = builder.fieldworkStart;
-        this.mainResponseScenario = builder.responseScenarioBuilder.build();
-        this.other = builder.other;
-        this.pollingFirm = builder.pollingFirm;
-        this.publicationDate = builder.publicationDate;
-        this.sampleSize =  builder.sampleSize;
-        this.scope = builder.scope;
+        commissioners = Collections.unmodifiableSet(builder.commissioners);
+        fieldworkEnd = builder.fieldworkEnd;
+        fieldworkStart = builder.fieldworkStart;
+        mainResponseScenario = builder.responseScenarioBuilder.build();
+        other = builder.other;
+        pollingFirm = builder.pollingFirm;
+        publicationDate = builder.publicationDate;
+        sampleSize = builder.sampleSize;
+        sampleSizeValue = sampleSize == null ? 0 : Integer.parseInt(sampleSize);
+        scope = builder.scope;
     }
 
     /**
@@ -347,6 +352,15 @@ public final class OpinionPoll {
      */
     public String getSampleSize() {
         return sampleSize;
+    }
+
+    /**
+     * Returns the sample size value.
+     *
+     * @return The sample size value.
+     */
+    public int getSampleSizeValue() {
+        return sampleSizeValue;
     }
 
     /**

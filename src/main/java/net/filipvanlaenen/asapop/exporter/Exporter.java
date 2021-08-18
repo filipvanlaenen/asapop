@@ -163,4 +163,48 @@ public abstract class Exporter {
             return String.join(", ", sortedStrings) + " and " + lastString;
         }
     }
+
+    /**
+     * Sorts the opinion polls chronologically, first by end date, then by start date, than by sample size.
+     *
+     * @param opinionPolls The set of opinion polls to be sorted.
+     * @return A sorted list with the opinion polls.
+     */
+    static List<OpinionPoll> sortOpinionPolls(final Set<OpinionPoll> opinionPolls) {
+        List<OpinionPoll> result = new ArrayList<OpinionPoll>(opinionPolls);
+        result.sort((op1, op2) -> compareOpinionPolls(op1, op2));
+        return result;
+    }
+
+    private static LocalDate getOpinionPollEndDate(final OpinionPoll opinionPoll) {
+        if (opinionPoll.getFieldworkEnd() == null) {
+            return opinionPoll.getPublicationDate();
+        } else {
+            return opinionPoll.getFieldworkEnd();
+        }
+    }
+
+    private static LocalDate getOpinionPollStartDate(final OpinionPoll opinionPoll) {
+        if (opinionPoll.getFieldworkStart() == null) {
+            return getOpinionPollEndDate(opinionPoll);
+        } else {
+            return opinionPoll.getFieldworkStart();
+        }
+    }
+
+    private static int compareOpinionPolls(final OpinionPoll op1, final OpinionPoll op2) {
+        LocalDate endDate1 = getOpinionPollEndDate(op1);
+        LocalDate endDate2 = getOpinionPollEndDate(op2);
+        LocalDate startDate1 = getOpinionPollStartDate(op1);
+        LocalDate startDate2 = getOpinionPollStartDate(op2);
+        if (endDate1.equals(endDate2)) {
+            if (startDate1.equals(startDate2)) {
+                return op1.getSampleSizeValue() - op2.getSampleSizeValue();
+            } else {
+                return startDate2.compareTo(startDate1);
+            }
+        } else {
+            return endDate2.compareTo(endDate1);
+        }
+    }
 }
