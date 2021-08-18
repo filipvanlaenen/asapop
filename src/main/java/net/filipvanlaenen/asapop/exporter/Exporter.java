@@ -199,7 +199,7 @@ public abstract class Exporter {
         LocalDate startDate2 = getOpinionPollStartDate(op2);
         if (endDate1.equals(endDate2)) {
             if (startDate1.equals(startDate2)) {
-                return op1.getSampleSizeValue() - op2.getSampleSizeValue();
+                return op2.getSampleSizeValue() - op1.getSampleSizeValue();
             } else {
                 return startDate2.compareTo(startDate1);
             }
