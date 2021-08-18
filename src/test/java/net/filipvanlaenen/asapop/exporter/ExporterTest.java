@@ -169,4 +169,32 @@ public class ExporterTest {
                                                     .addResult("A", "55.4").addResult("B", "43").build();
        assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
     }
+
+    /**
+     * Verifies that when two opinion polls have the same fieldwork end dates, they are compared using the start dates.
+     */
+    @Test
+    public void shouldCompareOpinionPollsWithEqualFieldworkEndDatesByFieldworkStartDatesCorrectly() {
+       OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-20")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55.4")
+                                                    .addResult("B", "43").build();
+       OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-21")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55.4")
+                                                    .addResult("B", "43").build();
+       assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
+    }
+
+    /**
+     * Verifies that when two opinion polls have the same fieldwork end dates, the one missing the fieldwork start date
+     * reuses the fieldwork end date.
+     */
+    @Test
+    public void shouldUseEndDateAsStartDateWhenComparingOpinionPollsWithEqualFieldworkEndDatesIfFieldworkStartAbsent() {
+       OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-21")
+                                                    .setFieldworkEnd("2021-08-02").addResult("A", "55.4")
+                                                    .addResult("B", "43").build();
+       assertTrue(Exporter.compareOpinionPolls(poll1, poll2) < 0);
+    }
 }
