@@ -2,6 +2,7 @@
 
 - [Getting Started](#getting-started)
 - [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
+- [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
 - [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
 
 ## Getting Started
@@ -26,7 +27,9 @@ This should produce a short report displaying how to use the program.
 
 ## Rich Opinion Poll File Format (ROPF)
 
-A rich opinion poll file (ROPF) contains lines with opinion polls. Each opinion
+### Opinion Polls
+
+The first part of a rich opinion poll file (ROPF) contains the lines with opinion polls. Each opinion
 poll should be on a line, and a line should always contain one opinion poll.
 Below is an example of a minimal opinion poll, having only a polling firm, a
 publication date, and the results for two electoral lists:
@@ -97,6 +100,40 @@ The table below gives an overview over the metadata fields and their use:
 
 ¹ As for the regular results, the result for other is not inherited by a
 response scenario if absent.
+
+### Electoral Lists
+
+The second part of a rich opinion poll file contains the lines with electoral lists. Each electoral list appearing in
+the opinion polls should be on a line, and a line should always contain one electoral list. The line should start with
+the electoral list key, as used in the opinion poll results, followed by a colon (":"). The rest of the line contains
+fields with information about the electoral list, using a bullet ("•") to mark the start of a new field key, followed
+by a key, which is either "A" for the official abbreviation of the electoral list, or a two-letter language code for
+the name of the electoral list, followed by a colon (":") and the content of the field.
+
+Below is an example of an electoral list using the key "A" in the opinion poll lines, having an official abbreviation
+"AP", the English name "Apple Party" and a traduction into Esperanto "Pomo Partio":
+
+```
+A: •A: AP •EN: Apple Party •EO: Pomo Partio
+```
+
+## Conversion from ROPF to CSV
+
+An ROPF file can be converted to EOPAOD's CSV file format using the following
+command:
+
+```
+convert <ropf-file-name> <csv-file-name> <electoral-list-key>+
+```
+
+Assume the opinion polls have been stored in a file called `nn.ropf`, and you
+want to convert them to a file called `nn.csv`, and the electoral lists have
+keys `ABC`, `DEF` and `GHI`, then you can use the following command to do the
+conversion:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI
+```
 
 ## Conversion from ROPF to PSV
 
