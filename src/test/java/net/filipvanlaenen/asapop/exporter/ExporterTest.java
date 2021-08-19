@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -196,5 +197,35 @@ public class ExporterTest {
                                                     .setFieldworkEnd("2021-08-02").addResult("A", "55.4")
                                                     .addResult("B", "43").build();
        assertTrue(Exporter.compareOpinionPolls(poll1, poll2) < 0);
+    }
+
+    /**
+     * Verifies that when two opinion polls have the same start and end dates, they are compared for sorting based on
+     * the sample size value.
+     */
+    @Test
+    public void shouldUseSampleSizeValueForComparisonOfOpinionPollsWhenStartAndEndDatesAreEqual() {
+       OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+                                                    .setSampleSize("1000").addResult("A", "55.4").addResult("B", "43")
+                                                    .build();
+       OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+                                                    .setSampleSize("999").addResult("A", "55.4").addResult("B", "43")
+                                                    .build();
+       assertTrue(Exporter.compareOpinionPolls(poll1, poll2) < 0);
+    }
+
+    /**
+     * Verifies that the exporter can sort a set of opinion polls into a sorted list.
+     */
+    @Test
+    public void shouldSortASetOfOpinionPollsIntoAList() {
+       OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-03")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       OpinionPoll poll3 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-04")
+                                                    .addResult("A", "55.4").addResult("B", "43").build();
+       List<OpinionPoll> expected = List.of(poll3, poll2, poll1);
+       assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3)));
     }
 }
