@@ -94,6 +94,16 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that the setSampleSize method in the builder class is wired correctly to the getSampleSizeValue
+      * method.
+      */
+     @Test
+     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSizeValue() {
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
+        assertEquals(1000, poll.getSampleSizeValue());
+     }
+
+     /**
       * Verifies that the setScope method in the builder class is wired correctly to the getScope
       * method.
       */
