@@ -15,6 +15,11 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the class <code>OpinionPoll</code>.
  */
 public class OpinionPollTest {
+    /**
+     * The magic number 1000.
+     */
+    private static final int ONE_THOUSAND = 1000;
+
      /**
       * Verifies that the addCommissioner method in the builder class is wired correctly to the getCommissioners method.
       */
@@ -100,7 +105,7 @@ public class OpinionPollTest {
      @Test
      public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSizeValue() {
         OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
-        assertEquals(1000, poll.getSampleSizeValue());
+        assertEquals(ONE_THOUSAND, poll.getSampleSizeValue());
      }
 
      /**
