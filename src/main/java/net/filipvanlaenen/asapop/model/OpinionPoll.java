@@ -167,7 +167,7 @@ public final class OpinionPoll {
         /**
          * Sets the area.
          *
-         * @param area The area.
+         * @param areaCode The area.
          * @return This builder instance.
          */
         public Builder setArea(final String areaCode) {
