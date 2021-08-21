@@ -102,6 +102,8 @@ final class OpinionPollLine extends Line {
         String key = keyValueMatcher.group(1);
         String value = keyValueMatcher.group(2);
         switch (key) {
+            case "A": builder.setArea(value);
+                break;
             case "C": builder.addCommissioner(value);
                 break;
             case "FE": builder.setFieldworkEnd(value);

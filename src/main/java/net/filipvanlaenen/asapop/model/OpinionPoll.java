@@ -17,6 +17,10 @@ public final class OpinionPoll {
      */
     private final List<ResponseScenario> alternativeResponseScenarios = new ArrayList<ResponseScenario>();
     /**
+     * The area.
+     */
+    private String area;
+    /**
      * The commissioners.
      */
     private final Set<String> commissioners;
@@ -63,6 +67,7 @@ public final class OpinionPoll {
      * @param builder A builder instance.
      */
     private OpinionPoll(final Builder builder) {
+        area = builder.area;
         commissioners = Collections.unmodifiableSet(builder.commissioners);
         fieldworkEnd = builder.fieldworkEnd;
         fieldworkStart = builder.fieldworkStart;
@@ -79,6 +84,10 @@ public final class OpinionPoll {
      * Builder class.
      */
     public static class Builder {
+        /**
+         * The area.
+         */
+        private String area;
         /**
          * The commissioners.
          */
@@ -153,6 +162,17 @@ public final class OpinionPoll {
          */
         public OpinionPoll build() {
             return new OpinionPoll(this);
+        }
+
+        /**
+         * Sets the area.
+         *
+         * @param area The area.
+         * @return This builder instance.
+         */
+        public Builder setArea(final String areaCode) {
+            this.area = areaCode;
+            return this;
         }
 
         /**
@@ -247,6 +267,7 @@ public final class OpinionPoll {
         if (obj instanceof OpinionPoll) {
             OpinionPoll otherOpinionPoll = (OpinionPoll) obj;
             return otherOpinionPoll.alternativeResponseScenarios.equals(alternativeResponseScenarios)
+                   && equalsOrBothNull(area, otherOpinionPoll.area)
                    && otherOpinionPoll.commissioners.equals(commissioners)
                    && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
                    && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
@@ -279,6 +300,15 @@ public final class OpinionPoll {
      */
     public List<ResponseScenario> getAlternativeResponseScenarios() {
         return Collections.unmodifiableList(alternativeResponseScenarios);
+    }
+
+    /**
+     * Returns the area.
+     *
+     * @return The area.
+     */
+    public String getArea() {
+        return area;
     }
 
     /**
@@ -374,7 +404,7 @@ public final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(alternativeResponseScenarios, commissioners, fieldworkEnd, fieldworkStart,
+        return Objects.hash(alternativeResponseScenarios, area, commissioners, fieldworkEnd, fieldworkStart,
                             mainResponseScenario, other, pollingFirm, publicationDate, sampleSize, scope);
     }
 }

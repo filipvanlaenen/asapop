@@ -67,6 +67,18 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that an opinion poll with an area can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAnArea() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: AB A:55 B:45");
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                                                        .setArea("AB").addResult("A", "55").addResult("B", "45")
+                                                        .build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
      * Verifies that an opinion poll with a commissioner can be parsed.
      */
     @Test

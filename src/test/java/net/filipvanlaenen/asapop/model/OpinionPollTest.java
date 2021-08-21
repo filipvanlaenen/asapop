@@ -32,6 +32,15 @@ public class OpinionPollTest {
      }
 
      /**
+      * Verifies that the setArea method in the builder class is wired correctly to the getArea method.
+      */
+     @Test
+     public void setAreaInBuilderShouldBeWiredCorrectlyToGetArea() {
+        OpinionPoll poll = new OpinionPoll.Builder().setArea("AB").build();
+        assertEquals("AB", poll.getArea());
+     }
+
+     /**
       * Verifies that the setFieldworkEnd method in the builder class is wired correctly to the getFieldworkEnd
       * method.
       */
@@ -453,6 +462,36 @@ public class OpinionPollTest {
      public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentScope() {
         OpinionPoll poll1 = new OpinionPoll.Builder().setScope("N").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().setScope("E").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll with a different area.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentArea() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setArea("AB").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setArea("YZ").build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that an opinion poll is not equal to another opinion poll missing the area.
+      */
+     @Test
+     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheArea() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setArea("AB").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+     }
+
+     /**
+      * Verifies that opinion polls have different hash codes if they have different areas.
+      */
+     @Test
+     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentArea() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setArea("AB").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setArea("YZ").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
      }
 }
