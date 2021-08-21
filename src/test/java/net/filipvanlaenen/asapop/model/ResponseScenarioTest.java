@@ -28,6 +28,15 @@ public class ResponseScenarioTest {
      }
 
      /**
+      * Verifies that the setArea method in the builder class is wired correctly to the getArea method.
+      */
+     @Test
+     public void setAreaInBuilderShouldBeWiredCorrectlyToGetArea() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setArea("AB").build();
+        assertEquals("AB", responseScenario.getArea());
+     }
+
+     /**
       * Verifies that the setScope method in the builder class is wired correctly to the getScope
       * method.
       */
@@ -151,6 +160,36 @@ public class ResponseScenarioTest {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that a response scenario is not equal to another response scenario with a different area.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentArea() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setArea("AB").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setArea("YZ").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that a response scenario is not equal to another response scenario missing the area.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheArea() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setArea("AB").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that response scenarios have different hash codes if they have different areas.
+      */
+     @Test
+     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentArea() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setArea("AB").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setArea("YZ").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
      }
 
      /**

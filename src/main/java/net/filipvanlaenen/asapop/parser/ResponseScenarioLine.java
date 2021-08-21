@@ -108,6 +108,8 @@ final class ResponseScenarioLine extends Line {
         String key = keyValueMatcher.group(1);
         String value = keyValueMatcher.group(2);
         switch (key) {
+            case "A": builder.setArea(value);
+                break;
             case "O": builder.setOther(value);
                 break;
             case "SC": builder.setScope(value);

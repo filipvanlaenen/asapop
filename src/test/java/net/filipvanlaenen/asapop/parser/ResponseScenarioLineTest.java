@@ -69,6 +69,17 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that String with a single line containing a response scenario with a different area can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithADifferentArea() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •A: AB A:55 B:43");
+        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                  .setArea("AB").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
      * Verifies that String with a single line containing a response scenario with a different scope can be parsed.
      */
     @Test

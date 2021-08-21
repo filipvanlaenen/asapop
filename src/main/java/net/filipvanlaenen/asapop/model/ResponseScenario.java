@@ -10,6 +10,10 @@ import java.util.Objects;
  */
 public final class ResponseScenario {
     /**
+     * The area.
+     */
+    private String area;
+    /**
      * The result for other.
      */
     private String other;
@@ -28,6 +32,7 @@ public final class ResponseScenario {
      * @param builder A builder instance.
      */
     private ResponseScenario(final Builder builder) {
+        this.area = builder.area;
         this.other = builder.other;
         this.results = Collections.unmodifiableMap(builder.results);
         this.scope = builder.scope;
@@ -37,6 +42,10 @@ public final class ResponseScenario {
      * Builder class.
      */
     public static class Builder {
+        /**
+         * The area.
+         */
+        private String area;
         /**
          * The result for other.
          */
@@ -72,6 +81,17 @@ public final class ResponseScenario {
         }
 
         /**
+         * Sets the area.
+         *
+         * @param areaCode The area.
+         * @return This builder instance.
+         */
+        public Builder setArea(final String areaCode) {
+            this.area = areaCode;
+            return this;
+        }
+
+        /**
          * Sets the result for other.
          *
          * @param otherString The result for other.
@@ -98,7 +118,8 @@ public final class ResponseScenario {
     public boolean equals(final Object obj) {
         if (obj instanceof ResponseScenario) {
             ResponseScenario otherResponseScenario = (ResponseScenario) obj;
-            return equalsOrBothNull(other, otherResponseScenario.other)
+            return equalsOrBothNull(area, otherResponseScenario.area)
+                   && equalsOrBothNull(other, otherResponseScenario.other)
                    && otherResponseScenario.results.equals(results)
                    && equalsOrBothNull(scope, otherResponseScenario.scope);
         } else {
@@ -115,6 +136,15 @@ public final class ResponseScenario {
      */
     private boolean equalsOrBothNull(final Object obj1, final Object obj2) {
         return obj1 == null && obj2 == null || obj1 != null && obj1.equals(obj2);
+    }
+
+    /**
+     * Returns the area.
+     *
+     * @return The area.
+     */
+    public String getArea() {
+        return area;
     }
 
     /**
@@ -147,6 +177,6 @@ public final class ResponseScenario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(other, results, scope);
+        return Objects.hash(area, other, results, scope);
     }
 }
