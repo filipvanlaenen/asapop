@@ -89,6 +89,7 @@ The table below gives an overview over the metadata fields and their use:
 
 | Abbreviation | Description      | Type | Cardinality | Response Scenario |
 |--------------|------------------|------|-------------|-------------------|
+| A            | Area             | Text | 0…1         | Yes               |
 | C            | Commissioner     | Text | 0…_n_       | No                |
 | FE           | Fieldwork end    | Date | 0…1         | No                |
 | FS           | Fieldwork start  | Date | 0…1         | No                |
@@ -98,8 +99,7 @@ The table below gives an overview over the metadata fields and their use:
 | SC           | Scope            | Text | 0…1         | Yes               |
 | SS           | Sample size      | Text | 0…1         | No                |
 
-¹ As for the regular results, the result for other is not inherited by a
-response scenario if absent.
+¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
 
 ### Electoral Lists
 
