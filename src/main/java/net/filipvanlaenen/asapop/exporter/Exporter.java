@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.DateOrYearMonth;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
@@ -114,24 +115,24 @@ public abstract class Exporter {
      */
     static List<String> exportDates(final OpinionPoll opinionPoll) {
         List<String> elements = new ArrayList<String>();
-        LocalDate fieldworkStart = opinionPoll.getFieldworkStart();
-        LocalDate fieldworkEnd = opinionPoll.getFieldworkEnd();
+        DateOrYearMonth fieldworkStart = opinionPoll.getFieldworkStart();
+        DateOrYearMonth fieldworkEnd = opinionPoll.getFieldworkEnd();
         LocalDate publicationDate = opinionPoll.getPublicationDate();
         if (fieldworkStart == null) {
             if (fieldworkEnd == null) {
                 elements.add(publicationDate.toString());
                 elements.add(publicationDate.toString());
             } else {
-                elements.add(fieldworkEnd.toString());
-                elements.add(fieldworkEnd.toString());
+                elements.add(fieldworkEnd.getStart().toString());
+                elements.add(fieldworkEnd.getEnd().toString());
             }
         } else {
             if (fieldworkEnd == null) {
-                elements.add(fieldworkStart.toString());
+                elements.add(fieldworkStart.getStart().toString());
                 elements.add(publicationDate.toString());
             } else {
-                elements.add(fieldworkStart.toString());
-                elements.add(fieldworkEnd.toString());
+                elements.add(fieldworkStart.getStart().toString());
+                elements.add(fieldworkEnd.getEnd().toString());
             }
         }
         return elements;
@@ -180,7 +181,7 @@ public abstract class Exporter {
         if (opinionPoll.getFieldworkEnd() == null) {
             return opinionPoll.getPublicationDate();
         } else {
-            return opinionPoll.getFieldworkEnd();
+            return opinionPoll.getFieldworkEnd().getEnd();
         }
     }
 
@@ -195,7 +196,7 @@ public abstract class Exporter {
         if (opinionPoll.getFieldworkStart() == null) {
             return getOpinionPollEndDate(opinionPoll);
         } else {
-            return opinionPoll.getFieldworkStart();
+            return opinionPoll.getFieldworkStart().getStart();
         }
     }
 

@@ -128,7 +128,7 @@ public final class OpinionPollLineTest {
     }
 
     /**
-     * Verifies that an opinion poll with fieldwork start can be parsed.
+     * Verifies that an opinion poll with a fieldwork start can be parsed.
      */
     @Test
     public void shouldParseAnOpinionPollWithAFieldworkStart() {
@@ -139,12 +139,34 @@ public final class OpinionPollLineTest {
     }
 
     /**
-     * Verifies that an opinion poll with fieldwork end can be parsed.
+     * Verifies that an opinion poll with a year-month fieldwork start can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAYearMonthFieldworkStart() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07 A:55 B:43");
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07")
+                                                        .addResult("A", "55").addResult("B", "43").build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that an opinion poll with a fieldwork end can be parsed.
      */
     @Test
     public void shouldParseAnOpinionPollWithAFieldworkEnd() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 A:55 B:43");
         OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-07-27")
+                                                        .addResult("A", "55").addResult("B", "43").build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that an opinion poll with a year-month fieldwork end can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAYearMonthFieldworkEnd() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07 A:55 B:43");
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-07")
                                                         .addResult("A", "55").addResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
