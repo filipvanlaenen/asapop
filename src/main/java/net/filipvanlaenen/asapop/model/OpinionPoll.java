@@ -27,11 +27,11 @@ public final class OpinionPoll {
     /**
      * The fieldwork end.
      */
-    private DateOrYearMonth fieldworkEnd;
+    private DateOrMonth fieldworkEnd;
     /**
      * The fieldwork start.
      */
-    private DateOrYearMonth fieldworkStart;
+    private DateOrMonth fieldworkStart;
     /**
      * The main response scenario.
      */
@@ -95,11 +95,11 @@ public final class OpinionPoll {
         /**
          * The fieldwork end.
          */
-        private DateOrYearMonth fieldworkEnd;
+        private DateOrMonth fieldworkEnd;
         /**
          * The fieldwork start.
          */
-        private DateOrYearMonth fieldworkStart;
+        private DateOrMonth fieldworkStart;
         /**
          * The result for other.
          */
@@ -182,7 +182,7 @@ public final class OpinionPoll {
          * @return This builder instance.
          */
         public Builder setFieldworkEnd(final String fieldworkEndString) {
-            this.fieldworkEnd = DateOrYearMonth.parse(fieldworkEndString);
+            this.fieldworkEnd = DateOrMonth.parse(fieldworkEndString);
             return this;
         }
 
@@ -193,7 +193,7 @@ public final class OpinionPoll {
          * @return This builder instance.
          */
         public Builder setFieldworkStart(final String fieldworkStartString) {
-            this.fieldworkStart = DateOrYearMonth.parse(fieldworkStartString);
+            this.fieldworkStart = DateOrMonth.parse(fieldworkStartString);
             return this;
         }
 
@@ -325,7 +325,7 @@ public final class OpinionPoll {
      *
      * @return The fieldwork end date.
      */
-    public DateOrYearMonth getFieldworkEnd() {
+    public DateOrMonth getFieldworkEnd() {
         return fieldworkEnd;
     }
 
@@ -334,7 +334,7 @@ public final class OpinionPoll {
      *
      * @return The fieldwork start date.
      */
-    public DateOrYearMonth getFieldworkStart() {
+    public DateOrMonth getFieldworkStart() {
         return fieldworkStart;
     }
 

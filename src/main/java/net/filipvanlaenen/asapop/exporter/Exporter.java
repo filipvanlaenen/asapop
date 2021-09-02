@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.filipvanlaenen.asapop.model.DateOrYearMonth;
+import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
@@ -115,8 +115,8 @@ public abstract class Exporter {
      */
     static List<String> exportDates(final OpinionPoll opinionPoll) {
         List<String> elements = new ArrayList<String>();
-        DateOrYearMonth fieldworkStart = opinionPoll.getFieldworkStart();
-        DateOrYearMonth fieldworkEnd = opinionPoll.getFieldworkEnd();
+        DateOrMonth fieldworkStart = opinionPoll.getFieldworkStart();
+        DateOrMonth fieldworkEnd = opinionPoll.getFieldworkEnd();
         LocalDate publicationDate = opinionPoll.getPublicationDate();
         if (fieldworkStart == null) {
             if (fieldworkEnd == null) {

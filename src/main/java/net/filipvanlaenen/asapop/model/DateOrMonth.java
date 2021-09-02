@@ -6,10 +6,10 @@ import java.time.YearMonth;
 import java.util.Objects;
 
 /**
- * Class wrapping around either a Date (<code>LocalDate</code>) or <code>YearMonth</code>.
+ * Class wrapping around either a Date (<code>LocalDate</code>) or a month (<code>YearMonth</code>).
  */
-public abstract class DateOrYearMonth {
-    private static final class Date extends DateOrYearMonth {
+public abstract class DateOrMonth {
+    private static final class Date extends DateOrMonth {
         private LocalDate date;
         private Date(final LocalDate date) {
             this.date = date;
@@ -38,7 +38,7 @@ public abstract class DateOrYearMonth {
             return date.toString();
         }
     }
-    private static final class Month extends DateOrYearMonth {
+    private static final class Month extends DateOrMonth {
         private YearMonth month;
         private Month(final YearMonth month) {
             this.month = month;
@@ -67,7 +67,7 @@ public abstract class DateOrYearMonth {
             return month.toString();
         }
     }
-    static DateOrYearMonth parse(final String text) {
+    static DateOrMonth parse(final String text) {
         try {
             return new Date(LocalDate.parse(text));
         } catch (DateTimeParseException dtpe) {
