@@ -201,7 +201,9 @@ public class DateOrMonthTest {
      */
     @Test
     public void twoDifferentDatesShouldHaveDifferentHashCodes() {
-        assertFalse(DateOrMonth.parse(SECOND_OF_SEPTEMBER_2021_TEXT).hashCode() == DateOrMonth.parse("2021-10-02").hashCode());
+        DateOrMonth date1 = DateOrMonth.parse(SECOND_OF_SEPTEMBER_2021_TEXT);
+        DateOrMonth date2 = DateOrMonth.parse("2021-10-02");
+        assertFalse(date1.hashCode() == date2.hashCode());
     }
 
     /**
