@@ -114,6 +114,8 @@ final class ResponseScenarioLine extends Line {
                 break;
             case "SC": builder.setScope(value);
                 break;
+            case "SS": builder.setSampleSize(value);
+                break;
             // The default case should be handled as part of issue #9.
         }
     }

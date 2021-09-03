@@ -89,4 +89,16 @@ public final class ResponseScenarioLineTest {
                                                                   .setScope("E").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
+
+    /**
+     * Verifies that String with a single line containing a response scenario with a different sample size can be
+     * parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSize() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43");
+        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                  .setSampleSize("999").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
 }

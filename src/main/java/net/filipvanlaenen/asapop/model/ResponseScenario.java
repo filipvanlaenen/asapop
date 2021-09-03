@@ -22,6 +22,10 @@ public final class ResponseScenario {
      */
     private final Map<ElectoralList, String> results;
     /**
+     * The sample size.
+     */
+    private String sampleSize;
+    /**
      * The scope.
      */
     private String scope;
@@ -32,10 +36,11 @@ public final class ResponseScenario {
      * @param builder A builder instance.
      */
     private ResponseScenario(final Builder builder) {
-        this.area = builder.area;
-        this.other = builder.other;
-        this.results = Collections.unmodifiableMap(builder.results);
-        this.scope = builder.scope;
+        area = builder.area;
+        other = builder.other;
+        results = Collections.unmodifiableMap(builder.results);
+        sampleSize = builder.sampleSize;
+        scope = builder.scope;
     }
 
     /**
@@ -54,6 +59,10 @@ public final class ResponseScenario {
          * The results.
          */
         private final Map<ElectoralList, String> results = new HashMap<ElectoralList, String>();
+        /**
+         * The sample size.
+         */
+        private String sampleSize;
         /**
          * The scope.
          */
@@ -103,6 +112,17 @@ public final class ResponseScenario {
         }
 
         /**
+         * Sets the sample size.
+         *
+         * @param sampleSizeString The sample size as a string.
+         * @return This builder instance.
+         */
+        public Builder setSampleSize(final String sampleSizeString) {
+            this.sampleSize = sampleSizeString;
+            return this;
+        }
+
+        /**
          * Sets the scope.
          *
          * @param scopeString The scope as a string.
@@ -121,6 +141,7 @@ public final class ResponseScenario {
             return equalsOrBothNull(area, otherResponseScenario.area)
                    && equalsOrBothNull(other, otherResponseScenario.other)
                    && otherResponseScenario.results.equals(results)
+                   && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
                    && equalsOrBothNull(scope, otherResponseScenario.scope);
         } else {
             return false;
@@ -167,6 +188,15 @@ public final class ResponseScenario {
     }
 
     /**
+     * Returns the sample size.
+     *
+     * @return The sample size.
+     */
+    public String getSampleSize() {
+        return sampleSize;
+    }
+
+    /**
      * Returns the scope.
      *
      * @return The scope.
@@ -177,6 +207,6 @@ public final class ResponseScenario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(area, other, results, scope);
+        return Objects.hash(area, other, results, sampleSize, scope);
     }
 }

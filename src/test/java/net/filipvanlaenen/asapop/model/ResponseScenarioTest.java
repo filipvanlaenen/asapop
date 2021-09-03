@@ -47,6 +47,16 @@ public class ResponseScenarioTest {
      }
 
      /**
+      * Verifies that the setSampleSize method in the builder class is wired correctly to the getSampleSize
+      * method.
+      */
+     @Test
+     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999").build();
+        assertEquals("999", responseScenario.getSampleSize());
+     }
+
+     /**
       * Verifies that a response scenario is not equal to null.
       */
      @Test
@@ -189,6 +199,36 @@ public class ResponseScenarioTest {
      public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentArea() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().setArea("AB").build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().setArea("YZ").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
+     }
+
+     /**
+      * Verifies that a response scenario is not equal to another response scenario with a different sample size.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentSampleSize() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setSampleSize("999").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setSampleSize("998").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that a response scenario is not equal to another response scenario missing the sample size.
+      */
+     @Test
+     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheSampleSize() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setSampleSize("999").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+     }
+
+     /**
+      * Verifies that response scenarios have different hash codes if they have different sample sizes.
+      */
+     @Test
+     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentSampleSize() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setSampleSize("999").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setSampleSize("998").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
      }
 
