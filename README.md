@@ -124,7 +124,7 @@ An ROPF file can be converted to EOPAOD's CSV file format using the following
 command:
 
 ```
-convert <ropf-file-name> <csv-file-name> <electoral-list-key>+
+convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]
 ```
 
 Assume the opinion polls have been stored in a file called `nn.ropf`, and you
@@ -136,13 +136,26 @@ conversion:
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI
 ```
 
+The option `-a` can be used to filter the opinion polls and response scenarios by a certain area. The following command
+would export only the opinion polls and response scenarios related to the area `XX`:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI -a=XX
+```
+
+Use `--` to indicate that only opinion polls and response scenarios not related to an area should be exported:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI -a=--
+```
+
 ## Conversion from ROPF to PSV
 
 An ROPF file can be converted to EOPAOD's PSV file format using the following
 command:
 
 ```
-convert <ropf-file-name> <psv-file-name> <electoral-list-key>+
+convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]
 ```
 
 Assume the opinion polls have been stored in a file called `nn.ropf`, and you
@@ -152,4 +165,17 @@ conversion:
 
 ```
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI
+```
+
+The option `-a` can be used to filter the opinion polls and response scenarios by a certain area. The following command
+would export only the opinion polls and response scenarios related to the area `XX`:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI -a=XX
+```
+
+Use `--` to indicate that only opinion polls and response scenarios not related to an area should be exported:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI -a=--
 ```
