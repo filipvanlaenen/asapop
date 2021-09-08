@@ -52,8 +52,8 @@ public final class CommandLineInterface {
      */
     private static void printUsage() {
         System.out.println("Usage:");
-        System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+");
-        System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+");
+        System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
+        System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
     }
 
     /**
@@ -74,17 +74,24 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException {
                 String inputFileName = args[1];
                 String outputFileName = args[2];
-                String[] electoralListKeys = new String[args.length - THREE];
-                for (int i = 0; i < args.length - THREE; i++) {
+                int noOfElectoralListKeys = args.length - THREE;
+                String area = null;
+                if (args[args.length - 1].startsWith("-a=")) {
+                    String areaOption = args[args.length - 1];
+                    area = areaOption.substring(3, areaOption.length());
+                    noOfElectoralListKeys--;
+                }
+                String[] electoralListKeys = new String[noOfElectoralListKeys];
+                for (int i = 0; i < noOfElectoralListKeys; i++) {
                     electoralListKeys[i] = args[i + THREE];
                 }
                 String[] ropfContent = readFile(inputFileName);
                 OpinionPolls opinionPolls = RichOpinionPollsFile.parse(ropfContent).getOpinionPolls();
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
-                    outputContent = EopaodCsvExporter.export(opinionPolls, electoralListKeys);
+                    outputContent = EopaodCsvExporter.export(opinionPolls, area, electoralListKeys);
                 } else if (outputFileName.endsWith(".psv")) {
-                    outputContent = EopaodPsvExporter.export(opinionPolls, electoralListKeys);
+                    outputContent = EopaodPsvExporter.export(opinionPolls, area, electoralListKeys);
                 }
                 writeFile(outputFileName, outputContent);
             }

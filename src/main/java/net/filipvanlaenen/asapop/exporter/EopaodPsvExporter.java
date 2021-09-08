@@ -24,7 +24,7 @@ public final class EopaodPsvExporter extends Exporter {
      * @param electoralListKeys An array with the keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
-    public static String export(final OpinionPolls opinionPolls, final String... electoralListKeys) {
+    public static String export(final OpinionPolls opinionPolls, final String area, final String... electoralListKeys) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
         sb.append(" | Participation | Precision | ");

@@ -23,7 +23,7 @@ public class EopaodPsvExporterTest {
         expected.append("Polling Firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
         expected.append(" | Participation | Precision | A | B | Other\n");
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | 1 | 55 | 45 | N/A");
-        assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, "A", "B"));
+        assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, null, "A", "B"));
     }
 
     /**
@@ -40,7 +40,7 @@ public class EopaodPsvExporterTest {
         expected.append("ACME | N/A | 2021-08-15 | 2021-08-15 | N/A | N/A | N/A | 1 | 55 | 45 | N/A\n");
         expected.append("ACME | N/A | 2021-07-28 | 2021-07-28 | N/A | N/A | N/A | 1 | 55 | 45 | N/A\n");
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | 1 | 55 | 45 | N/A");
-        assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, "A", "B"));
+        assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, null, "A", "B"));
     }
 
     /**
@@ -55,7 +55,7 @@ public class EopaodPsvExporterTest {
         expected.append(" | Participation | Precision | A | B | C | Other\n");
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | 1 | 55 | 45 | N/A | N/A\n");
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | 1 | 50 | 40 | 10 | N/A");
-        assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, "A", "B", "C"));
+        assertEquals(expected.toString(), EopaodPsvExporter.export(opinionPolls, null, "A", "B", "C"));
     }
 
      /**

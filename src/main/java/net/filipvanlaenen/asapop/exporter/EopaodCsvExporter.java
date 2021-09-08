@@ -49,7 +49,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @param electoralListKeys An array with the keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the CSV file format for EOPAOD.
      */
-    public static String export(final OpinionPolls opinionPolls, final String... electoralListKeys) {
+    public static String export(final OpinionPolls opinionPolls, final String area, final String... electoralListKeys) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         sb.append(",Sample Size Qualification,Participation,Precision");
@@ -59,8 +59,11 @@ public final class EopaodCsvExporter extends Exporter {
         }
         sb.append(",Other");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
-            sb.append("\n");
-            sb.append(export(opinionPoll, electoralListKeys));
+            String lines = export(opinionPoll, area, electoralListKeys);
+            if (lines != null) {
+                sb.append("\n");
+                sb.append(lines);
+            }
         }
         return sb.toString();
     }
@@ -72,27 +75,36 @@ public final class EopaodCsvExporter extends Exporter {
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the CSV file format for EOPAOD.
      */
-    static String export(final OpinionPoll opinionPoll, final String... electoralListKeys) {
-        List<String> elements = new ArrayList<String>();
-        elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
-        elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
-        elements.addAll(exportDates(opinionPoll));
-        elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
-        elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
-        elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
-        elements.add("Not Available");
-        elements.add(calculatePrecision(opinionPoll, electoralListKeys) + "%");
-        for (String electoralListKey : electoralListKeys) {
-            elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListKey)));
+    static String export(final OpinionPoll opinionPoll, final String area, final String... electoralListKeys) {
+        List<String> lines = new ArrayList<String>();
+        String thisArea = opinionPoll.getArea();
+        if (area == null || (area.equals("--") && thisArea == null) || area.equals(thisArea)) {
+            List<String> elements = new ArrayList<String>();
+            elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
+            elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
+            elements.addAll(exportDates(opinionPoll));
+            elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
+            elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
+            elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
+            elements.add("Not Available");
+            elements.add(calculatePrecision(opinionPoll, electoralListKeys) + "%");
+            for (String electoralListKey : electoralListKeys) {
+                elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListKey)));
+            }
+            elements.add(percentageOrNotAvailable(opinionPoll.getOther()));
+            lines.add(String.join(",", elements));
         }
-        elements.add(percentageOrNotAvailable(opinionPoll.getOther()));
-        StringBuffer sb = new StringBuffer();
-        sb.append(String.join(",", elements));
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            sb.append("\n");
-            sb.append(export(responseScenario, opinionPoll, electoralListKeys));
+            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListKeys);
+            if (responseScenarioLine != null) {
+                lines.add(responseScenarioLine);
+            }
         }
-        return sb.toString();
+        if (lines.isEmpty()) {
+            return null;
+        } else {
+            return String.join("\n", lines);
+        }
     }
 
     /**
@@ -103,8 +115,17 @@ public final class EopaodCsvExporter extends Exporter {
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
-    static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll,
+    static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
                          final String... electoralListKeys) {
+        if (area != null) {
+            String thisArea = responseScenario.getArea();
+            if (thisArea == null) {
+                thisArea = opinionPoll.getArea();
+            }
+            if ((area.equals("--") && thisArea != null) || !area.equals(thisArea)) {
+                return null;
+            }
+        }
         List<String> elements = new ArrayList<String>();
         elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
