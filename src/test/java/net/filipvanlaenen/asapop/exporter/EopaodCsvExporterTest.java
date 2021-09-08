@@ -335,4 +335,61 @@ public class EopaodCsvExporterTest {
                           + ",Not Available,Not Available,1%,55%,43%,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
+
+    /**
+     * Verifies the correct export of a simple response scenario when the opinion poll has the correct area, and the
+     * response scenario doesn't specify another one.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioInheritingTheSpeficiedAreaFromTheOpinionPoll() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setArea("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
+                                                                          .build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1%,55%,45%,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "N", "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple response scenario when the opinion poll has a different area, but the
+     * response scenario's area matches the specified one.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithDifferentAreaMatchingTheSpecifiedArea() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setArea("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
+                                                                          .setArea("S").build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1%,55%,45%,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "S", "A", "B"));
+    }
+
+    /**
+     * Verifies that a response scenario inheriting the incorrect area from the opinion poll isn't exported.
+     */
+    @Test
+    public void shouldNotExportSimpleResponseScenarioInheritingTheWrongAreaFromTheOpinionPoll() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setArea("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
+                                                                          .build();
+        assertNull(EopaodCsvExporter.export(responseScenario, poll, "S", "A", "B"));
+    }
+
+    /**
+     * Verifies that a response scenario with a different area than the opinion poll, not equal to the specified area,
+     * is not exported.
+     */
+    @Test
+    public void shouldNotExportSimpleResponseScenarioWithDifferentAreaNotMatchingTheSpecifiedArea() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setArea("N").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
+                                                                          .setArea("S").build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1%,55%,45%,Not Available";
+        assertNull(EopaodCsvExporter.export(responseScenario, poll, "N", "A", "B"));
+    }
 }

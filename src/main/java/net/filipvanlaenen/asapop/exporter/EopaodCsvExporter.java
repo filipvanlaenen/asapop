@@ -18,6 +18,10 @@ public final class EopaodCsvExporter extends Exporter {
     private EopaodCsvExporter() {
     }
 
+    private static boolean areaMatches(final String specifiedArea, final String actualArea) {
+        return specifiedArea == null || (specifiedArea.equals("--") && actualArea == null) || specifiedArea.equals(actualArea);
+    }
+
     /**
      * Returns the string if it isn't null, and the empty string otherwise.
      *
@@ -77,8 +81,7 @@ public final class EopaodCsvExporter extends Exporter {
      */
     static String export(final OpinionPoll opinionPoll, final String area, final String... electoralListKeys) {
         List<String> lines = new ArrayList<String>();
-        String thisArea = opinionPoll.getArea();
-        if (area == null || (area.equals("--") && thisArea == null) || area.equals(thisArea)) {
+        if (areaMatches(area, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
             elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
@@ -117,14 +120,12 @@ public final class EopaodCsvExporter extends Exporter {
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
                          final String... electoralListKeys) {
-        if (area != null) {
-            String thisArea = responseScenario.getArea();
-            if (thisArea == null) {
-                thisArea = opinionPoll.getArea();
-            }
-            if ((area.equals("--") && thisArea != null) || !area.equals(thisArea)) {
-                return null;
-            }
+        String thisArea = responseScenario.getArea();
+        if (thisArea == null) {
+            thisArea = opinionPoll.getArea();
+        }
+        if (!areaMatches(area, thisArea)) {
+            return null;
         }
         List<String> elements = new ArrayList<String>();
         elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
