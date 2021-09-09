@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -167,6 +168,16 @@ public class EopaodPsvExporterTest {
     }
 
     /**
+     * Verifies that an opinion poll with a different area than the one specified isn't exported.
+     */
+    @Test
+    public void shouldNotExportSimpleOpinionPollWithOtherAreaThanTheOneSpecified() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addResult("A", "55.5").addResult("B", "43").setArea("N").build();
+        assertNull(EopaodPsvExporter.export(poll, "S", "A", "B"));
+    }
+
+    /**
      * Verifies the correct export of a simple response scenario for an opinion poll with only a publication date.
      */
     @Test
@@ -201,5 +212,30 @@ public class EopaodPsvExporterTest {
                                                                          .setOther("2").build();
        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
+    }
+
+    /**
+     * Verifies that a response scenario inheriting the specified area is exported.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioInheritingTheSpecifiedArea() {
+       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setArea("N")
+                                                   .build();
+       ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                         .build();
+       String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
+       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "N", "A", "B"));
+    }
+
+    /**
+     * Verifies that a response scenario overriding the area with another one than the one specified is not exported.
+     */
+    @Test
+    public void shouldNotExportSimpleResponseScenarioOverridingWithANonSpecifiedArea() {
+       OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setArea("N")
+                                                   .build();
+       ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+                                                                         .setArea("S").build();
+       assertNull(EopaodPsvExporter.export(responseScenario, poll, "N", "A", "B"));
     }
 }
