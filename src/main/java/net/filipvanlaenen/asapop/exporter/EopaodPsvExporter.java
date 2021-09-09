@@ -31,8 +31,11 @@ public final class EopaodPsvExporter extends Exporter {
         sb.append(String.join(" | ", electoralListKeys));
         sb.append(" | Other");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
-            sb.append("\n");
-            sb.append(export(opinionPoll, electoralListKeys));
+            String lines = export(opinionPoll, area, electoralListKeys);
+            if (lines != null) {
+                sb.append("\n");
+                sb.append(lines);
+            }
         }
         return sb.toString();
     }
@@ -44,26 +47,34 @@ public final class EopaodPsvExporter extends Exporter {
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
-    static String export(final OpinionPoll opinionPoll, final String... electoralListKeys) {
-        List<String> elements = new ArrayList<String>();
-        elements.add(opinionPoll.getPollingFirm());
-        elements.add(naIfNull(exportCommissionners(opinionPoll)));
-        elements.addAll(exportDates(opinionPoll));
-        elements.add(naIfNull(opinionPoll.getScope()));
-        elements.add(naIfNull(opinionPoll.getSampleSize()));
-        elements.add("N/A");
-        elements.add(calculatePrecision(opinionPoll, electoralListKeys));
-        for (String electoralListKey : electoralListKeys) {
-            elements.add(naIfNull(opinionPoll.getResult(electoralListKey)));
+    static String export(final OpinionPoll opinionPoll, final String area, final String... electoralListKeys) {
+        List<String> lines = new ArrayList<String>();
+        if (areaMatches(area, opinionPoll.getArea())) {
+            List<String> elements = new ArrayList<String>();
+            elements.add(opinionPoll.getPollingFirm());
+            elements.add(naIfNull(exportCommissionners(opinionPoll)));
+            elements.addAll(exportDates(opinionPoll));
+            elements.add(naIfNull(opinionPoll.getScope()));
+            elements.add(naIfNull(opinionPoll.getSampleSize()));
+            elements.add("N/A");
+            elements.add(calculatePrecision(opinionPoll, electoralListKeys));
+            for (String electoralListKey : electoralListKeys) {
+                elements.add(naIfNull(opinionPoll.getResult(electoralListKey)));
+            }
+            elements.add(naIfNull(opinionPoll.getOther()));
+            lines.add(String.join(" | ", elements));
         }
-        elements.add(naIfNull(opinionPoll.getOther()));
-        StringBuffer sb = new StringBuffer();
-        sb.append(String.join(" | ", elements));
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            sb.append("\n");
-            sb.append(export(responseScenario, opinionPoll, electoralListKeys));
+            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListKeys);
+            if (responseScenarioLine != null) {
+                lines.add(responseScenarioLine);
+            }
         }
-        return sb.toString();
+        if (lines.isEmpty()) {
+            return null;
+        } else {
+            return String.join("\n", lines);
+        }
     }
 
     /**
@@ -74,8 +85,15 @@ public final class EopaodPsvExporter extends Exporter {
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
-    static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll,
+    static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
                          final String... electoralListKeys) {
+        String thisArea = responseScenario.getArea();
+        if (thisArea == null) {
+            thisArea = opinionPoll.getArea();
+        }
+        if (!areaMatches(area, thisArea)) {
+            return null;
+        }
         List<String> elements = new ArrayList<String>();
         elements.add(opinionPoll.getPollingFirm());
         elements.add(naIfNull(exportCommissionners(opinionPoll)));

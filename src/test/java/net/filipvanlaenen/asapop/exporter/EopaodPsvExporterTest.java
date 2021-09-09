@@ -66,7 +66,7 @@ public class EopaodPsvExporterTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .addResult("A", "55").addResult("B", "45").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
      }
 
      /**
@@ -78,7 +78,7 @@ public class EopaodPsvExporterTest {
                                                     .setFieldworkEnd("2021-08-02").addResult("A", "55")
                                                     .addResult("B", "45").build();
         String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
      }
 
      /**
@@ -91,7 +91,7 @@ public class EopaodPsvExporterTest {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
                                                                           .build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | 1 | 55 | 43 | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
      }
 
      /**
@@ -104,7 +104,7 @@ public class EopaodPsvExporterTest {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
                                                                           .setScope("E").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | 1 | 55 | 43 | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
      }
 
     /**
@@ -116,7 +116,7 @@ public class EopaodPsvExporterTest {
                                                     .addResult("A", "55").addResult("B", "43").setSampleSize("1000")
                                                     .build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | 1000 | N/A | 1 | 55 | 43 | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
     }
 
     /**
@@ -127,7 +127,7 @@ public class EopaodPsvExporterTest {
        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                    .addResult("A", "55").addResult("B", "43").setOther("2").build();
        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
-       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+       assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
     }
 
     /**
@@ -139,7 +139,7 @@ public class EopaodPsvExporterTest {
                                                    .setPublicationDate("2021-08-02").addResult("A", "55")
                                                    .addResult("B", "43").build();
        String expected = "ACME | The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+       assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
     }
 
     /**
@@ -152,7 +152,7 @@ public class EopaodPsvExporterTest {
                                                     .addResult("A", "55").addResult("B", "43").build();
         String expected = "ACME | The Post and The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43"
                           + " | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
     }
 
     /**
@@ -163,7 +163,7 @@ public class EopaodPsvExporterTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .addResult("A", "55.5").addResult("B", "43").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.5 | 55.5 | 43 | N/A";
-        assertEquals(expected, EopaodPsvExporter.export(poll, "A", "B"));
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
     }
 
     /**
@@ -175,7 +175,7 @@ public class EopaodPsvExporterTest {
        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
                                                                          .build();
        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
 
     /**
@@ -188,7 +188,7 @@ public class EopaodPsvExporterTest {
        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "45")
                                                                          .build();
        String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
 
     /**
@@ -200,6 +200,6 @@ public class EopaodPsvExporterTest {
        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
                                                                          .setOther("2").build();
        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
-       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, "A", "B"));
+       assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
 }
