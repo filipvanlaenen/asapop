@@ -27,6 +27,19 @@ public abstract class Exporter {
     }
 
     /**
+     * Verifies whether the provided area matches with the specified area. If the specified area is <code>null</code>,
+     * or the specified area and the provided area are equal, or the specified area is <code>--</code> and the
+     * provided area is <code>null</code>, the areas are said to match, and the method returns true.
+     *
+     * @param specifiedArea The area specified for export.
+     * @param actualArea The are of the opinion poll or response alternative.
+     * @return True if the provided area matches with the specified area, false otherwise.
+     */
+    static boolean areaMatches(final String specifiedArea, final String actualArea) {
+        return specifiedArea == null || (specifiedArea.equals("--") && actualArea == null) || specifiedArea.equals(actualArea);
+    }
+
+    /**
      * Calculates the precision of an opinion poll.
      *
      * @param opinionPoll The opinion poll.

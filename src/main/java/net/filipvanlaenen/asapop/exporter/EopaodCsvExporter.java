@@ -18,10 +18,6 @@ public final class EopaodCsvExporter extends Exporter {
     private EopaodCsvExporter() {
     }
 
-    private static boolean areaMatches(final String specifiedArea, final String actualArea) {
-        return specifiedArea == null || (specifiedArea.equals("--") && actualArea == null) || specifiedArea.equals(actualArea);
-    }
-
     /**
      * Returns the string if it isn't null, and the empty string otherwise.
      *
