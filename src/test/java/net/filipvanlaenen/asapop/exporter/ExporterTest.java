@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -227,5 +228,45 @@ public class ExporterTest {
                                                     .addResult("A", "55.4").addResult("B", "43").build();
        List<OpinionPoll> expected = List.of(poll3, poll2, poll1);
        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3)));
+    }
+
+    /**
+     * Verifies that if the specified area is <code>null</code>, any area matches.
+     */
+    @Test
+    public void areaShouldMatchWhenSpecifiedAreaIsNull() {
+        assertTrue(Exporter.areaMatches(null, "N"));
+    }
+
+    /**
+     * Verifies that if the specified area is <code>--</code>, <code>null</code> as area matches.
+     */
+    @Test
+    public void areaShouldMatchWhenSpecifiedAreaIsTwoDashesAndProvidedAreaIsNull() {
+        assertTrue(Exporter.areaMatches("--", null));
+    }
+
+    /**
+     * Verifies that if the specified area is <code>--</code>, any area doesn't match.
+     */
+    @Test
+    public void areaShouldNotMatchWhenSpecifiedAreaIsTwoDashesAndProvidedAreaIsNotNull() {
+        assertFalse(Exporter.areaMatches("--", "N"));
+    }
+
+    /**
+     * Verifies that the area matches if it is equal to the specified area.
+     */
+    @Test
+    public void areaShouldMatchWhenEqualToSpecifiedArea() {
+        assertTrue(Exporter.areaMatches("N", "N"));
+    }
+
+    /**
+     * Verifies that the area doesn't match is isn't equal to the specified area.
+     */
+    @Test
+    public void areaShouldNotMatchWhenNotEqualToSpecifiedArea() {
+        assertFalse(Exporter.areaMatches("S", "N"));
     }
 }

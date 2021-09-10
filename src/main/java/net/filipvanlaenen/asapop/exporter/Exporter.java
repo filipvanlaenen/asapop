@@ -36,7 +36,7 @@ public abstract class Exporter {
      * @return True if the provided area matches with the specified area, false otherwise.
      */
     static boolean areaMatches(final String specifiedArea, final String actualArea) {
-        return specifiedArea == null || (specifiedArea.equals("--") && actualArea == null) || specifiedArea.equals(actualArea);
+        return specifiedArea == null || specifiedArea.equals("--") && actualArea == null || specifiedArea.equals(actualArea);
     }
 
     /**
