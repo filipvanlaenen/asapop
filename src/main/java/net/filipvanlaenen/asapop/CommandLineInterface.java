@@ -78,7 +78,7 @@ public final class CommandLineInterface {
                 String area = null;
                 if (args[args.length - 1].startsWith("-a=")) {
                     String areaOption = args[args.length - 1];
-                    area = areaOption.substring(3, areaOption.length());
+                    area = areaOption.substring(THREE, areaOption.length());
                     noOfElectoralListKeys--;
                 }
                 String[] electoralListKeys = new String[noOfElectoralListKeys];

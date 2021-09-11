@@ -21,6 +21,7 @@ public final class EopaodPsvExporter extends Exporter {
      * Exports the opinion polls.
      *
      * @param opinionPolls The opinion polls to export.
+     * @param area The area to filter opinion polls and response scenarios on.
      * @param electoralListKeys An array with the keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
@@ -44,6 +45,7 @@ public final class EopaodPsvExporter extends Exporter {
      * Exports the opinion poll.
      *
      * @param opinionPoll The opinion poll to export.
+     * @param area The area to filter opinion polls on.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
@@ -82,6 +84,7 @@ public final class EopaodPsvExporter extends Exporter {
      *
      * @param responseScenario The response scenario to export.
      * @param opinionPoll The opinion poll this response scenario relates to.
+     * @param area The area to filter response scenarios on.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
