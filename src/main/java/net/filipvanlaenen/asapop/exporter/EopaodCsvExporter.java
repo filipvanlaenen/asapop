@@ -119,24 +119,18 @@ public final class EopaodCsvExporter extends Exporter {
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
                          final String... electoralListKeys) {
-        String thisArea = responseScenario.getArea();
-        if (thisArea == null) {
-            thisArea = opinionPoll.getArea();
-        }
-        if (!areaMatches(area, thisArea)) {
+        if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
         List<String> elements = new ArrayList<String>();
         elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
-        if (responseScenario.getScope() == null) {
-            elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
-        } else {
-            elements.add(exportScope(responseScenario.getScope()));
-        }
-        elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
-        elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
+        elements.add(notAvailableIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(),
+                                                                      opinionPoll.getScope()))));
+        String sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
+        elements.add(notAvailableIfNull(sampleSize));
+        elements.add(sampleSize == null ? "Not Available" : "Provided");
         elements.add("Not Available");
         elements.add(calculatePrecision(responseScenario, electoralListKeys) + "%");
         for (String electoralListKey : electoralListKeys) {

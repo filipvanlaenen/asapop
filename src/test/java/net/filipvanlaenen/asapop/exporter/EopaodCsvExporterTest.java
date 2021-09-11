@@ -291,6 +291,21 @@ public class EopaodCsvExporterTest {
     }
 
     /**
+     * Verifies the correct export of a simple response scenario with a different sample size.
+     */
+    @Test
+    public void shouldExportAResponseScenarioWithADifferentSampleSizeCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setSampleSize("1000").addResult("A", "55").addResult("B", "45")
+                                                    .build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999").addResult("A", "55")
+                                                                          .addResult("B", "43").build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,999,Provided,Not Available,1%,55%,43%" +
+                          ",Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+    }
+
+    /**
      * Verifies the correct export of a simple response scenario when the opinion poll has the correct area, and the
      * response scenario doesn't specify another one.
      */

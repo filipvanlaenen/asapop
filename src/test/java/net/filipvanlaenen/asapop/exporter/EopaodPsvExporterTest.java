@@ -215,6 +215,20 @@ public class EopaodPsvExporterTest {
     }
 
     /**
+     * Verifies the correct export of a simple response scenario with a different sample size.
+     */
+    @Test
+    public void shouldExportAResponseScenarioWithADifferentSampleSizeCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .setSampleSize("1000").addResult("A", "55").addResult("B", "45")
+                                                    .build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999").addResult("A", "55")
+                                                                          .addResult("B", "43").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | 999 | N/A | 1 | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
+    }
+
+    /**
      * Verifies that a response scenario inheriting the specified area is exported.
      */
     @Test

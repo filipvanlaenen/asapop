@@ -90,23 +90,15 @@ public final class EopaodPsvExporter extends Exporter {
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
                          final String... electoralListKeys) {
-        String thisArea = responseScenario.getArea();
-        if (thisArea == null) {
-            thisArea = opinionPoll.getArea();
-        }
-        if (!areaMatches(area, thisArea)) {
+        if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
         List<String> elements = new ArrayList<String>();
         elements.add(opinionPoll.getPollingFirm());
         elements.add(naIfNull(exportCommissionners(opinionPoll)));
         elements.addAll(exportDates(opinionPoll));
-        if (responseScenario.getScope() == null) {
-            elements.add(naIfNull(opinionPoll.getScope()));
-        } else {
-            elements.add(responseScenario.getScope());
-        }
-        elements.add(naIfNull(opinionPoll.getSampleSize()));
+        elements.add(naIfNull(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope())));
+        elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
         elements.add("N/A");
         elements.add(calculatePrecision(responseScenario, electoralListKeys));
         for (String electoralListKey : electoralListKeys) {

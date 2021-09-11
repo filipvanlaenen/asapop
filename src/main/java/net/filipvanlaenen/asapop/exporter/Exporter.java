@@ -215,6 +215,17 @@ public abstract class Exporter {
     }
 
     /**
+     * Returns the second string if the first string is <code>null</code>, or the first string otherwise.
+     *
+     * @param first The first string.
+     * @param second The second string.
+     * @return The second string if the first string is <code>null</code>, or the first string otherwise.
+     */
+    static String secondIfFirstNull(final String first, final String second) {
+        return first == null ? second : first;
+    }
+
+    /**
      * Sorts and concatenates with commas and an and a set of strings.
      *
      * @param strings The set of strings to be sorted and concatenated.

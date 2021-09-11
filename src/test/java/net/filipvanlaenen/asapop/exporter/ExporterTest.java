@@ -269,4 +269,20 @@ public class ExporterTest {
     public void areaShouldNotMatchWhenNotEqualToSpecifiedArea() {
         assertFalse(Exporter.areaMatches("S", "N"));
     }
+
+    /**
+     * Verifies that <code>secondIfFirstNull</code> returns the first string if it isn't <code>null</code>.
+     */
+    @Test
+    public void shouldReturnFirstStringIfItIsNotNull() {
+        assertEquals("A", Exporter.secondIfFirstNull("A", "B"));
+    }
+
+    /**
+     * Verifies that <code>secondIfFirstNull</code> returns the second string if the first string is <code>null</code>.
+     */
+    @Test
+    public void shouldReturnSecondStringIfTheFirstStringIsNotNull() {
+        assertEquals("B", Exporter.secondIfFirstNull(null, "B"));
+    }
 }
