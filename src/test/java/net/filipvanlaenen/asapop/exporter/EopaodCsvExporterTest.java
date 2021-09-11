@@ -300,8 +300,8 @@ public class EopaodCsvExporterTest {
                                                     .build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999").addResult("A", "55")
                                                                           .addResult("B", "43").build();
-        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,999,Provided,Not Available,1%,55%,43%" +
-                          ",Not Available";
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,999,Provided,Not Available,1%,55%,43%"
+                          + ",Not Available";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
 
