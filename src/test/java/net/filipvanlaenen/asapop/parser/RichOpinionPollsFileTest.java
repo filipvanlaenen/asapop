@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,13 +41,21 @@ public final class RichOpinionPollsFileTest {
                                                                                   .build();
 
     /**
-     * Verifies that String with a single line containing a simple opinion poll can be parsed.
+     * Verifies that a single line containing a simple opinion poll can be parsed.
      */
     @Test
     public void shouldParseSingleLineWithASimpleOpinionPoll() {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         assertEquals(polls, RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getOpinionPolls().getOpinionPolls());
+    }
+
+    /**
+     * Verifies that a single line containing a simple opinion poll doesn't produce warnings.
+     */
+    @Test
+    public void shouldParseSingleLineWithASimpleOpinionPollWithoutWarnings() {
+        assertTrue(RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getWarnings().isEmpty());
     }
 
     /**

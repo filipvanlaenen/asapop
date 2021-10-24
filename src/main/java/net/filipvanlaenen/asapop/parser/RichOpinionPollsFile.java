@@ -14,6 +14,10 @@ public final class RichOpinionPollsFile {
      * The opinion polls extracted from the file.
      */
     private final OpinionPolls opinionPolls;
+    /**
+     * The warnings.
+     */
+    private final Set<Warning> warnings = new HashSet<Warning>();
 
     /**
      * Private constructor creating a new instance from a set of opinion polls.
@@ -31,6 +35,15 @@ public final class RichOpinionPollsFile {
      */
     public OpinionPolls getOpinionPolls() {
         return opinionPolls;
+    }
+
+    /**
+     * Returns the warnings.
+     *
+     * @return The warnings.
+     */
+    Set<Warning> getWarnings() {
+        return warnings;
     }
 
     /**
