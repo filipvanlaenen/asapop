@@ -6,6 +6,7 @@ import java.util.List;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResultValue;
 
 /**
  * Exporter to the EOPAOD PSV file format.
@@ -116,5 +117,15 @@ public final class EopaodPsvExporter extends Exporter {
      */
     private static String naIfNull(final String s) {
         return s == null ? "N/A" : s;
+    }
+
+    /**
+     * Returns the result value's text if it isn't null, and the string "N/A" otherwise.
+     *
+     * @param s The result value.
+     * @return "N/A" if the string is null, and otherwise the string as provided.
+     */
+    private static String naIfNull(final ResultValue s) {
+        return s == null ? "N/A" : s.getText();
     }
 }

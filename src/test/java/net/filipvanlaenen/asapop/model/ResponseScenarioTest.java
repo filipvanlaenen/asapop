@@ -14,8 +14,8 @@ public class ResponseScenarioTest {
      */
      @Test
      public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addResult("A", "55").build();
-        assertEquals("55", responseScenario.getResult("A"));
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        assertEquals("55", responseScenario.getResult("A").getText());
      }
 
     /**
@@ -23,8 +23,8 @@ public class ResponseScenarioTest {
      */
      @Test
      public void setOtherInBuilderShouldBeWiredCorrectlyToGetOther() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().setOther("5").build();
-        assertEquals("5", responseScenario.getOther());
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setWellformedOther("5").build();
+        assertEquals("5", responseScenario.getOther().getText());
      }
 
      /**
@@ -116,8 +116,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addResult("A", "55").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addResult("A", "56").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
         assertFalse(responseScenario1.equals(responseScenario2));
      }
 
@@ -126,8 +126,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addResult("A", "55").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addResult("A", "56").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
      }
 
@@ -136,8 +136,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentOtherResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setOther("5").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("6").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("6").build();
         assertFalse(responseScenario1.equals(responseScenario2));
      }
 
@@ -146,8 +146,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentOtherResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setOther("5").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("6").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("6").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
      }
 
@@ -156,7 +156,7 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheOtherResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setOther("5").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
         assertFalse(responseScenario1.equals(responseScenario2));
      }
@@ -168,7 +168,7 @@ public class ResponseScenarioTest {
      @Test
      public void aResponseScenarioMissingOtherResutShouldNotBeEqualToAnotherResponseScenarioWithOtherResult() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
      }
 

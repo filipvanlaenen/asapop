@@ -9,6 +9,7 @@ import java.util.Set;
 import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResultValue;
 
 /**
  * Superclass for all exporters.
@@ -20,7 +21,7 @@ public abstract class Exporter {
      * @param set The set to add to.
      * @param s The string to add.
      */
-    private static void addToSetUnlessNull(final Set<String> set, final String s) {
+    private static <T> void addToSetUnlessNull(final Set<T> set, final T s) {
         if (s != null) {
             set.add(s);
         }
@@ -63,14 +64,15 @@ public abstract class Exporter {
     }
 
     /**
-     * Calculates the precision of a set of numbers.
+     * Calculates the precision of a set of result values.
      *
-     * @param numbers A set of numbers.
+     * @param resultValues A set of result values.
      * @return The precision as a string.
      */
-    private static String calculatePrecision(final Set<String> numbers) {
+    private static String calculatePrecision(final Set<ResultValue> resultValues) {
         String result = "1";
-        for (String number : numbers) {
+        for (ResultValue resultValue : resultValues) {
+            String number = resultValue.getText();
             if (number.contains(".")) {
                 if (number.endsWith(".5")) {
                     if (result.equals("1")) {
@@ -159,8 +161,8 @@ public abstract class Exporter {
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
-    private static Set<String> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
-        Set<String> result = new HashSet<String>();
+    private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
+        Set<ResultValue> result = new HashSet<ResultValue>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, opinionPoll.getResult(electoralListKey));
         }
@@ -175,9 +177,9 @@ public abstract class Exporter {
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
-    private static Set<String> extractResults(final ResponseScenario responseScenario,
+    private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
                                               final String... electoralListKeys) {
-        Set<String> result = new HashSet<String>();
+        Set<ResultValue> result = new HashSet<ResultValue>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));
         }

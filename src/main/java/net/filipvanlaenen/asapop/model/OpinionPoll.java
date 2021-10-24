@@ -39,7 +39,7 @@ public final class OpinionPoll {
     /**
      * The result for other.
      */
-    private String other;
+    private ResultValue other;
     /**
      * The name of the polling firm.
      */
@@ -103,7 +103,7 @@ public final class OpinionPoll {
         /**
          * The result for other.
          */
-        private String other;
+        private ResultValue other;
         /**
          * The name of the polling firm.
          */
@@ -144,15 +144,26 @@ public final class OpinionPoll {
         }
 
         /**
+         * Adds a result value to the response scenario builder.
+         *
+         * @param electoralListKey The key of an electoral list.
+         * @param resultValue The result value.
+         * @return This builder instance.
+         */
+        public Builder addResult(final String electoralListKey, final ResultValue resultValue) {
+            responseScenarioBuilder.addResult(electoralListKey, resultValue);
+            return this;
+        }
+
+        /**
          * Adds a result to the response scenario builder.
          *
          * @param electoralListKey The key of an electoral list.
-         * @param result The result.
+         * @param wellformedResult The result value as a text, assumed to be well-formed.
          * @return This builder instance.
          */
-        public Builder addResult(final String electoralListKey, final String result) {
-            responseScenarioBuilder.addResult(electoralListKey, result);
-            return this;
+        public Builder addWellformedResult(final String electoralListKey, final String wellformedResult) {
+            return addResult(electoralListKey, new ResultValue(wellformedResult));
         }
 
         /**
@@ -203,7 +214,7 @@ public final class OpinionPoll {
          * @param otherString The result for other.
          * @return This builder instance.
          */
-        public Builder setOther(final String otherString) {
+        public Builder setOther(final ResultValue otherString) {
             this.other = otherString;
             return this;
         }
@@ -251,7 +262,17 @@ public final class OpinionPoll {
             this.scope = scopeString;
             return this;
         }
-    }
+
+        /**
+         * Sets the result for other.
+         *
+         * @param otherString The result for other, assumed to be well-formed.
+         * @return This builder instance.
+         */
+        public Builder setWellformedOther(final String otherString) {
+            return setOther(new ResultValue(otherString));
+        }
+}
 
     /**
      * Adds a response scenario to the list of alternative response scenarios.
@@ -343,7 +364,7 @@ public final class OpinionPoll {
      *
      * @return The result for other.
      */
-    public String getOther() {
+    public ResultValue getOther() {
         return other;
     }
 
@@ -371,7 +392,7 @@ public final class OpinionPoll {
      * @param electoralListKey The key of an electoral list.
      * @return The result for the electoral list.
      */
-    public String getResult(final String electoralListKey) {
+    public ResultValue getResult(final String electoralListKey) {
         return mainResponseScenario.getResult(electoralListKey);
     }
 

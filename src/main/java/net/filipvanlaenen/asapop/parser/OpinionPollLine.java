@@ -1,5 +1,7 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,14 +29,19 @@ final class OpinionPollLine extends Line {
      * The opinion poll represented by the line.
      */
     private final OpinionPoll opinionPoll;
+    /**
+     * The warnings.
+     */
+    private final Set<Warning> warnings;
 
     /**
      * Private constructor taking the opinion poll as its parameter.
      *
      * @param opinionPoll The opinion poll represented by the line.
      */
-    private OpinionPollLine(final OpinionPoll opinionPoll) {
+    private OpinionPollLine(final OpinionPoll opinionPoll, final Set<Warning> warnings) {
         this.opinionPoll = opinionPoll;
+        this.warnings = warnings;
     }
 
     /**
@@ -44,6 +51,15 @@ final class OpinionPollLine extends Line {
      */
     OpinionPoll getOpinionPoll() {
         return opinionPoll;
+    }
+
+    /**
+     * Returns the warnings.
+     *
+     * @return The warnings.
+     */
+    Set<Warning> getWarnings() {
+        return warnings;
     }
 
     /**
@@ -64,11 +80,12 @@ final class OpinionPollLine extends Line {
      */
     static OpinionPollLine parse(final String line) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
+        Set<Warning> warnings = new HashSet<Warning>();
         String remainder = line;
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, remainder);
+            remainder = parseKeyValue(builder, warnings, remainder);
         }
-        return new OpinionPollLine(builder.build());
+        return new OpinionPollLine(builder.build(), warnings);
     }
 
     /**
@@ -78,14 +95,14 @@ final class OpinionPollLine extends Line {
      * @param remainder The remainder of a line to parse a key and value from.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final OpinionPoll.Builder builder, final String remainder) {
+    private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String remainder) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, keyValueBlock);
+            processMetadata(builder, warnings, keyValueBlock);
         } else {
-            processResultData(builder, keyValueBlock);
+            processResultData(builder, warnings, keyValueBlock);
         }
         return keyValuesMatcher.group(THREE);
     }
@@ -96,7 +113,7 @@ final class OpinionPollLine extends Line {
      * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
      */
-    private static void processMetadata(final OpinionPoll.Builder builder, final String keyValueString) {
+    private static void processMetadata(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String keyValueString) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
@@ -110,7 +127,9 @@ final class OpinionPollLine extends Line {
                 break;
             case "FS": builder.setFieldworkStart(value);
                 break;
-            case "O": builder.setOther(value);
+            case "O": ResultValueText other = ResultValueText.parse(value);
+                warnings.addAll(other.getWarnings());
+                builder.setOther(other.getValue());
                 break;
             case "PD": builder.setPublicationDate(value);
                 break;
@@ -130,11 +149,12 @@ final class OpinionPollLine extends Line {
      * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
      */
-    private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString) {
+    private static void processResultData(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String keyValueString) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
-        String value = keyValueMatcher.group(2);
-        builder.addResult(key, value);
+        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2));
+        warnings.addAll(value.getWarnings());
+        builder.addResult(key, value.getValue());
     }
 }

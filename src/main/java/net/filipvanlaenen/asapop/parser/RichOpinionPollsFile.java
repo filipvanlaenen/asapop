@@ -17,15 +17,16 @@ public final class RichOpinionPollsFile {
     /**
      * The warnings.
      */
-    private final Set<Warning> warnings = new HashSet<Warning>();
+    private final Set<Warning> warnings;
 
     /**
      * Private constructor creating a new instance from a set of opinion polls.
      *
      * @param opinionPollsSet The set with the opinion polls.
      */
-    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet) {
+    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final Set<Warning> warnings) {
         this.opinionPolls = new OpinionPolls(opinionPollsSet);
+        this.warnings = warnings;
     }
 
     /**
@@ -54,12 +55,14 @@ public final class RichOpinionPollsFile {
      */
     public static RichOpinionPollsFile parse(final String... lines) {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
+        Set<Warning> warnings = new HashSet<Warning>();
         OpinionPoll lastOpinionPoll = null;
         for (String line : lines) {
             if (OpinionPollLine.isOpinionPollLine(line)) {
                 OpinionPollLine opinionPollLine = OpinionPollLine.parse(line);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
+                warnings.addAll(opinionPollLine.getWarnings());
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
                 ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(line);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
@@ -75,6 +78,6 @@ public final class RichOpinionPollsFile {
                 // Ignore empty lines.
             }
         }
-        return new RichOpinionPollsFile(opinionPolls);
+        return new RichOpinionPollsFile(opinionPolls, warnings);
     }
 }

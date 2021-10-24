@@ -7,6 +7,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResultValue;
 
 /**
  * Exporter to the EOPAOD CSV file format.
@@ -172,7 +173,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @param s The string.
      * @return "Not Available" if the string is null, and otherwise the string with a percentage sign added.
      */
-    private static String percentageOrNotAvailable(final String s) {
-        return s == null ? "Not Available" : s + "%";
+    private static String percentageOrNotAvailable(final ResultValue s) {
+        return s == null ? "Not Available" : s.getText() + "%";
     }
 }

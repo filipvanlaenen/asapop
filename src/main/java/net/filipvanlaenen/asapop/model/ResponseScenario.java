@@ -16,11 +16,11 @@ public final class ResponseScenario {
     /**
      * The result for other.
      */
-    private String other;
+    private ResultValue other;
     /**
      * The results.
      */
-    private final Map<ElectoralList, String> results;
+    private final Map<ElectoralList, ResultValue> results;
     /**
      * The sample size.
      */
@@ -54,11 +54,11 @@ public final class ResponseScenario {
         /**
          * The result for other.
          */
-        private String other;
+        private ResultValue other;
         /**
          * The results.
          */
-        private final Map<ElectoralList, String> results = new HashMap<ElectoralList, String>();
+        private final Map<ElectoralList, ResultValue> results = new HashMap<ElectoralList, ResultValue>();
         /**
          * The sample size.
          */
@@ -72,12 +72,23 @@ public final class ResponseScenario {
          * Adds a result.
          *
          * @param electoralListKey The key of an electoral list.
-         * @param result The result.
+         * @param resultValue The result value.
          * @return This builder instance.
          */
-        public Builder addResult(final String electoralListKey, final String result) {
-            results.put(ElectoralList.get(electoralListKey), result);
+        public Builder addResult(final String electoralListKey, final ResultValue resultValue) {
+            results.put(ElectoralList.get(electoralListKey), resultValue);
             return this;
+        }
+
+        /**
+         * Adds a result to the response scenario builder.
+         *
+         * @param electoralListKey The key of an electoral list.
+         * @param wellformedResult The result value as a text, assumed to be well-formed.
+         * @return This builder instance.
+         */
+        public Builder addWellformedResult(final String electoralListKey, final String wellformedResult) {
+            return addResult(electoralListKey, new ResultValue(wellformedResult));
         }
 
         /**
@@ -106,7 +117,7 @@ public final class ResponseScenario {
          * @param otherString The result for other.
          * @return This builder instance.
          */
-        public Builder setOther(final String otherString) {
+        public Builder setOther(final ResultValue otherString) {
             this.other = otherString;
             return this;
         }
@@ -131,6 +142,16 @@ public final class ResponseScenario {
         public Builder setScope(final String scopeString) {
             this.scope = scopeString;
             return this;
+        }
+
+        /**
+         * Sets the result for other.
+         *
+         * @param otherString The result for other, assumed to be well-formed.
+         * @return This builder instance.
+         */
+        public Builder setWellformedOther(final String otherString) {
+            return setOther(new ResultValue(otherString));
         }
     }
 
@@ -173,7 +194,7 @@ public final class ResponseScenario {
      *
      * @return The result for other.
      */
-    public String getOther() {
+    public ResultValue getOther() {
         return other;
     }
 
@@ -183,7 +204,7 @@ public final class ResponseScenario {
      * @param electoralListKey The key of an electoral list.
      * @return The result for the electoral list.
      */
-    public String getResult(final String electoralListKey) {
+    public ResultValue getResult(final String electoralListKey) {
         return results.get(ElectoralList.get(electoralListKey));
     }
 

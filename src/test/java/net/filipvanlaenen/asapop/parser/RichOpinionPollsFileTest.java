@@ -25,7 +25,8 @@ public final class RichOpinionPollsFileTest {
      */
     private static final OpinionPoll SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("ACME")
                                                                             .setPublicationDate("2021-07-27")
-                                                                            .addResult("A", "55").addResult("B", "45")
+                                                                            .addWellformedResult("A", "55")
+                                                                            .addWellformedResult("B", "45")
                                                                             .build();
     /**
      * Other sample poll line.
@@ -36,8 +37,8 @@ public final class RichOpinionPollsFileTest {
      */
     private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("BCME")
                                                                                   .setPublicationDate("2021-07-28")
-                                                                                  .addResult("A", "56")
-                                                                                  .addResult("C", "43")
+                                                                                  .addWellformedResult("A", "56")
+                                                                                  .addWellformedResult("C", "43")
                                                                                   .build();
 
     /**
@@ -48,14 +49,6 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         assertEquals(polls, RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getOpinionPolls().getOpinionPolls());
-    }
-
-    /**
-     * Verifies that a single line containing a simple opinion poll doesn't produce warnings.
-     */
-    @Test
-    public void shouldParseSingleLineWithASimpleOpinionPollWithoutWarnings() {
-        assertTrue(RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getWarnings().isEmpty());
     }
 
     /**
@@ -89,9 +82,11 @@ public final class RichOpinionPollsFileTest {
     public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
         String[] content = new String[]{SAMPLE_POLL_LINE, "& A:50 B:40 C:10"};
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addResult("A", "55").addResult("B", "45").build();
-        ResponseScenario scenario = new ResponseScenario.Builder().addResult("A", "50").addResult("B", "40")
-                                                                  .addResult("C", "10").build();
+                                                    .addWellformedResult("A", "55").addWellformedResult("B", "45")
+                                                    .build();
+        ResponseScenario scenario = new ResponseScenario.Builder().addWellformedResult("A", "50")
+                                                                  .addWellformedResult("B", "40")
+                                                                  .addWellformedResult("C", "10").build();
         poll.addAlternativeResponseScenario(scenario);
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);
@@ -105,5 +100,21 @@ public final class RichOpinionPollsFileTest {
     public void shouldParseALineWithAnElectoralListDefinitionAndAddAbbreviation() {
         RichOpinionPollsFile.parse("A: •A: AP •EN: Apple Party");
         assertEquals("AP", ElectoralList.get("A").getAbbreviation());
+    }
+
+    /**
+     * Verifies that a single line containing a simple opinion poll doesn't produce warnings.
+     */
+    @Test
+    public void shouldParseSingleLineWithASimpleOpinionPollWithoutWarnings() {
+        assertTrue(RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getWarnings().isEmpty());
+    }
+
+    /**
+     * Verifies that a line with a malformed result produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForALineWithAMalformedResult() {
+        assertEquals(1, RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:x B:45").getWarnings().size());
     }
 }

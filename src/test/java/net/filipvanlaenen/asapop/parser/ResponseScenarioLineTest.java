@@ -53,7 +53,8 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithASimpleResponseScenario() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE);
-        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43").build();
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                                                                  .addWellformedResult("B", "43").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -63,8 +64,9 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithAResultForOther() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER);
-        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
-                                                                  .setOther("2").build();
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                                                                  .addWellformedResult("B", "43")
+                                                                  .setWellformedOther("2").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -74,7 +76,8 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentArea() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •A: AB A:55 B:43");
-        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                                                                  .addWellformedResult("B", "43")
                                                                   .setArea("AB").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
@@ -85,7 +88,8 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentScope() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SC: E A:55 B:43");
-        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                                                                  .addWellformedResult("B", "43")
                                                                   .setScope("E").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
@@ -97,7 +101,8 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSize() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43");
-        ResponseScenario expected = new ResponseScenario.Builder().addResult("A", "55").addResult("B", "43")
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                                                                  .addWellformedResult("B", "43")
                                                                   .setSampleSize("999").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
