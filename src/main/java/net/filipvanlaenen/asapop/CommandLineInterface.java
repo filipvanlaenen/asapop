@@ -9,6 +9,7 @@ import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.asapop.parser.Warning;
 
 /**
  * Class implementing a command line interface.
@@ -86,7 +87,11 @@ public final class CommandLineInterface {
                     electoralListKeys[i] = args[i + THREE];
                 }
                 String[] ropfContent = readFile(inputFileName);
-                OpinionPolls opinionPolls = RichOpinionPollsFile.parse(ropfContent).getOpinionPolls();
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                    System.out.println(warning);
+                }
+                OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
                     outputContent = EopaodCsvExporter.export(opinionPolls, area, electoralListKeys);

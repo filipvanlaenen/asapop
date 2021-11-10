@@ -43,7 +43,7 @@ public final class RichOpinionPollsFile {
      *
      * @return The warnings.
      */
-    Set<Warning> getWarnings() {
+    public Set<Warning> getWarnings() {
         return warnings;
     }
 

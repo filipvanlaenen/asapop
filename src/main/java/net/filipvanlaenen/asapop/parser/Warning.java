@@ -1,6 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
-interface Warning {
+public interface Warning {
 }
 
 class MallformedResultValueWarning implements Warning {
