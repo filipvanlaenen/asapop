@@ -38,10 +38,10 @@ class ResultValueText {
         return warnings;
     }
 
-    static ResultValueText parse(final String value) {
+    static ResultValueText parse(final String value, final int lineNumber) {
         Set<Warning> warnings = new HashSet<Warning>();
         if (!WELLFORMED_RESULT_VALUE_PATTERN.matcher(value).matches()) {
-            warnings.add(new MallformedResultValueWarning());
+            warnings.add(new MalformedResultValueWarning(lineNumber, value));
         }
         return new ResultValueText(new ResultValue(value), warnings);
     }

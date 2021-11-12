@@ -57,19 +57,22 @@ public final class RichOpinionPollsFile {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
         Set<Warning> warnings = new HashSet<Warning>();
         OpinionPoll lastOpinionPoll = null;
+        int lineNumber = 0;
         for (String line : lines) {
+            lineNumber++;
             if (OpinionPollLine.isOpinionPollLine(line)) {
-                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line);
+                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, lineNumber);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(opinionPollLine.getWarnings());
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
-                ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(line);
+                ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(line, lineNumber);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
                 // set before the change is made, and added again afterwards.
                 opinionPolls.remove(lastOpinionPoll);
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
                 opinionPolls.add(lastOpinionPoll);
+                warnings.addAll(responseScenarioLine.getWarnings());
             } else if (ElectoralListLine.isElectoralListLine(line)) {
                 ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
                 electoralListLine.updateElectoralList();

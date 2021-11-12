@@ -52,7 +52,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldParseSingleLineWithASimpleResponseScenario() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE);
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
                                                                   .addWellformedResult("B", "43").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -63,7 +63,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithAResultForOther() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER);
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER, 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
                                                                   .addWellformedResult("B", "43")
                                                                   .setWellformedOther("2").build();
@@ -75,7 +75,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentArea() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •A: AB A:55 B:43");
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •A: AB A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
                                                                   .addWellformedResult("B", "43")
                                                                   .setArea("AB").build();
@@ -87,7 +87,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentScope() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SC: E A:55 B:43");
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SC: E A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
                                                                   .addWellformedResult("B", "43")
                                                                   .setScope("E").build();
@@ -100,7 +100,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSize() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43");
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
                                                                   .addWellformedResult("B", "43")
                                                                   .setSampleSize("999").build();

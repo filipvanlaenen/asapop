@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -59,7 +60,7 @@ final class OpinionPollLine extends Line {
      * @return The warnings.
      */
     Set<Warning> getWarnings() {
-        return warnings;
+        return Collections.unmodifiableSet(warnings);
     }
 
     /**
@@ -78,12 +79,12 @@ final class OpinionPollLine extends Line {
      * @param line The line to parse an opinion poll from.
      * @return An OpinionPollLine representing the line.
      */
-    static OpinionPollLine parse(final String line) {
+    static OpinionPollLine parse(final String line, final int lineNumber) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         Set<Warning> warnings = new HashSet<Warning>();
         String remainder = line;
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, warnings, remainder);
+            remainder = parseKeyValue(builder, warnings, remainder, lineNumber);
         }
         return new OpinionPollLine(builder.build(), warnings);
     }
@@ -95,14 +96,14 @@ final class OpinionPollLine extends Line {
      * @param remainder The remainder of a line to parse a key and value from.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String remainder) {
+    private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String remainder, final int lineNumber) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, warnings, keyValueBlock);
+            processMetadata(builder, warnings, keyValueBlock, lineNumber);
         } else {
-            processResultData(builder, warnings, keyValueBlock);
+            processResultData(builder, warnings, keyValueBlock, lineNumber);
         }
         return keyValuesMatcher.group(THREE);
     }
@@ -113,7 +114,7 @@ final class OpinionPollLine extends Line {
      * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
      */
-    private static void processMetadata(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String keyValueString) {
+    private static void processMetadata(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
@@ -127,7 +128,7 @@ final class OpinionPollLine extends Line {
                 break;
             case "FS": builder.setFieldworkStart(value);
                 break;
-            case "O": ResultValueText other = ResultValueText.parse(value);
+            case "O": ResultValueText other = ResultValueText.parse(value, lineNumber);
                 warnings.addAll(other.getWarnings());
                 builder.setOther(other.getValue());
                 break;
@@ -149,11 +150,11 @@ final class OpinionPollLine extends Line {
      * @param builder The opinion poll builder to build on.
      * @param keyValueString The data block to process.
      */
-    private static void processResultData(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String keyValueString) {
+    private static void processResultData(final OpinionPoll.Builder builder, final Set<Warning> warnings, final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
-        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2));
+        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2), lineNumber);
         warnings.addAll(value.getWarnings());
         builder.addResult(key, value.getValue());
     }

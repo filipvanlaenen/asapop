@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -58,6 +59,15 @@ final class ResponseScenarioLine extends Line {
     }
 
     /**
+     * Returns the warnings.
+     *
+     * @return The warnings.
+     */
+    Set<Warning> getWarnings() {
+        return Collections.unmodifiableSet(warnings);
+    }
+
+    /**
      * Verifies whether a line is a response scenario line.
      *
      * @param line The line to check against the pattern of a response scenario line.
@@ -73,14 +83,14 @@ final class ResponseScenarioLine extends Line {
      * @param line The line to parse a response scenario from.
      * @return A ResponseScenarioLine instance representing the line.
      */
-    static ResponseScenarioLine parse(final String line) {
+    static ResponseScenarioLine parse(final String line, final int lineNumber) {
         ResponseScenario.Builder builder = new ResponseScenario.Builder();
         Set<Warning> warnings = new HashSet<Warning>();
         Matcher responseScenarioMatcher = RESPONSE_SCENARIO_PATTERN.matcher(line);
         responseScenarioMatcher.find();
         String remainder = responseScenarioMatcher.group(1);
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, warnings, remainder);
+            remainder = parseKeyValue(builder, warnings, remainder, lineNumber);
         }
         return new ResponseScenarioLine(builder.build(), warnings);
     }
@@ -92,14 +102,14 @@ final class ResponseScenarioLine extends Line {
      * @param remainder The remainder of a line to parse a key and value from.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final ResponseScenario.Builder builder, final Set<Warning> warnings, final String remainder) {
+    private static String parseKeyValue(final ResponseScenario.Builder builder, final Set<Warning> warnings, final String remainder, final int lineNumber) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, warnings, keyValueBlock);
+            processMetadata(builder, warnings, keyValueBlock, lineNumber);
         } else {
-            processResultData(builder, warnings, keyValueBlock);
+            processResultData(builder, warnings, keyValueBlock, lineNumber);
         }
         return keyValuesMatcher.group(THREE);
     }
@@ -110,7 +120,7 @@ final class ResponseScenarioLine extends Line {
      * @param builder The response scenario builder to build on.
      * @param keyValueString The data block to process.
      */
-    private static void processMetadata(final ResponseScenario.Builder builder, final Set<Warning> warnings, final String keyValueString) {
+    private static void processMetadata(final ResponseScenario.Builder builder, final Set<Warning> warnings, final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
@@ -118,7 +128,7 @@ final class ResponseScenarioLine extends Line {
         switch (key) {
             case "A": builder.setArea(value);
                 break;
-            case "O": ResultValueText other = ResultValueText.parse(value);
+            case "O": ResultValueText other = ResultValueText.parse(value, lineNumber);
                 warnings.addAll(other.getWarnings());
                 builder.setOther(other.getValue());
                 break;
@@ -136,11 +146,11 @@ final class ResponseScenarioLine extends Line {
      * @param builder The response scenario builder to build on.
      * @param keyValueString The data block to process.
      */
-    private static void processResultData(final ResponseScenario.Builder builder, final Set<Warning> warnings, final String keyValueString) {
+    private static void processResultData(final ResponseScenario.Builder builder, final Set<Warning> warnings, final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
-        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2));
+        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2), lineNumber);
         warnings.addAll(value.getWarnings());
         builder.addResult(key, value.getValue());
     }
