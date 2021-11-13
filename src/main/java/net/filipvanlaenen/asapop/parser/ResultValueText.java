@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -35,7 +36,7 @@ class ResultValueText {
      * @return The warnings.
      */
     Set<Warning> getWarnings() {
-        return warnings;
+        return Collections.unmodifiableSet(warnings);
     }
 
     static ResultValueText parse(final String value, final int lineNumber) {
