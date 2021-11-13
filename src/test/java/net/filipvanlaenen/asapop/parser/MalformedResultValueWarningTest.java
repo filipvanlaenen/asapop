@@ -11,12 +11,16 @@ import org.junit.jupiter.api.Test;
  */
 public final class MalformedResultValueWarningTest {
     /**
+     * A malformed result value warning for a on line 1.
+     */
+    private static final MalformedResultValueWarning WARNING_1_A = new MalformedResultValueWarning(1, "a");
+
+    /**
      * Verifies that the warning is converted to a String correctly.
      */
     @Test
     public void toStringShouldProduceCorrectMessage() {
-        Warning warning = new MalformedResultValueWarning(1, "a");
-        assertEquals("Malformed result value (“a”) detected in line 1.", warning.toString());
+        assertEquals("Malformed result value (“a”) detected in line 1.", WARNING_1_A.toString());
     }
 
     /**
@@ -24,7 +28,7 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void aMalformedResultValueWarningShouldNotBeEqualToNull() {
-        assertFalse(new MalformedResultValueWarning(1, "a").equals(null));
+        assertFalse(WARNING_1_A.equals(null));
     }
 
     /**
@@ -32,7 +36,7 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void aMalformedResultValueWarningShouldNotBeEqualToAString() {
-        assertFalse(new MalformedResultValueWarning(1, "a").equals(""));
+        assertFalse(WARNING_1_A.equals(""));
     }
 
     /**
@@ -40,8 +44,7 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void aMalformedResultValueWarningShouldBeEqualToItself() {
-        MalformedResultValueWarning warning = new MalformedResultValueWarning(1, "a");
-        assertTrue(warning.equals(warning));
+        assertTrue(WARNING_1_A.equals(WARNING_1_A));
     }
 
     /**
@@ -49,8 +52,7 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void callingHashCodeTwiceOnMalformedResultValueWarningReturnsTheSameResult() {
-        MalformedResultValueWarning warning = new MalformedResultValueWarning(1, "a");
-        assertEquals(warning.hashCode(), warning.hashCode());
+        assertEquals(WARNING_1_A.hashCode(), WARNING_1_A.hashCode());
     }
 
     /**
@@ -58,8 +60,7 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void twoMalformedResultValueWarningsConstructedWithTheSameParametersShouldBeEqual() {
-        assertEquals(new MalformedResultValueWarning(1, "a"),
-                     new MalformedResultValueWarning(1, "a"));
+        assertEquals(WARNING_1_A, new MalformedResultValueWarning(1, "a"));
     }
 
     /**
@@ -67,8 +68,7 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void twoMalformedResultValueWarningsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
-        assertEquals(new MalformedResultValueWarning(1, "a").hashCode(),
-                     new MalformedResultValueWarning(1, "a").hashCode());
+        assertEquals(WARNING_1_A.hashCode(), new MalformedResultValueWarning(1, "a").hashCode());
     }
 
     /**
@@ -76,15 +76,16 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void twoDifferentMalformedResultValueWarningsWithDifferentLineNumbersShouldNotBeEqual() {
-        assertFalse(new MalformedResultValueWarning(1, "a").equals(new MalformedResultValueWarning(2, "a")));
+        assertFalse(WARNING_1_A.equals(new MalformedResultValueWarning(2, "a")));
     }
 
     /**
-     * Verifies that two different malformed result value warnings with different line numbers have different hash codes.
+     * Verifies that two different malformed result value warnings with different line numbers have different hash
+     * codes.
      */
     @Test
     public void twoDifferentMalformedResultValueWarningsWithDifferentLineNumbersShouldHaveDifferentHashCodes() {
-        assertFalse(new MalformedResultValueWarning(1, "a").hashCode() == new MalformedResultValueWarning(2, "a").hashCode());
+        assertFalse(WARNING_1_A.hashCode() == new MalformedResultValueWarning(2, "a").hashCode());
     }
 
     /**
@@ -92,14 +93,15 @@ public final class MalformedResultValueWarningTest {
      */
     @Test
     public void twoDifferentMalformedResultValueWarningsWithDifferentResultValuesShouldNotBeEqual() {
-        assertFalse(new MalformedResultValueWarning(1, "a").equals(new MalformedResultValueWarning(1, "b")));
+        assertFalse(WARNING_1_A.equals(new MalformedResultValueWarning(1, "b")));
     }
 
     /**
-     * Verifies that two different malformed result value warnings with different result values have different hash codes.
+     * Verifies that two different malformed result value warnings with different result values have different hash
+     * codes.
      */
     @Test
     public void twoDifferentMalformedResultValueWarningsWithDifferentResultValuesShouldHaveDifferentHashCodes() {
-        assertFalse(new MalformedResultValueWarning(1, "a").hashCode() == new MalformedResultValueWarning(1, "b").hashCode());
+        assertFalse(WARNING_1_A.hashCode() == new MalformedResultValueWarning(1, "b").hashCode());
     }
 }
