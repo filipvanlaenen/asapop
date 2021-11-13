@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
 /**
@@ -105,5 +106,34 @@ public final class ResponseScenarioLineTest {
                                                                   .addWellformedResult("B", "43")
                                                                   .setSampleSize("999").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
+     * Verifies that a wellformed line doesn't produce a warning while parsing.
+     */
+    @Test
+    public void shouldNotProduceAWarningWhenParsingAWellformedLine() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, 1);
+        assertTrue(responseScenarioLine.getWarnings().isEmpty());
+    }
+
+    /**
+     * Verifies that a line with a malformed result value produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedResultValue() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:Error B:43", 1);
+        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line with a malformed other value produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedOtherValue() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", 1);
+        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
     }
 }
