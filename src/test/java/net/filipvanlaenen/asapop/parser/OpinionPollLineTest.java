@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 
 /**
@@ -189,5 +190,34 @@ public final class OpinionPollLineTest {
                                                         .setScope("N").addWellformedResult("A", "55")
                                                         .addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that a wellformed line doesn't produce a warning while parsing.
+     */
+    @Test
+    public void shouldNotProduceAWarningWhenParsingAWellformedLine() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, 1);
+        assertTrue(opinionPollLine.getWarnings().isEmpty());
+    }
+
+    /**
+     * Verifies that a line with a malformed result value produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedResultValue() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:Error B:43", 1);
+        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line with a malformed other value produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedOtherValue() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", 1);
+        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        assertEquals(expected, opinionPollLine.getWarnings());
     }
 }
