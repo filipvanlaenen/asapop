@@ -216,7 +216,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForAMalformedOtherValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error",
+                                                                1);
         Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
