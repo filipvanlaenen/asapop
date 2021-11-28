@@ -113,7 +113,7 @@ public abstract class DateOrMonth {
          */
         @Override
         public LocalDate getStart() {
-            return month.atDay​(1);
+            return month.atDay(1);
         }
 
         @Override
