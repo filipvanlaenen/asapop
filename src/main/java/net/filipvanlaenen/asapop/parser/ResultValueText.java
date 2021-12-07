@@ -7,7 +7,10 @@ import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.ResultValue;
 
-class ResultValueText {
+/**
+ * Class representing the text for a result value.
+ */
+final class ResultValueText {
     /**
      * The pattern to match an opinion poll line.
      */
@@ -21,11 +24,22 @@ class ResultValueText {
      */
     private final Set<Warning> warnings;
 
+    /**
+     * Constructor taking a result value and the warnings collected while parsing the text.
+     *
+     * @param value    The result value.
+     * @param warnings The warnings collected while parsing.
+     */
     private ResultValueText(final ResultValue value, final Set<Warning> warnings) {
         this.value = value;
         this.warnings = warnings;
     }
 
+    /**
+     * Returns the result value represented by the result value text.
+     *
+     * @return The result value.
+     */
     ResultValue getValue() {
         return value;
     }
@@ -39,6 +53,13 @@ class ResultValueText {
         return Collections.unmodifiableSet(warnings);
     }
 
+    /**
+     * Parses a text into a result value.
+     *
+     * @param value      The text representing the result value.
+     * @param lineNumber The number of the line where the text occurs.
+     * @return An instance representing the parsed text.
+     */
     static ResultValueText parse(final String value, final int lineNumber) {
         Set<Warning> warnings = new HashSet<Warning>();
         if (!WELLFORMED_RESULT_VALUE_PATTERN.matcher(value).matches()) {
