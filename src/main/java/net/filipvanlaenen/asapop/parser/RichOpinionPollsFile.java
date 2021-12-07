@@ -20,9 +20,10 @@ public final class RichOpinionPollsFile {
     private final Set<Warning> warnings;
 
     /**
-     * Private constructor creating a new instance from a set of opinion polls.
+     * Private constructor creating a new instance from a set of opinion polls and the warnings collected while parsing.
      *
      * @param opinionPollsSet The set with the opinion polls.
+     * @param warnings        The set with warnings collected while parsing.
      */
     private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final Set<Warning> warnings) {
         this.opinionPolls = new OpinionPolls(opinionPollsSet);
