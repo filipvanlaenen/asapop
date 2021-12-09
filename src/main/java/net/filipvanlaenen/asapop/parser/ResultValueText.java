@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import net.filipvanlaenen.asapop.model.ResultValue;
 
 /**
- * Class representing the text for a result value.
+ * Class representing the a result value text.
  */
 final class ResultValueText {
     /**
@@ -54,7 +54,7 @@ final class ResultValueText {
     }
 
     /**
-     * Parses a text into a result value.
+     * Parses a text into a result value text.
      *
      * @param value      The text representing the result value.
      * @param lineNumber The number of the line where the text occurs.
