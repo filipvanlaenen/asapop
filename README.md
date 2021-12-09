@@ -102,7 +102,7 @@ The table below gives an overview over the metadata fields and their use:
 
 ¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
 
-The table below gives an overview over the field types:
+The table below gives an informal overview over the field types:
 
 | Type         | Definition | Examples     |
 |--------------|------------|--------------|
