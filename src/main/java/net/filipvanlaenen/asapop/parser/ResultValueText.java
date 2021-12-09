@@ -14,7 +14,7 @@ final class ResultValueText {
     /**
      * The pattern to match an opinion poll line.
      */
-    private static final Pattern WELLFORMED_RESULT_VALUE_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
+    private static final Pattern WELLFORMED_RESULT_VALUE_PATTERN = Pattern.compile("^<?\\d+(\\.\\d+)?$");
     /**
      * The result value.
      */

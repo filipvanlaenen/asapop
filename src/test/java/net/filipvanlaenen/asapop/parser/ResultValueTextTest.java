@@ -23,11 +23,47 @@ public class ResultValueTextTest {
     }
 
     /**
+     * Verifies that a decimal is parsed into a result value.
+     */
+    @Test
+    public void shouldParseADecimalIntoAResultValue() {
+        ResultValueText result = ResultValueText.parse("0.1", 1);
+        assertEquals(new ResultValue("0.1"), result.getValue());
+    }
+
+    /**
+     * Verifies that less than a decimal is parsed into a result value.
+     */
+    @Test
+    public void shouldParseLessThanADecimalIntoAResultValue() {
+        ResultValueText result = ResultValueText.parse("<0.1", 1);
+        assertEquals(new ResultValue("<0.1"), result.getValue());
+    }
+
+    /**
      * Verifies that when an integer is provided, no warnings are produced.
      */
     @Test
     public void parsingAnIntegerShouldNotProduceWarnings() {
         ResultValueText result = ResultValueText.parse("1", 1);
+        assertTrue(result.getWarnings().isEmpty());
+    }
+
+    /**
+     * Verifies that when a decimal is provided, no warnings are produced.
+     */
+    @Test
+    public void parsingADecimalShouldNotProduceWarnings() {
+        ResultValueText result = ResultValueText.parse("0.1", 1);
+        assertTrue(result.getWarnings().isEmpty());
+    }
+
+    /**
+     * Verifies that when less than a decimal is provided, no warnings are produced.
+     */
+    @Test
+    public void parsingLessThanADecimalShouldNotProduceWarnings() {
+        ResultValueText result = ResultValueText.parse("<0.1", 1);
         assertTrue(result.getWarnings().isEmpty());
     }
 
