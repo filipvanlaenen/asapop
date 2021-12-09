@@ -50,7 +50,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPolls() {
-        String[] content = new String[] { SAMPLE_POLL_LINE, OTHER_SAMPLE_POLL_LINE };
+        String[] content = new String[] {SAMPLE_POLL_LINE, OTHER_SAMPLE_POLL_LINE};
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -62,7 +62,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPollsWithEmptyLineInBetween() {
-        String[] content = new String[] { SAMPLE_POLL_LINE, "", OTHER_SAMPLE_POLL_LINE };
+        String[] content = new String[] {SAMPLE_POLL_LINE, "", OTHER_SAMPLE_POLL_LINE};
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -74,7 +74,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
-        String[] content = new String[] { SAMPLE_POLL_LINE, "& A:50 B:40 C:10" };
+        String[] content = new String[] {SAMPLE_POLL_LINE, "& A:50 B:40 C:10"};
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         ResponseScenario scenario = new ResponseScenario.Builder().addWellformedResult("A", "50")
