@@ -73,7 +73,7 @@ public abstract class Exporter {
     private static String calculatePrecision(final Set<ResultValue> resultValues) {
         String result = "1";
         for (ResultValue resultValue : resultValues) {
-            String number = resultValue.getText();
+            String number = resultValue.getPrimitiveText();
             if (number.contains(".")) {
                 if (number.endsWith(".5")) {
                     if (result.equals("1")) {

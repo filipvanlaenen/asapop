@@ -126,6 +126,6 @@ public final class EopaodPsvExporter extends Exporter {
      * @return "N/A" if the string is null, and otherwise the string as provided.
      */
     private static String naIfNull(final ResultValue s) {
-        return s == null ? "N/A" : s.getText();
+        return s == null ? "N/A" : s.getPrimitiveText();
     }
 }

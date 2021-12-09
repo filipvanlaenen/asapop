@@ -10,6 +10,10 @@ public final class ResultValue {
      * The text representing the result value.
      */
     private final String text;
+    /**
+     * Flag indicating whether this is a less than value
+     */
+    private boolean lessThan;
 
     /**
      * Constructor taking the text representing the result value as its parameter.
@@ -18,6 +22,11 @@ public final class ResultValue {
      */
     public ResultValue(final String text) {
         this.text = text;
+        this.lessThan = text.startsWith("<");
+    }
+
+    public String getPrimitiveText() {
+        return lessThan ? "0" : text;
     }
 
     /**

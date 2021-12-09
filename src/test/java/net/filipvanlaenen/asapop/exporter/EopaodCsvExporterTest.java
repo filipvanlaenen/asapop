@@ -178,16 +178,29 @@ public class EopaodCsvExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with results having half of a percent for other.
+     * Verifies the correct export of a simple opinion poll with results having half of a percent.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
+    public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercent() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                                                     .addWellformedResult("A", "55.5").addWellformedResult("B", "43")
                                                     .build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                           + ",Not Available,0.5%,55.5%,43%,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with a less than result.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithALessThanResult() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                                                    .addWellformedResult("A", "55").addWellformedResult("B", "43")
+                                                    .addWellformedResult("C", "<1").build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                          + ",Not Available,1%,55%,43%,0%,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B", "C"));
     }
 
     /**

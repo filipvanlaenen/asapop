@@ -19,6 +19,30 @@ public final class ResultValueTest {
     }
 
     /**
+     * Verifies that the primitive text for an integer is an integer.
+     */
+    @Test
+    public void primitiveTextShouldBeIntegerForInteger() {
+        assertEquals("1", new ResultValue("1").getPrimitiveText());
+    }
+
+    /**
+     * Verifies that the primitive text for a decimal is a decimal.
+     */
+    @Test
+    public void primitiveTextShouldBeDecimalForDecimal() {
+        assertEquals("0.1", new ResultValue("0.1").getPrimitiveText());
+    }
+
+    /**
+     * Verifies that the primitive text for a less than value is zero.
+     */
+    @Test
+    public void primitiveTextShouldBeZeroForLessThanValue() {
+        assertEquals("0", new ResultValue("<1").getPrimitiveText());
+    }
+
+    /**
      * Verifies that a result value is not equal to null.
      */
     @Test
@@ -57,8 +81,7 @@ public final class ResultValueTest {
      */
     @Test
     public void twoResultValuesConstructedWithTheSameParameterShouldBeEqual() {
-        assertEquals(new ResultValue("1"),
-                     new ResultValue("1"));
+        assertEquals(new ResultValue("1"), new ResultValue("1"));
     }
 
     /**
@@ -66,8 +89,7 @@ public final class ResultValueTest {
      */
     @Test
     public void twoResultValuesConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
-        assertEquals(new ResultValue("1").hashCode(),
-                     new ResultValue("1").hashCode());
+        assertEquals(new ResultValue("1").hashCode(), new ResultValue("1").hashCode());
     }
 
     /**

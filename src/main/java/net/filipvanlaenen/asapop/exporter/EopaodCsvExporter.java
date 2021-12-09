@@ -174,6 +174,6 @@ public final class EopaodCsvExporter extends Exporter {
      * @return "Not Available" if the string is null, and otherwise the string with a percentage sign added.
      */
     private static String percentageOrNotAvailable(final ResultValue s) {
-        return s == null ? "Not Available" : s.getText() + "%";
+        return s == null ? "Not Available" : s.getPrimitiveText() + "%";
     }
 }
