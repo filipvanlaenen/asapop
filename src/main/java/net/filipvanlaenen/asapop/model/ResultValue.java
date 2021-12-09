@@ -11,7 +11,7 @@ public final class ResultValue {
      */
     private final String text;
     /**
-     * Flag indicating whether this is a less than value
+     * Flag indicating whether this is a less than value.
      */
     private boolean lessThan;
 
@@ -25,6 +25,11 @@ public final class ResultValue {
         this.lessThan = text.startsWith("<");
     }
 
+    /**
+     * Returns a primitive text representing the result value.
+     *
+     * @return A primitive text representing the result value.
+     */
     public String getPrimitiveText() {
         return lessThan ? "0" : text;
     }
