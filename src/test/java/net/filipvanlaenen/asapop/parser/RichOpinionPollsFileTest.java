@@ -103,11 +103,20 @@ public final class RichOpinionPollsFileTest {
     }
 
     /**
-     * Verifies that a line with a malformed result produces a warning.
+     * Verifies that a line with a malformed result value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForALineWithAMalformedResult() {
+    public void shouldProduceAWarningForALineWithAMalformedResultValue() {
         assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
                 RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:x B:45").getWarnings());
+    }
+
+    /**
+     * Verifies that a line with a malformed other result value produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForALineWithAMalformedOtherResultValue() {
+        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
+                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x").getWarnings());
     }
 }
