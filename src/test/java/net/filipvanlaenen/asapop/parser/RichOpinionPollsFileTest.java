@@ -24,10 +24,7 @@ public final class RichOpinionPollsFileTest {
      * Sample poll corresponding to the sample poll line.
      */
     private static final OpinionPoll SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("ACME")
-                                                                            .setPublicationDate("2021-07-27")
-                                                                            .addWellformedResult("A", "55")
-                                                                            .addWellformedResult("B", "45")
-                                                                            .build();
+            .setPublicationDate("2021-07-27").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
     /**
      * Other sample poll line.
      */
@@ -36,10 +33,7 @@ public final class RichOpinionPollsFileTest {
      * Sample poll corresponding to the other sample poll line.
      */
     private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("BCME")
-                                                                                  .setPublicationDate("2021-07-28")
-                                                                                  .addWellformedResult("A", "56")
-                                                                                  .addWellformedResult("C", "43")
-                                                                                  .build();
+            .setPublicationDate("2021-07-28").addWellformedResult("A", "56").addWellformedResult("C", "43").build();
 
     /**
      * Verifies that a single line containing a simple opinion poll can be parsed.
@@ -56,7 +50,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPolls() {
-        String[] content = new String[]{SAMPLE_POLL_LINE, OTHER_SAMPLE_POLL_LINE};
+        String[] content = new String[] { SAMPLE_POLL_LINE, OTHER_SAMPLE_POLL_LINE };
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -68,7 +62,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPollsWithEmptyLineInBetween() {
-        String[] content = new String[]{SAMPLE_POLL_LINE, "", OTHER_SAMPLE_POLL_LINE};
+        String[] content = new String[] { SAMPLE_POLL_LINE, "", OTHER_SAMPLE_POLL_LINE };
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -80,13 +74,11 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
-        String[] content = new String[]{SAMPLE_POLL_LINE, "& A:50 B:40 C:10"};
+        String[] content = new String[] { SAMPLE_POLL_LINE, "& A:50 B:40 C:10" };
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                                                    .addWellformedResult("A", "55").addWellformedResult("B", "45")
-                                                    .build();
+                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         ResponseScenario scenario = new ResponseScenario.Builder().addWellformedResult("A", "50")
-                                                                  .addWellformedResult("B", "40")
-                                                                  .addWellformedResult("C", "10").build();
+                .addWellformedResult("B", "40").addWellformedResult("C", "10").build();
         poll.addAlternativeResponseScenario(scenario);
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);
@@ -115,6 +107,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldProduceAWarningForALineWithAMalformedResult() {
-        assertEquals(1, RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:x B:45").getWarnings().size());
+        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
+                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:x B:45").getWarnings());
     }
 }
