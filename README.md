@@ -94,13 +94,22 @@ The table below gives an overview over the metadata fields and their use:
 | C            | Commissioner     | Text          | 0…_n_       | No                |
 | FE           | Fieldwork end    | Date or Month | 0…1         | No                |
 | FS           | Fieldwork start  | Date or Month | 0…1         | No                |
-| O            | Result for other | Text          | 0…1         | Yes¹              |
+| O            | Result for other | Result Value  | 0…1         | Yes¹              |
 | PD           | Publication date | Date          | 0…1         | No                |
 | PF           | Polling firm     | Text          | 0…1         | No                |
 | SC           | Scope            | Text          | 0…1         | Yes               |
 | SS           | Sample size      | Text          | 0…1         | Yes               |
 
 ¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
+
+The table below gives an overview over the field types:
+
+| Type         | Definition | Examples     |
+|--------------|------------|--------------|
+| Date         | ####-##-## | 2021-12-09   |
+| Month        | ####-##    | 2021-12      |
+| Result Value | (<)#(.#)   | 1, 1.1, <0.5 |
+| Text         | *          | a, 1         |
 
 ### Electoral Lists
 
