@@ -60,6 +60,12 @@ abstract class Line {
         return pattern.matcher(line).matches();
     }
 
+    /**
+     * Parses the code for a scope into a scope.
+     *
+     * @param value The value representing a scope.
+     * @return The scope corresponding to the provide value.
+     */
     static Scope parseScope(final String value) {
         switch (value) {
         case "E":
