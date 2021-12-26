@@ -20,7 +20,7 @@ public abstract class Exporter {
      *
      * @param <T> The type of the set items.
      * @param set The set to add to.
-     * @param s The string to add.
+     * @param s   The string to add.
      */
     private static <T> void addToSetUnlessNull(final Set<T> set, final T s) {
         if (s != null) {
@@ -30,22 +30,22 @@ public abstract class Exporter {
 
     /**
      * Verifies whether the provided area matches with the specified area. If the specified area is <code>null</code>,
-     * or the specified area and the provided area are equal, or the specified area is <code>--</code> and the
-     * provided area is <code>null</code>, the areas are said to match, and the method returns true.
+     * or the specified area and the provided area are equal, or the specified area is <code>--</code> and the provided
+     * area is <code>null</code>, the areas are said to match, and the method returns true.
      *
      * @param specifiedArea The area specified for export.
-     * @param actualArea The are of the opinion poll or response alternative.
+     * @param actualArea    The are of the opinion poll or response alternative.
      * @return True if the provided area matches with the specified area, false otherwise.
      */
     static boolean areaMatches(final String specifiedArea, final String actualArea) {
         return specifiedArea == null || specifiedArea.equals("--") && actualArea == null
-               || specifiedArea.equals(actualArea);
+                || specifiedArea.equals(actualArea);
     }
 
     /**
      * Calculates the precision of an opinion poll.
      *
-     * @param opinionPoll The opinion poll.
+     * @param opinionPoll       The opinion poll.
      * @param electoralListKeys The keys of the electoral lists to export.
      * @return The precision as a string.
      */
@@ -56,7 +56,7 @@ public abstract class Exporter {
     /**
      * Calculates the precision of a response scenario.
      *
-     * @param responseScenario The response scenario.
+     * @param responseScenario  The response scenario.
      * @param electoralListKeys The keys of the electoral lists to export.
      * @return The precision as a string.
      */
@@ -111,12 +111,12 @@ public abstract class Exporter {
     }
 
     /**
-     * Exports the commissionners.
+     * Exports the commissioners.
      *
      * @param opinionPoll The opinion poll to export the commissioners from.
      * @return A string representing the commissioners of the opinion poll, or null if there are none.
      */
-    static String exportCommissionners(final OpinionPoll opinionPoll) {
+    static String exportCommissioners(final OpinionPoll opinionPoll) {
         if (opinionPoll.getCommissioners().isEmpty()) {
             return null;
         } else {
@@ -156,9 +156,24 @@ public abstract class Exporter {
     }
 
     /**
+     * Exports the polling firms.
+     *
+     * @param opinionPoll The opinion poll to export the polling firms from.
+     * @return A string representing the polling firms of the opinion poll.
+     */
+    static String exportPollingFirms(final OpinionPoll opinionPoll) {
+        if (opinionPoll.getPollingFirmPartner() == null) {
+            return opinionPoll.getPollingFirm();
+        } else {
+            return sortAndConcatenateWithCommasAndAnd(
+                    Set.of(opinionPoll.getPollingFirm(), opinionPoll.getPollingFirmPartner()));
+        }
+    }
+
+    /**
      * Extracts all the results from an opinion poll.
      *
-     * @param opinionPoll The opinion poll to extract the results from.
+     * @param opinionPoll       The opinion poll to extract the results from.
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
@@ -174,12 +189,12 @@ public abstract class Exporter {
     /**
      * Extracts all the results from a response scenario.
      *
-     * @param responseScenario The response scenario to extract the results from.
+     * @param responseScenario  The response scenario to extract the results from.
      * @param electoralListKeys The keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
-                                              final String... electoralListKeys) {
+            final String... electoralListKeys) {
         Set<ResultValue> result = new HashSet<ResultValue>();
         for (String electoralListKey : electoralListKeys) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));
@@ -220,7 +235,7 @@ public abstract class Exporter {
     /**
      * Returns the second string if the first string is <code>null</code>, or the first string otherwise.
      *
-     * @param first The first string.
+     * @param first  The first string.
      * @param second The second string.
      * @return The second string if the first string is <code>null</code>, or the first string otherwise.
      */
@@ -246,7 +261,7 @@ public abstract class Exporter {
     }
 
     /**
-     * Sorts a set of opinion polls chronologically, first by end date, then by start date, than by sample size.
+     * Sorts a set of opinion polls chronologically, first by end date, then by start date, then by sample size.
      *
      * @param opinionPolls The set of opinion polls to be sorted.
      * @return A sorted list with the opinion polls.

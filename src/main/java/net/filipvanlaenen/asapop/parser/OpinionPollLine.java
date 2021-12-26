@@ -144,6 +144,8 @@ final class OpinionPollLine extends Line {
                 break;
             case "PF": builder.setPollingFirm(value);
                 break;
+            case "PFP": builder.setPollingFirmPartner(value);
+                break;
             case "SC": builder.setScope(value);
                 break;
             case "SS": builder.setSampleSize(value);

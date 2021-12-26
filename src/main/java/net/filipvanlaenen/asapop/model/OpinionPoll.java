@@ -45,6 +45,10 @@ public final class OpinionPoll {
      */
     private String pollingFirm;
     /**
+     * The name of the polling firm partner.
+     */
+    private String pollingFirmPartner;
+    /**
      * The publication date.
      */
     private LocalDate publicationDate;
@@ -74,6 +78,7 @@ public final class OpinionPoll {
         mainResponseScenario = builder.responseScenarioBuilder.build();
         other = builder.other;
         pollingFirm = builder.pollingFirm;
+        pollingFirmPartner = builder.pollingFirmPartner;
         publicationDate = builder.publicationDate;
         sampleSize = builder.sampleSize;
         sampleSizeValue = sampleSize == null ? 0 : Integer.parseInt(sampleSize);
@@ -108,6 +113,10 @@ public final class OpinionPoll {
          * The name of the polling firm.
          */
         private String pollingFirm;
+        /**
+         * The name of the polling firm partner.
+         */
+        private String pollingFirmPartner;
         /**
          * The publication date.
          */
@@ -147,7 +156,7 @@ public final class OpinionPoll {
          * Adds a result value to the response scenario builder.
          *
          * @param electoralListKey The key of an electoral list.
-         * @param resultValue The result value.
+         * @param resultValue      The result value.
          * @return This builder instance.
          */
         public Builder addResult(final String electoralListKey, final ResultValue resultValue) {
@@ -231,6 +240,17 @@ public final class OpinionPoll {
         }
 
         /**
+         * Sets the polling firm partner.
+         *
+         * @param pollingFirmPartnerName The name of the polling firm partner.
+         * @return This builder instance.
+         */
+        public Builder setPollingFirmPartner(final String pollingFirmPartnerName) {
+            this.pollingFirmPartner = pollingFirmPartnerName;
+            return this;
+        }
+
+        /**
          * Sets the publication date from a string.
          *
          * @param publicationDateString A string representing the publication date.
@@ -272,7 +292,7 @@ public final class OpinionPoll {
         public Builder setWellformedOther(final String otherString) {
             return setOther(new ResultValue(otherString));
         }
-}
+    }
 
     /**
      * Adds a response scenario to the list of alternative response scenarios.
@@ -288,16 +308,17 @@ public final class OpinionPoll {
         if (obj instanceof OpinionPoll) {
             OpinionPoll otherOpinionPoll = (OpinionPoll) obj;
             return otherOpinionPoll.alternativeResponseScenarios.equals(alternativeResponseScenarios)
-                   && equalsOrBothNull(area, otherOpinionPoll.area)
-                   && otherOpinionPoll.commissioners.equals(commissioners)
-                   && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
-                   && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
-                   && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
-                   && equalsOrBothNull(other, otherOpinionPoll.other)
-                   && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
-                   && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
-                   && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize)
-                   && equalsOrBothNull(scope, otherOpinionPoll.scope);
+                    && equalsOrBothNull(area, otherOpinionPoll.area)
+                    && otherOpinionPoll.commissioners.equals(commissioners)
+                    && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
+                    && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
+                    && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
+                    && equalsOrBothNull(other, otherOpinionPoll.other)
+                    && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
+                    && equalsOrBothNull(pollingFirmPartner, otherOpinionPoll.pollingFirmPartner)
+                    && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
+                    && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize)
+                    && equalsOrBothNull(scope, otherOpinionPoll.scope);
         } else {
             return false;
         }
@@ -378,6 +399,15 @@ public final class OpinionPoll {
     }
 
     /**
+     * Returns the polling firm partner.
+     *
+     * @return The polling firm partner.
+     */
+    public String getPollingFirmPartner() {
+        return pollingFirmPartner;
+    }
+
+    /**
      * Returns the publication date.
      *
      * @return The publication date.
@@ -426,6 +456,6 @@ public final class OpinionPoll {
     @Override
     public int hashCode() {
         return Objects.hash(alternativeResponseScenarios, area, commissioners, fieldworkEnd, fieldworkStart,
-                            mainResponseScenario, other, pollingFirm, publicationDate, sampleSize, scope);
+                mainResponseScenario, other, pollingFirm, pollingFirmPartner, publicationDate, sampleSize, scope);
     }
 }

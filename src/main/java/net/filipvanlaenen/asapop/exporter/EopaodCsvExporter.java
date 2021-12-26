@@ -82,8 +82,8 @@ public final class EopaodCsvExporter extends Exporter {
         List<String> lines = new ArrayList<String>();
         if (areaMatches(area, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
-            elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
-            elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
+            elements.add(escapeCommasAndQuotes(exportPollingFirms(opinionPoll)));
+            elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
             elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
             elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
@@ -124,8 +124,8 @@ public final class EopaodCsvExporter extends Exporter {
             return null;
         }
         List<String> elements = new ArrayList<String>();
-        elements.add(escapeCommasAndQuotes(opinionPoll.getPollingFirm()));
-        elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissionners(opinionPoll))));
+        elements.add(escapeCommasAndQuotes(exportPollingFirms(opinionPoll)));
+        elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(),
                                                                       opinionPoll.getScope()))));

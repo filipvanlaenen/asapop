@@ -153,6 +153,17 @@ public class EopaodPsvExporterTest {
     }
 
     /**
+     * Verifies the correct export of a simple opinion poll with a polling firm and a polling firm partner.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithPollingFirmAndPollingFirmPartner() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPollingFirmPartner("EMCA")
+                .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        String expected = "ACME and EMCA | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
+    }
+
+    /**
      * Verifies the correct export of a simple opinion poll with results having half of a percent.
      */
     @Test

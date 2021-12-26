@@ -21,8 +21,8 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the opinion polls.
      *
-     * @param opinionPolls The opinion polls to export.
-     * @param area The area to filter opinion polls and response scenarios on.
+     * @param opinionPolls      The opinion polls to export.
+     * @param area              The area to filter opinion polls and response scenarios on.
      * @param electoralListKeys An array with the keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
@@ -45,8 +45,8 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the opinion poll.
      *
-     * @param opinionPoll The opinion poll to export.
-     * @param area The area to filter opinion polls on.
+     * @param opinionPoll       The opinion poll to export.
+     * @param area              The area to filter opinion polls on.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
@@ -54,8 +54,8 @@ public final class EopaodPsvExporter extends Exporter {
         List<String> lines = new ArrayList<String>();
         if (areaMatches(area, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
-            elements.add(opinionPoll.getPollingFirm());
-            elements.add(naIfNull(exportCommissionners(opinionPoll)));
+            elements.add(exportPollingFirms(opinionPoll));
+            elements.add(naIfNull(exportCommissioners(opinionPoll)));
             elements.addAll(exportDates(opinionPoll));
             elements.add(naIfNull(opinionPoll.getScope()));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
@@ -83,20 +83,20 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the response scenario.
      *
-     * @param responseScenario The response scenario to export.
-     * @param opinionPoll The opinion poll this response scenario relates to.
-     * @param area The area to filter response scenarios on.
+     * @param responseScenario  The response scenario to export.
+     * @param opinionPoll       The opinion poll this response scenario relates to.
+     * @param area              The area to filter response scenarios on.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
-                         final String... electoralListKeys) {
+            final String... electoralListKeys) {
         if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
         List<String> elements = new ArrayList<String>();
-        elements.add(opinionPoll.getPollingFirm());
-        elements.add(naIfNull(exportCommissionners(opinionPoll)));
+        elements.add(exportPollingFirms(opinionPoll));
+        elements.add(naIfNull(exportCommissioners(opinionPoll)));
         elements.addAll(exportDates(opinionPoll));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope())));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
