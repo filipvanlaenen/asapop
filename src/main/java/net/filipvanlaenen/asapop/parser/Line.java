@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.Scope;
@@ -48,6 +49,11 @@ abstract class Line {
      */
     static final Pattern RESULT_KEY_VALUE_PATTERN = Pattern
             .compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN + ")" + KEY_VALUE_SEPARATOR_PATTERN + "\\s*(.+?)\\s*$");
+    /**
+     * A map mapping string values as they can appear in the ROPF file to the scopes.
+     */
+    static final Map<String, Scope> STRING_VALUE_TO_SCOPE = Map.of("E", Scope.European, "N", Scope.National, "P1",
+            Scope.PresidentialFirstRound);
 
     /**
      * Checks whether a line matches a pattern.
@@ -67,15 +73,6 @@ abstract class Line {
      * @return The scope corresponding to the provide value.
      */
     static Scope parseScope(final String value) {
-        switch (value) {
-        case "E":
-            return Scope.European;
-        case "N":
-            return Scope.National;
-        case "P1":
-            return Scope.PresidentialFirstRound;
-        default:
-            return null;
-        }
+        return STRING_VALUE_TO_SCOPE.get(value);
     }
 }
