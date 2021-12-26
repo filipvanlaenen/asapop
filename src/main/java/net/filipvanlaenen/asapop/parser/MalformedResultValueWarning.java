@@ -7,7 +7,7 @@ import java.util.Objects;
  */
 class MalformedResultValueWarning implements Warning {
     /**
-     * The number of the line where the warning occured.
+     * The number of the line where the warning occurred.
      */
     private final int lineNumber;
     /**

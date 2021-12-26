@@ -221,4 +221,15 @@ public final class OpinionPollLineTest {
         Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line with an unknown metadata key produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAnUnknownMetadataKey() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •XX: X •SC: N A:55 B:43",
+                                                                1);
+        Set<Warning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
 }

@@ -55,7 +55,7 @@ public final class ResponseScenarioLineTest {
     public void shouldParseSingleLineWithASimpleResponseScenario() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                                                                  .addWellformedResult("B", "43").build();
+                .addWellformedResult("B", "43").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -66,8 +66,7 @@ public final class ResponseScenarioLineTest {
     public void shouldParseSingleLineWithAResponseScenarioWithAResultForOther() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER, 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                                                                  .addWellformedResult("B", "43")
-                                                                  .setWellformedOther("2").build();
+                .addWellformedResult("B", "43").setWellformedOther("2").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -78,8 +77,7 @@ public final class ResponseScenarioLineTest {
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentArea() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •A: AB A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                                                                  .addWellformedResult("B", "43")
-                                                                  .setArea("AB").build();
+                .addWellformedResult("B", "43").setArea("AB").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -90,8 +88,7 @@ public final class ResponseScenarioLineTest {
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentScope() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SC: E A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                                                                  .addWellformedResult("B", "43")
-                                                                  .setScope("E").build();
+                .addWellformedResult("B", "43").setScope("E").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -103,8 +100,7 @@ public final class ResponseScenarioLineTest {
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSize() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                                                                  .addWellformedResult("B", "43")
-                                                                  .setSampleSize("999").build();
+                .addWellformedResult("B", "43").setSampleSize("999").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -136,4 +132,15 @@ public final class ResponseScenarioLineTest {
         Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line with an unknown metadata key produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAnUnknownMetadataKey() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •XX: X A:55 B:43", 1);
+        Set<Warning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
 }

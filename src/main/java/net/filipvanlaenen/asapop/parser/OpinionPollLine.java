@@ -148,7 +148,8 @@ final class OpinionPollLine extends Line {
                 break;
             case "SS": builder.setSampleSize(value);
                 break;
-            // The default case should be handled as part of issue #9.
+            default:
+                warnings.add(new UnknownMetadataKeyWarning(lineNumber, key));
         }
     }
 
