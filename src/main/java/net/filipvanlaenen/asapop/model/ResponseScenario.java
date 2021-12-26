@@ -28,7 +28,7 @@ public final class ResponseScenario {
     /**
      * The scope.
      */
-    private String scope;
+    private Scope scope;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -66,7 +66,7 @@ public final class ResponseScenario {
         /**
          * The scope.
          */
-        private String scope;
+        private Scope scope;
 
         /**
          * Adds a result.
@@ -136,11 +136,11 @@ public final class ResponseScenario {
         /**
          * Sets the scope.
          *
-         * @param scopeString The scope as a string.
+         * @param theScope The scope.
          * @return This builder instance.
          */
-        public Builder setScope(final String scopeString) {
-            this.scope = scopeString;
+        public Builder setScope(final Scope theScope) {
+            this.scope = theScope;
             return this;
         }
 
@@ -222,7 +222,7 @@ public final class ResponseScenario {
      *
      * @return The scope.
      */
-    public String getScope() {
+    public Scope getScope() {
         return scope;
     }
 

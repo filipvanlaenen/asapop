@@ -63,7 +63,7 @@ public final class OpinionPoll {
     /**
      * The scope.
      */
-    private String scope;
+    private Scope scope;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -132,7 +132,7 @@ public final class OpinionPoll {
         /**
          * The scope.
          */
-        private String scope;
+        private Scope scope;
 
         /**
          * Default constructor.
@@ -275,11 +275,11 @@ public final class OpinionPoll {
         /**
          * Sets the scope.
          *
-         * @param scopeString The scope as a string.
+         * @param theScope The scope.
          * @return This builder instance.
          */
-        public Builder setScope(final String scopeString) {
-            this.scope = scopeString;
+        public Builder setScope(final Scope theScope) {
+            this.scope = theScope;
             return this;
         }
 
@@ -449,7 +449,7 @@ public final class OpinionPoll {
      *
      * @return The scope.
      */
-    public String getScope() {
+    public Scope getScope() {
         return scope;
     }
 

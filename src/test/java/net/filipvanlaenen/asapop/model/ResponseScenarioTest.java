@@ -42,8 +42,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void setScopeInBuilderShouldBeWiredCorrectlyToGetScope() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().setScope("N").build();
-        assertEquals("N", responseScenario.getScope());
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setScope(Scope.National).build();
+        assertEquals(Scope.National, responseScenario.getScope());
      }
 
      /**
@@ -237,8 +237,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentScope() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope("N").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope("E").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope(Scope.National).build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope(Scope.European).build();
         assertFalse(responseScenario1.equals(responseScenario2));
      }
 
@@ -247,7 +247,7 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheScope() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope("N").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope(Scope.National).build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
         assertFalse(responseScenario1.equals(responseScenario2));
      }
@@ -257,8 +257,8 @@ public class ResponseScenarioTest {
       */
      @Test
      public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentScope() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope("N").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope("E").build();
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setScope(Scope.National).build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope(Scope.European).build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
      }
 }

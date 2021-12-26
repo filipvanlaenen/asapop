@@ -7,6 +7,7 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Exporter to the EOPAOD PSV file format.
@@ -57,7 +58,7 @@ public final class EopaodPsvExporter extends Exporter {
             elements.add(exportPollingFirms(opinionPoll));
             elements.add(naIfNull(exportCommissioners(opinionPoll)));
             elements.addAll(exportDates(opinionPoll));
-            elements.add(naIfNull(opinionPoll.getScope()));
+            elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
             elements.add("N/A");
             elements.add(calculatePrecision(opinionPoll, electoralListKeys));
@@ -98,7 +99,7 @@ public final class EopaodPsvExporter extends Exporter {
         elements.add(exportPollingFirms(opinionPoll));
         elements.add(naIfNull(exportCommissioners(opinionPoll)));
         elements.addAll(exportDates(opinionPoll));
-        elements.add(naIfNull(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope())));
+        elements.add(naIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
         elements.add("N/A");
         elements.add(calculatePrecision(responseScenario, electoralListKeys));
@@ -107,6 +108,28 @@ public final class EopaodPsvExporter extends Exporter {
         }
         elements.add(naIfNull(responseScenario.getOther()));
         return String.join(" | ", elements);
+    }
+
+    /**
+     * Exports the scope to the terms used by the EOPAOD PSV format.
+     *
+     * @param scope The scope to convert.
+     * @return A term used by EOPAOD PSV format for the scope.
+     */
+    private static String exportScope(final Scope scope) {
+        if (scope == null) {
+            return null;
+        }
+        switch (scope) {
+        case European:
+            return "E";
+        case National:
+            return "N";
+        case PresidentialFirstRound:
+            return "P";
+        default:
+            return null;
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Superclass for all exporters.
@@ -230,6 +231,17 @@ public abstract class Exporter {
         } else {
             return opinionPoll.getFieldworkStart().getStart();
         }
+    }
+
+    /**
+     * Returns the second scope if the first scope is <code>null</code>, or the first scope otherwise.
+     *
+     * @param first  The first scope.
+     * @param second The second scope.
+     * @return The second scope if the first scope is <code>null</code>, or the first scope otherwise.
+     */
+    static Scope secondIfFirstNull(final Scope first, final Scope second) {
+        return first == null ? second : first;
     }
 
     /**

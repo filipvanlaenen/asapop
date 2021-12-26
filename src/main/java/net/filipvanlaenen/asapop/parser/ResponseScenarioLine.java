@@ -140,7 +140,7 @@ final class ResponseScenarioLine extends Line {
                 warnings.addAll(other.getWarnings());
                 builder.setOther(other.getValue());
                 break;
-            case "SC": builder.setScope(value);
+            case "SC": builder.setScope(parseScope(value));
                 break;
             case "SS": builder.setSampleSize(value);
                 break;

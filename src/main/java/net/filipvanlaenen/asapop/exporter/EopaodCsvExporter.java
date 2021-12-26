@@ -8,6 +8,7 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Exporter to the EOPAOD CSV file format.
@@ -37,7 +38,7 @@ public final class EopaodCsvExporter extends Exporter {
      */
     private static String escapeCommasAndQuotes(final String text) {
         if (text.contains(",") || text.contains("\"")) {
-            return "\"" + text.replaceAll("\"",  "\"\"") + "\"";
+            return "\"" + text.replaceAll("\"", "\"\"") + "\"";
         } else {
             return text;
         }
@@ -46,8 +47,8 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * Exports the opinion polls.
      *
-     * @param opinionPolls The opinion polls to export.
-     * @param area The area to filter opinion polls and response scenarios on.
+     * @param opinionPolls      The opinion polls to export.
+     * @param area              The area to filter opinion polls and response scenarios on.
      * @param electoralListKeys An array with the keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the CSV file format for EOPAOD.
      */
@@ -73,8 +74,8 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * Exports the opinion poll.
      *
-     * @param opinionPoll The opinion poll to export.
-     * @param area The area to filter opinion polls on.
+     * @param opinionPoll       The opinion poll to export.
+     * @param area              The area to filter opinion polls on.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the CSV file format for EOPAOD.
      */
@@ -112,14 +113,14 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * Exports the response scenario.
      *
-     * @param responseScenario The response scenario to export.
-     * @param opinionPoll The opinion poll this response scenario relates to.
-     * @param area The area to filter response scenarios on.
+     * @param responseScenario  The response scenario to export.
+     * @param opinionPoll       The opinion poll this response scenario relates to.
+     * @param area              The area to filter response scenarios on.
      * @param electoralListKeys An array with the keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
-                         final String... electoralListKeys) {
+            final String... electoralListKeys) {
         if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
@@ -127,8 +128,8 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(escapeCommasAndQuotes(exportPollingFirms(opinionPoll)));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
-        elements.add(notAvailableIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(),
-                                                                      opinionPoll.getScope()))));
+        elements.add(notAvailableIfNull(
+                exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         String sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
         elements.add(notAvailableIfNull(sampleSize));
         elements.add(sampleSize == null ? "Not Available" : "Provided");
@@ -147,12 +148,18 @@ public final class EopaodCsvExporter extends Exporter {
      * @param scope The scope to convert.
      * @return A term used by EOPAOD CSV format for the scope.
      */
-    private static String exportScope(final String scope) {
-        if ("N".equals(scope)) {
-            return "National";
-        } else if ("E".equals(scope)) {
+    private static String exportScope(final Scope scope) {
+        if (scope == null) {
+            return null;
+        }
+        switch (scope) {
+        case European:
             return "European";
-        } else {
+        case National:
+            return "National";
+        case PresidentialFirstRound:
+            return "Presidential";
+        default:
             return null;
         }
     }

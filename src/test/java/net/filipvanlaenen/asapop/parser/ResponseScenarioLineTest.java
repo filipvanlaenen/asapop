@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Unit tests on the <code>ResponseScenarioLine</code> class.
@@ -88,7 +89,7 @@ public final class ResponseScenarioLineTest {
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentScope() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SC: E A:55 B:43", 1);
         ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").setScope("E").build();
+                .addWellformedResult("B", "43").setScope(Scope.European).build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 

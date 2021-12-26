@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Unit tests on the <code>OpinionPollLine</code> class.
@@ -186,7 +187,7 @@ public final class OpinionPollLineTest {
     public void shouldParseAnOpinionPollWithAScope() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43", 1);
         OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                .setScope("N").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+                .setScope(Scope.National).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 

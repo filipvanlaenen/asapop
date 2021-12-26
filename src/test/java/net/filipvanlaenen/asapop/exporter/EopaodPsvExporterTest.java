@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
 /**
@@ -86,7 +87,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
-                .setScope("N").build();
+                .setScope(Scope.National).build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | 1 | 55 | 43 | N/A";
@@ -99,9 +100,9 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
-                .setScope("N").build();
+                .setScope(Scope.National).build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").setScope("E").build();
+                .addWellformedResult("B", "43").setScope(Scope.European).build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
