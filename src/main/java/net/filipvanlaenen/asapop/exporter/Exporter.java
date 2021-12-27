@@ -10,7 +10,6 @@ import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
-import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Superclass for all exporters.
@@ -234,24 +233,13 @@ public abstract class Exporter {
     }
 
     /**
-     * Returns the second scope if the first scope is <code>null</code>, or the first scope otherwise.
+     * Returns the second object if the first object is <code>null</code>, or the first object otherwise.
      *
-     * @param first  The first scope.
-     * @param second The second scope.
-     * @return The second scope if the first scope is <code>null</code>, or the first scope otherwise.
+     * @param first  The first object.
+     * @param second The second object.
+     * @return The second object if the first object is <code>null</code>, or the first object otherwise.
      */
-    static Scope secondIfFirstNull(final Scope first, final Scope second) {
-        return first == null ? second : first;
-    }
-
-    /**
-     * Returns the second string if the first string is <code>null</code>, or the first string otherwise.
-     *
-     * @param first  The first string.
-     * @param second The second string.
-     * @return The second string if the first string is <code>null</code>, or the first string otherwise.
-     */
-    static String secondIfFirstNull(final String first, final String second) {
+    static <T> T secondIfFirstNull(final T first, final T second) {
         return first == null ? second : first;
     }
 

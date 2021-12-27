@@ -236,8 +236,10 @@ public class ExporterTest {
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         OpinionPoll poll3 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-04")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        List<OpinionPoll> expected = List.of(poll3, poll2, poll1);
-        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3)));
+        OpinionPoll poll4 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-05")
+                .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        List<OpinionPoll> expected = List.of(poll4, poll3, poll2, poll1);
+        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4)));
     }
 
     /**
