@@ -2,7 +2,10 @@ package net.filipvanlaenen.asapop.parser;
 
 import java.util.Objects;
 
-public class UnknownScopeValueWarning extends Warning {
+/**
+ * A warning about an unknown scope value.
+ */
+final class UnknownScopeValueWarning extends Warning {
     /**
      * The unknown scope value.
      */

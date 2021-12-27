@@ -235,6 +235,7 @@ public abstract class Exporter {
     /**
      * Returns the second object if the first object is <code>null</code>, or the first object otherwise.
      *
+     * @param <T>    The type of the objects.
      * @param first  The first object.
      * @param second The second object.
      * @return The second object if the first object is <code>null</code>, or the first object otherwise.

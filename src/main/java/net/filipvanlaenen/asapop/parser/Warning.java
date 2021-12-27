@@ -17,7 +17,12 @@ public abstract class Warning {
     Warning(final int lineNumber) {
         this.lineNumber = lineNumber;
     }
-    
+
+    /**
+     * Returns the line number.
+     *
+     * @return The line number.
+     */
     protected int getLineNumber() {
         return lineNumber;
     }
