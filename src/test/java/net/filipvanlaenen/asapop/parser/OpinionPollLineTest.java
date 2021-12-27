@@ -230,4 +230,14 @@ public final class OpinionPollLineTest {
         Set<Warning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line with an unknown scope produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAnUnknownScopeValue() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", 1);
+        Set<Warning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
 }

@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Class implementing a line representing an opinion poll.
@@ -151,7 +152,12 @@ final class OpinionPollLine extends Line {
             builder.setPollingFirmPartner(value);
             break;
         case "SC":
-            builder.setScope(parseScope(value));
+            Scope scope = parseScope(value);
+            if (scope == null) {
+                warnings.add(new UnknownScopeValueWarning(lineNumber, value));
+            } else {
+                builder.setScope(scope);
+            }
             break;
         case "SS":
             builder.setSampleSize(value);

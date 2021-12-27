@@ -144,4 +144,13 @@ public final class ResponseScenarioLineTest {
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
+    /**
+     * Verifies that a line with an unknown scope produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAnUnknownScopeValue() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", 1);
+        Set<Warning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
 }

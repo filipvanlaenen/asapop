@@ -5,11 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a malformed result value.
  */
-class MalformedResultValueWarning implements Warning {
-    /**
-     * The number of the line where the warning occurred.
-     */
-    private final int lineNumber;
+class MalformedResultValueWarning extends Warning {
     /**
      * The malformed value.
      */
@@ -18,11 +14,11 @@ class MalformedResultValueWarning implements Warning {
     /**
      * Constructor taking the line number and the value as its parameters.
      *
-     * @param lineNumber The number of the line where the warning occured.
+     * @param lineNumber The number of the line where the warning occurred.
      * @param value The malformed value.
      */
     MalformedResultValueWarning(final int lineNumber, final String value) {
-        this.lineNumber = lineNumber;
+        super(lineNumber);
         this.value = value;
     }
 
@@ -30,7 +26,7 @@ class MalformedResultValueWarning implements Warning {
     public boolean equals(final Object obj) {
         if (obj instanceof MalformedResultValueWarning) {
             MalformedResultValueWarning otherWarning = (MalformedResultValueWarning) obj;
-            return otherWarning.lineNumber == lineNumber && otherWarning.value.equals(value);
+            return otherWarning.getLineNumber() == getLineNumber() && otherWarning.value.equals(value);
         } else {
             return false;
         }
@@ -38,11 +34,11 @@ class MalformedResultValueWarning implements Warning {
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineNumber, value);
+        return Objects.hash(getLineNumber(), value);
     }
 
     @Override
     public String toString() {
-        return "Malformed result value (“" + value + "”) detected in line " + lineNumber + ".";
+        return "Malformed result value (“" + value + "”) detected in line " + getLineNumber() + ".";
     }
 }

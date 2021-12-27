@@ -5,11 +5,7 @@ import java.util.Objects;
 /**
  * A warning about an unknown metadata key.
  */
-class UnknownMetadataKeyWarning implements Warning {
-    /**
-     * The number of the line where the warning occurred.
-     */
-    private final int lineNumber;
+class UnknownMetadataKeyWarning extends Warning {
     /**
      * The unknown metadata key.
      */
@@ -18,11 +14,11 @@ class UnknownMetadataKeyWarning implements Warning {
     /**
      * Constructor taking the line number and the metadata key as its parameters.
      *
-     * @param lineNumber  The number of the line where the warning occured.
+     * @param lineNumber  The number of the line where the warning occurred.
      * @param metadataKey The unknown metadata key.
      */
     UnknownMetadataKeyWarning(final int lineNumber, final String metadataKey) {
-        this.lineNumber = lineNumber;
+        super(lineNumber);
         this.metadataKey = metadataKey;
     }
 
@@ -30,7 +26,7 @@ class UnknownMetadataKeyWarning implements Warning {
     public boolean equals(final Object obj) {
         if (obj instanceof UnknownMetadataKeyWarning) {
             UnknownMetadataKeyWarning otherWarning = (UnknownMetadataKeyWarning) obj;
-            return otherWarning.lineNumber == lineNumber && otherWarning.metadataKey.equals(metadataKey);
+            return otherWarning.getLineNumber() == getLineNumber() && otherWarning.metadataKey.equals(metadataKey);
         } else {
             return false;
         }
@@ -38,11 +34,11 @@ class UnknownMetadataKeyWarning implements Warning {
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineNumber, metadataKey);
+        return Objects.hash(getLineNumber(), metadataKey);
     }
 
     @Override
     public String toString() {
-        return "Unknown metadata key (“" + metadataKey + "”) detected in line " + lineNumber + ".";
+        return "Unknown metadata key (“" + metadataKey + "”) detected in line " + getLineNumber() + ".";
     }
 }
