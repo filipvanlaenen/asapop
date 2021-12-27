@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.exporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -14,6 +15,12 @@ import net.filipvanlaenen.asapop.model.Scope;
  * Exporter to the EOPAOD CSV file format.
  */
 public final class EopaodCsvExporter extends Exporter {
+    /**
+     * A map mapping scopes to CSV values.
+     */
+    static final Map<Scope, String> SCOPE_TO_PSV_STRING = Map.of(Scope.European, "European", Scope.National, "National",
+            Scope.PresidentialFirstRound, "Presidential");
+
     /**
      * Private constructor.
      */
@@ -143,25 +150,13 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
-     * Exports the scope to the terms used by the EOPAOD CSV format.
+     * Exports the scope to the terms used by the EOPAOD PSV format.
      *
      * @param scope The scope to convert.
-     * @return A term used by EOPAOD CSV format for the scope.
+     * @return A term used by EOPAOD PSV format for the scope.
      */
     private static String exportScope(final Scope scope) {
-        if (scope == null) {
-            return null;
-        }
-        switch (scope) {
-        case European:
-            return "European";
-        case National:
-            return "National";
-        case PresidentialFirstRound:
-            return "Presidential";
-        default:
-            return null;
-        }
+        return scope == null ? null : SCOPE_TO_PSV_STRING.get(scope);
     }
 
     /**
