@@ -45,6 +45,7 @@ defined so far:
 
 * A: Area
 * C: Commissioner
+* EX: Excluded responses (percentage)
 * FE: Fieldwork end
 * FS: Fieldwork start
 * O: Result for other
