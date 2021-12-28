@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class DecimalNumber {
@@ -47,6 +48,6 @@ public class DecimalNumber {
 
     @Override
     public String toString() {
-        return String.format("%." + numberOfDecimals + "f", value);
+        return String.format(Locale.US, "%." + numberOfDecimals + "f", value);
     }
 }
