@@ -99,7 +99,7 @@ The table below gives an overview over the metadata fields and their use:
 | PD           | Publication date     | Date          | 0…1         | No                |
 | PF           | Polling firm         | Text          | 0…1         | No                |
 | PFP          | Polling firm partner | Text          | 0…1         | No                |
-| SC           | Scope                | Text          | 0…1         | Yes               |
+| SC           | Scope                | Scope         | 0…1         | Yes               |
 | SS           | Sample size          | Text          | 0…1         | Yes               |
 
 ¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
@@ -112,6 +112,14 @@ The table below gives an informal overview over the field types:
 | Month        | ####-##    | 2021-12      |
 | Result Value | (<)#(.#)   | 1, 1.1, <0.5 |
 | Text         | *          | a, 1         |
+
+The type `Scope` accepts the values as in the table below:
+
+| Value | Description                        |
+|-------|------------------------------------|
+| E     | European elections                 |
+| N     | National elections                 |
+| P1    | Presidential election, first round |
 
 ### Electoral Lists
 
