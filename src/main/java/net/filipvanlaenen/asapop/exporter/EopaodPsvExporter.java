@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -67,7 +68,7 @@ public final class EopaodPsvExporter extends Exporter {
             elements.addAll(exportDates(opinionPoll));
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
-            elements.add("N/A");
+            elements.add(naIfNull(exportParticipationRate(opinionPoll)));
             elements.add(calculatePrecision(opinionPoll, electoralListKeys));
             for (String electoralListKey : electoralListKeys) {
                 elements.add(naIfNull(opinionPoll.getResult(electoralListKey)));
@@ -108,13 +109,22 @@ public final class EopaodPsvExporter extends Exporter {
         elements.addAll(exportDates(opinionPoll));
         elements.add(naIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
-        elements.add("N/A");
+        elements.add(naIfNull(exportParticipationRate(opinionPoll)));
         elements.add(calculatePrecision(responseScenario, electoralListKeys));
         for (String electoralListKey : electoralListKeys) {
             elements.add(naIfNull(responseScenario.getResult(electoralListKey)));
         }
         elements.add(naIfNull(responseScenario.getOther()));
         return String.join(" | ", elements);
+    }
+
+    private static String exportParticipationRate(final OpinionPoll opinionPoll) {
+        DecimalNumber excluded = opinionPoll.getExcluded();
+        if (excluded == null) {
+            return null;
+        } else {
+            return new DecimalNumber(100 - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
+        }
     }
 
     /**

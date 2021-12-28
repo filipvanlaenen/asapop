@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -82,7 +83,7 @@ public class EopaodPsvExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple response scenatio for an opinion poll with the same scope.
+     * Verifies the correct export of a simple response scenario for an opinion poll with the same scope.
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectly() {
@@ -91,6 +92,19 @@ public class EopaodPsvExporterTest {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | 1 | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple response scenario for an opinion poll with excluded responses.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithExcludedResponsesCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                .setExcluded(DecimalNumber.parse("10")).build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | 90 | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
 
@@ -115,6 +129,18 @@ public class EopaodPsvExporterTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setSampleSize("1000").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | 1000 | N/A | 1 | 55 | 43 | N/A";
+        assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with excluded responses.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithExcludedResponsesCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                .addWellformedResult("A", "55").addWellformedResult("B", "43").setExcluded(DecimalNumber.parse("10"))
+                .build();
+        String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | 90 | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, "A", "B"));
     }
 
