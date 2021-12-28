@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -133,6 +134,19 @@ public class EopaodCsvExporterTest {
     }
 
     /**
+     * Verifies the correct export of a simple opinion poll with excluded responses.
+     */
+    @Test
+    public void shouldExportSimpleOpinionPollWithExcludedResponsesCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                .addWellformedResult("A", "55").addWellformedResult("B", "43").setExcluded(DecimalNumber.parse("10"))
+                .build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available,90%,1%,55%,43%"
+                + ",Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+    }
+
+    /**
      * Verifies the correct export of a simple opinion poll with a result for other.
      */
     @Test
@@ -243,7 +257,7 @@ public class EopaodCsvExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple response scenatio for an opinion poll with a result for other.
+     * Verifies the correct export of a simple response scenario for an opinion poll with a result for other.
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithOtherResultCorrectly() {
@@ -252,6 +266,20 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("B", "43").setWellformedOther("2").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,2%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+    }
+
+    /**
+     * Verifies the correct export of a simple response scenario for an opinion poll with excluded responses.
+     */
+    @Test
+    public void shouldExportSimpleResponseScenarioWithExcludedResponsesCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                .setExcluded(DecimalNumber.parse("10")).build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
+                + ",90%,1%,55%,43%,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
     }
 

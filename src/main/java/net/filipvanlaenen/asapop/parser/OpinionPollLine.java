@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.Scope;
 
@@ -130,6 +131,14 @@ final class OpinionPollLine extends Line {
             break;
         case "C":
             builder.addCommissioner(value);
+            break;
+        case "EX":
+            DecimalNumber excluded = DecimalNumber.parse(value);
+            if (excluded == null) {
+                warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
+            } else {
+                builder.setExcluded(excluded);
+            }
             break;
         case "FE":
             builder.setFieldworkEnd(value);

@@ -25,6 +25,10 @@ public final class OpinionPoll {
      */
     private final Set<String> commissioners;
     /**
+     * The share of excluded responses.
+     */
+    private DecimalNumber excluded;
+    /**
      * The fieldwork end.
      */
     private DateOrMonth fieldworkEnd;
@@ -73,6 +77,7 @@ public final class OpinionPoll {
     private OpinionPoll(final Builder builder) {
         area = builder.area;
         commissioners = Collections.unmodifiableSet(builder.commissioners);
+        excluded = builder.excluded;
         fieldworkEnd = builder.fieldworkEnd;
         fieldworkStart = builder.fieldworkStart;
         mainResponseScenario = builder.responseScenarioBuilder.build();
@@ -97,6 +102,10 @@ public final class OpinionPoll {
          * The commissioners.
          */
         private final Set<String> commissioners = new HashSet<String>();
+        /**
+         * The share of excluded responses.
+         */
+        private DecimalNumber excluded;
         /**
          * The fieldwork end.
          */
@@ -192,6 +201,17 @@ public final class OpinionPoll {
          */
         public Builder setArea(final String areaCode) {
             this.area = areaCode;
+            return this;
+        }
+
+        /**
+         * Sets the share of excluded responses.
+         *
+         * @param excludedShare The share of the excluded responses.
+         * @return This build instance.
+         */
+        public Builder setExcluded(final DecimalNumber excludedShare) {
+            this.excluded = excludedShare;
             return this;
         }
 
@@ -310,6 +330,7 @@ public final class OpinionPoll {
             return otherOpinionPoll.alternativeResponseScenarios.equals(alternativeResponseScenarios)
                     && equalsOrBothNull(area, otherOpinionPoll.area)
                     && otherOpinionPoll.commissioners.equals(commissioners)
+                    && equalsOrBothNull(excluded, otherOpinionPoll.excluded)
                     && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
                     && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
                     && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
@@ -360,6 +381,15 @@ public final class OpinionPoll {
      */
     public Set<String> getCommissioners() {
         return commissioners;
+    }
+
+    /**
+     * Returns the share of excluded responses.
+     *
+     * @return The share of excluded responses.
+     */
+    public DecimalNumber getExcluded() {
+        return excluded;
     }
 
     /**
@@ -455,7 +485,7 @@ public final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(alternativeResponseScenarios, area, commissioners, fieldworkEnd, fieldworkStart,
+        return Objects.hash(alternativeResponseScenarios, area, commissioners, excluded, fieldworkEnd, fieldworkStart,
                 mainResponseScenario, other, pollingFirm, pollingFirmPartner, publicationDate, sampleSize, scope);
     }
 }

@@ -134,6 +134,16 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that the setExcluded method in the builder class is wired correctly to the getExcluded method.
+     */
+    @Test
+    public void setExcludedInBuilderShouldBeWiredCorrectlyToGetExcluded() {
+        DecimalNumber expected = DecimalNumber.parse("10");
+        OpinionPoll poll = new OpinionPoll.Builder().setExcluded(expected).build();
+        assertEquals(expected, poll.getExcluded());
+    }
+
+    /**
      * Verifies that by default, no alternative response scenarios are returned.
      */
     @Test
@@ -496,6 +506,36 @@ public class OpinionPollTest {
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentScope() {
         OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.National).build();
         OpinionPoll poll2 = new OpinionPoll.Builder().setScope(Scope.European).build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+    }
+
+    /**
+     * Verifies that an opinion poll is not equal to another opinion poll with a different share of excluded responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentShareOfExcludedResponses() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setExcluded(DecimalNumber.parse("10")).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setExcluded(DecimalNumber.parse("11")).build();
+        assertFalse(poll1.equals(poll2));
+    }
+
+    /**
+     * Verifies that an opinion poll is not equal to another opinion poll missing the share of excluded responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheShareOfExcludedResponses() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setExcluded(DecimalNumber.parse("10")).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+    }
+
+    /**
+     * Verifies that opinion polls have different hash codes if they have different shares of excluded responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentShareOfExcludedResponses() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setExcluded(DecimalNumber.parse("10")).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setExcluded(DecimalNumber.parse("11")).build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 

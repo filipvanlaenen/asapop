@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.Scope;
 
@@ -122,6 +124,18 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:55 B:45", 1);
         OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                 .setSampleSize("1000").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that an opinion poll with excluded can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithExcluded() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 10 A:55 B:45", 1);
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                .setExcluded(DecimalNumber.parse("10")).addWellformedResult("A", "55").addWellformedResult("B", "45")
+                .build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 

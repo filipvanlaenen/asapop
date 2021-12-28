@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -96,7 +97,7 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
             elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
             elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
-            elements.add("Not Available");
+            elements.add(notAvailableIfNull(exportParticipationRate(opinionPoll)));
             elements.add(calculatePrecision(opinionPoll, electoralListKeys) + "%");
             for (String electoralListKey : electoralListKeys) {
                 elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListKey)));
@@ -140,13 +141,22 @@ public final class EopaodCsvExporter extends Exporter {
         String sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
         elements.add(notAvailableIfNull(sampleSize));
         elements.add(sampleSize == null ? "Not Available" : "Provided");
-        elements.add("Not Available");
+        elements.add(notAvailableIfNull(exportParticipationRate(opinionPoll)));
         elements.add(calculatePrecision(responseScenario, electoralListKeys) + "%");
         for (String electoralListKey : electoralListKeys) {
             elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListKey)));
         }
         elements.add(percentageOrNotAvailable(responseScenario.getOther()));
         return String.join(",", elements);
+    }
+
+    private static String exportParticipationRate(final OpinionPoll opinionPoll) {
+        DecimalNumber excluded = opinionPoll.getExcluded();
+        if (excluded == null) {
+            return null;
+        } else {
+            return new DecimalNumber(100 - excluded.getValue(), excluded.getNumberOfDecimals()).toString() + "%";
+        }
     }
 
     /**
