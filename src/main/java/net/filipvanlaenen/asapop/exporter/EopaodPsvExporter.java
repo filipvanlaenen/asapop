@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -116,15 +115,6 @@ public final class EopaodPsvExporter extends Exporter {
         }
         elements.add(naIfNull(responseScenario.getOther()));
         return String.join(" | ", elements);
-    }
-
-    private static String exportParticipationRate(final OpinionPoll opinionPoll) {
-        DecimalNumber excluded = opinionPoll.getExcluded();
-        if (excluded == null) {
-            return null;
-        } else {
-            return new DecimalNumber(100 - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
-        }
     }
 
     /**

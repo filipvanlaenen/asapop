@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
@@ -153,6 +154,15 @@ public abstract class Exporter {
             }
         }
         return elements;
+    }
+
+    static String exportParticipationRate(final OpinionPoll opinionPoll) {
+        DecimalNumber excluded = opinionPoll.getExcluded();
+        if (excluded == null) {
+            return null;
+        } else {
+            return new DecimalNumber(100 - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
+        }
     }
 
     /**
