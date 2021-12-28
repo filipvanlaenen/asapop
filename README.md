@@ -57,7 +57,7 @@ defined so far:
 The following example shows how the all the metadata fields can be used:
 
 ```
-•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 A:55 B:43 •O:2
+•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:43 •O:2
 ```
 
 Result fields consist of an electoral list key, a colon (":"), and a value. The
@@ -89,29 +89,31 @@ their voting intentions both for the national and the European parliament:
 
 The table below gives an overview over the metadata fields and their use:
 
-| Abbreviation | Description          | Type          | Cardinality | Response Scenario |
-|--------------|----------------------|---------------|-------------|-------------------|
-| A            | Area                 | Text          | 0…1         | Yes               |
-| C            | Commissioner         | Text          | 0…_n_       | No                |
-| FE           | Fieldwork end        | Date or Month | 0…1         | No                |
-| FS           | Fieldwork start      | Date or Month | 0…1         | No                |
-| O            | Result for other     | Result Value  | 0…1         | Yes¹              |
-| PD           | Publication date     | Date          | 0…1         | No                |
-| PF           | Polling firm         | Text          | 0…1         | No                |
-| PFP          | Polling firm partner | Text          | 0…1         | No                |
-| SC           | Scope                | Scope         | 0…1         | Yes               |
-| SS           | Sample size          | Text          | 0…1         | Yes               |
+| Abbreviation | Description          | Type           | Cardinality | Response Scenario |
+|--------------|----------------------|----------------|-------------|-------------------|
+| A            | Area                 | Text           | 0…1         | Yes               |
+| C            | Commissioner         | Text           | 0…_n_       | No                |
+| EX           | Excluded responses   | Decimal Number | 0…1         | No                |
+| FE           | Fieldwork end        | Date or Month  | 0…1         | No                |
+| FS           | Fieldwork start      | Date or Month  | 0…1         | No                |
+| O            | Result for other     | Result Value   | 0…1         | Yes¹              |
+| PD           | Publication date     | Date           | 0…1         | No                |
+| PF           | Polling firm         | Text           | 0…1         | No                |
+| PFP          | Polling firm partner | Text           | 0…1         | No                |
+| SC           | Scope                | Scope          | 0…1         | Yes               |
+| SS           | Sample size          | Text           | 0…1         | Yes               |
 
 ¹ As for the regular results, the result for other is not inherited by a response scenario if absent.
 
 The table below gives an informal overview over the field types:
 
-| Type         | Definition | Examples     |
-|--------------|------------|--------------|
-| Date         | ####-##-## | 2021-12-09   |
-| Month        | ####-##    | 2021-12      |
-| Result Value | (<)#(.#)   | 1, 1.1, <0.5 |
-| Text         | *          | a, 1         |
+| Type           | Definition | Examples     |
+|----------------|------------|--------------|
+| Date           | ####-##-## | 2021-12-09   |
+| Decimal Number | #(.#)      | 1, 1.1       |
+| Month          | ####-##    | 2021-12      |
+| Result Value   | (<)#(.#)   | 1, 1.1, <0.5 |
+| Text           | *          | a, 1         |
 
 The type `Scope` accepts the values as in the table below:
 
