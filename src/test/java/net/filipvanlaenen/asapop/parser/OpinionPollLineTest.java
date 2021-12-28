@@ -254,4 +254,14 @@ public final class OpinionPollLineTest {
         Set<Warning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line with a malformd decimal number for excluded produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43", 1);
+        Set<Warning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
 }

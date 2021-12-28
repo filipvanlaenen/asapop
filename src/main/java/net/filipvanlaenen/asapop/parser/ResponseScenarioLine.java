@@ -72,7 +72,7 @@ final class ResponseScenarioLine extends Line {
      * @return True if the line matches the pattern of a response scenario line, false otherwise.
      */
     static boolean isResponseScenarioLine(final String line) {
-        return lineMatchesPattern(RESPONSE_SCENARIO_PATTERN, line);
+        return textMatchesPattern(RESPONSE_SCENARIO_PATTERN, line);
     }
 
     /**

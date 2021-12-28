@@ -19,6 +19,10 @@ final class OpinionPollLine extends Line {
      */
     private static final int THREE = 3;
     /**
+     * The pattern to match a decimal number.
+     */
+    private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
+    /**
      * The pattern to match an opinion poll line.
      */
     private static final Pattern OPINION_POLL_PATTERN = Pattern.compile("^\\s*" + METADATA_MARKER_PATTERN
@@ -69,7 +73,7 @@ final class OpinionPollLine extends Line {
      * @return True if the line matches the pattern of an opinion poll line, false otherwise.
      */
     static boolean isOpinionPollLine(final String line) {
-        return lineMatchesPattern(OPINION_POLL_PATTERN, line);
+        return textMatchesPattern(OPINION_POLL_PATTERN, line);
     }
 
     /**
@@ -133,11 +137,11 @@ final class OpinionPollLine extends Line {
             builder.addCommissioner(value);
             break;
         case "EX":
-            DecimalNumber excluded = DecimalNumber.parse(value);
-            if (excluded == null) {
-                warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
-            } else {
+            if (textMatchesPattern(DECIMAL_NUMBER_PATTERN, value)) {
+                DecimalNumber excluded = DecimalNumber.parse(value);
                 builder.setExcluded(excluded);
+            } else {
+                warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
             }
             break;
         case "FE":

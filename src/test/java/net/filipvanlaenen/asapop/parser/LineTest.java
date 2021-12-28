@@ -18,7 +18,7 @@ public final class LineTest {
      */
     @Test
     public void lineMatchesPatternShouldDetectAMatch() {
-        assertTrue(Line.lineMatchesPattern(Line.RESULT_KEY_VALUE_PATTERN, "A:5"));
+        assertTrue(Line.textMatchesPattern(Line.RESULT_KEY_VALUE_PATTERN, "A:5"));
     }
 
     /**
@@ -26,7 +26,7 @@ public final class LineTest {
      */
     @Test
     public void lineMatchesPatternShouldDetectANonMatch() {
-        assertFalse(Line.lineMatchesPattern(Line.RESULT_KEY_VALUE_PATTERN, "a:5"));
+        assertFalse(Line.textMatchesPattern(Line.RESULT_KEY_VALUE_PATTERN, "a:5"));
     }
 
     /**

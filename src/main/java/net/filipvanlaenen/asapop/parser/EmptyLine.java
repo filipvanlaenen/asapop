@@ -18,6 +18,6 @@ final class EmptyLine extends Line {
      * @return True if the line matches the pattern of an empty line, false otherwise.
      */
     static boolean isEmptyLine(final String line) {
-        return lineMatchesPattern(EMPTY_PATTERN, line);
+        return textMatchesPattern(EMPTY_PATTERN, line);
     }
 }

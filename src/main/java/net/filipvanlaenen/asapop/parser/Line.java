@@ -56,17 +56,6 @@ abstract class Line {
             Scope.PresidentialFirstRound);
 
     /**
-     * Checks whether a line matches a pattern.
-     *
-     * @param pattern The pattern to match against.
-     * @param line    The line to match.
-     * @return True if the line matches with the pattern, false otherwise.
-     */
-    static boolean lineMatchesPattern(final Pattern pattern, final String line) {
-        return pattern.matcher(line).matches();
-    }
-
-    /**
      * Parses the code for a scope into a scope.
      *
      * @param value The value representing a scope.
@@ -74,5 +63,16 @@ abstract class Line {
      */
     static Scope parseScope(final String value) {
         return STRING_VALUE_TO_SCOPE.get(value);
+    }
+
+    /**
+     * Checks whether a text matches a pattern.
+     *
+     * @param pattern The pattern to match against.
+     * @param text    The text to match.
+     * @return True if the text matches with the pattern, false otherwise.
+     */
+    static boolean textMatchesPattern(final Pattern pattern, final String text) {
+        return pattern.matcher(text).matches();
     }
 }

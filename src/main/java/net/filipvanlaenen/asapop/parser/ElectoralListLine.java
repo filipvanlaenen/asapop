@@ -67,7 +67,7 @@ final class ElectoralListLine extends Line {
      * @return True if the line matches the pattern of an electoral list line, false otherwise.
      */
     static boolean isElectoralListLine(final String line) {
-        return lineMatchesPattern(ELECTORAL_LIST_PATTERN, line);
+        return textMatchesPattern(ELECTORAL_LIST_PATTERN, line);
     }
 
     /**
