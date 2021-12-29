@@ -149,6 +149,12 @@ public final class EopaodCsvExporter extends Exporter {
         return String.join(",", elements);
     }
 
+    /**
+     * Exports the participation rate of the opinion poll as a percentage.
+     *
+     * @param opinionPoll The opinion poll for which to export the participation rate as a percentage.
+     * @return A string representing the participation rate as a percentage.
+     */
     private static String exportParticipationRatePercentage(final OpinionPoll opinionPoll) {
         String participationRate = exportParticipationRate(opinionPoll);
         if (participationRate == null) {
