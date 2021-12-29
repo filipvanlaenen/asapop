@@ -3,16 +3,37 @@ package net.filipvanlaenen.asapop.model;
 import java.util.Locale;
 import java.util.Objects;
 
-public class DecimalNumber {
+/**
+ * Class representing a decimal number. A decimal number has a value and a number of decimals.
+ */
+public final class DecimalNumber {
+    /**
+     * The value of the decimal number.
+     */
     private final float value;
+    /**
+     * The number of decimals for the decimal number.
+     */
     private final int numberOfDecimals;
 
+    /**
+     * Constructor using the value and the number of decimals as its parameters.
+     *
+     * @param value            The value of the decimal number.
+     * @param numberOfDecimals The number of decimals for the decimal number.
+     */
     public DecimalNumber(final float value, final int numberOfDecimals) {
         this.value = value;
         this.numberOfDecimals = numberOfDecimals;
     }
 
-    public static DecimalNumber parse(String string) {
+    /**
+     * Parses a string into a decimal number.
+     *
+     * @param string The string to be parsed into a decimal number.
+     * @return A decimal number parsed from the string.
+     */
+    public static DecimalNumber parse(final String string) {
         float value = Float.parseFloat(string);
         if (string.contains(".")) {
             String strippedString = string.strip();
@@ -33,10 +54,20 @@ public class DecimalNumber {
         }
     }
 
+    /**
+     * Returns the number of decimals for the decimal number.
+     *
+     * @return The number of decimals for the decimal number.
+     */
     public int getNumberOfDecimals() {
         return numberOfDecimals;
     }
 
+    /**
+     * Returns the value of the decimal number.
+     *
+     * @return The value of the decimal number.
+     */
     public float getValue() {
         return value;
     }
