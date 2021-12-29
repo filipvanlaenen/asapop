@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
@@ -232,11 +233,11 @@ public class ExporterTest {
     public void shouldSortASetOfOpinionPollsIntoAList() {
         OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-03")
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-03")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         OpinionPoll poll3 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-04")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll4 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-05")
+        OpinionPoll poll4 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-05")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         List<OpinionPoll> expected = List.of(poll4, poll3, poll2, poll1);
         assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4)));
@@ -296,5 +297,26 @@ public class ExporterTest {
     @Test
     public void shouldReturnSecondStringIfTheFirstStringIsNotNull() {
         assertEquals("B", Exporter.secondIfFirstNull(null, "B"));
+    }
+
+    /**
+     * Verifies that no participation rate is exported when excluded is missing.
+     */
+    @Test
+    public void shouldExportNoParticipationRateWhenExcludedIsMissing() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        assertNull(Exporter.exportParticipationRate(poll));
+    }
+
+    /**
+     * Verifies that correct participation rate is exported according to excluded.
+     */
+    @Test
+    public void shouldExportParticipationRateCorrectlyForExcluded() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+                .setExcluded(DecimalNumber.parse("10")).addWellformedResult("A", "55").addWellformedResult("B", "43")
+                .build();
+        assertEquals("90", Exporter.exportParticipationRate(poll));
     }
 }
