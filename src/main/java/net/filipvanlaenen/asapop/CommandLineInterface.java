@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -86,10 +87,11 @@ public final class CommandLineInterface {
                 String outputFileName = args[THREE];
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
-                File file = new File(electionDataFileName);
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-                ElectionData electionData = objectMapper.readValue(file, ElectionData.class);
-                AnalysisResult analysisResult = new AnalysisResult();
+                ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
+                AnalysisEngine engine = new AnalysisEngine(richOpinionPollsFile.getOpinionPolls(), electionData);
+                engine.run();
+                AnalysisResult analysisResult = engine.getResult();
                 objectMapper.writeValue(new File(outputFileName), analysisResult);
             }
         },
