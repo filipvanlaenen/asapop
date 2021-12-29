@@ -17,6 +17,11 @@ import net.filipvanlaenen.asapop.model.ResultValue;
  */
 public abstract class Exporter {
     /**
+     * The magic number one hundred.
+     */
+    private static final int ONE_HUNDRED = 100;
+
+    /**
      * Adds a string to a set, unless the string is null.
      *
      * @param <T> The type of the set items.
@@ -156,12 +161,18 @@ public abstract class Exporter {
         return elements;
     }
 
+    /**
+     * Exports the participation rate.
+     *
+     * @param opinionPoll The opinion poll to export the participation rate for.
+     * @return A string representing the participation rate for the opinion poll.
+     */
     static String exportParticipationRate(final OpinionPoll opinionPoll) {
         DecimalNumber excluded = opinionPoll.getExcluded();
         if (excluded == null) {
             return null;
         } else {
-            return new DecimalNumber(100 - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
+            return new DecimalNumber(ONE_HUNDRED - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
         }
     }
 
