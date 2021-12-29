@@ -2,7 +2,10 @@ package net.filipvanlaenen.asapop.parser;
 
 import java.util.Objects;
 
-public class MalformedDecimalNumberWarning extends Warning {
+/**
+ * A warning about a metadata field containing a malformed decimal number.
+ */
+class MalformedDecimalNumberWarning extends Warning {
     /**
      * The key.
      */
@@ -12,7 +15,14 @@ public class MalformedDecimalNumberWarning extends Warning {
      */
     private final String value;
 
-    public MalformedDecimalNumberWarning(int lineNumber, String key, String value) {
+    /**
+     * Constructor taking the line number, the metadata field key and value as its parameters.
+     *
+     * @param lineNumber The line number where the warning was detected.
+     * @param key        The key of the metadata field.
+     * @param value      The value of the metadata field containing a malformed decimal number.
+     */
+    MalformedDecimalNumberWarning(final int lineNumber, final String key, final String value) {
         super(lineNumber);
         this.key = key;
         this.value = value;
