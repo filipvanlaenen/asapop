@@ -1,16 +1,18 @@
 package net.filipvanlaenen.asapop.yaml;
 
+import java.util.List;
+
 public class AnalysisResult {
-    private String foo;
+    private List<OpinionPoll> opinionPolls;
 
     public AnalysisResult() {
     }
 
-    public String getFoo() {
-        return foo;
+    public List<OpinionPoll> getOpinionPolls() {
+        return opinionPolls;
     }
 
-    public void setFoo(String foo) {
-        this.foo = foo;
+    public void setOpinionPolls(List<OpinionPoll> opinionPolls) {
+        this.opinionPolls = opinionPolls;
     }
 }
