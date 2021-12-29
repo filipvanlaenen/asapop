@@ -10,17 +10,29 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the <code>DecimalNumber</code> class.
  */
 public class DecimalNumberTest {
-    private static final DecimalNumber DECIMAL_NUMBER_TWO_WITH_ONE_DECIMAL = new DecimalNumber(2.0F, 1);
-    private static final DecimalNumber DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL = new DecimalNumber(1.0F, 1);
-    private static final DecimalNumber DECIMAL_NUMBER_ONE_WITH_TWO_DECIMALS = new DecimalNumber(1.0F, 2);
+    /**
+     * The decimal number 1.
+     */
+    private static final DecimalNumber DECIMAL_NUMBER_ONE_WITH_NO_DECIMALS = new DecimalNumber(1F, 0);
+    /**
+     * The decimal number 1.0.
+     */
+    private static final DecimalNumber DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL = new DecimalNumber(1F, 1);
+    /**
+     * The decimal number 1.00.
+     */
+    private static final DecimalNumber DECIMAL_NUMBER_ONE_WITH_TWO_DECIMALS = new DecimalNumber(1F, 2);
+    /**
+     * The decimal number 2.0.
+     */
+    private static final DecimalNumber DECIMAL_NUMBER_TWO_WITH_ONE_DECIMAL = new DecimalNumber(2F, 1);
 
     /**
      * Verifies that the getter method <code>getValue</code> is wired correctly to the constructor.
      */
     @Test
     public void getValueShouldBeWiredCorrectlyToTheConstructor() {
-        DecimalNumber number = new DecimalNumber(1.1F, 1);
-        assertEquals(1.1F, number.getValue());
+        assertEquals(1.0F, DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL.getValue());
     }
 
     /**
@@ -28,8 +40,7 @@ public class DecimalNumberTest {
      */
     @Test
     public void getNumberOfDecimalsShouldBeWiredCorrectlyToTheConstructor() {
-        DecimalNumber number = new DecimalNumber(1.1F, 1);
-        assertEquals(1, number.getNumberOfDecimals());
+        assertEquals(1, DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL.getNumberOfDecimals());
     }
 
     /**
@@ -37,7 +48,7 @@ public class DecimalNumberTest {
      */
     @Test
     public void aDecimalNumberWithNoDecimalsShouldBeParsedCorrectly() {
-        assertEquals(new DecimalNumber(1F, 0), DecimalNumber.parse("1"));
+        assertEquals(DECIMAL_NUMBER_ONE_WITH_NO_DECIMALS, DecimalNumber.parse("1"));
     }
 
     /**
@@ -45,7 +56,7 @@ public class DecimalNumberTest {
      */
     @Test
     public void aDecimalNumberWithOneDecimalShouldBeParsedCorrectly() {
-        assertEquals(new DecimalNumber(1F, 1), DecimalNumber.parse("1.0"));
+        assertEquals(DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL, DecimalNumber.parse("1.0"));
     }
 
     /**
@@ -53,7 +64,7 @@ public class DecimalNumberTest {
      */
     @Test
     public void aDecimalNumberWithOneDecimalAndTrailingWhitespaceShouldBeParsedCorrectly() {
-        assertEquals(new DecimalNumber(1F, 1), DecimalNumber.parse("1.0 "));
+        assertEquals(DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL, DecimalNumber.parse("1.0 "));
     }
 
     /**
@@ -61,8 +72,7 @@ public class DecimalNumberTest {
      */
     @Test
     public void toStringShouldConvertDecimalNumberWithNoDecimalsCorrectly() {
-        DecimalNumber number = new DecimalNumber(1.0F, 0);
-        assertEquals("1", number.toString());
+        assertEquals("1", DECIMAL_NUMBER_ONE_WITH_NO_DECIMALS.toString());
     }
 
     /**
@@ -70,8 +80,7 @@ public class DecimalNumberTest {
      */
     @Test
     public void toStringShouldConvertDecimalNumberWithOneDecimalCorrectly() {
-        DecimalNumber number = DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL;
-        assertEquals("1.0", number.toString());
+        assertEquals("1.0", DECIMAL_NUMBER_ONE_WITH_ONE_DECIMAL.toString());
     }
 
     /**
