@@ -1,15 +1,21 @@
 package net.filipvanlaenen.asapop;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.parser.Warning;
+import net.filipvanlaenen.asapop.yaml.AnalysisResult;
+import net.filipvanlaenen.asapop.yaml.ElectionData;
 
 /**
  * Class implementing a command line interface.
@@ -53,6 +59,7 @@ public final class CommandLineInterface {
      */
     private static void printUsage() {
         System.out.println("Usage:");
+        System.out.println("  analyze <ropf-file-name> <election-yaml-file-name> <analysis-result-yaml-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
     }
@@ -67,6 +74,25 @@ public final class CommandLineInterface {
      * Enumeration with the available commands.
      */
     enum Command {
+        /**
+         * Command to read a ROPF file and a YAML file with election specific data, analyze the opinion polls and write
+         * the results to a YAML file.
+         */
+        Analyze {
+            @Override
+            void execute(final String[] args) throws IOException {
+                String inputFileName = args[1];
+                String electionDataFileName = args[2];
+                String outputFileName = args[THREE];
+                String[] ropfContent = readFile(inputFileName);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                File file = new File(electionDataFileName);
+                ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+                ElectionData electionData = objectMapper.readValue(file, ElectionData.class);
+                AnalysisResult analysisResult = new AnalysisResult();
+                objectMapper.writeValue(new File(outputFileName), analysisResult);
+            }
+        },
         /**
          * Command read an ROPF file and convert it to another format.
          */
