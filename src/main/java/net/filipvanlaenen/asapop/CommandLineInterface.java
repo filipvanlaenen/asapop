@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -89,6 +90,7 @@ public final class CommandLineInterface {
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+                objectMapper.setSerializationInclusion(Include.NON_NULL);
                 ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
                 AnalysisEngine engine = new AnalysisEngine(richOpinionPollsFile.getOpinionPolls(), electionData);
                 engine.run();
