@@ -15,7 +15,8 @@ import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.parser.Warning;
-import net.filipvanlaenen.asapop.yaml.AnalysisResult;
+import net.filipvanlaenen.asapop.yaml.Analysis;
+import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 
 /**
@@ -91,8 +92,8 @@ public final class CommandLineInterface {
                 ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
                 AnalysisEngine engine = new AnalysisEngine(richOpinionPollsFile.getOpinionPolls(), electionData);
                 engine.run();
-                AnalysisResult analysisResult = engine.getResult();
-                objectMapper.writeValue(new File(outputFileName), analysisResult);
+                Analysis analysis = new AnalysisBuilder(engine).build();
+                objectMapper.writeValue(new File(outputFileName), analysis);
             }
         },
         /**

@@ -1,4 +1,4 @@
 package net.filipvanlaenen.asapop.yaml;
 
-public class OpinionPoll {
+public class OpinionPollAnalysis {
 }
