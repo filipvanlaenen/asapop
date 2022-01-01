@@ -62,7 +62,7 @@ public final class ElectoralList {
      *
      * @return The key of the electoral list.
      */
-    String getKey() {
+    public String getKey() {
         return key;
     }
 

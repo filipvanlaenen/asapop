@@ -383,6 +383,10 @@ public final class OpinionPoll {
         return commissioners;
     }
 
+    public Set<ElectoralList> getElectoralLists() {
+        return mainResponseScenario.getElectoralLists();
+    }
+
     /**
      * Returns the share of excluded responses.
      *
@@ -408,6 +412,10 @@ public final class OpinionPoll {
      */
     public DateOrMonth getFieldworkStart() {
         return fieldworkStart;
+    }
+
+    public ResponseScenario getMainResponseScenario() {
+        return mainResponseScenario;
     }
 
     /**

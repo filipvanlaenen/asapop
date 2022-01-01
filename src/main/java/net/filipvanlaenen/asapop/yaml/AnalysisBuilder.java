@@ -1,14 +1,17 @@
 package net.filipvanlaenen.asapop.yaml;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 
 public class AnalysisBuilder {
+    private static final Integer[] CONFIDENCE_INTERVAL_LEVELS = new Integer[] {80, 90, 95, 99};
     private AnalysisEngine engine;
 
     public AnalysisBuilder(AnalysisEngine engine) {
@@ -42,12 +45,28 @@ public class AnalysisBuilder {
         return opinionPollAnalysis;
     }
 
+    private ResultAnalysis buildOtherAnalysis(ResponseScenario responseScenario) {
+        ResultAnalysis resultAnalysis = new ResultAnalysis();
+        resultAnalysis.setMedian(responseScenario.getMedianOther());
+        Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
+        for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
+            confidenceIntervals.put(level, responseScenario.getConfidenceIntervalOther());
+        }
+        resultAnalysis.setConfidenceIntervals(confidenceIntervals);
+        return resultAnalysis;
+    }
+
     private ResponseScenarioAnalysis buildResponseScenarioAnalysis(OpinionPoll poll) {
         ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
         responseScenarioAnalysis.setArea(poll.getArea());
         responseScenarioAnalysis.setScope(nullOrToString(poll.getScope()));
-        // TODO: results
-        // TODO: other
+        Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
+        for (ElectoralList electoralList : poll.getElectoralLists()) {
+            resultAnalyses.put(electoralList.getKey(),
+                    buildResultAnalysis(poll.getMainResponseScenario(), electoralList));
+        }
+        responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
+        responseScenarioAnalysis.setOtherAnalysis(buildOtherAnalysis(poll.getMainResponseScenario()));
         return responseScenarioAnalysis;
     }
 
@@ -55,9 +74,24 @@ public class AnalysisBuilder {
         ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
         responseScenarioAnalysis.setArea(responseScenario.getArea());
         responseScenarioAnalysis.setScope(nullOrToString(responseScenario.getScope()));
-        // TODO: results
-        // TODO: other
+        Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
+        for (ElectoralList electoralList : responseScenario.getElectoralLists()) {
+            resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(responseScenario, electoralList));
+        }
+        responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
+        responseScenarioAnalysis.setOtherAnalysis(buildOtherAnalysis(responseScenario));
         return responseScenarioAnalysis;
+    }
+
+    private ResultAnalysis buildResultAnalysis(ResponseScenario responseScenario, ElectoralList electoralList) {
+        ResultAnalysis resultAnalysis = new ResultAnalysis();
+        resultAnalysis.setMedian(responseScenario.getMedian(electoralList));
+        Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
+        for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
+            confidenceIntervals.put(level, responseScenario.getConfidenceInterval(electoralList));
+        }
+        resultAnalysis.setConfidenceIntervals(confidenceIntervals);
+        return resultAnalysis;
     }
 
     private String nullOrToString(Object object) {

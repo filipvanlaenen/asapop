@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class representing a response scenario.
@@ -72,7 +73,7 @@ public final class ResponseScenario {
          * Adds a result.
          *
          * @param electoralListKey The key of an electoral list.
-         * @param resultValue The result value.
+         * @param resultValue      The result value.
          * @return This builder instance.
          */
         public Builder addResult(final String electoralListKey, final ResultValue resultValue) {
@@ -160,10 +161,10 @@ public final class ResponseScenario {
         if (obj instanceof ResponseScenario) {
             ResponseScenario otherResponseScenario = (ResponseScenario) obj;
             return equalsOrBothNull(area, otherResponseScenario.area)
-                   && equalsOrBothNull(other, otherResponseScenario.other)
-                   && otherResponseScenario.results.equals(results)
-                   && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
-                   && equalsOrBothNull(scope, otherResponseScenario.scope);
+                    && equalsOrBothNull(other, otherResponseScenario.other)
+                    && otherResponseScenario.results.equals(results)
+                    && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
+                    && equalsOrBothNull(scope, otherResponseScenario.scope);
         } else {
             return false;
         }
@@ -187,6 +188,26 @@ public final class ResponseScenario {
      */
     public String getArea() {
         return area;
+    }
+
+    public Float[] getConfidenceInterval(ElectoralList electoralList) {
+        return null;
+    }
+
+    public Float[] getConfidenceIntervalOther() {
+        return null;
+    }
+
+    public Set<ElectoralList> getElectoralLists() {
+        return results.keySet();
+    }
+
+    public Float getMedian(ElectoralList electoralList) {
+        return null;
+    }
+
+    public Float getMedianOther() {
+        return null;
     }
 
     /**
