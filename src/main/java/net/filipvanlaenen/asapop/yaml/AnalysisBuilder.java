@@ -2,8 +2,10 @@ package net.filipvanlaenen.asapop.yaml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -20,7 +22,7 @@ public class AnalysisBuilder {
 
     public Analysis build() {
         Analysis result = new Analysis();
-        List<OpinionPollAnalysis> opinionPollAnalyses = new ArrayList<OpinionPollAnalysis>();
+        Set<OpinionPollAnalysis> opinionPollAnalyses = new HashSet<OpinionPollAnalysis>();
         for (OpinionPoll poll : engine.getOpinionPolls().getOpinionPolls()) {
             opinionPollAnalyses.add(buildOpinionPollAnalysis(poll));
         }
