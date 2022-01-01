@@ -52,7 +52,7 @@ public class AnalysisBuilder {
         resultAnalysis.setMedian(responseScenario.getMedianOther());
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
-            confidenceIntervals.put(level, responseScenario.getConfidenceIntervalOther());
+            confidenceIntervals.put(level, responseScenario.getConfidenceIntervalOther(level));
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
         return resultAnalysis;
@@ -90,7 +90,7 @@ public class AnalysisBuilder {
         resultAnalysis.setMedian(responseScenario.getMedian(electoralList));
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
-            confidenceIntervals.put(level, responseScenario.getConfidenceInterval(electoralList));
+            confidenceIntervals.put(level, responseScenario.getConfidenceInterval(electoralList, level));
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
         return resultAnalysis;
