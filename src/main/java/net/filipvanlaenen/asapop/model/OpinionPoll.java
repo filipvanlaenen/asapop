@@ -383,6 +383,11 @@ public final class OpinionPoll {
         return commissioners;
     }
 
+    /**
+     * Returns the electoral lists.
+     *
+     * @return The electoral lists.
+     */
     public Set<ElectoralList> getElectoralLists() {
         return mainResponseScenario.getElectoralLists();
     }
@@ -414,6 +419,11 @@ public final class OpinionPoll {
         return fieldworkStart;
     }
 
+    /**
+     * Returns the main response scenario.
+     *
+     * @return The main response scenario.
+     */
     public ResponseScenario getMainResponseScenario() {
         return mainResponseScenario;
     }
