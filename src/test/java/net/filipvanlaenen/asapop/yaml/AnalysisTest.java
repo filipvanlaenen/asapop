@@ -7,7 +7,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests on the <code>DecimalNumber</code> class.
+ * Unit tests on the <code>Analysis</code> class.
  */
 public class AnalysisTest {
     /**
