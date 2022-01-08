@@ -153,6 +153,28 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that the main response scenario is correctly when there are no alternative response scenarios.
+     */
+    @Test
+    public void getMainResponseScenarioReturnsTheSingleResponseScenario() {
+        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        assertEquals(expected, poll.getMainResponseScenario());
+    }
+
+    /**
+     * Verifies that the main response scenario is correctly when there is an alternative response scenarios.
+     */
+    @Test
+    public void getMainResponseScenarioReturnsTheMainResponseScenario() {
+        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
+        poll.addAlternativeResponseScenario(responseScenario);
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        assertEquals(expected, poll.getMainResponseScenario());
+    }
+
+    /**
      * Verifies that when an alternative response scenario is added, it is also returned by the get method.
      */
     @Test
@@ -163,6 +185,16 @@ public class OpinionPollTest {
         List<ResponseScenario> expected = new ArrayList<ResponseScenario>();
         expected.add(responseScenario);
         assertEquals(expected, poll.getAlternativeResponseScenarios());
+    }
+
+    /**
+     * Verifies getElectoralLists returns the electoral lists of the main response scenario.
+     */
+    @Test
+    public void getElectoralListsReturnsTheElectoralListsOfTheMainResponseScenario() {
+        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45")
+                .build();
+        assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), poll.getElectoralLists());
     }
 
     /**
