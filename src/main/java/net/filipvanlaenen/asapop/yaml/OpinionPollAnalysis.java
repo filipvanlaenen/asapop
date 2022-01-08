@@ -1,6 +1,5 @@
 package net.filipvanlaenen.asapop.yaml;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,7 +34,7 @@ public class OpinionPollAnalysis {
     /**
      * The response scenario analyses.
      */
-    private List<ResponseScenarioAnalysis> responseScenarioAnalyses;
+    private Set<ResponseScenarioAnalysis> responseScenarioAnalyses;
 
     /**
      * Returns the commissioners.
@@ -96,7 +95,7 @@ public class OpinionPollAnalysis {
      *
      * @return The response scenario analyses.
      */
-    public List<ResponseScenarioAnalysis> getResponseScenarioAnalyses() {
+    public Set<ResponseScenarioAnalysis> getResponseScenarioAnalyses() {
         return responseScenarioAnalyses;
     }
 
@@ -159,7 +158,7 @@ public class OpinionPollAnalysis {
      *
      * @param responseScenarioAnalyses The response scenario analyses.
      */
-    public void setResponseScenarioAnalyses(final List<ResponseScenarioAnalysis> responseScenarioAnalyses) {
+    public void setResponseScenarioAnalyses(final Set<ResponseScenarioAnalysis> responseScenarioAnalyses) {
         this.responseScenarioAnalyses = responseScenarioAnalyses;
     }
 }

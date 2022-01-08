@@ -1,9 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,7 +61,7 @@ public class AnalysisBuilder {
         opinionPollAnalysis.setFieldworkStart(nullOrToString(poll.getFieldworkStart()));
         opinionPollAnalysis.setFieldworkEnd(nullOrToString(poll.getFieldworkEnd()));
         opinionPollAnalysis.setPublicationDate(nullOrToString(poll.getPublicationDate()));
-        List<ResponseScenarioAnalysis> responseScenarioAnalyses = new ArrayList<ResponseScenarioAnalysis>();
+        Set<ResponseScenarioAnalysis> responseScenarioAnalyses = new HashSet<ResponseScenarioAnalysis>();
         responseScenarioAnalyses.add(buildResponseScenarioAnalysis(poll));
         for (ResponseScenario responseScenario : poll.getAlternativeResponseScenarios()) {
             responseScenarioAnalyses.add(buildResponseScenarioAnalysis(responseScenario));
