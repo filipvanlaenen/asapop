@@ -152,7 +152,7 @@ public class AnalysisBuilder {
      * @param object An object to call <code>toString</code> on if it isn't <code>null</code>.
      * @return Either <code>null</code> or the result of calling <code>toString</code> on the object.
      */
-    private String nullOrToString(final Object object) {
+    static String nullOrToString(final Object object) {
         return object == null ? null : object.toString();
     }
 }
