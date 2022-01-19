@@ -73,9 +73,11 @@ public class AnalysisBuilderTest {
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, new ElectionData());
         AnalysisBuilder builder = new AnalysisBuilder(engine);
         Analysis analysis = builder.build();
-        opinionPollAnalysis = analysis.getOpinionPollAnalyses().iterator().next();
-        responseScenarioAnalysis = opinionPollAnalysis.getResponseScenarioAnalyses().iterator().next();
-        resultAnalysis = responseScenarioAnalysis.getResultAnalyses().get("A");
+        if (analysis != null && analysis.getOpinionPollAnalyses() != null) {
+            opinionPollAnalysis = analysis.getOpinionPollAnalyses().iterator().next();
+            responseScenarioAnalysis = opinionPollAnalysis.getResponseScenarioAnalyses().iterator().next();
+            resultAnalysis = responseScenarioAnalysis.getResultAnalyses().get("A");
+        }
     }
 
     /**
