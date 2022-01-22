@@ -1,5 +1,10 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.filipvanlaenen.asapop.model.ElectoralList;
+import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 
@@ -11,6 +16,7 @@ public class AnalysisEngine {
      * The opinion polls to run the statistical analyses on.
      */
     private OpinionPolls opinionPolls;
+    private final Map<OpinionPoll, VoteShareAnalysis> voteShareAnalyses = new HashMap<OpinionPoll, VoteShareAnalysis>();
 
     /**
      * Constructor taking the opinion polls and election data as its parameters.
@@ -35,5 +41,16 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
+        for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
+            VoteShareAnalysis voteShareAnalysis = new VoteShareAnalysis();
+            for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
+                voteShareAnalysis.add(electoralList, new ProbabilityMassFunction());
+            }
+            voteShareAnalyses.put(opinionPoll, voteShareAnalysis);
+        }
+    }
+
+    VoteShareAnalysis getVoteShareAnalysis(final OpinionPoll opinionPoll) {
+        return voteShareAnalyses.get(opinionPoll);
     }
 }
