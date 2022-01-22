@@ -41,7 +41,7 @@ public class AnalysisEngineTest {
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
         VoteShareAnalysis expected = new VoteShareAnalysis();
-        expected.add(ElectoralList.get("A"), BinomialDistribution.create(1L, 4L, 5L));
+        expected.add(ElectoralList.get("A"), BinomialDistributions.get(1L, 4L, 5L));
         assertEquals(expected, engine.getVoteShareAnalysis(opinionPoll));
     }
 }

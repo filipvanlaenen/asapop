@@ -25,7 +25,6 @@ public final class BinomialDistribution extends ProbabilityMassFunction {
      */
     static BinomialDistribution create(final Long value, final Long sampleSize, final Long populationSize) {
         BinomialDistribution result = new BinomialDistribution();
-        // TODO: Large population sizes
         for (int i = 0; i <= populationSize; i++) {
             result.put(i, BinomialCoefficients.get(i, value).multiply(
                     BinomialCoefficients.get(populationSize - i, sampleSize - value), MathContext.DECIMAL128));
