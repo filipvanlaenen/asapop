@@ -8,7 +8,39 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+/**
+ * Unit tests on the <code>BinomialDistribution</code> class.
+ */
 public class BinomialDistributionTest {
+    /**
+     * The magic number three.
+     */
+    private static final long THREE = 3L;
+    /**
+     * The magic number four.
+     */
+    private static final long FOUR = 4L;
+    /**
+     * The magic number five.
+     */
+    private static final long FIVE = 5L;
+    /**
+     * The magic number six.
+     */
+    private static final BigDecimal SIX = new BigDecimal(6);
+    /**
+     * The magic number ten.
+     */
+    private static final BigDecimal TEN = new BigDecimal(10);
+    /**
+     * The magic number hundred.
+     */
+    private static final int HUNDRED = 100;
+    /**
+     * The magic number one billion.
+     */
+    private static final long ONE_BILLION = 100_000_000L;
+
     /**
      * Verifies that <i>C</i>(1,0) = 1.
      */
@@ -22,7 +54,7 @@ public class BinomialDistributionTest {
      */
     @Test
     public void binomialCoefficientOf2OutOf4ShouldBe6() {
-        assertEquals(new BigDecimal(6), BinomialDistribution.binomialCoefficient(4, 2));
+        assertEquals(SIX, BinomialDistribution.binomialCoefficient(FOUR, 2));
     }
 
     /**
@@ -30,7 +62,7 @@ public class BinomialDistributionTest {
      */
     @Test
     public void binomialCoefficientOf3OutOf5ShouldBe10() {
-        assertEquals(new BigDecimal(10), BinomialDistribution.binomialCoefficient(5, 3));
+        assertEquals(TEN, BinomialDistribution.binomialCoefficient(FIVE, THREE));
     }
 
     /**
@@ -46,7 +78,7 @@ public class BinomialDistributionTest {
      */
     @Test
     public void binomialCoefficientAsAProductOfQuotientsOf2OutOf4ShouldBe6() {
-        assertEquals(new BigDecimal(6), BinomialDistribution.binomialCoefficientAsAProductOfQuotients(4, 2));
+        assertEquals(SIX, BinomialDistribution.binomialCoefficientAsAProductOfQuotients(FOUR, 2));
     }
 
     /**
@@ -54,8 +86,8 @@ public class BinomialDistributionTest {
      * <i>C</i>(<i>n</i>,<i>n</i>-<i>k</i>).
      */
     @Test
-    @Timeout(value = 100, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = HUNDRED, unit = TimeUnit.MILLISECONDS)
     public void binomialCoefficientShouldCalculateLowerHalfOfN() {
-        BinomialDistribution.binomialCoefficient(100_000_000L, 99_999_990L);
+        BinomialDistribution.binomialCoefficient(ONE_BILLION, ONE_BILLION - 1L);
     }
 }

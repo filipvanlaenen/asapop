@@ -6,15 +6,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class BinomialDistribution extends ProbabilityMassFunction {
+/**
+ * Class representing a binomial distribution.
+ */
+public final class BinomialDistribution extends ProbabilityMassFunction {
+    /**
+     * A map holding the key value pairs for the binomial distribution.
+     */
     private final Map<Integer, BigDecimal> pmf = new HashMap<Integer, BigDecimal>();
 
     /**
      * Calculates the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
-     * 
+     *
      * It seems that the calculation as a quotient of products is slightly faster than a calculation as a products of
      * quotients.
-     * 
+     *
      * @param n The parameter <i>n</i> of the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      * @param k The parameter <i>k</i> of the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      * @return The binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
@@ -27,7 +33,7 @@ public class BinomialDistribution extends ProbabilityMassFunction {
 
     /**
      * Calculates the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>), calculated as a product of quotients.
-     * 
+     *
      * @param n The parameter <i>n</i> of the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      * @param k The parameter <i>k</i> of the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      * @return The binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
@@ -43,12 +49,12 @@ public class BinomialDistribution extends ProbabilityMassFunction {
 
     /**
      * Calculates the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>), calculated as a quotient of products.
-     * 
+     *
      * @param n The parameter <i>n</i> of the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      * @param k The parameter <i>k</i> of the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      * @return The binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      */
-    static BigDecimal binomialCoefficientAsAQuotientOfProducts(long n, long k) {
+    static BigDecimal binomialCoefficientAsAQuotientOfProducts(final long n, final long k) {
         BigDecimal p1 = BigDecimal.ONE;
         BigDecimal p2 = BigDecimal.ONE;
         for (int i = 1; i <= k; i++) {
@@ -58,14 +64,21 @@ public class BinomialDistribution extends ProbabilityMassFunction {
         return p1.divide(p2, MathContext.DECIMAL128);
     }
 
-    static BinomialDistribution create(Long sampled, Long sampleSize, Long populationSize) {
+    /**
+     * Creates a binomial distribution for a given value measured in a population size for a sample size.
+     *
+     * @param value          The measured value.
+     * @param sampleSize     The sample size.
+     * @param populationSize The population size.
+     * @return A binomial distribution.
+     */
+    static BinomialDistribution create(final Long value, final Long sampleSize, final Long populationSize) {
         BinomialDistribution result = new BinomialDistribution();
         // TODO: Large population sizes
         for (int i = 0; i <= populationSize; i++) {
-            result.put(i, binomialCoefficient(i, sampled)
-                    .multiply(binomialCoefficient(populationSize - i, sampleSize - sampled), MathContext.DECIMAL128));
+            result.put(i, binomialCoefficient(i, value)
+                    .multiply(binomialCoefficient(populationSize - i, sampleSize - value), MathContext.DECIMAL128));
         }
-
         return result;
     }
 
@@ -84,7 +97,13 @@ public class BinomialDistribution extends ProbabilityMassFunction {
         return Objects.hash(pmf);
     }
 
-    private void put(int key, BigDecimal value) {
+    /**
+     * Sets a value for a key.
+     *
+     * @param key   The key.
+     * @param value The value.
+     */
+    private void put(final int key, final BigDecimal value) {
         pmf.put(key, value);
     }
 }
