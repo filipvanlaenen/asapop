@@ -20,7 +20,9 @@ public class BinomialDistribution extends ProbabilityMassFunction {
      * @return The binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      */
     static BigDecimal binomialCoefficient(final long n, final long k) {
-        return binomialCoefficientAsAQuotientOfProducts(n, 2 * k > n ? n - k : k);
+        // Changing the conditional boundary below produces an equivalent mutant.
+        long lowerK = 2 * k > n ? n - k : k;
+        return binomialCoefficientAsAQuotientOfProducts(n, lowerK);
     }
 
     /**
