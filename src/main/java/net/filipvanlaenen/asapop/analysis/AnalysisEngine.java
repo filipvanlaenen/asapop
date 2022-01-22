@@ -1,5 +1,7 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,14 +49,13 @@ public class AnalysisEngine {
             for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
                 ProbabilityMassFunction pmf = new ProbabilityMassFunction();
                 Integer sampleSize = opinionPoll.getSampleSizeValue();
-                // TODO: Overspecified (issue #82)
-                // TODO: Underspecified (issue #83)
-                // TODO: Decimal percentages
-                Integer sampled = Integer.parseInt(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
-                        * sampleSize / 100;
+                Long sampled = Math
+                        .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
+                                * sampleSize / 100);
                 // TODO: Large population sizes
                 for (int i = 0; i <= populationSize; i++) {
-                    pmf.add(i, combinations(sampled, i) * combinations(sampleSize - sampled, populationSize - i));
+                    pmf.add(i, binomialCoefficient(i, sampled).multiply(
+                            binomialCoefficient(populationSize - i, sampleSize - sampled), MathContext.DECIMAL128));
                 }
                 voteShareAnalysis.add(electoralList, pmf);
             }
@@ -63,14 +64,19 @@ public class AnalysisEngine {
         }
     }
 
-    private int combinations(int k, int n) {
-        // TODO: Large k and n
-        int p = 1;
-        for (int i = n; i >= n - (k - 1); i--) {
-            p *= i;
-        }
+    /**
+     * Calculates the binomial coefficient <i>C(n,k)</i>.
+     * 
+     * @param n The parameter <i>n</i> of the binomial coefficient <i>C(n,k)</i>.
+     * @param k The parameter <i>k</i> of the binomial coefficient <i>C(n,k)</i>.
+     * @return The binomial coefficient <i>C(n,k)</i>
+     */
+    private BigDecimal binomialCoefficient(long n, long k) {
+        // TODO: Product of quotients or quotient of products?
+        BigDecimal p = BigDecimal.ONE;
         for (int i = 1; i <= k; i++) {
-            p /= i;
+            p = p.multiply(new BigDecimal(n + 1 - i), MathContext.DECIMAL128).divide(new BigDecimal(i),
+                    MathContext.DECIMAL128);
         }
         return p;
     }

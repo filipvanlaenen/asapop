@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -42,12 +43,12 @@ public class AnalysisEngineTest {
         engine.run();
         VoteShareAnalysis expected = new VoteShareAnalysis();
         ProbabilityMassFunction pmf = new ProbabilityMassFunction();
-        pmf.add(0, 0);
-        pmf.add(1, 4);
-        pmf.add(2, 2);
-        pmf.add(3, 0);
-        pmf.add(4, 0);
-        pmf.add(5, 0);
+        pmf.add(0, BigDecimal.ZERO);
+        pmf.add(1, new BigDecimal(4));
+        pmf.add(2, new BigDecimal(2));
+        pmf.add(3, BigDecimal.ZERO);
+        pmf.add(4, BigDecimal.ZERO);
+        pmf.add(5, BigDecimal.ZERO);
         expected.add(ElectoralList.get("A"), pmf);
         assertEquals(expected, engine.getVoteShareAnalysis(opinionPoll));
     }
