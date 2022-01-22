@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Timeout;
 /**
  * Unit tests on the <code>BinomialDistribution</code> class.
  */
-public class BinomialDistributionTest {
+public class BinomialCoefficientsTest {
     /**
      * The magic number three.
      */
@@ -46,7 +46,7 @@ public class BinomialDistributionTest {
      */
     @Test
     public void binomialCoefficientOf0OutOf1ShouldBe0() {
-        assertEquals(BigDecimal.ONE, BinomialDistribution.binomialCoefficient(1, 0));
+        assertEquals(BigDecimal.ONE, BinomialCoefficients.get(1, 0));
     }
 
     /**
@@ -54,7 +54,7 @@ public class BinomialDistributionTest {
      */
     @Test
     public void binomialCoefficientOf2OutOf4ShouldBe6() {
-        assertEquals(SIX, BinomialDistribution.binomialCoefficient(FOUR, 2));
+        assertEquals(SIX, BinomialCoefficients.get(FOUR, 2));
     }
 
     /**
@@ -62,23 +62,7 @@ public class BinomialDistributionTest {
      */
     @Test
     public void binomialCoefficientOf3OutOf5ShouldBe10() {
-        assertEquals(TEN, BinomialDistribution.binomialCoefficient(FIVE, THREE));
-    }
-
-    /**
-     * Verifies that <i>C</i>(1,0) = 1 for the calculation as a product of quotients.
-     */
-    @Test
-    public void binomialCoefficientAsAProductOfQuotientsOf0OutOf1ShouldBe0() {
-        assertEquals(BigDecimal.ONE, BinomialDistribution.binomialCoefficientAsAProductOfQuotients(1, 0));
-    }
-
-    /**
-     * Verifies that <i>C</i>(4,2) = 6 for the calculation as a product of quotients.
-     */
-    @Test
-    public void binomialCoefficientAsAProductOfQuotientsOf2OutOf4ShouldBe6() {
-        assertEquals(SIX, BinomialDistribution.binomialCoefficientAsAProductOfQuotients(FOUR, 2));
+        assertEquals(TEN, BinomialCoefficients.get(FIVE, THREE));
     }
 
     /**
@@ -88,6 +72,6 @@ public class BinomialDistributionTest {
     @Test
     @Timeout(value = HUNDRED, unit = TimeUnit.MILLISECONDS)
     public void binomialCoefficientShouldCalculateLowerHalfOfN() {
-        BinomialDistribution.binomialCoefficient(ONE_BILLION, ONE_BILLION - 1L);
+        BinomialCoefficients.get(ONE_BILLION, ONE_BILLION - 1L);
     }
 }
