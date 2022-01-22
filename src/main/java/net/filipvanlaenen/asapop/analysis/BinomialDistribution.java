@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Class representing a binomial distribution.
  */
-public final class BinomialDistribution extends ProbabilityMassFunction {
+final class BinomialDistribution extends ProbabilityMassFunction {
     /**
      * A map holding the key value pairs for the binomial distribution.
      */
