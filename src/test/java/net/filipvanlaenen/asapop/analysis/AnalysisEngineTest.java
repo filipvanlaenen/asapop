@@ -28,16 +28,27 @@ public class AnalysisEngineTest {
         assertEquals(opinionPolls, engine.getOpinionPolls());
     }
 
+    /**
+     * Verifies that the analysis engine calculates the probability mass functions for the vote shares of the opinion
+     * polls.
+     */
     @Test
     public void foo() {
-        OpinionPoll opinionPoll = new OpinionPoll.Builder().setSampleSize("5").addResult("A", new ResultValue("40"))
+        OpinionPoll opinionPoll = new OpinionPoll.Builder().setSampleSize("4").addResult("A", new ResultValue("25"))
                 .build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
         VoteShareAnalysis expected = new VoteShareAnalysis();
-        expected.add(ElectoralList.get("A"), new ProbabilityMassFunction());
+        ProbabilityMassFunction pmf = new ProbabilityMassFunction();
+        pmf.add(0, 0);
+        pmf.add(1, 4);
+        pmf.add(2, 2);
+        pmf.add(3, 0);
+        pmf.add(4, 0);
+        pmf.add(5, 0);
+        expected.add(ElectoralList.get("A"), pmf);
         assertEquals(expected, engine.getVoteShareAnalysis(opinionPoll));
     }
 }

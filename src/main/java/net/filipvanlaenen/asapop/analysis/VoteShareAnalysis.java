@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 
-public class VoteShareAnalysis {
+class VoteShareAnalysis {
     private final Map<ElectoralList, ProbabilityMassFunction> probabilityMassFunctions = new HashMap<ElectoralList, ProbabilityMassFunction>();
 
     @Override
@@ -24,7 +24,7 @@ public class VoteShareAnalysis {
         return Objects.hash(probabilityMassFunctions);
     }
 
-    public void add(ElectoralList electoralList, ProbabilityMassFunction probabilityMassFunction) {
+    void add(ElectoralList electoralList, ProbabilityMassFunction probabilityMassFunction) {
         probabilityMassFunctions.put(electoralList, probabilityMassFunction);
     }
 }

@@ -17,6 +17,7 @@ public class AnalysisEngine {
      */
     private OpinionPolls opinionPolls;
     private final Map<OpinionPoll, VoteShareAnalysis> voteShareAnalyses = new HashMap<OpinionPoll, VoteShareAnalysis>();
+    private int populationSize = 5;
 
     /**
      * Constructor taking the opinion polls and election data as its parameters.
@@ -44,10 +45,34 @@ public class AnalysisEngine {
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             VoteShareAnalysis voteShareAnalysis = new VoteShareAnalysis();
             for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
-                voteShareAnalysis.add(electoralList, new ProbabilityMassFunction());
+                ProbabilityMassFunction pmf = new ProbabilityMassFunction();
+                Integer sampleSize = opinionPoll.getSampleSizeValue();
+                // TODO: Overspecified (issue #82)
+                // TODO: Underspecified (issue #83)
+                // TODO: Decimal percentages
+                Integer sampled = Integer.parseInt(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
+                        * sampleSize / 100;
+                // TODO: Large population sizes
+                for (int i = 0; i <= populationSize; i++) {
+                    pmf.add(i, combinations(sampled, i) * combinations(sampleSize - sampled, populationSize - i));
+                }
+                voteShareAnalysis.add(electoralList, pmf);
             }
+            // TODO: Add Other too
             voteShareAnalyses.put(opinionPoll, voteShareAnalysis);
         }
+    }
+
+    private int combinations(int k, int n) {
+        // TODO: Large k and n
+        int p = 1;
+        for (int i = n; i >= n - (k - 1); i--) {
+            p *= i;
+        }
+        for (int i = 1; i <= k; i++) {
+            p /= i;
+        }
+        return p;
     }
 
     VoteShareAnalysis getVoteShareAnalysis(final OpinionPoll opinionPoll) {
