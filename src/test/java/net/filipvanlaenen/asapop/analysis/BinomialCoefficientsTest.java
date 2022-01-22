@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 /**
- * Unit tests on the <code>BinomialDistribution</code> class.
+ * Unit tests on the <code>BinomialCoefficients</code> class.
  */
 public class BinomialCoefficientsTest {
     /**
@@ -28,10 +28,6 @@ public class BinomialCoefficientsTest {
      * The magic number six.
      */
     private static final BigDecimal SIX = new BigDecimal(6);
-    /**
-     * The magic number ten.
-     */
-    private static final BigDecimal TEN = new BigDecimal(10);
     /**
      * The magic number hundred.
      */
@@ -62,7 +58,7 @@ public class BinomialCoefficientsTest {
      */
     @Test
     public void binomialCoefficientOf3OutOf5ShouldBe10() {
-        assertEquals(TEN, BinomialCoefficients.get(FIVE, THREE));
+        assertEquals(BigDecimal.TEN, BinomialCoefficients.get(FIVE, THREE));
     }
 
     /**

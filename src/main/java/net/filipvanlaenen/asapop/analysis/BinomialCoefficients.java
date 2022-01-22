@@ -3,7 +3,16 @@ package net.filipvanlaenen.asapop.analysis;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-class BinomialCoefficients {
+/**
+ * Class providing methods to calculate and handle binomial coefficients.
+ */
+final class BinomialCoefficients {
+    /**
+     * Private constructor so the utility class can't be instantiated.
+     */
+    private BinomialCoefficients() {
+    }
+
     /**
      * Returns the binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      *
