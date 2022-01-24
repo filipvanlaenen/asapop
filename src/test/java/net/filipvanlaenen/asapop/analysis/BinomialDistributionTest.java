@@ -24,6 +24,22 @@ public class BinomialDistributionTest {
     private static final BinomialDistribution BINOMIAL_DISTRIBUTION = BinomialDistribution.create(1L, FOUR, FIVE);
 
     /**
+     * Verifies that the median is 0 when the result in the sample is 0.
+     */
+    @Test
+    public void medianShouldBeZeroWhenTheSampleResultIsZero() {
+        assertEquals(0, BinomialDistribution.create(0L, FIVE, FIVE).getMedian());
+    }
+
+    /**
+     * Verifies that the median is the population size when the result in the sample is the population size.
+     */
+    @Test
+    public void medianShouldBeThePopulationSizeWhenTheSampleResultIsThePopulationSize() {
+        assertEquals(5, BinomialDistribution.create(FIVE, FIVE, FIVE).getMedian());
+    }
+
+    /**
      * Verifies that a binomial distribution is not equal to null.
      */
     @Test
