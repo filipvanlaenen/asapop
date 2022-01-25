@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -24,19 +26,27 @@ public class BinomialDistributionTest {
     private static final BinomialDistribution BINOMIAL_DISTRIBUTION = BinomialDistribution.create(1L, FOUR, FIVE);
 
     /**
-     * Verifies that the median is 0 when the result in the sample is 0.
+     * Verifies that the probability mass is zero at zero.
      */
     @Test
-    public void medianShouldBeZeroWhenTheSampleResultIsZero() {
-        assertEquals(0, BinomialDistribution.create(0L, FIVE, FIVE).getMedian());
+    public void probabilityMassShouldBeZeroAtZero() {
+        assertEquals(BigDecimal.ZERO, BINOMIAL_DISTRIBUTION.getProbabilityMass(0L));
     }
 
     /**
-     * Verifies that the median is the population size when the result in the sample is the population size.
+     * Verifies that the probability mass is four at one.
      */
     @Test
-    public void medianShouldBeThePopulationSizeWhenTheSampleResultIsThePopulationSize() {
-        assertEquals(5, BinomialDistribution.create(FIVE, FIVE, FIVE).getMedian());
+    public void probabilityMassShouldBeFourAtOne() {
+        assertEquals(new BigDecimal(FOUR), BINOMIAL_DISTRIBUTION.getProbabilityMass(1L));
+    }
+
+    /**
+     * Verifies that the probability mass is zero at five.
+     */
+    @Test
+    public void probabilityMassShouldBeZeroAtFive() {
+        assertEquals(BigDecimal.ZERO, BINOMIAL_DISTRIBUTION.getProbabilityMass(FIVE));
     }
 
     /**
