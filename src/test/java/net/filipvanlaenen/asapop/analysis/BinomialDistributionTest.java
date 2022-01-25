@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,10 @@ import org.junit.jupiter.api.Test;
  */
 public class BinomialDistributionTest {
     /**
+     * The magic number three.
+     */
+    private static final long THREE = 3L;
+    /**
      * The magic number four.
      */
     private static final long FOUR = 4L;
@@ -20,6 +25,10 @@ public class BinomialDistributionTest {
      * The magic number five.
      */
     private static final long FIVE = 5L;
+    /**
+     * The magic number six.
+     */
+    private static final long SIX = 6L;
     /**
      * A binomial distribution to run the tests on.
      */
@@ -47,6 +56,22 @@ public class BinomialDistributionTest {
     @Test
     public void probabilityMassShouldBeZeroAtFive() {
         assertEquals(BigDecimal.ZERO, BINOMIAL_DISTRIBUTION.getProbabilityMass(FIVE));
+    }
+
+    /**
+     * Verifies that the probability mass sum is six.
+     */
+    @Test
+    public void probabilityMassSumShouldBeSix() {
+        assertEquals(new BigDecimal(SIX), BINOMIAL_DISTRIBUTION.getProbabilityMassSum());
+    }
+
+    /**
+     * Verifies that a sorted list with the keys can be returned.
+     */
+    @Test
+    public void shouldSortKeysCorrectly() {
+        assertEquals(List.of(0L, 1L, 2L, THREE, FOUR, FIVE), BINOMIAL_DISTRIBUTION.getSortedKeys());
     }
 
     /**

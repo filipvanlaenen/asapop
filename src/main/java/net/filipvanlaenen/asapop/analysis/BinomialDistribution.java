@@ -17,7 +17,10 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
      * A map holding the key value pairs for the binomial distribution.
      */
     private final Map<Long, BigDecimal> pmf = new HashMap<Long, BigDecimal>();
-    private BigDecimal valueSum = BigDecimal.ZERO;
+    /**
+     * The probability mass sum.
+     */
+    private BigDecimal probabilityMassSum = BigDecimal.ZERO;
 
     /**
      * Creates a binomial distribution for a given value measured in a population size for a sample size.
@@ -54,13 +57,13 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
     }
 
     @Override
-    BigDecimal getProbabilityMass(Long s) {
+    BigDecimal getProbabilityMass(final Long s) {
         return pmf.get(s);
     }
 
     @Override
     BigDecimal getProbabilityMassSum() {
-        return valueSum;
+        return probabilityMassSum;
     }
 
     @Override
@@ -76,6 +79,6 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
      */
     private void put(final long key, final BigDecimal value) {
         pmf.put(key, value);
-        valueSum = valueSum.add(value, MathContext.DECIMAL128);
+        probabilityMassSum = probabilityMassSum.add(value, MathContext.DECIMAL128);
     }
 }
