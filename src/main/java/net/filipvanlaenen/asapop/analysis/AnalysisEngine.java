@@ -16,7 +16,7 @@ public class AnalysisEngine {
      * The opinion polls to run the statistical analyses on.
      */
     private OpinionPolls opinionPolls;
-    private final Map<OpinionPoll, VoteShareAnalysis> voteShareAnalyses = new HashMap<OpinionPoll, VoteShareAnalysis>();
+    private final Map<OpinionPoll, VoteSharesAnalysis> voteShareAnalyses = new HashMap<OpinionPoll, VoteSharesAnalysis>();
 
     /**
      * Constructor taking the opinion polls and election data as its parameters.
@@ -38,11 +38,21 @@ public class AnalysisEngine {
     }
 
     /**
+     * Returns the vote shares analysis for an opinion poll.
+     *
+     * @param opinionPoll The opinion poll for which to return the vote shares analysis.
+     * @return The vote shares analysis for the opinion poll.
+     */
+    VoteSharesAnalysis getVoteShareAnalysis(final OpinionPoll opinionPoll) {
+        return voteShareAnalyses.get(opinionPoll);
+    }
+
+    /**
      * Runs the statistical analyses.
      */
     public void run() {
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
-            VoteShareAnalysis voteShareAnalysis = new VoteShareAnalysis();
+            VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
             for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
                 long sampleSize = (long) opinionPoll.getSampleSizeValue();
                 Long sampled = Math
@@ -53,9 +63,5 @@ public class AnalysisEngine {
             // TODO: Add Other too
             voteShareAnalyses.put(opinionPoll, voteShareAnalysis);
         }
-    }
-
-    VoteShareAnalysis getVoteShareAnalysis(final OpinionPoll opinionPoll) {
-        return voteShareAnalyses.get(opinionPoll);
     }
 }

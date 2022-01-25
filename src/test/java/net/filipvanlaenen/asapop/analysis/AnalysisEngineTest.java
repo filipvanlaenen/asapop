@@ -33,14 +33,14 @@ public class AnalysisEngineTest {
      * polls.
      */
     @Test
-    public void foo() {
+    public void runCalculatesTheProbabilityMassFunctionsForTheVoteSharesOfTheOpinionPolls() {
         OpinionPoll opinionPoll = new OpinionPoll.Builder().setSampleSize("4").addResult("A", new ResultValue("25"))
                 .build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
-        VoteShareAnalysis expected = new VoteShareAnalysis();
+        VoteSharesAnalysis expected = new VoteSharesAnalysis();
         expected.add(ElectoralList.get("A"), BinomialDistributions.get(1L, 4L, 5L));
         assertEquals(expected, engine.getVoteShareAnalysis(opinionPoll));
     }
