@@ -41,7 +41,7 @@ public class BinomialCoefficientsTest {
      * Verifies that <i>C</i>(1,0) = 1.
      */
     @Test
-    public void binomialCoefficientOf0OutOf1ShouldBe0() {
+    public void binomialCoefficientOf0OutOf1ShouldBe1() {
         assertEquals(BigDecimal.ONE, BinomialCoefficients.get(1, 0));
     }
 
@@ -69,5 +69,21 @@ public class BinomialCoefficientsTest {
     @Timeout(value = HUNDRED, unit = TimeUnit.MILLISECONDS)
     public void binomialCoefficientShouldCalculateLowerHalfOfN() {
         BinomialCoefficients.get(ONE_BILLION, ONE_BILLION - 1L);
+    }
+
+    /**
+     * Verifies that <i>C</i>(1,-1) = 0.
+     */
+    @Test
+    public void binomialCoefficientForNegativeKShouldBe0() {
+        assertEquals(BigDecimal.ZERO, BinomialCoefficients.get(1, -1));
+    }
+
+    /**
+     * Verifies that <i>C</i>(1,2) = 0.
+     */
+    @Test
+    public void binomialCoefficientFor2OutOf1ShouldBe0() {
+        assertEquals(BigDecimal.ZERO, BinomialCoefficients.get(1, 2));
     }
 }

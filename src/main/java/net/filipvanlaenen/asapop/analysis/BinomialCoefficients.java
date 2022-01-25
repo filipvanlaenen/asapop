@@ -24,6 +24,7 @@ final class BinomialCoefficients {
      * @return The binomial coefficient <i>C</i>(<i>n</i>,<i>k</i>).
      */
     static BigDecimal get(final long n, final long k) {
+        // Changing the conditional boundary for k > n below produces an equivalent mutant.
         if (k < 0 || k > n) {
             return BigDecimal.ZERO;
         }
