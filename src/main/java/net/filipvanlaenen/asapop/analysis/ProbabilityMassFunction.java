@@ -8,5 +8,11 @@ import java.math.BigDecimal;
  * @param <K> The type for the keys of the probability mass function.
  */
 abstract class ProbabilityMassFunction<K> {
-    abstract BigDecimal getProbabilityMass(K k);
+    /**
+     * Returns the probability mass for a key.
+     *
+     * @param key The key for which to return the probability mass.
+     * @return The probability mass for a key.
+     */
+    abstract BigDecimal getProbabilityMass(K key);
 }
