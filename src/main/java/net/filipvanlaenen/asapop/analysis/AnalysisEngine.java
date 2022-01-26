@@ -16,6 +16,9 @@ public class AnalysisEngine {
      * The opinion polls to run the statistical analyses on.
      */
     private OpinionPolls opinionPolls;
+    /**
+     * A map containing the vote shares analysis per opinion poll.
+     */
     private final Map<OpinionPoll, VoteSharesAnalysis> voteShareAnalyses = new HashMap<OpinionPoll, VoteSharesAnalysis>();
 
     /**
@@ -57,7 +60,7 @@ public class AnalysisEngine {
                 long sampleSize = (long) opinionPoll.getSampleSizeValue();
                 Long sampled = Math
                         .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
-                                * sampleSize / 100);
+                                * sampleSize * 0.01);
                 voteShareAnalysis.add(electoralList, BinomialDistributions.get(sampled, sampleSize, 5L));
             }
             // TODO: Add Other too
