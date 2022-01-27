@@ -32,4 +32,24 @@ public class SortableProbabilityMassFunctionTest {
     public void medianShouldBe2ForBinomialDistribution2OutOf4In5() {
         assertEquals(2L, BinomialDistribution.create(2L, FOUR, FIVE).getMedian());
     }
+
+    /**
+     * Verifies that the 80% confidence interval [0, 0] is calculated correctly for a binomial distribution of 0 out of
+     * 8 in a population of 9.
+     */
+    @Test
+    public void confidenceInterval81ShouldBe0To0ForBinomialDistribution0OutOf8In9() {
+        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, 8L, 9L);
+        assertEquals(new ConfidenceInterval<Long>(0L, 2L), binomialDistribution.getConfidenceInterval(0.81));
+    }
+
+    /**
+     * Verifies that the 91% confidence interval [0, 1] is calculated correctly for a binomial distribution of 0 out of
+     * 8 in a population of 9.
+     */
+    @Test
+    public void confidenceInterval79ShouldBe0To1ForBinomialDistribution0OutOf8In9() {
+        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, 8L, 9L);
+        assertEquals(new ConfidenceInterval<Long>(0L, 1L), binomialDistribution.getConfidenceInterval(0.79));
+    }
 }
