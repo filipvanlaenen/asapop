@@ -16,6 +16,22 @@ public class SortableProbabilityMassFunctionTest {
      * The magic number five.
      */
     private static final long FIVE = 5L;
+    /**
+     * The magic number eight.
+     */
+    private static final long EIGHT = 8L;
+    /**
+     * The magic number nine.
+     */
+    private static final long NINE = 9L;
+    /**
+     * The magic number 0.81.
+     */
+    private static final double EIGHTY_ONE_PERCENT = 0.81;
+    /**
+     * The magic number 0.79.
+     */
+    private static final double SEVENTY_NINE_PERCENT = 0.79;
 
     /**
      * Verifies that the median is calculated correctly for a binomial distribution of 1 out of 4 in a population of 5.
@@ -39,8 +55,9 @@ public class SortableProbabilityMassFunctionTest {
      */
     @Test
     public void confidenceInterval81ShouldBe0To0ForBinomialDistribution0OutOf8In9() {
-        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, 8L, 9L);
-        assertEquals(new ConfidenceInterval<Long>(0L, 2L), binomialDistribution.getConfidenceInterval(0.81));
+        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, EIGHT, NINE);
+        assertEquals(new ConfidenceInterval<Long>(0L, 2L),
+                binomialDistribution.getConfidenceInterval(EIGHTY_ONE_PERCENT));
     }
 
     /**
@@ -49,7 +66,8 @@ public class SortableProbabilityMassFunctionTest {
      */
     @Test
     public void confidenceInterval79ShouldBe0To1ForBinomialDistribution0OutOf8In9() {
-        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, 8L, 9L);
-        assertEquals(new ConfidenceInterval<Long>(0L, 1L), binomialDistribution.getConfidenceInterval(0.79));
+        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, EIGHT, NINE);
+        assertEquals(new ConfidenceInterval<Long>(0L, 1L),
+                binomialDistribution.getConfidenceInterval(SEVENTY_NINE_PERCENT));
     }
 }
