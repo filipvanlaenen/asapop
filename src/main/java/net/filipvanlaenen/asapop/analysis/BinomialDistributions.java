@@ -1,9 +1,18 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Class providing methods to calculate and handle binomial distributions.
  */
 final class BinomialDistributions {
+    /**
+     * A map caching all the binomial distributions created in the <code>get</code> method.
+     */
+    private static final Map<List<Long>, BinomialDistribution> CACHE = new HashMap<List<Long>, BinomialDistribution>();
+
     /**
      * Private constructor to prevent the instantiation of this utility class.
      */
@@ -19,6 +28,10 @@ final class BinomialDistributions {
      * @return A binomial distribution.
      */
     static BinomialDistribution get(final Long value, final Long sampleSize, final Long populationSize) {
-        return BinomialDistribution.create(value, sampleSize, populationSize);
+        List<Long> key = List.of(value, sampleSize, populationSize);
+        if (!CACHE.containsKey(key)) {
+            CACHE.put(key, BinomialDistribution.create(value, sampleSize, populationSize));
+        }
+        return CACHE.get(key);
     }
 }
