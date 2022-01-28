@@ -23,6 +23,12 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
     private BigDecimal probabilityMassSum = BigDecimal.ZERO;
 
     /**
+     * Private constructor to prevent direct calls.
+     */
+    private BinomialDistribution() {
+    }
+
+    /**
      * Creates a binomial distribution for a given value measured in a population size for a sample size.
      *
      * @param value          The measured value.
