@@ -23,17 +23,17 @@ final class SampledBinomialDistributions {
      * Returns a sampled binomial distribution for a given value measured in a population size for a number of samples
      * in a sample size.
      *
-     * @param value          The measured value.
-     * @param sampleSize     The sample size.
-     * @param noOfSampled    The number of samples.
-     * @param populationSize The population size.
+     * @param value           The measured value.
+     * @param sampleSize      The sample size.
+     * @param numberOfSamples The number of samples.
+     * @param populationSize  The population size.
      * @return A binomial distribution.
      */
-    static SampledBinomialDistribution get(final Long value, final Long sampleSize, final Long noOfSamples,
+    static SampledBinomialDistribution get(final Long value, final Long sampleSize, final Long numberOfSamples,
             final Long populationSize) {
-        List<Long> key = List.of(value, sampleSize, noOfSamples, populationSize);
+        List<Long> key = List.of(value, sampleSize, numberOfSamples, populationSize);
         if (!CACHE.containsKey(key)) {
-            CACHE.put(key, SampledBinomialDistribution.create(value, sampleSize, noOfSamples, populationSize));
+            CACHE.put(key, SampledBinomialDistribution.create(value, sampleSize, numberOfSamples, populationSize));
         }
         return CACHE.get(key);
     }

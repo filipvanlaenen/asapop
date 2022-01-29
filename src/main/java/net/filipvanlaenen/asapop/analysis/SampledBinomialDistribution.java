@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Class representing a binomial distribution, but sampled.
+ */
 class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range> {
     /**
      * A map holding the key value pairs for the sampled binomial distribution.
@@ -23,22 +26,22 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
      * Creates a sampled binomial distribution for a given value measured in a population size for a number of ranges in
      * a sample size.
      *
-     * @param value          The measured value.
-     * @param sampleSize     The sample size.
-     * @param noOfSamples    The number of samples.
-     * @param populationSize The population size.
+     * @param value           The measured value.
+     * @param sampleSize      The sample size.
+     * @param numberOfSamples The number of samples.
+     * @param populationSize  The population size.
      * @return A binomial distribution.
      */
-    static SampledBinomialDistribution create(final Long value, final Long sampleSize, final Long noOfSamples,
+    static SampledBinomialDistribution create(final Long value, final Long sampleSize, final Long numberOfSamples,
             final Long populationSize) {
         SampledBinomialDistribution result = new SampledBinomialDistribution();
-        long width = populationSize / noOfSamples;
-        long remainder = populationSize - width * noOfSamples;
-        long noOfSmallRanges = noOfSamples - remainder;
+        long baseLength = populationSize / numberOfSamples;
+        long remainder = populationSize - baseLength * numberOfSamples;
+        long numberOfRangesOfBaseLength = numberOfSamples - remainder;
         long rangeStartIndex = 0L;
         long rangeEndIndex;
-        for (long i = 0; i < noOfSamples; i++) {
-            rangeEndIndex = rangeStartIndex + width + (i >= noOfSmallRanges ? 0L : -1L);
+        for (long i = 0; i < numberOfSamples; i++) {
+            rangeEndIndex = rangeStartIndex + baseLength + (i >= numberOfRangesOfBaseLength ? 0L : -1L);
             Range range = new Range(rangeStartIndex, rangeEndIndex);
             long m = range.getMidpoint();
             result.put(range, BinomialCoefficients.get(m, value).multiply(
@@ -59,7 +62,7 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
     }
 
     @Override
-    BigDecimal getProbabilityMass(Range key) {
+    BigDecimal getProbabilityMass(final Range key) {
         return pmf.get(key);
     }
 
@@ -89,6 +92,6 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
     private void put(final Range key, final BigDecimal value) {
         pmf.put(key, value);
         probabilityMassSum = probabilityMassSum
-                .add(value.multiply(new BigDecimal(key.getWidth()), MathContext.DECIMAL128), MathContext.DECIMAL128);
+                .add(value.multiply(new BigDecimal(key.getLength()), MathContext.DECIMAL128), MathContext.DECIMAL128);
     }
 }
