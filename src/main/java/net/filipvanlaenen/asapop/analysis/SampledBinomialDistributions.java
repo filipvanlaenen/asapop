@@ -20,20 +20,27 @@ final class SampledBinomialDistributions {
     }
 
     /**
-     * Returns a sampled binomial distribution for a given value measured in a population size for a number of samples
-     * in a sample size.
+     * Returns a binomial distribution for a given value measured in a sample size for a population size, with at least
+     * a given number of samples.
      *
-     * @param value           The measured value.
-     * @param sampleSize      The sample size.
-     * @param numberOfSamples The number of samples.
-     * @param populationSize  The population size.
+     * @param value                  The measured value.
+     * @param sampleSize             The sample size.
+     * @param minimalNumberOfSamples The number of samples.
+     * @param populationSize         The population size.
      * @return A binomial distribution.
      */
-    static SampledBinomialDistribution get(final Long value, final Long sampleSize, final Long numberOfSamples,
+    static SampledBinomialDistribution get(final Long value, final Long sampleSize, final Long minimalNumberOfSamples,
             final Long populationSize) {
-        List<Long> key = List.of(value, sampleSize, numberOfSamples, populationSize);
+        List<Long> key = List.of(value, sampleSize, populationSize);
         if (!CACHE.containsKey(key)) {
-            CACHE.put(key, SampledBinomialDistribution.create(value, sampleSize, numberOfSamples, populationSize));
+            CACHE.put(key,
+                    SampledBinomialDistribution.create(value, sampleSize, minimalNumberOfSamples, populationSize));
+        } else {
+            SampledBinomialDistribution currentSampledBinomialDistribution = CACHE.get(key);
+            if (currentSampledBinomialDistribution.getNumberOfSamples() < minimalNumberOfSamples) {
+                CACHE.put(key,
+                        SampledBinomialDistribution.create(value, sampleSize, minimalNumberOfSamples, populationSize));
+            }
         }
         return CACHE.get(key);
     }

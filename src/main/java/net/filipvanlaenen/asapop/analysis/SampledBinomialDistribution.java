@@ -61,6 +61,10 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
         }
     }
 
+    Long getNumberOfSamples() {
+        return (long) pmf.size();
+    }
+
     @Override
     BigDecimal getProbabilityMass(final Range key) {
         return pmf.get(key);

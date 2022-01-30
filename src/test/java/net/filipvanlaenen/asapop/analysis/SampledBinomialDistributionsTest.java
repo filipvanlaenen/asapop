@@ -40,4 +40,22 @@ public class SampledBinomialDistributionsTest {
         assertSame(SampledBinomialDistributions.get(1L, FOUR, FIVE, TEN),
                 SampledBinomialDistributions.get(1L, FOUR, FIVE, TEN));
     }
+
+    /**
+     * Verifies that it retrieves a sampled binomial distribution with more samples than what was cached when requested.
+     */
+    @Test
+    public void shouldRetrieveABinomialDistributionWithMoreSamplesWhenRequested() {
+        SampledBinomialDistributions.get(1L, FOUR, FOUR, TEN);
+        assertEquals(FIVE, SampledBinomialDistributions.get(1L, FOUR, FIVE, TEN).getNumberOfSamples());
+    }
+
+    /**
+     * Verifies that it retrieves a sampled binomial distribution with more samples than what was requested if cached.
+     */
+    @Test
+    public void shouldRetrieveABinomialDistributionWithMoreSamplesWhenAvailable() {
+        SampledBinomialDistributions.get(1L, FOUR, FIVE, TEN);
+        assertEquals(FIVE, SampledBinomialDistributions.get(1L, FOUR, FOUR, TEN).getNumberOfSamples());
+    }
 }
