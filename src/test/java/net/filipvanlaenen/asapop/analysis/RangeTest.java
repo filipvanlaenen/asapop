@@ -11,16 +11,64 @@ import org.junit.jupiter.api.Test;
  */
 public class RangeTest {
     /**
-     * A range to run tests on.
+     * A range to run tests on, 0 to 1.
      */
-    private static final Range RANGE = new Range(0, 1);
+    private static final Range RANGE_0_1 = new Range(0, 1);
+    /**
+     * A range to run tests on, 1 to 1.
+     */
+    private static final Range RANGE_1_1 = new Range(1, 1);
+    /**
+     * A range to run tests on, 1 to 2.
+     */
+    private static final Range RANGE_1_2 = new Range(1, 2);
+
+    /**
+     * Verifies that a range with a lower lower bound is lower than the other range.
+     */
+    @Test
+    public void aRangeWithALowerBoundShouldCompareLower() {
+        assertTrue(RANGE_0_1.compareTo(RANGE_1_1) < 0);
+    }
+
+    /**
+     * Verifies that a range compares equal to itself.
+     */
+    @Test
+    public void aRangeShouldCompareEqualToItself() {
+        assertTrue(RANGE_0_1.compareTo(RANGE_0_1) == 0);
+    }
+
+    /**
+     * Verifies the midpoint for a range with an uneven length to be in the middle.
+     */
+    @Test
+    public void theMidpointOfARangeWithUnevenLengthShouldBeInTheMiddle() {
+        assertEquals(2, new Range(1, 3).getMidpoint());
+    }
+
+    /**
+     * Verifies the midpoint for a range with an even length to be just below the middle.
+     */
+    @Test
+    public void theMidpointOfARangeWithEvenLengthShouldBeJustBelowTheMiddle() {
+        assertEquals(1, RANGE_1_2.getMidpoint());
+    }
+
+    /**
+     * Verifies the length of a range.
+     */
+    @Test
+    public void theLengthOfARangeShouldBe2ForARangeFrom1To2() {
+        assertEquals(2, RANGE_1_2.getLength());
+    }
 
     /**
      * Verifies that a range is not equal to null.
      */
     @Test
     public void aRangeShouldNotBeEqualToNull() {
-        assertFalse(RANGE.equals(null));
+        assertFalse(RANGE_0_1.equals(null));
     }
 
     /**
@@ -28,7 +76,7 @@ public class RangeTest {
      */
     @Test
     public void aRangeShouldNotBeEqualToAString() {
-        assertFalse(RANGE.equals(""));
+        assertFalse(RANGE_0_1.equals(""));
     }
 
     /**
@@ -36,7 +84,7 @@ public class RangeTest {
      */
     @Test
     public void aRangeShouldBeEqualToItself() {
-        assertTrue(RANGE.equals(RANGE));
+        assertTrue(RANGE_0_1.equals(RANGE_0_1));
     }
 
     /**
@@ -44,7 +92,7 @@ public class RangeTest {
      */
     @Test
     public void callingHashCodeTwiceOnARangeReturnsTheSameResult() {
-        assertEquals(RANGE.hashCode(), RANGE.hashCode());
+        assertEquals(RANGE_0_1.hashCode(), RANGE_0_1.hashCode());
     }
 
     /**
@@ -52,7 +100,7 @@ public class RangeTest {
      */
     @Test
     public void twoRangesConstructedWithTheSameParameterShouldBeEqual() {
-        assertEquals(RANGE, new Range(0, 1));
+        assertEquals(RANGE_0_1, new Range(0, 1));
     }
 
     /**
@@ -60,7 +108,7 @@ public class RangeTest {
      */
     @Test
     public void twoRangesConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
-        assertEquals(RANGE.hashCode(), new Range(0, 1).hashCode());
+        assertEquals(RANGE_0_1.hashCode(), new Range(0, 1).hashCode());
     }
 
     /**
@@ -68,7 +116,7 @@ public class RangeTest {
      */
     @Test
     public void twoRangesWithDifferentLowerBoundsShouldNotBeEqual() {
-        assertFalse(RANGE.equals(new Range(1, 1)));
+        assertFalse(RANGE_0_1.equals(RANGE_1_1));
     }
 
     /**
@@ -76,7 +124,7 @@ public class RangeTest {
      */
     @Test
     public void twoRangesWithDifferentLowerBoundsShouldHaveDifferentHashCodes() {
-        assertFalse(RANGE.hashCode() == new Range(1, 1).hashCode());
+        assertFalse(RANGE_0_1.hashCode() == RANGE_1_1.hashCode());
     }
 
     /**
@@ -84,7 +132,7 @@ public class RangeTest {
      */
     @Test
     public void twoRangesWithDifferentUpperBoundsShouldNotBeEqual() {
-        assertFalse(RANGE.equals(new Range(0, 2)));
+        assertFalse(RANGE_0_1.equals(new Range(0, 2)));
     }
 
     /**
@@ -92,6 +140,6 @@ public class RangeTest {
      */
     @Test
     public void twoRangesWithDifferentUpperBoundsShouldHaveDifferentHashCodes() {
-        assertFalse(RANGE.hashCode() == new Range(0, 2).hashCode());
+        assertFalse(RANGE_0_1.hashCode() == new Range(0, 2).hashCode());
     }
 }
