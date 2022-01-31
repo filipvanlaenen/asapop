@@ -28,7 +28,7 @@ class Range implements Comparable<Range> {
 
     @Override
     public int compareTo(final Range other) {
-        return lowerBound - other.lowerBound < 0 ? -1 : (lowerBound == other.lowerBound ? 0 : 1);
+        return lowerBound - other.lowerBound < 0 ? -1 : lowerBound == other.lowerBound ? 0 : 1;
     }
 
     @Override

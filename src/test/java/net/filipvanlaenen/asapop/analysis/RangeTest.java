@@ -11,6 +11,10 @@ import org.junit.jupiter.api.Test;
  */
 public class RangeTest {
     /**
+     * The magic number three.
+     */
+    private static final long THREE = 3L;
+    /**
      * A range to run tests on, 0 to 1.
      */
     private static final Range RANGE_0_1 = new Range(0, 1);
@@ -44,7 +48,7 @@ public class RangeTest {
      */
     @Test
     public void theMidpointOfARangeWithUnevenLengthShouldBeInTheMiddle() {
-        assertEquals(2, new Range(1, 3).getMidpoint());
+        assertEquals(2, new Range(1, THREE).getMidpoint());
     }
 
     /**
