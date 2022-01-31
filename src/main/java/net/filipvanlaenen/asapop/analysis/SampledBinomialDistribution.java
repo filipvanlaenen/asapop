@@ -36,13 +36,13 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
             final Long populationSize) {
         SampledBinomialDistribution result = new SampledBinomialDistribution();
         long baseLength = populationSize / numberOfSamples;
-        long remainder = populationSize - baseLength * numberOfSamples;
+        long remainder = 1 + populationSize - baseLength * numberOfSamples;
         long numberOfRangesOfBaseLength = numberOfSamples - remainder;
         long rangeStartIndex = 0L;
         long rangeEndIndex;
         for (long i = 0; i < numberOfSamples; i++) {
             rangeEndIndex = rangeStartIndex + baseLength + (i >= numberOfRangesOfBaseLength ? 0L : -1L);
-            Range range = new Range(rangeStartIndex, rangeEndIndex);
+            Range range = Range.get(rangeStartIndex, rangeEndIndex);
             long m = range.getMidpoint();
             result.put(range, BinomialCoefficients.get(m, value).multiply(
                     BinomialCoefficients.get(populationSize - m, sampleSize - value), MathContext.DECIMAL128));

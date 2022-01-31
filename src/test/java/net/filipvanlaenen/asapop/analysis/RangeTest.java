@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -17,15 +18,15 @@ public class RangeTest {
     /**
      * A range to run tests on, 0 to 1.
      */
-    private static final Range RANGE_0_1 = new Range(0, 1);
+    private static final Range RANGE_0_1 = Range.get(0, 1);
     /**
      * A range to run tests on, 1 to 1.
      */
-    private static final Range RANGE_1_1 = new Range(1, 1);
+    private static final Range RANGE_1_1 = Range.get(1, 1);
     /**
      * A range to run tests on, 1 to 2.
      */
-    private static final Range RANGE_1_2 = new Range(1, 2);
+    private static final Range RANGE_1_2 = Range.get(1, 2);
 
     /**
      * Verifies that a range with a lower lower bound is lower than the other range.
@@ -48,7 +49,7 @@ public class RangeTest {
      */
     @Test
     public void theMidpointOfARangeWithUnevenLengthShouldBeInTheMiddle() {
-        assertEquals(2, new Range(1, THREE).getMidpoint());
+        assertEquals(2, Range.get(1, THREE).getMidpoint());
     }
 
     /**
@@ -92,27 +93,19 @@ public class RangeTest {
     }
 
     /**
+     * Verifiers that the cache returns the same object when the same parameters are provided.
+     */
+    @Test
+    public void cacheShouldReturnTheSameObjectForTheSameParameters() {
+        assertSame(RANGE_0_1, Range.get(0, 1));
+    }
+
+    /**
      * Verifies that calling hashCode twice on a range returns the same result.
      */
     @Test
     public void callingHashCodeTwiceOnARangeReturnsTheSameResult() {
         assertEquals(RANGE_0_1.hashCode(), RANGE_0_1.hashCode());
-    }
-
-    /**
-     * Verifies that two ranges constructed with the same parameter are equal.
-     */
-    @Test
-    public void twoRangesConstructedWithTheSameParameterShouldBeEqual() {
-        assertEquals(RANGE_0_1, new Range(0, 1));
-    }
-
-    /**
-     * Verifies that two ranges constructed with the same parameters return the same hashCode.
-     */
-    @Test
-    public void twoRangesConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
-        assertEquals(RANGE_0_1.hashCode(), new Range(0, 1).hashCode());
     }
 
     /**
@@ -136,7 +129,7 @@ public class RangeTest {
      */
     @Test
     public void twoRangesWithDifferentUpperBoundsShouldNotBeEqual() {
-        assertFalse(RANGE_0_1.equals(new Range(0, 2)));
+        assertFalse(RANGE_0_1.equals(Range.get(0, 2)));
     }
 
     /**
@@ -144,6 +137,6 @@ public class RangeTest {
      */
     @Test
     public void twoRangesWithDifferentUpperBoundsShouldHaveDifferentHashCodes() {
-        assertFalse(RANGE_0_1.hashCode() == new Range(0, 2).hashCode());
+        assertFalse(RANGE_0_1.hashCode() == Range.get(0, 2).hashCode());
     }
 }

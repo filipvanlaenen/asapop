@@ -1,11 +1,18 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Class implementing a range. A range has a lower and an upper bound.
  */
 class Range implements Comparable<Range> {
+    /**
+     * A map caching all the ranges created in the <code>get</code> method.
+     */
+    private static final Map<List<Long>, Range> CACHE = new HashMap<List<Long>, Range>();
     /**
      * The lower bound of the range.
      */
@@ -21,7 +28,7 @@ class Range implements Comparable<Range> {
      * @param lowerBound The lower bound of the range.
      * @param upperBound The upper bound of the range.
      */
-    Range(final long lowerBound, final long upperBound) {
+    private Range(final long lowerBound, final long upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }
@@ -29,6 +36,22 @@ class Range implements Comparable<Range> {
     @Override
     public int compareTo(final Range other) {
         return lowerBound - other.lowerBound < 0 ? -1 : lowerBound == other.lowerBound ? 0 : 1;
+    }
+
+    /**
+     * Returns a range with the specified lower and upper bound. If the range is already present in the cache, it is
+     * returned from there.
+     * 
+     * @param lowerBound The lower bound of the requested range.
+     * @param upperBound The upper bound of the requested range.
+     * @return A range with the provided lower and upper bound.
+     */
+    static Range get(final long lowerBound, final long upperBound) {
+        List<Long> key = List.of(lowerBound, upperBound);
+        if (!CACHE.containsKey(key)) {
+            CACHE.put(key, new Range(lowerBound, upperBound));
+        }
+        return CACHE.get(key);
     }
 
     @Override
