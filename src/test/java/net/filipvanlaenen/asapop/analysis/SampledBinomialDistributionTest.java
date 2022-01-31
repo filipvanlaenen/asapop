@@ -14,6 +14,10 @@ import org.junit.jupiter.api.Test;
  */
 public class SampledBinomialDistributionTest {
     /**
+     * The magic number three.
+     */
+    private static final long THREE = 3L;
+    /**
      * The magic number four.
      */
     private static final long FOUR = 4L;
@@ -21,6 +25,18 @@ public class SampledBinomialDistributionTest {
      * The magic number five.
      */
     private static final long FIVE = 5L;
+    /**
+     * The magic number six.
+     */
+    private static final long SIX = 6L;
+    /**
+     * The magic number seven.
+     */
+    private static final long SEVEN = 7L;
+    /**
+     * The magic number eight.
+     */
+    private static final long EIGHT = 8L;
     /**
      * The magic number nine.
      */
@@ -33,6 +49,14 @@ public class SampledBinomialDistributionTest {
      * The magic number eleven.
      */
     private static final long ELEVEN = 11L;
+    /**
+     * The magic number one hundred twelve.
+     */
+    private static final long ONE_HUNDRED_TWELVE = 112L;
+    /**
+     * The magic number four hundred thirty-two.
+     */
+    private static final long FOUR_HUNDRED_THIRTY_TWO = 432L;
     /**
      * A binomial distribution to run the tests on.
      */
@@ -52,7 +76,8 @@ public class SampledBinomialDistributionTest {
      */
     @Test
     public void probabilityMassIsCalculatedCorrectly() {
-        assertEquals(new BigDecimal(112), SAMPLED_BINOMIAL_DISTRIBUTION.getProbabilityMass(Range.get(2, 3)));
+        assertEquals(new BigDecimal(ONE_HUNDRED_TWELVE),
+                SAMPLED_BINOMIAL_DISTRIBUTION.getProbabilityMass(Range.get(2, THREE)));
     }
 
     /**
@@ -60,7 +85,7 @@ public class SampledBinomialDistributionTest {
      */
     @Test
     public void probabilityMassSumIsCalculatedCorrectly() {
-        assertEquals(new BigDecimal(432), SAMPLED_BINOMIAL_DISTRIBUTION.getProbabilityMassSum());
+        assertEquals(new BigDecimal(FOUR_HUNDRED_THIRTY_TWO), SAMPLED_BINOMIAL_DISTRIBUTION.getProbabilityMassSum());
     }
 
     /**
@@ -68,9 +93,8 @@ public class SampledBinomialDistributionTest {
      */
     @Test
     public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfTen() {
-        assertEquals(
-                List.of(Range.get(0, 1), Range.get(2, 3), Range.get(FOUR, FIVE), Range.get(6, 7), Range.get(8, TEN)),
-                SAMPLED_BINOMIAL_DISTRIBUTION.getSortedKeys());
+        assertEquals(List.of(Range.get(0, 1), Range.get(2, THREE), Range.get(FOUR, FIVE), Range.get(SIX, SEVEN),
+                Range.get(EIGHT, TEN)), SAMPLED_BINOMIAL_DISTRIBUTION.getSortedKeys());
     }
 
     /**
@@ -79,7 +103,8 @@ public class SampledBinomialDistributionTest {
     @Test
     public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfNine() {
         assertEquals(
-                List.of(Range.get(0, 1), Range.get(2, 3), Range.get(FOUR, FIVE), Range.get(6, 7), Range.get(8, NINE)),
+                List.of(Range.get(0, 1), Range.get(2, THREE), Range.get(FOUR, FIVE), Range.get(SIX, SEVEN),
+                        Range.get(EIGHT, NINE)),
                 SampledBinomialDistribution.create(1L, FOUR, FIVE, NINE).getSortedKeys());
     }
 
@@ -89,7 +114,7 @@ public class SampledBinomialDistributionTest {
     @Test
     public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfEleven() {
         assertEquals(
-                List.of(Range.get(0, 1), Range.get(2, 3), Range.get(FOUR, FIVE), Range.get(6, 8),
+                List.of(Range.get(0, 1), Range.get(2, THREE), Range.get(FOUR, FIVE), Range.get(SIX, EIGHT),
                         Range.get(NINE, ELEVEN)),
                 SampledBinomialDistribution.create(1L, FOUR, FIVE, ELEVEN).getSortedKeys());
     }
