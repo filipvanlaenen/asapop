@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Class implementing a range. A range has a lower and an upper bound.
  */
-class Range implements Comparable<Range> {
+final class Range implements Comparable<Range> {
     /**
      * A map caching all the ranges created in the <code>get</code> method.
      */
@@ -41,7 +41,7 @@ class Range implements Comparable<Range> {
     /**
      * Returns a range with the specified lower and upper bound. If the range is already present in the cache, it is
      * returned from there.
-     * 
+     *
      * @param lowerBound The lower bound of the requested range.
      * @param upperBound The upper bound of the requested range.
      * @return A range with the provided lower and upper bound.

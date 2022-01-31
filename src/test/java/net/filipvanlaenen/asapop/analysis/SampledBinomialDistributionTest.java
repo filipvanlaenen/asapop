@@ -22,9 +22,17 @@ public class SampledBinomialDistributionTest {
      */
     private static final long FIVE = 5L;
     /**
+     * The magic number nine.
+     */
+    private static final long NINE = 9L;
+    /**
      * The magic number ten.
      */
     private static final long TEN = 10L;
+    /**
+     * The magic number eleven.
+     */
+    private static final long ELEVEN = 11L;
     /**
      * A binomial distribution to run the tests on.
      */
@@ -56,12 +64,34 @@ public class SampledBinomialDistributionTest {
     }
 
     /**
-     * Verifies that the keys, i.e. the ranges, are returned correctly.
+     * Verifies that the keys, i.e. the ranges, are returned correctly for five samples in a population size of ten.
      */
     @Test
-    public void sortedKeysAreReturnedCorrectly() {
-        assertEquals(List.of(Range.get(0, 1), Range.get(2, 3), Range.get(4, 5), Range.get(6, 7), Range.get(8, 10)),
+    public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfTen() {
+        assertEquals(
+                List.of(Range.get(0, 1), Range.get(2, 3), Range.get(FOUR, FIVE), Range.get(6, 7), Range.get(8, TEN)),
                 SAMPLED_BINOMIAL_DISTRIBUTION.getSortedKeys());
+    }
+
+    /**
+     * Verifies that the keys, i.e. the ranges, are returned correctly for five samples in a population size of nine.
+     */
+    @Test
+    public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfNine() {
+        assertEquals(
+                List.of(Range.get(0, 1), Range.get(2, 3), Range.get(FOUR, FIVE), Range.get(6, 7), Range.get(8, NINE)),
+                SampledBinomialDistribution.create(1L, FOUR, FIVE, NINE).getSortedKeys());
+    }
+
+    /**
+     * Verifies that the keys, i.e. the ranges, are returned correctly for five samples in a population size of eleven.
+     */
+    @Test
+    public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfEleven() {
+        assertEquals(
+                List.of(Range.get(0, 1), Range.get(2, 3), Range.get(FOUR, FIVE), Range.get(6, 8),
+                        Range.get(NINE, ELEVEN)),
+                SampledBinomialDistribution.create(1L, FOUR, FIVE, ELEVEN).getSortedKeys());
     }
 
     /**

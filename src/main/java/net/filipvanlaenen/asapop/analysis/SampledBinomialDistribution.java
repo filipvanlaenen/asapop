@@ -61,6 +61,11 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
         }
     }
 
+    /**
+     * Returns the number of samples.
+     *
+     * @return The number of samples.
+     */
     Long getNumberOfSamples() {
         return (long) pmf.size();
     }

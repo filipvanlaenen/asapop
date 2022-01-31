@@ -11,7 +11,8 @@ final class SampledBinomialDistributions {
     /**
      * A map caching all the sampled binomial distributions created in the <code>get</code> method.
      */
-    private static final Map<List<Long>, SampledBinomialDistribution> CACHE = new HashMap<List<Long>, SampledBinomialDistribution>();
+    private static final Map<List<Long>, SampledBinomialDistribution> CACHE =
+            new HashMap<List<Long>, SampledBinomialDistribution>();
 
     /**
      * Private constructor to prevent the instantiation of this utility class.
