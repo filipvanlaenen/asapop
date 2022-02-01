@@ -61,7 +61,8 @@ public class AnalysisEngine {
                 Long sampled = Math
                         .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
                                 * sampleSize * 0.01);
-                voteShareAnalysis.add(electoralList, BinomialDistributions.get(sampled, sampleSize, 5L));
+                voteShareAnalysis.add(electoralList,
+                        SampledBinomialDistributions.get(sampled, sampleSize, 10_000L, 36_054_394L));
             }
             // TODO: Add Other too
             voteShareAnalyses.put(opinionPoll, voteShareAnalysis);

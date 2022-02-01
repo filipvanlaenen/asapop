@@ -22,6 +22,10 @@ public class VoteSharesAnalysisTest {
      */
     private static final long FIVE = 5L;
     /**
+     * The magic number ten.
+     */
+    private static final long TEN = 10L;
+    /**
      * The vote shares analysis object to run the tests on.
      */
     private static VoteSharesAnalysis voteSharesAnalysis;
@@ -41,8 +45,8 @@ public class VoteSharesAnalysisTest {
      */
     public static VoteSharesAnalysis createVoteSharesAnalysisObject() {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
-        voteSharesAnalysisObject.add(ElectoralList.get("A"), BinomialDistribution.create(1L, FOUR, FIVE));
-        voteSharesAnalysisObject.add(ElectoralList.get("B"), BinomialDistribution.create(2L, FOUR, FIVE));
+        voteSharesAnalysisObject.add(ElectoralList.get("A"), SampledBinomialDistribution.create(1L, FOUR, FIVE, TEN));
+        voteSharesAnalysisObject.add(ElectoralList.get("B"), SampledBinomialDistribution.create(2L, FOUR, FIVE, TEN));
         return voteSharesAnalysisObject;
     }
 

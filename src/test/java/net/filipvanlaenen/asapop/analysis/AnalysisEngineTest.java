@@ -20,10 +20,6 @@ public class AnalysisEngineTest {
      * The magic number four.
      */
     private static final long FOUR = 4L;
-    /**
-     * The magic number five.
-     */
-    private static final long FIVE = 5L;
 
     /**
      * Verifies that the getter method <code>getOpinionPolls</code> is wired correctly to the constructor.
@@ -50,7 +46,7 @@ public class AnalysisEngineTest {
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
         VoteSharesAnalysis expected = new VoteSharesAnalysis();
-        expected.add(ElectoralList.get("A"), BinomialDistributions.get(1L, FOUR, FIVE));
+        expected.add(ElectoralList.get("A"), SampledBinomialDistributions.get(1L, FOUR, 10_000L, 36_054_394L));
         assertEquals(expected, engine.getVoteShareAnalysis(opinionPoll));
     }
 }

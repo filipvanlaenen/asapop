@@ -13,7 +13,7 @@ class VoteSharesAnalysis {
     /**
      * A map containing a probability mass function per electoral list.
      */
-    private final Map<ElectoralList, ProbabilityMassFunction<Long>> probabilityMassFunctions = new HashMap<ElectoralList, ProbabilityMassFunction<Long>>();
+    private final Map<ElectoralList, ProbabilityMassFunction<Range>> probabilityMassFunctions = new HashMap<ElectoralList, ProbabilityMassFunction<Range>>();
 
     /**
      * Adds an electoral list with its probability mass function.
@@ -21,7 +21,7 @@ class VoteSharesAnalysis {
      * @param electoralList           The electoral list for which to add a probability mass function.
      * @param probabilityMassFunction The probability mass function for the electoral list.
      */
-    void add(final ElectoralList electoralList, final ProbabilityMassFunction<Long> probabilityMassFunction) {
+    void add(final ElectoralList electoralList, final ProbabilityMassFunction<Range> probabilityMassFunction) {
         probabilityMassFunctions.put(electoralList, probabilityMassFunction);
     }
 
