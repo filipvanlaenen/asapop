@@ -191,52 +191,12 @@ public final class ResponseScenario {
     }
 
     /**
-     * Returns the vote share confidence interval for an electoral list at a confidence level.
-     *
-     * @param electoralList The electoral list for which to return the confidence interval.
-     * @param level         The level for the confidence interval.
-     * @return The vote share confidence interval for an electoral list at a confidence level.
-     */
-    public Float[] getConfidenceInterval(final ElectoralList electoralList, final int level) {
-        return null;
-    }
-
-    /**
-     * Returns the vote share confidence interval for other at a confidence level.
-     *
-     * @param level The level for the confidence interval.
-     * @return The vote share confidence interval for other at a confidence level.
-     */
-    public Float[] getConfidenceIntervalOther(final int level) {
-        return null;
-    }
-
-    /**
      * Returns the electoral lists.
      *
      * @return The electoral lists.
      */
     public Set<ElectoralList> getElectoralLists() {
         return results.keySet();
-    }
-
-    /**
-     * Returns the vote share median for an electoral list.
-     *
-     * @param electoralList The electoral list for which to return the vote share median.
-     * @return The vote share median for the electoral list.
-     */
-    public Float getMedian(final ElectoralList electoralList) {
-        return null;
-    }
-
-    /**
-     * Returns the vote share median for other.
-     *
-     * @return The vote share median for other.
-     */
-    public Float getMedianOther() {
-        return null;
     }
 
     /**

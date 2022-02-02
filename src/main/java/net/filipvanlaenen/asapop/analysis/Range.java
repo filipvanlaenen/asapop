@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Class implementing a range. A range has a lower and an upper bound.
  */
-final class Range implements Comparable<Range> {
+public final class Range implements Comparable<Range> {
     /**
      * A map caching all the ranges created in the <code>get</code> method.
      */
@@ -69,7 +69,7 @@ final class Range implements Comparable<Range> {
      *
      * @return The midpoint of the range.
      */
-    long getMidpoint() {
+    public long getMidpoint() {
         return lowerBound + (upperBound - lowerBound) / 2;
     }
 
@@ -80,6 +80,14 @@ final class Range implements Comparable<Range> {
      */
     long getLength() {
         return 1L + upperBound - lowerBound;
+    }
+
+    public long getLowerBound() {
+        return lowerBound;
+    }
+
+    public long getUpperBound() {
+        return upperBound;
     }
 
     @Override

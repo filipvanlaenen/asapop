@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
+import net.filipvanlaenen.asapop.analysis.Range;
+import net.filipvanlaenen.asapop.analysis.SortableProbabilityMassFunction;
+import net.filipvanlaenen.asapop.analysis.VoteSharesAnalysis;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -78,10 +81,10 @@ public class AnalysisBuilder {
      */
     private ResultAnalysis buildOtherAnalysis(final ResponseScenario responseScenario) {
         ResultAnalysis resultAnalysis = new ResultAnalysis();
-        resultAnalysis.setMedian(responseScenario.getMedianOther());
+        // TODO: resultAnalysis.setMedian(responseScenario.getMedianOther());
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
-            confidenceIntervals.put(level, responseScenario.getConfidenceIntervalOther(level));
+            // TODO: confidenceIntervals.put(level, responseScenario.getConfidenceIntervalOther(level));
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
         return resultAnalysis;
@@ -98,9 +101,9 @@ public class AnalysisBuilder {
         responseScenarioAnalysis.setArea(poll.getArea());
         responseScenarioAnalysis.setScope(nullOrToString(poll.getScope()));
         Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
+        VoteSharesAnalysis voteSharesAnalysis = engine.getVoteSharesAnalysis(poll.getMainResponseScenario());
         for (ElectoralList electoralList : poll.getElectoralLists()) {
-            resultAnalyses.put(electoralList.getKey(),
-                    buildResultAnalysis(poll.getMainResponseScenario(), electoralList));
+            resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         responseScenarioAnalysis.setOtherAnalysis(buildOtherAnalysis(poll.getMainResponseScenario()));
@@ -118,8 +121,9 @@ public class AnalysisBuilder {
         responseScenarioAnalysis.setArea(responseScenario.getArea());
         responseScenarioAnalysis.setScope(nullOrToString(responseScenario.getScope()));
         Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
+        VoteSharesAnalysis voteSharesAnalysis = engine.getVoteSharesAnalysis(responseScenario);
         for (ElectoralList electoralList : responseScenario.getElectoralLists()) {
-            resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(responseScenario, electoralList));
+            resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         responseScenarioAnalysis.setOtherAnalysis(buildOtherAnalysis(responseScenario));
@@ -129,17 +133,24 @@ public class AnalysisBuilder {
     /**
      * Builds a result analysis for an electoral list in a response scenario.
      *
-     * @param responseScenario The response scenario.
-     * @param electoralList    The electoral list.
+     * @param voteSharesAnalysis The vote shares analysis for a response scenario.
+     * @param electoralList      The electoral list.
      * @return A result analysis for an electoral list in a response scenario.
      */
-    private ResultAnalysis buildResultAnalysis(final ResponseScenario responseScenario,
+    private ResultAnalysis buildResultAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
             final ElectoralList electoralList) {
         ResultAnalysis resultAnalysis = new ResultAnalysis();
-        resultAnalysis.setMedian(responseScenario.getMedian(electoralList));
+        SortableProbabilityMassFunction<Range> probabilityMassFunction = voteSharesAnalysis
+                .getProbabilityMassFunction(electoralList);
+        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * 100F / 36_054_394L);
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
-            confidenceIntervals.put(level, responseScenario.getConfidenceInterval(electoralList, level));
+            Float[] confidenceInterval = new Float[2];
+            confidenceInterval[0] = probabilityMassFunction.getConfidenceInterval(level / 100F).getLowerBound()
+                    .getLowerBound() * 100F / 36_054_394L;
+            confidenceInterval[1] = probabilityMassFunction.getConfidenceInterval(level / 100F).getUpperBound()
+                    .getUpperBound() * 100F / 36_054_394L;
+            confidenceIntervals.put(level, confidenceInterval);
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
         return resultAnalysis;

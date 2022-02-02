@@ -61,6 +61,11 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
         }
     }
 
+    @Override
+    BigDecimal getKeyWeight(final Range key) {
+        return new BigDecimal(key.getLength());
+    }
+
     /**
      * Returns the number of samples.
      *
@@ -103,4 +108,5 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
         probabilityMassSum = probabilityMassSum
                 .add(value.multiply(new BigDecimal(key.getLength()), MathContext.DECIMAL128), MathContext.DECIMAL128);
     }
+
 }

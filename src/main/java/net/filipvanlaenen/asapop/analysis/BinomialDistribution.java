@@ -56,6 +56,11 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
     }
 
     @Override
+    BigDecimal getKeyWeight(final Long key) {
+        return BigDecimal.ONE;
+    }
+
+    @Override
     List<Long> getSortedKeys() {
         List<Long> list = new ArrayList<Long>(pmf.keySet());
         Collections.sort(list);

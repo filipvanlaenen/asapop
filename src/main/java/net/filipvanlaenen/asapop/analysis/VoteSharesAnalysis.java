@@ -9,11 +9,11 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 /**
  * Class representing an analysis of the votes shares.
  */
-class VoteSharesAnalysis {
+public class VoteSharesAnalysis {
     /**
      * A map containing a probability mass function per electoral list.
      */
-    private final Map<ElectoralList, ProbabilityMassFunction<Range>> probabilityMassFunctions = new HashMap<ElectoralList, ProbabilityMassFunction<Range>>();
+    private final Map<ElectoralList, SortableProbabilityMassFunction<Range>> probabilityMassFunctions = new HashMap<ElectoralList, SortableProbabilityMassFunction<Range>>();
 
     /**
      * Adds an electoral list with its probability mass function.
@@ -21,7 +21,7 @@ class VoteSharesAnalysis {
      * @param electoralList           The electoral list for which to add a probability mass function.
      * @param probabilityMassFunction The probability mass function for the electoral list.
      */
-    void add(final ElectoralList electoralList, final ProbabilityMassFunction<Range> probabilityMassFunction) {
+    void add(final ElectoralList electoralList, final SortableProbabilityMassFunction<Range> probabilityMassFunction) {
         probabilityMassFunctions.put(electoralList, probabilityMassFunction);
     }
 
@@ -33,6 +33,10 @@ class VoteSharesAnalysis {
         } else {
             return false;
         }
+    }
+
+    public SortableProbabilityMassFunction<Range> getProbabilityMassFunction(ElectoralList electoralList) {
+        return probabilityMassFunctions.get(electoralList);
     }
 
     @Override

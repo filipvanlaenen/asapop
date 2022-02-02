@@ -2,7 +2,6 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Set;
 
@@ -12,24 +11,6 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the class <code>ResponseScenario</code>.
  */
 public class ResponseScenarioTest {
-    /**
-     * Verifies that before an analysis is done, the median of an electoral list is <code>null</code>.
-     */
-    @Test
-    public void getMedianIsNullBeforeAnAnalysisIsDone() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
-        assertNull(responseScenario.getMedian(ElectoralList.get("A")));
-    }
-
-    /**
-     * Verifies that if no other is provided, the median is <code>null</code>.
-     */
-    @Test
-    public void getMedianOtherIsNullWhenThereIsNoOtherProvided() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
-        assertNull(responseScenario.getMedianOther());
-    }
-
     /**
      * Verifies getElectoralLists returns the electoral lists of the response scenario.
      */

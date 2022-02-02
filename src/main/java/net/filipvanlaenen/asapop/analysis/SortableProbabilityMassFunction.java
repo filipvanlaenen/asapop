@@ -12,14 +12,14 @@ import java.util.List;
  *
  * @param <SK> The class for the sortable keys.
  */
-abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMassFunction<SK> {
+public abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMassFunction<SK> {
     /**
      * Calculates the confidence interval for a confidence level.
      *
      * @param level The confidence level.
      * @return A pair of keys representing the lower and the upper bound of the confidence level.
      */
-    ConfidenceInterval<SK> getConfidenceInterval(final double level) {
+    public ConfidenceInterval<SK> getConfidenceInterval(final double level) {
         BigDecimal fraction = getProbabilityMassSum().multiply(new BigDecimal(1 - level)).divide(new BigDecimal(2));
         List<SK> sortedKeys = getSortedKeys();
         SK lowerBound = findQuantileBoundary(fraction, sortedKeys);
@@ -40,7 +40,8 @@ abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMassFuncti
         BigDecimal accumulatedProbabilityMass = BigDecimal.ZERO;
         SK previousKey = sortedKeys.get(0);
         for (SK s : sortedKeys) {
-            accumulatedProbabilityMass = accumulatedProbabilityMass.add(getProbabilityMass(s), MathContext.DECIMAL128);
+            accumulatedProbabilityMass = accumulatedProbabilityMass.add(
+                    getProbabilityMass(s).multiply(getKeyWeight(s), MathContext.DECIMAL128), MathContext.DECIMAL128);
             // Changing the conditional boundary below produces a mutant that is hard to kill due to rounding errors.
             if (accumulatedProbabilityMass.compareTo(probabilityMassFraction) > 0) {
                 return previousKey;
@@ -55,17 +56,20 @@ abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMassFuncti
      *
      * @return The median.
      */
-    SK getMedian() {
+    public SK getMedian() {
         BigDecimal halfProbabilityMassSum = getProbabilityMassSum().divide(new BigDecimal(2), MathContext.DECIMAL128);
         BigDecimal accumulatedProbabilityMass = BigDecimal.ZERO;
         for (SK s : getSortedKeys()) {
-            accumulatedProbabilityMass = accumulatedProbabilityMass.add(getProbabilityMass(s), MathContext.DECIMAL128);
+            accumulatedProbabilityMass = accumulatedProbabilityMass.add(
+                    getProbabilityMass(s).multiply(getKeyWeight(s), MathContext.DECIMAL128), MathContext.DECIMAL128);
             if (accumulatedProbabilityMass.compareTo(halfProbabilityMassSum) >= 0) {
                 return s;
             }
         }
         return null;
     }
+
+    abstract BigDecimal getKeyWeight(final SK key);
 
     /**
      * Returns the sum of the probability masses.

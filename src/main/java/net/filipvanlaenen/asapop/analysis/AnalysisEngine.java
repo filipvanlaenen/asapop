@@ -6,6 +6,7 @@ import java.util.Map;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 
 /**
@@ -17,9 +18,9 @@ public class AnalysisEngine {
      */
     private OpinionPolls opinionPolls;
     /**
-     * A map containing the vote shares analysis per opinion poll.
+     * A map containing the vote shares analysis per response scenario.
      */
-    private final Map<OpinionPoll, VoteSharesAnalysis> voteShareAnalyses = new HashMap<OpinionPoll, VoteSharesAnalysis>();
+    private final Map<ResponseScenario, VoteSharesAnalysis> voteSharesAnalyses = new HashMap<ResponseScenario, VoteSharesAnalysis>();
 
     /**
      * Constructor taking the opinion polls and election data as its parameters.
@@ -41,13 +42,13 @@ public class AnalysisEngine {
     }
 
     /**
-     * Returns the vote shares analysis for an opinion poll.
+     * Returns the vote shares analysis for a response scenario.
      *
-     * @param opinionPoll The opinion poll for which to return the vote shares analysis.
+     * @param responseScenario The response scenario for which to return the vote shares analysis.
      * @return The vote shares analysis for the opinion poll.
      */
-    VoteSharesAnalysis getVoteShareAnalysis(final OpinionPoll opinionPoll) {
-        return voteShareAnalyses.get(opinionPoll);
+    public VoteSharesAnalysis getVoteSharesAnalysis(final ResponseScenario responseScenario) {
+        return voteSharesAnalyses.get(responseScenario);
     }
 
     /**
@@ -62,10 +63,11 @@ public class AnalysisEngine {
                         .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
                                 * sampleSize * 0.01);
                 voteShareAnalysis.add(electoralList,
-                        SampledBinomialDistributions.get(sampled, sampleSize, 10_000L, 36_054_394L));
+                        SampledBinomialDistributions.get(sampled, sampleSize, 20_000L, 36_054_394L));
             }
             // TODO: Add Other too
-            voteShareAnalyses.put(opinionPoll, voteShareAnalysis);
+            voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
+            // TODO: Add alternative scenarios
         }
     }
 }

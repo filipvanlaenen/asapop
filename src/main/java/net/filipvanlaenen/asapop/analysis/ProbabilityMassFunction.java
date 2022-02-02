@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  *
  * @param <K> The type for the keys of the probability mass function.
  */
-abstract class ProbabilityMassFunction<K> {
+public abstract class ProbabilityMassFunction<K> {
     /**
      * Returns the probability mass for a key.
      *
