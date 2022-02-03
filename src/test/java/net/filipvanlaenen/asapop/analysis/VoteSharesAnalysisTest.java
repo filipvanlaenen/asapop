@@ -45,8 +45,10 @@ public class VoteSharesAnalysisTest {
      */
     public static VoteSharesAnalysis createVoteSharesAnalysisObject() {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
-        voteSharesAnalysisObject.add(ElectoralList.get("A"), SampledBinomialDistribution.create(1L, FOUR, FIVE, TEN));
-        voteSharesAnalysisObject.add(ElectoralList.get("B"), SampledBinomialDistribution.create(2L, FOUR, FIVE, TEN));
+        voteSharesAnalysisObject.add(ElectoralList.get("A"),
+                SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN));
+        voteSharesAnalysisObject.add(ElectoralList.get("B"),
+                SampledHypergeometricDistribution.create(2L, FOUR, FIVE, TEN));
         return voteSharesAnalysisObject;
     }
 

@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Class representing a binomial distribution.
+ * Class representing a hypergeometric distribution.
  */
-final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
+final class HypergeometricDistribution extends SortableProbabilityMassFunction<Long> {
     /**
-     * A map holding the key value pairs for the binomial distribution.
+     * A map holding the key value pairs for the hypergeometric distribution.
      */
     private final Map<Long, BigDecimal> pmf = new HashMap<Long, BigDecimal>();
     /**
@@ -25,19 +25,19 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
     /**
      * Private constructor to prevent direct calls.
      */
-    private BinomialDistribution() {
+    private HypergeometricDistribution() {
     }
 
     /**
-     * Creates a binomial distribution for a given value measured in a population size for a sample size.
+     * Creates a hypergeometric distribution for a given value measured in a population size for a sample size.
      *
      * @param value          The measured value.
      * @param sampleSize     The sample size.
      * @param populationSize The population size.
-     * @return A binomial distribution.
+     * @return A hypergeometric distribution.
      */
-    static BinomialDistribution create(final Long value, final Long sampleSize, final Long populationSize) {
-        BinomialDistribution result = new BinomialDistribution();
+    static HypergeometricDistribution create(final Long value, final Long sampleSize, final Long populationSize) {
+        HypergeometricDistribution result = new HypergeometricDistribution();
         for (long i = 0; i <= populationSize; i++) {
             result.put(i, BinomialCoefficients.get(i, value).multiply(
                     BinomialCoefficients.get(populationSize - i, sampleSize - value), MathContext.DECIMAL128));
@@ -47,8 +47,8 @@ final class BinomialDistribution extends SortableProbabilityMassFunction<Long> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof BinomialDistribution) {
-            BinomialDistribution other = (BinomialDistribution) obj;
+        if (obj instanceof HypergeometricDistribution) {
+            HypergeometricDistribution other = (HypergeometricDistribution) obj;
             return other.pmf.equals(pmf);
         } else {
             return false;

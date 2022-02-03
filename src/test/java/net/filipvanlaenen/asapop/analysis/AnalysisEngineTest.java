@@ -46,7 +46,7 @@ public class AnalysisEngineTest {
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
         VoteSharesAnalysis expected = new VoteSharesAnalysis();
-        expected.add(ElectoralList.get("A"), SampledBinomialDistributions.get(1L, FOUR, 10_000L, 36_054_394L));
+        expected.add(ElectoralList.get("A"), SampledHypergeometricDistributions.get(1L, FOUR, 10_000L, 36_054_394L));
         assertEquals(expected, engine.getVoteSharesAnalysis(opinionPoll.getMainResponseScenario()));
     }
 }

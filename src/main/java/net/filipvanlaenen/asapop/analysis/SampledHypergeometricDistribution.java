@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Class representing a binomial distribution, but sampled.
+ * Class representing a hypergeometric distribution, but sampled.
  */
-class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range> {
+class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<Range> {
     /**
-     * A map holding the key value pairs for the sampled binomial distribution.
+     * A map holding the key value pairs for the sampled hypergeometric distribution.
      */
     private final Map<Range, BigDecimal> pmf = new HashMap<Range, BigDecimal>();
     /**
@@ -23,18 +23,18 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
     private BigDecimal probabilityMassSum = BigDecimal.ZERO;
 
     /**
-     * Creates a sampled binomial distribution for a given value measured in a population size for a number of ranges in
-     * a sample size.
+     * Creates a sampled hypergeometric distribution for a given value measured in a population size for a number of
+     * ranges in a sample size.
      *
      * @param value           The measured value.
      * @param sampleSize      The sample size.
      * @param numberOfSamples The number of samples.
      * @param populationSize  The population size.
-     * @return A binomial distribution.
+     * @return A hypergeometric distribution.
      */
-    static SampledBinomialDistribution create(final Long value, final Long sampleSize, final Long numberOfSamples,
+    static SampledHypergeometricDistribution create(final Long value, final Long sampleSize, final Long numberOfSamples,
             final Long populationSize) {
-        SampledBinomialDistribution result = new SampledBinomialDistribution();
+        SampledHypergeometricDistribution result = new SampledHypergeometricDistribution();
         long baseLength = populationSize / numberOfSamples;
         long remainder = 1 + populationSize - baseLength * numberOfSamples;
         long numberOfRangesOfBaseLength = numberOfSamples - remainder;
@@ -53,8 +53,8 @@ class SampledBinomialDistribution extends SortableProbabilityMassFunction<Range>
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof SampledBinomialDistribution) {
-            SampledBinomialDistribution other = (SampledBinomialDistribution) obj;
+        if (obj instanceof SampledHypergeometricDistribution) {
+            SampledHypergeometricDistribution other = (SampledHypergeometricDistribution) obj;
             return other.pmf.equals(pmf);
         } else {
             return false;

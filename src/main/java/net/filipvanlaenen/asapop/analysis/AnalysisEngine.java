@@ -63,7 +63,7 @@ public class AnalysisEngine {
                         .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
                                 * sampleSize * 0.01);
                 voteShareAnalysis.add(electoralList,
-                        SampledBinomialDistributions.get(sampled, sampleSize, 20_000L, 36_054_394L));
+                        SampledHypergeometricDistributions.get(sampled, sampleSize, 20_000L, 36_054_394L));
             }
             // TODO: Add Other too
             voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);

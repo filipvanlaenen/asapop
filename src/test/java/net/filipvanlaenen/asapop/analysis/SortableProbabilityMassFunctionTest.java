@@ -34,39 +34,41 @@ public class SortableProbabilityMassFunctionTest {
     private static final double SEVENTY_NINE_PERCENT = 0.79;
 
     /**
-     * Verifies that the median is calculated correctly for a binomial distribution of 1 out of 4 in a population of 5.
+     * Verifies that the median is calculated correctly for a hypergeometric distribution of 1 out of 4 in a population
+     * of 5.
      */
     @Test
-    public void medianShouldBe1ForBinomialDistribution1OutOf4In5() {
-        assertEquals(1L, BinomialDistribution.create(1L, FOUR, FIVE).getMedian());
+    public void medianShouldBe1ForHypergeometricDistribution1OutOf4In5() {
+        assertEquals(1L, HypergeometricDistribution.create(1L, FOUR, FIVE).getMedian());
     }
 
     /**
-     * Verifies that the median is calculated correctly for a binomial distribution of 2 out of 4 in a population of 5.
+     * Verifies that the median is calculated correctly for a hypergeometric distribution of 2 out of 4 in a population
+     * of 5.
      */
     @Test
-    public void medianShouldBe2ForBinomialDistribution2OutOf4In5() {
-        assertEquals(2L, BinomialDistribution.create(2L, FOUR, FIVE).getMedian());
+    public void medianShouldBe2ForHypergeometricDistribution2OutOf4In5() {
+        assertEquals(2L, HypergeometricDistribution.create(2L, FOUR, FIVE).getMedian());
     }
 
     /**
-     * Verifies that the 80% confidence interval [0, 0] is calculated correctly for a binomial distribution of 0 out of
-     * 8 in a population of 9.
+     * Verifies that the 80% confidence interval [0, 0] is calculated correctly for a hypergeometric distribution of 0
+     * out of 8 in a population of 9.
      */
     @Test
-    public void confidenceInterval81ShouldBe0To0ForBinomialDistribution0OutOf8In9() {
-        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, EIGHT, NINE);
+    public void confidenceInterval81ShouldBe0To0ForHypergeometricDistribution0OutOf8In9() {
+        HypergeometricDistribution binomialDistribution = HypergeometricDistribution.create(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 2L),
                 binomialDistribution.getConfidenceInterval(EIGHTY_ONE_PERCENT));
     }
 
     /**
-     * Verifies that the 91% confidence interval [0, 1] is calculated correctly for a binomial distribution of 0 out of
-     * 8 in a population of 9.
+     * Verifies that the 91% confidence interval [0, 1] is calculated correctly for a hypergeometric distribution of 0
+     * out of 8 in a population of 9.
      */
     @Test
-    public void confidenceInterval79ShouldBe0To1ForBinomialDistribution0OutOf8In9() {
-        BinomialDistribution binomialDistribution = BinomialDistribution.create(0L, EIGHT, NINE);
+    public void confidenceInterval79ShouldBe0To1ForHypergeometricDistribution0OutOf8In9() {
+        HypergeometricDistribution binomialDistribution = HypergeometricDistribution.create(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 1L),
                 binomialDistribution.getConfidenceInterval(SEVENTY_NINE_PERCENT));
     }
