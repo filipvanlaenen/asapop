@@ -2,12 +2,10 @@ package net.filipvanlaenen.asapop.analysis;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class representing a hypergeometric distribution, but sampled.
@@ -62,6 +60,11 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
     }
 
     @Override
+    Set<Range> geKeys() {
+        return pmf.keySet();
+    }
+
+    @Override
     BigDecimal getKeyWeight(final Range key) {
         return new BigDecimal(key.getLength());
     }
@@ -83,13 +86,6 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
     @Override
     BigDecimal getProbabilityMassSum() {
         return probabilityMassSum;
-    }
-
-    @Override
-    List<Range> getSortedKeys() {
-        List<Range> list = new ArrayList<Range>(pmf.keySet());
-        Collections.sort(list);
-        return Collections.unmodifiableList(list);
     }
 
     @Override

@@ -68,6 +68,14 @@ public class HypergeometricDistributionTest {
     }
 
     /**
+     * Verifies that the key weight is one.
+     */
+    @Test
+    public void keyWeightShouldBeOne() {
+        assertEquals(BigDecimal.ONE, HYPERGEOMETRIC_DISTRIBUTION.getKeyWeight(0L));
+    }
+
+    /**
      * Verifies that a sorted list with the keys can be returned.
      */
     @Test

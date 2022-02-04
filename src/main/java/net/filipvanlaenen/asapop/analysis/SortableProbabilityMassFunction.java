@@ -5,6 +5,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class representing a probability mass function with sortable keys. When the keys are sortable, medians and confidence
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @param <SK> The class for the sortable keys.
  */
-public abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMassFunction<SK> {
+public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>> extends ProbabilityMassFunction<SK> {
     /**
      * Calculates the confidence interval for a confidence level.
      *
@@ -71,6 +72,13 @@ public abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMas
     }
 
     /**
+     * Returns a set with the keys.
+     *
+     * @return A set with the keys.
+     */
+    abstract Set<SK> geKeys();
+
+    /**
      * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
      * sum, etc.
      *
@@ -91,5 +99,9 @@ public abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMas
      *
      * @return A sorted list with the keys.
      */
-    abstract List<SK> getSortedKeys();
+    List<SK> getSortedKeys() {
+        List<SK> list = new ArrayList<SK>(geKeys());
+        Collections.sort(list);
+        return Collections.unmodifiableList(list);
+    }
 }
