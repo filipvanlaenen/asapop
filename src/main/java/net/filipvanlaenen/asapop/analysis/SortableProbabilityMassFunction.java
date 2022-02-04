@@ -42,7 +42,8 @@ public abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMas
         for (SK s : sortedKeys) {
             accumulatedProbabilityMass = accumulatedProbabilityMass.add(
                     getProbabilityMass(s).multiply(getKeyWeight(s), MathContext.DECIMAL128), MathContext.DECIMAL128);
-            // Changing the conditional boundary below produces a mutant that is hard to kill due to rounding errors.
+            // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent because
+            // it is hard to kill due to rounding errors.
             if (accumulatedProbabilityMass.compareTo(probabilityMassFraction) > 0) {
                 return previousKey;
             }
@@ -69,7 +70,14 @@ public abstract class SortableProbabilityMassFunction<SK> extends ProbabilityMas
         return null;
     }
 
-    abstract BigDecimal getKeyWeight(final SK key);
+    /**
+     * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
+     * sum, etc.
+     *
+     * @param key The key.
+     * @return The weight of the key.
+     */
+    abstract BigDecimal getKeyWeight(SK key);
 
     /**
      * Returns the sum of the probability masses.
