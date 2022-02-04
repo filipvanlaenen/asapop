@@ -60,8 +60,8 @@ public class SampledHypergeometricDistributionTest {
     /**
      * A hypergeometric distribution to run the tests on.
      */
-    private static final SampledHypergeometricDistribution SAMPLED_HYPERGEOMETRIC_DISTRIBUTION = SampledHypergeometricDistribution
-            .create(1L, FOUR, FIVE, TEN);
+    private static final SampledHypergeometricDistribution SAMPLED_HYPERGEOMETRIC_DISTRIBUTION =
+            SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN);
 
     /**
      * Verifies that the number of samples is returned correctly.
@@ -69,6 +69,14 @@ public class SampledHypergeometricDistributionTest {
     @Test
     public void numberOfSamplesShouldBeReturnedCorrectly() {
         assertEquals(FIVE, SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.getNumberOfSamples());
+    }
+
+    /**
+     * Verifies that the key weight is calculated correctly.
+     */
+    @Test
+    public void keyWeightShouldBeLengthOfRange() {
+        assertEquals(new BigDecimal(2), SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.getKeyWeight(Range.get(0, 1)));
     }
 
     /**
