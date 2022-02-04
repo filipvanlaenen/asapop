@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * @param <SK> The class for the sortable keys.
  */
-public class ConfidenceInterval<SK> {
+public final class ConfidenceInterval<SK> {
     /**
      * The lower bound of the confidence interval.
      */
@@ -38,10 +38,20 @@ public class ConfidenceInterval<SK> {
         }
     }
 
+    /**
+     * Returns the lower bound of the confidence interval.
+     *
+     * @return The lower bound of the confidence interval.
+     */
     public SK getLowerBound() {
         return lowerBound;
     }
 
+    /**
+     * Returns the upper bound of the confidence interval.
+     *
+     * @return The upper bound of the confidence interval.
+     */
     public SK getUpperBound() {
         return upperBound;
     }

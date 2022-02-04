@@ -16,6 +16,22 @@ public class ConfidenceIntervalTest {
     private static final ConfidenceInterval<Integer> CONFIDENCE_INTERVAL = new ConfidenceInterval<Integer>(0, 1);
 
     /**
+     * Verifies that the getter for the lower bound is wired correctly to the constructor.
+     */
+    @Test
+    public void getLowerBoundShouldReturnTheLowerBoundFromTheConstructor() {
+        assertEquals(0, CONFIDENCE_INTERVAL.getLowerBound());
+    }
+
+    /**
+     * Verifies that the getter for the upper bound is wired correctly to the constructor.
+     */
+    @Test
+    public void getUpperBoundShouldReturnTheUpperBoundFromTheConstructor() {
+        assertEquals(1, CONFIDENCE_INTERVAL.getUpperBound());
+    }
+
+    /**
      * Verifies that a confidence interval is not equal to null.
      */
     @Test
