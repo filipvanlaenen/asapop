@@ -2,24 +2,11 @@ package net.filipvanlaenen.asapop.analysis;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * Class representing a hypergeometric distribution, but sampled.
  */
 class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<Range> {
-    /**
-     * A map holding the key value pairs for the sampled hypergeometric distribution.
-     */
-    private final Map<Range, BigDecimal> pmf = new HashMap<Range, BigDecimal>();
-    /**
-     * The probability mass sum.
-     */
-    private BigDecimal probabilityMassSum = BigDecimal.ZERO;
-
     /**
      * Creates a sampled hypergeometric distribution for a given value measured in a population size for a number of
      * ranges in a sample size.
@@ -53,56 +40,14 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
     public boolean equals(final Object obj) {
         if (obj instanceof SampledHypergeometricDistribution) {
             SampledHypergeometricDistribution other = (SampledHypergeometricDistribution) obj;
-            return other.pmf.equals(pmf);
+            return hasEqualProbabilityMassFunctionMap(other);
         } else {
             return false;
         }
     }
 
     @Override
-    Set<Range> geKeys() {
-        return pmf.keySet();
-    }
-
-    @Override
     BigDecimal getKeyWeight(final Range key) {
         return new BigDecimal(key.getLength());
     }
-
-    /**
-     * Returns the number of samples.
-     *
-     * @return The number of samples.
-     */
-    Long getNumberOfSamples() {
-        return (long) pmf.size();
-    }
-
-    @Override
-    BigDecimal getProbabilityMass(final Range key) {
-        return pmf.get(key);
-    }
-
-    @Override
-    BigDecimal getProbabilityMassSum() {
-        return probabilityMassSum;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pmf);
-    }
-
-    /**
-     * Sets a value for a key.
-     *
-     * @param key   The key.
-     * @param value The value.
-     */
-    private void put(final Range key, final BigDecimal value) {
-        pmf.put(key, value);
-        probabilityMassSum = probabilityMassSum
-                .add(value.multiply(new BigDecimal(key.getLength()), MathContext.DECIMAL128), MathContext.DECIMAL128);
-    }
-
 }

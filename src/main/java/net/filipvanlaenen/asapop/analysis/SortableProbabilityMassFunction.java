@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class representing a probability mass function with sortable keys. When the keys are sortable, medians and confidence
@@ -14,6 +16,15 @@ import java.util.Set;
  * @param <SK> The class for the sortable keys.
  */
 public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>> extends ProbabilityMassFunction<SK> {
+    /**
+     * A map holding the key value pairs for the probability mass function.
+     */
+    private final Map<SK, BigDecimal> pmf = new HashMap<SK, BigDecimal>();
+    /**
+     * The probability mass sum.
+     */
+    private BigDecimal probabilityMassSum = BigDecimal.ZERO;
+
     /**
      * Calculates the confidence interval for a confidence level.
      *
@@ -28,6 +39,10 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         Collections.reverse(reverseSortedKeys);
         SK upperBound = findQuantileBoundary(fraction, reverseSortedKeys);
         return new ConfidenceInterval<SK>(lowerBound, upperBound);
+    }
+
+    protected boolean hasEqualProbabilityMassFunctionMap(final SortableProbabilityMassFunction<SK> other) {
+        return other.pmf.equals(pmf);
     }
 
     /**
@@ -54,6 +69,15 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     }
 
     /**
+     * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
+     * sum, etc.
+     *
+     * @param key The key.
+     * @return The weight of the key.
+     */
+    abstract BigDecimal getKeyWeight(SK key);
+
+    /**
      * Calculates the median.
      *
      * @return The median.
@@ -72,27 +96,26 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     }
 
     /**
-     * Returns a set with the keys.
+     * Returns the number of samples.
      *
-     * @return A set with the keys.
+     * @return The number of samples.
      */
-    abstract Set<SK> geKeys();
+    Long getNumberOfSamples() {
+        return (long) pmf.size();
+    }
 
-    /**
-     * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
-     * sum, etc.
-     *
-     * @param key The key.
-     * @return The weight of the key.
-     */
-    abstract BigDecimal getKeyWeight(SK key);
+    BigDecimal getProbabilityMass(final SK key) {
+        return pmf.get(key);
+    }
 
     /**
      * Returns the sum of the probability masses.
      *
      * @return The sum of the probability masses.
      */
-    abstract BigDecimal getProbabilityMassSum();
+    BigDecimal getProbabilityMassSum() {
+        return probabilityMassSum;
+    }
 
     /**
      * Returns a sorted list with the keys.
@@ -100,8 +123,25 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * @return A sorted list with the keys.
      */
     List<SK> getSortedKeys() {
-        List<SK> list = new ArrayList<SK>(geKeys());
+        List<SK> list = new ArrayList<SK>(pmf.keySet());
         Collections.sort(list);
         return Collections.unmodifiableList(list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pmf);
+    }
+
+    /**
+     * Sets a value for a key.
+     *
+     * @param key   The key.
+     * @param value The value.
+     */
+    protected void put(final SK key, final BigDecimal value) {
+        pmf.put(key, value);
+        probabilityMassSum = probabilityMassSum.add(value.multiply(getKeyWeight(key), MathContext.DECIMAL128),
+                MathContext.DECIMAL128);
     }
 }
