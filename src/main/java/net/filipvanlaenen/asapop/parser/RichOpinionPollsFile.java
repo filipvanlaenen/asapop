@@ -78,7 +78,7 @@ public final class RichOpinionPollsFile {
                 ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
                 electoralListLine.updateElectoralList();
             } else if (EmptyLine.isEmptyLine(line)) {
-                // Negating the conditional above produces an equivalent mutant.
+                // EQMU: Negating the conditional above produces an equivalent mutant.
                 // Ignore empty lines.
             }
         }
