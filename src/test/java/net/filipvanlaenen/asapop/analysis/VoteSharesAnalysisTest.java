@@ -53,6 +53,15 @@ public class VoteSharesAnalysisTest {
     }
 
     /**
+     * Verifies that the correct probability mass function is returned for an electoral list.
+     */
+    @Test
+    public void shouldReturnTheCorrectProbabilityMassFunctionForAnElectoralList() {
+        assertEquals(SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN),
+                voteSharesAnalysis.getProbabilityMassFunction(ElectoralList.get("A")));
+    }
+
+    /**
      * Verifies that a vote shares analysis is not equal to null.
      */
     @Test

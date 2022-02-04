@@ -7,13 +7,14 @@ import java.util.Objects;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 
 /**
- * Class representing an analysis of the votes shares.
+ * Class representing an analysis of the votes shares per electoral list.
  */
-public class VoteSharesAnalysis {
+public final class VoteSharesAnalysis {
     /**
      * A map containing a probability mass function per electoral list.
      */
-    private final Map<ElectoralList, SortableProbabilityMassFunction<Range>> probabilityMassFunctions = new HashMap<ElectoralList, SortableProbabilityMassFunction<Range>>();
+    private final Map<ElectoralList, SortableProbabilityMassFunction<Range>> probabilityMassFunctions =
+            new HashMap<ElectoralList, SortableProbabilityMassFunction<Range>>();
 
     /**
      * Adds an electoral list with its probability mass function.
@@ -35,7 +36,13 @@ public class VoteSharesAnalysis {
         }
     }
 
-    public SortableProbabilityMassFunction<Range> getProbabilityMassFunction(ElectoralList electoralList) {
+    /**
+     * Returns the probability mass function for an electoral list.
+     *
+     * @param electoralList The electoral list for which to return the probability mass function.
+     * @return The probability mass function for the electoral list.
+     */
+    public SortableProbabilityMassFunction<Range> getProbabilityMassFunction(final ElectoralList electoralList) {
         return probabilityMassFunctions.get(electoralList);
     }
 
