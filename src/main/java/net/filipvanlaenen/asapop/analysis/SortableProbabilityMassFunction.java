@@ -23,7 +23,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     /**
      * The probability mass sum.
      */
-    private BigDecimal probabilityMassSum = BigDecimal.ZERO;
+    private BigDecimal probabilityMassSum;
 
     @Override
     public boolean equals(final Object obj) {
@@ -120,6 +120,13 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * @return The sum of the probability masses.
      */
     BigDecimal getProbabilityMassSum() {
+        if (probabilityMassSum == null) {
+            probabilityMassSum = BigDecimal.ZERO;
+            for (SK key : pmf.keySet()) {
+                probabilityMassSum = probabilityMassSum
+                        .add(pmf.get(key).multiply(getKeyWeight(key), MathContext.DECIMAL128), MathContext.DECIMAL128);
+            }
+        }
         return probabilityMassSum;
     }
 
@@ -147,7 +154,5 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      */
     protected void put(final SK key, final BigDecimal value) {
         pmf.put(key, value);
-        probabilityMassSum = probabilityMassSum.add(value.multiply(getKeyWeight(key), MathContext.DECIMAL128),
-                MathContext.DECIMAL128);
     }
 }
