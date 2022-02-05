@@ -37,16 +37,6 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof SampledHypergeometricDistribution) {
-            SampledHypergeometricDistribution other = (SampledHypergeometricDistribution) obj;
-            return hasEqualProbabilityMassFunctionMap(other);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     BigDecimal getKeyWeight(final Range key) {
         return new BigDecimal(key.getLength());
     }

@@ -25,6 +25,16 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      */
     private BigDecimal probabilityMassSum = BigDecimal.ZERO;
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof SortableProbabilityMassFunction) {
+            SortableProbabilityMassFunction<SK> other = (SortableProbabilityMassFunction<SK>) obj;
+            return getClass().equals(other.getClass()) && pmf.equals(other.pmf);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Calculates the confidence interval for a confidence level.
      *
@@ -39,10 +49,6 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         Collections.reverse(reverseSortedKeys);
         SK upperBound = findQuantileBoundary(fraction, reverseSortedKeys);
         return new ConfidenceInterval<SK>(lowerBound, upperBound);
-    }
-
-    protected boolean hasEqualProbabilityMassFunctionMap(final SortableProbabilityMassFunction<SK> other) {
-        return other.pmf.equals(pmf);
     }
 
     /**

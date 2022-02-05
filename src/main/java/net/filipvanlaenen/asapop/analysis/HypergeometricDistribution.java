@@ -31,16 +31,6 @@ final class HypergeometricDistribution extends SortableProbabilityMassFunction<L
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof HypergeometricDistribution) {
-            HypergeometricDistribution other = (HypergeometricDistribution) obj;
-            return hasEqualProbabilityMassFunctionMap(other);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     BigDecimal getKeyWeight(final Long key) {
         return BigDecimal.ONE;
     }
