@@ -24,8 +24,7 @@ public class HypergeometricDistributionsTest {
      */
     @Test
     public void shouldRetrieveTheCorrectHypergeometricDistribution() {
-        assertEquals(HypergeometricDistribution.create(1L, FOUR, FIVE),
-                HypergeometricDistributions.get(1L, FOUR, FIVE));
+        assertEquals(new HypergeometricDistribution(1L, FOUR, FIVE), HypergeometricDistributions.get(1L, FOUR, FIVE));
     }
 
     /**

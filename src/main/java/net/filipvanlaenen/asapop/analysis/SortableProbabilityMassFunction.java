@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,11 +18,15 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     /**
      * A map holding the key value pairs for the probability mass function.
      */
-    private final Map<SK, BigDecimal> pmf = new HashMap<SK, BigDecimal>();
+    private final Map<SK, BigDecimal> pmf;
     /**
      * The probability mass sum.
      */
     private BigDecimal probabilityMassSum;
+
+    protected SortableProbabilityMassFunction(final Map<SK, BigDecimal> pmf) {
+        this.pmf = pmf;
+    }
 
     @Override
     public boolean equals(final Object obj) {
@@ -119,7 +122,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      *
      * @return The sum of the probability masses.
      */
-    BigDecimal getProbabilityMassSum() {
+    private BigDecimal getProbabilityMassSum() {
         if (probabilityMassSum == null) {
             probabilityMassSum = BigDecimal.ZERO;
             for (SK key : pmf.keySet()) {
@@ -135,7 +138,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      *
      * @return A sorted list with the keys.
      */
-    List<SK> getSortedKeys() {
+    private List<SK> getSortedKeys() {
         List<SK> list = new ArrayList<SK>(pmf.keySet());
         Collections.sort(list);
         return Collections.unmodifiableList(list);
@@ -152,7 +155,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * @param key   The key.
      * @param value The value.
      */
-    protected void put(final SK key, final BigDecimal value) {
+    private void put(final SK key, final BigDecimal value) {
         pmf.put(key, value);
     }
 }

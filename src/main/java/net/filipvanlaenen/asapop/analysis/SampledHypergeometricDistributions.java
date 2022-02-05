@@ -33,12 +33,12 @@ final class SampledHypergeometricDistributions {
             final Long minimalNumberOfSamples, final Long populationSize) {
         List<Long> key = List.of(value, sampleSize, populationSize);
         if (!CACHE.containsKey(key)) {
-            CACHE.put(key, SampledHypergeometricDistribution.create(value, sampleSize, minimalNumberOfSamples,
-                    populationSize));
+            CACHE.put(key,
+                    new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples, populationSize));
         } else {
             SampledHypergeometricDistribution currentSampledBinomialDistribution = CACHE.get(key);
             if (currentSampledBinomialDistribution.getNumberOfSamples() < minimalNumberOfSamples) {
-                CACHE.put(key, SampledHypergeometricDistribution.create(value, sampleSize, minimalNumberOfSamples,
+                CACHE.put(key, new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples,
                         populationSize));
             }
         }

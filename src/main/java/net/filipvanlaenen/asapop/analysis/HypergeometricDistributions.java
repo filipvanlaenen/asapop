@@ -30,7 +30,7 @@ final class HypergeometricDistributions {
     static HypergeometricDistribution get(final Long value, final Long sampleSize, final Long populationSize) {
         List<Long> key = List.of(value, sampleSize, populationSize);
         if (!CACHE.containsKey(key)) {
-            CACHE.put(key, HypergeometricDistribution.create(value, sampleSize, populationSize));
+            CACHE.put(key, new HypergeometricDistribution(value, sampleSize, populationSize));
         }
         return CACHE.get(key);
     }

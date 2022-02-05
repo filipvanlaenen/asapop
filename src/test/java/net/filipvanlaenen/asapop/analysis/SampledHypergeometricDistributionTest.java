@@ -60,8 +60,8 @@ public class SampledHypergeometricDistributionTest {
     /**
      * A hypergeometric distribution to run the tests on.
      */
-    private static final SampledHypergeometricDistribution SAMPLED_HYPERGEOMETRIC_DISTRIBUTION =
-            SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN);
+    private static final SampledHypergeometricDistribution SAMPLED_HYPERGEOMETRIC_DISTRIBUTION = new SampledHypergeometricDistribution(
+            1L, FOUR, FIVE, TEN);
 
     /**
      * Verifies that the number of samples is returned correctly.
@@ -86,46 +86,6 @@ public class SampledHypergeometricDistributionTest {
     public void probabilityMassIsCalculatedCorrectly() {
         assertEquals(new BigDecimal(ONE_HUNDRED_TWELVE),
                 SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.getProbabilityMass(Range.get(2, THREE)));
-    }
-
-    /**
-     * Verifies that the probability mass sum is calculated correctly.
-     */
-    @Test
-    public void probabilityMassSumIsCalculatedCorrectly() {
-        assertEquals(new BigDecimal(FOUR_HUNDRED_THIRTY_TWO),
-                SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.getProbabilityMassSum());
-    }
-
-    /**
-     * Verifies that the keys, i.e. the ranges, are returned correctly for five samples in a population size of ten.
-     */
-    @Test
-    public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfTen() {
-        assertEquals(List.of(Range.get(0, 1), Range.get(2, THREE), Range.get(FOUR, FIVE), Range.get(SIX, SEVEN),
-                Range.get(EIGHT, TEN)), SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.getSortedKeys());
-    }
-
-    /**
-     * Verifies that the keys, i.e. the ranges, are returned correctly for five samples in a population size of nine.
-     */
-    @Test
-    public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfNine() {
-        assertEquals(
-                List.of(Range.get(0, 1), Range.get(2, THREE), Range.get(FOUR, FIVE), Range.get(SIX, SEVEN),
-                        Range.get(EIGHT, NINE)),
-                SampledHypergeometricDistribution.create(1L, FOUR, FIVE, NINE).getSortedKeys());
-    }
-
-    /**
-     * Verifies that the keys, i.e. the ranges, are returned correctly for five samples in a population size of eleven.
-     */
-    @Test
-    public void sortedKeysAreReturnedCorrectlyForFiveSamplesInAPopulationSizeOfEleven() {
-        assertEquals(
-                List.of(Range.get(0, 1), Range.get(2, THREE), Range.get(FOUR, FIVE), Range.get(SIX, EIGHT),
-                        Range.get(NINE, ELEVEN)),
-                SampledHypergeometricDistribution.create(1L, FOUR, FIVE, ELEVEN).getSortedKeys());
     }
 
     /**
@@ -165,8 +125,7 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void twoSampledHypergeometricDistributionsConstructedWithTheSameParameterShouldBeEqual() {
-        assertEquals(SAMPLED_HYPERGEOMETRIC_DISTRIBUTION,
-                SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN));
+        assertEquals(SAMPLED_HYPERGEOMETRIC_DISTRIBUTION, new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN));
     }
 
     /**
@@ -176,7 +135,7 @@ public class SampledHypergeometricDistributionTest {
     @Test
     public void twoSampledHypergeometricDistributionsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
         assertEquals(SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.hashCode(),
-                SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN).hashCode());
+                new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).hashCode());
     }
 
     /**
@@ -184,8 +143,8 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void twoDifferentSampledHypergeometricDistributionsWithDifferentValuesShouldNotBeEqual() {
-        assertFalse(SAMPLED_HYPERGEOMETRIC_DISTRIBUTION
-                .equals(SampledHypergeometricDistribution.create(2L, FOUR, FIVE, TEN)));
+        assertFalse(
+                SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.equals(new SampledHypergeometricDistribution(2L, FOUR, FIVE, TEN)));
     }
 
     /**
@@ -193,7 +152,7 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void twoDifferentSampledHypergeometricDistributionsWithDifferentValuesShouldHaveDifferentHashCodes() {
-        assertFalse(SAMPLED_HYPERGEOMETRIC_DISTRIBUTION.hashCode() == SampledHypergeometricDistribution
-                .create(2L, FOUR, FIVE, TEN).hashCode());
+        assertFalse(SAMPLED_HYPERGEOMETRIC_DISTRIBUTION
+                .hashCode() == new SampledHypergeometricDistribution(2L, FOUR, FIVE, TEN).hashCode());
     }
 }

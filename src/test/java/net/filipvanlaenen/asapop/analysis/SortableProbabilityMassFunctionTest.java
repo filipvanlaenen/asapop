@@ -39,7 +39,7 @@ public class SortableProbabilityMassFunctionTest {
      */
     @Test
     public void medianShouldBe1ForHypergeometricDistribution1OutOf4In5() {
-        assertEquals(1L, HypergeometricDistribution.create(1L, FOUR, FIVE).getMedian());
+        assertEquals(1L, new HypergeometricDistribution(1L, FOUR, FIVE).getMedian());
     }
 
     /**
@@ -48,7 +48,7 @@ public class SortableProbabilityMassFunctionTest {
      */
     @Test
     public void medianShouldBe2ForHypergeometricDistribution2OutOf4In5() {
-        assertEquals(2L, HypergeometricDistribution.create(2L, FOUR, FIVE).getMedian());
+        assertEquals(2L, new HypergeometricDistribution(2L, FOUR, FIVE).getMedian());
     }
 
     /**
@@ -57,7 +57,7 @@ public class SortableProbabilityMassFunctionTest {
      */
     @Test
     public void confidenceInterval81ShouldBe0To0ForHypergeometricDistribution0OutOf8In9() {
-        HypergeometricDistribution binomialDistribution = HypergeometricDistribution.create(0L, EIGHT, NINE);
+        HypergeometricDistribution binomialDistribution = new HypergeometricDistribution(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 2L),
                 binomialDistribution.getConfidenceInterval(EIGHTY_ONE_PERCENT));
     }
@@ -68,7 +68,7 @@ public class SortableProbabilityMassFunctionTest {
      */
     @Test
     public void confidenceInterval79ShouldBe0To1ForHypergeometricDistribution0OutOf8In9() {
-        HypergeometricDistribution binomialDistribution = HypergeometricDistribution.create(0L, EIGHT, NINE);
+        HypergeometricDistribution binomialDistribution = new HypergeometricDistribution(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 1L),
                 binomialDistribution.getConfidenceInterval(SEVENTY_NINE_PERCENT));
     }

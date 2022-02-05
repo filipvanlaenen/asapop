@@ -46,9 +46,9 @@ public class VoteSharesAnalysisTest {
     public static VoteSharesAnalysis createVoteSharesAnalysisObject() {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
         voteSharesAnalysisObject.add(ElectoralList.get("A"),
-                SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN));
+                SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN));
         voteSharesAnalysisObject.add(ElectoralList.get("B"),
-                SampledHypergeometricDistribution.create(2L, FOUR, FIVE, TEN));
+                SampledHypergeometricDistributions.get(2L, FOUR, FIVE, TEN));
         return voteSharesAnalysisObject;
     }
 
@@ -57,7 +57,7 @@ public class VoteSharesAnalysisTest {
      */
     @Test
     public void shouldReturnTheCorrectProbabilityMassFunctionForAnElectoralList() {
-        assertEquals(SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN),
+        assertEquals(SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN),
                 voteSharesAnalysis.getProbabilityMassFunction(ElectoralList.get("A")));
     }
 

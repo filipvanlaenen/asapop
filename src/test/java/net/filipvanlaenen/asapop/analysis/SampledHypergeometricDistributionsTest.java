@@ -28,7 +28,7 @@ public class SampledHypergeometricDistributionsTest {
      */
     @Test
     public void shouldRetrieveTheCorrectSampledHypergeometricDistribution() {
-        assertEquals(SampledHypergeometricDistribution.create(1L, FOUR, FIVE, TEN),
+        assertEquals(new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN),
                 SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN));
     }
 

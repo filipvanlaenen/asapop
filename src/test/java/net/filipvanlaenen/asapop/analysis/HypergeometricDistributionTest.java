@@ -32,7 +32,7 @@ public class HypergeometricDistributionTest {
     /**
      * A hypergeometric distribution to run the tests on.
      */
-    private static final HypergeometricDistribution HYPERGEOMETRIC_DISTRIBUTION = HypergeometricDistribution.create(1L,
+    private static final HypergeometricDistribution HYPERGEOMETRIC_DISTRIBUTION = new HypergeometricDistribution(1L,
             FOUR, FIVE);
 
     /**
@@ -60,27 +60,11 @@ public class HypergeometricDistributionTest {
     }
 
     /**
-     * Verifies that the probability mass sum is six.
-     */
-    @Test
-    public void probabilityMassSumShouldBeSix() {
-        assertEquals(new BigDecimal(SIX), HYPERGEOMETRIC_DISTRIBUTION.getProbabilityMassSum());
-    }
-
-    /**
      * Verifies that the key weight is one.
      */
     @Test
     public void keyWeightShouldBeOne() {
         assertEquals(BigDecimal.ONE, HYPERGEOMETRIC_DISTRIBUTION.getKeyWeight(0L));
-    }
-
-    /**
-     * Verifies that a sorted list with the keys can be returned.
-     */
-    @Test
-    public void shouldSortKeysCorrectly() {
-        assertEquals(List.of(0L, 1L, 2L, THREE, FOUR, FIVE), HYPERGEOMETRIC_DISTRIBUTION.getSortedKeys());
     }
 
     /**
@@ -120,7 +104,7 @@ public class HypergeometricDistributionTest {
      */
     @Test
     public void twoHypergeometricDistributionsConstructedWithTheSameParameterShouldBeEqual() {
-        assertEquals(HYPERGEOMETRIC_DISTRIBUTION, HypergeometricDistribution.create(1L, FOUR, FIVE));
+        assertEquals(HYPERGEOMETRIC_DISTRIBUTION, new HypergeometricDistribution(1L, FOUR, FIVE));
     }
 
     /**
@@ -128,8 +112,7 @@ public class HypergeometricDistributionTest {
      */
     @Test
     public void twoHypergeometricDistributionsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
-        assertEquals(HYPERGEOMETRIC_DISTRIBUTION.hashCode(),
-                HypergeometricDistribution.create(1L, FOUR, FIVE).hashCode());
+        assertEquals(HYPERGEOMETRIC_DISTRIBUTION.hashCode(), new HypergeometricDistribution(1L, FOUR, FIVE).hashCode());
     }
 
     /**
@@ -137,7 +120,7 @@ public class HypergeometricDistributionTest {
      */
     @Test
     public void twoDifferentHypergeometricDistributionsWithDifferentValuesShouldNotBeEqual() {
-        assertFalse(HYPERGEOMETRIC_DISTRIBUTION.equals(HypergeometricDistribution.create(2L, FOUR, FIVE)));
+        assertFalse(HYPERGEOMETRIC_DISTRIBUTION.equals(new HypergeometricDistribution(2L, FOUR, FIVE)));
     }
 
     /**
@@ -146,6 +129,6 @@ public class HypergeometricDistributionTest {
     @Test
     public void twoDifferentHypergeometricDistributionsWithDifferentValuesShouldHaveDifferentHashCodes() {
         assertFalse(
-                HYPERGEOMETRIC_DISTRIBUTION.hashCode() == HypergeometricDistribution.create(2L, FOUR, FIVE).hashCode());
+                HYPERGEOMETRIC_DISTRIBUTION.hashCode() == new HypergeometricDistribution(2L, FOUR, FIVE).hashCode());
     }
 }
