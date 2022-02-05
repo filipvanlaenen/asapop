@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,9 +24,60 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * The probability mass sum.
      */
     private BigDecimal probabilityMassSum;
+    /**
+     * A map with calculated confidence intervals.
+     */
+    private final Map<Double, ConfidenceInterval<SK>> confidenceIntervals = new HashMap<Double, ConfidenceInterval<SK>>();
+    private final List<SK> sortedKeys;
+    private final List<SK> reverseSortedKeys;
+    private SK median;
 
     protected SortableProbabilityMassFunction(final Map<SK, BigDecimal> pmf) {
-        this.pmf = pmf;
+        this.pmf = Collections.unmodifiableMap(pmf);
+        sortedKeys = new ArrayList<SK>(pmf.keySet());
+        Collections.sort(sortedKeys);
+        reverseSortedKeys = new ArrayList<SK>(sortedKeys);
+        Collections.reverse(reverseSortedKeys);
+    }
+
+    /**
+     * Calculates the confidence interval for a confidence level.
+     *
+     * @param level The confidence level.
+     * @return The confidence interval.
+     */
+    private ConfidenceInterval<SK> calculateConfidenceInterval(final double level) {
+        BigDecimal fraction = getProbabilityMassSum().multiply(new BigDecimal(1 - level)).divide(new BigDecimal(2));
+        SK lowerBound = findQuantileBoundary(fraction, sortedKeys);
+        SK upperBound = findQuantileBoundary(fraction, reverseSortedKeys);
+        return new ConfidenceInterval<SK>(lowerBound, upperBound);
+    }
+
+    /**
+     * Calculates the median.
+     *
+     * @return The median.
+     */
+    private SK calculateMedian() {
+        BigDecimal halfProbabilityMassSum = getProbabilityMassSum().divide(new BigDecimal(2), MathContext.DECIMAL128);
+        BigDecimal accumulatedProbabilityMass = BigDecimal.ZERO;
+        for (SK s : sortedKeys) {
+            accumulatedProbabilityMass = accumulatedProbabilityMass.add(
+                    getProbabilityMass(s).multiply(getKeyWeight(s), MathContext.DECIMAL128), MathContext.DECIMAL128);
+            if (accumulatedProbabilityMass.compareTo(halfProbabilityMassSum) >= 0) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    private BigDecimal calculateProbabilityMassSum() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (SK key : pmf.keySet()) {
+            result = result.add(pmf.get(key).multiply(getKeyWeight(key), MathContext.DECIMAL128),
+                    MathContext.DECIMAL128);
+        }
+        return result;
     }
 
     @Override
@@ -36,22 +88,6 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         } else {
             return false;
         }
-    }
-
-    /**
-     * Calculates the confidence interval for a confidence level.
-     *
-     * @param level The confidence level.
-     * @return A pair of keys representing the lower and the upper bound of the confidence level.
-     */
-    public ConfidenceInterval<SK> getConfidenceInterval(final double level) {
-        BigDecimal fraction = getProbabilityMassSum().multiply(new BigDecimal(1 - level)).divide(new BigDecimal(2));
-        List<SK> sortedKeys = getSortedKeys();
-        SK lowerBound = findQuantileBoundary(fraction, sortedKeys);
-        List<SK> reverseSortedKeys = new ArrayList<SK>(sortedKeys);
-        Collections.reverse(reverseSortedKeys);
-        SK upperBound = findQuantileBoundary(fraction, reverseSortedKeys);
-        return new ConfidenceInterval<SK>(lowerBound, upperBound);
     }
 
     /**
@@ -78,6 +114,19 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     }
 
     /**
+     * Calculates the confidence interval for a confidence level.
+     *
+     * @param level The confidence level.
+     * @return The confidence interval.
+     */
+    public ConfidenceInterval<SK> getConfidenceInterval(final double level) {
+        if (!confidenceIntervals.containsKey(level)) {
+            confidenceIntervals.put(level, calculateConfidenceInterval(level));
+        }
+        return confidenceIntervals.get(level);
+    }
+
+    /**
      * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
      * sum, etc.
      *
@@ -87,21 +136,15 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     abstract BigDecimal getKeyWeight(SK key);
 
     /**
-     * Calculates the median.
+     * Returns the median.
      *
      * @return The median.
      */
     public SK getMedian() {
-        BigDecimal halfProbabilityMassSum = getProbabilityMassSum().divide(new BigDecimal(2), MathContext.DECIMAL128);
-        BigDecimal accumulatedProbabilityMass = BigDecimal.ZERO;
-        for (SK s : getSortedKeys()) {
-            accumulatedProbabilityMass = accumulatedProbabilityMass.add(
-                    getProbabilityMass(s).multiply(getKeyWeight(s), MathContext.DECIMAL128), MathContext.DECIMAL128);
-            if (accumulatedProbabilityMass.compareTo(halfProbabilityMassSum) >= 0) {
-                return s;
-            }
+        if (median == null) {
+            median = calculateMedian();
         }
-        return null;
+        return median;
     }
 
     /**
@@ -124,38 +167,13 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      */
     private BigDecimal getProbabilityMassSum() {
         if (probabilityMassSum == null) {
-            probabilityMassSum = BigDecimal.ZERO;
-            for (SK key : pmf.keySet()) {
-                probabilityMassSum = probabilityMassSum
-                        .add(pmf.get(key).multiply(getKeyWeight(key), MathContext.DECIMAL128), MathContext.DECIMAL128);
-            }
+            probabilityMassSum = calculateProbabilityMassSum();
         }
         return probabilityMassSum;
-    }
-
-    /**
-     * Returns a sorted list with the keys.
-     *
-     * @return A sorted list with the keys.
-     */
-    private List<SK> getSortedKeys() {
-        List<SK> list = new ArrayList<SK>(pmf.keySet());
-        Collections.sort(list);
-        return Collections.unmodifiableList(list);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(pmf);
-    }
-
-    /**
-     * Sets a value for a key.
-     *
-     * @param key   The key.
-     * @param value The value.
-     */
-    private void put(final SK key, final BigDecimal value) {
-        pmf.put(key, value);
     }
 }
