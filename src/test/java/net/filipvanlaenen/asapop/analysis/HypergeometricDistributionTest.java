@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +13,6 @@ import org.junit.jupiter.api.Test;
  */
 public class HypergeometricDistributionTest {
     /**
-     * The magic number three.
-     */
-    private static final long THREE = 3L;
-    /**
      * The magic number four.
      */
     private static final long FOUR = 4L;
@@ -25,10 +20,6 @@ public class HypergeometricDistributionTest {
      * The magic number five.
      */
     private static final long FIVE = 5L;
-    /**
-     * The magic number six.
-     */
-    private static final long SIX = 6L;
     /**
      * A hypergeometric distribution to run the tests on.
      */
