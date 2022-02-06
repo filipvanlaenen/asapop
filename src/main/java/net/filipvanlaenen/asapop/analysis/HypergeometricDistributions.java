@@ -11,7 +11,8 @@ final class HypergeometricDistributions {
     /**
      * A map caching all the hypergeometric distributions created in the <code>get</code> method.
      */
-    private static final Map<List<Long>, HypergeometricDistribution> CACHE = new HashMap<List<Long>, HypergeometricDistribution>();
+    private static final Map<List<Long>, HypergeometricDistribution> CACHE =
+            new HashMap<List<Long>, HypergeometricDistribution>();
 
     /**
      * Private constructor to prevent the instantiation of this utility class.
