@@ -46,10 +46,9 @@ public class SampledHypergeometricDistributionTest {
      */
     private static final long SEVENTY = 70L;
     /**
-     * A hypergeometric distribution to run the tests on.
+     * The magic number one hundred five.
      */
-    private static final SampledHypergeometricDistribution DISTRIBUTION_1_4_4_9 = new SampledHypergeometricDistribution(
-            1L, FOUR, FOUR, NINE);
+    private static final long ONE_HUNDRED_FIVE = 105L;
     /**
      * A hypergeometric distribution to run the tests on.
      */
@@ -78,6 +77,8 @@ public class SampledHypergeometricDistributionTest {
     @Test
     public void probabilityMassShouldBeCalculatedCorrectly() {
         assertEquals(new BigDecimal(SEVENTY), DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)));
+        assertEquals(new BigDecimal(ONE_HUNDRED_FIVE),
+                new SampledHypergeometricDistribution(1L, FOUR, FOUR, TEN).getProbabilityMass(Range.get(2, FOUR)));
     }
 
     /**
@@ -85,7 +86,8 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void rangesShouldBeDistributedCorrectlyOverThePopulationSize() {
-        assertNotNull(DISTRIBUTION_1_4_4_9.getProbabilityMass(Range.get(SEVEN, NINE)));
+        assertNotNull(
+                new SampledHypergeometricDistribution(1L, FOUR, FOUR, NINE).getProbabilityMass(Range.get(SEVEN, NINE)));
         assertNotNull(
                 new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).getProbabilityMass(Range.get(EIGHT, TEN)));
     }
