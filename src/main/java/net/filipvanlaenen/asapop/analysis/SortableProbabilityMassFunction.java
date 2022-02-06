@@ -188,6 +188,6 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
 
     @Override
     public int hashCode() {
-        return Objects.hash(pmf);
+        return Objects.hash(getClass(), pmf);
     }
 }

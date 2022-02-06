@@ -1,9 +1,7 @@
 package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
@@ -90,72 +88,5 @@ public class SampledHypergeometricDistributionTest {
                 new SampledHypergeometricDistribution(1L, FOUR, FOUR, NINE).getProbabilityMass(Range.get(SEVEN, NINE)));
         assertNotNull(
                 new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).getProbabilityMass(Range.get(EIGHT, TEN)));
-    }
-
-    /**
-     * Verifies that a sampled hypergeometric distribution is not equal to null.
-     */
-    @Test
-    public void aSampledHypergeometricDistributionShouldNotBeEqualToNull() {
-        assertFalse(DISTRIBUTION_1_4_5_9.equals(null));
-    }
-
-    /**
-     * Verifies that a sampled hypergeometric distribution is not equal to an object of another class, like a string.
-     */
-    @Test
-    public void aSampledHypergeometricDistributionShouldNotBeEqualToAString() {
-        assertFalse(DISTRIBUTION_1_4_5_9.equals(""));
-    }
-
-    /**
-     * Verifies that a sampled hypergeometric distribution is equal to itself.
-     */
-    @Test
-    public void aSampledHypergeometricDistributionShouldBeEqualToItself() {
-        assertTrue(DISTRIBUTION_1_4_5_9.equals(DISTRIBUTION_1_4_5_9));
-    }
-
-    /**
-     * Verifies that calling hashCode twice on a sampled hypergeometric distribution returns the same result.
-     */
-    @Test
-    public void callingHashCodeTwiceOnASampledHypergeometricDistributionReturnsTheSameResult() {
-        assertEquals(DISTRIBUTION_1_4_5_9.hashCode(), DISTRIBUTION_1_4_5_9.hashCode());
-    }
-
-    /**
-     * Verifies that two sampled hypergeometric distributions constructed with the same parameter are equal.
-     */
-    @Test
-    public void twoSampledHypergeometricDistributionsConstructedWithTheSameParameterShouldBeEqual() {
-        assertEquals(DISTRIBUTION_1_4_5_9, new SampledHypergeometricDistribution(1L, FOUR, FIVE, NINE));
-    }
-
-    /**
-     * Verifies that two sampled hypergeometric distributions constructed with the same parameters return the same
-     * hashCode.
-     */
-    @Test
-    public void twoSampledHypergeometricDistributionsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
-        assertEquals(DISTRIBUTION_1_4_5_9.hashCode(),
-                new SampledHypergeometricDistribution(1L, FOUR, FIVE, NINE).hashCode());
-    }
-
-    /**
-     * Verifies that two different sampled hypergeometric distribution with different values are not equal.
-     */
-    @Test
-    public void twoDifferentSampledHypergeometricDistributionsWithDifferentValuesShouldNotBeEqual() {
-        assertFalse(DISTRIBUTION_1_4_5_9.equals(new SampledHypergeometricDistribution(2L, FOUR, FIVE, TEN)));
-    }
-
-    /**
-     * Verifies that two different sampled hypergeometric distribution with different values have different hash codes.
-     */
-    @Test
-    public void twoDifferentSampledHypergeometricDistributionsWithDifferentValuesShouldHaveDifferentHashCodes() {
-        assertFalse(DISTRIBUTION_1_4_5_9.hashCode() == new SampledHypergeometricDistribution(2L, FOUR, FIVE, TEN)
-                .hashCode());
     }
 }
