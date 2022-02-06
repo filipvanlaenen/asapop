@@ -16,7 +16,6 @@ final class HypergeometricDistribution extends SortableProbabilityMassFunction<L
      * @param value          The measured value.
      * @param sampleSize     The sample size.
      * @param populationSize The population size.
-     * @return A hypergeometric distribution.
      */
     HypergeometricDistribution(final Long value, final Long sampleSize, final Long populationSize) {
         super(createPmf(value, sampleSize, populationSize));
