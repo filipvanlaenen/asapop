@@ -28,10 +28,24 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * A map with calculated confidence intervals.
      */
     private final Map<Double, ConfidenceInterval<SK>> confidenceIntervals = new HashMap<Double, ConfidenceInterval<SK>>();
+    /**
+     * A sorted list with the keys.
+     */
     private final List<SK> sortedKeys;
+    /**
+     * A sorted list with the keys, reversed.
+     */
     private final List<SK> reverseSortedKeys;
+    /**
+     * The median.
+     */
     private SK median;
 
+    /**
+     * Creates a sortable probability mass function based on a map with the key-value pairs.
+     *
+     * @param pmf A map with the key-value pairs for the probability mass function, using a sortable key.
+     */
     protected SortableProbabilityMassFunction(final Map<SK, BigDecimal> pmf) {
         this.pmf = Collections.unmodifiableMap(pmf);
         sortedKeys = new ArrayList<SK>(pmf.keySet());

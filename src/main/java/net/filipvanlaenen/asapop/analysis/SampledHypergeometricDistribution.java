@@ -17,7 +17,6 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
      * @param sampleSize      The sample size.
      * @param numberOfSamples The number of samples.
      * @param populationSize  The population size.
-     * @return A hypergeometric distribution.
      */
     SampledHypergeometricDistribution(final Long value, final Long sampleSize, final Long numberOfSamples,
             final Long populationSize) {
