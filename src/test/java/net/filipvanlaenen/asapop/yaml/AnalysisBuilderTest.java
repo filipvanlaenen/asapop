@@ -70,10 +70,6 @@ public class AnalysisBuilderTest {
      */
     private static ResponseScenarioAnalysis alternativeResponseScenarioAnalysis;
     /**
-     * A ResultAnalysis object for other to run the tests on.
-     */
-    private static ResultAnalysis otherAnalysis;
-    /**
      * A ResultAnalysis object for an electoral list to run the tests on.
      */
     private static ResultAnalysis resultAnalysis;
@@ -86,7 +82,7 @@ public class AnalysisBuilderTest {
         OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME)
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
-                .setArea(AREA).setScope(Scope.National).addResult("A", new ResultValue("1"))
+                .setArea(AREA).setScope(Scope.National).setSampleSize("1000").addResult("A", new ResultValue("1"))
                 .setOther(new ResultValue("2")).build();
         opinionPoll.addAlternativeResponseScenario(
                 new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
@@ -107,7 +103,6 @@ public class AnalysisBuilderTest {
                     alternativeResponseScenarioAnalysis = rsa;
                     mainResponseScenarioAnalysis = rsai.next();
                 }
-                otherAnalysis = mainResponseScenarioAnalysis.getOtherAnalysis();
                 resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get("A");
             }
         }
@@ -135,6 +130,31 @@ public class AnalysisBuilderTest {
     @Test
     public void responseScenarioAnalysisShouldBeNotNull() {
         assertNotNull(mainResponseScenarioAnalysis);
+    }
+
+    /**
+     * Verifies that a result analysis object is built by the builder.
+     */
+    @Test
+    public void resultAnalysisShouldBeNotNull() {
+        assertNotNull(resultAnalysis);
+    }
+
+    /**
+     * Verifies that the median for an electoral list is set.
+     */
+    @Test
+    public void resultAnalysisShouldContainTheMedianForTheElectoralList() {
+        assertEquals(1.06, resultAnalysis.getMedian(), 0.01);
+    }
+
+    /**
+     * Verifies that the 80 percent confidence interval for an electoral list is set.
+     */
+    @Test
+    public void resultAnalysisShouldContainThe80PercentConfidenceIntervalForTheElectoralList() {
+        assertEquals(0.69, resultAnalysis.getConfidenceIntervals().get(80)[0], 0.01);
+        assertEquals(1.55, resultAnalysis.getConfidenceIntervals().get(80)[1], 0.01);
     }
 
     /**
@@ -225,15 +245,6 @@ public class AnalysisBuilderTest {
     public void buildingAnAnalysisShouldSetTheScopeOfAnAlternativeResponseScenario() {
         assertNotNull(alternativeResponseScenarioAnalysis);
         assertEquals(Scope.European.toString(), alternativeResponseScenarioAnalysis.getScope());
-    }
-
-    /**
-     * Verifies that the analysis builder sets the median for other to <code>null</code>.
-     */
-    @Test
-    public void buildingAnAnalysisShouldSetTheMedianOfOtherInAnOpinionPollToNull() {
-        assertNotNull(otherAnalysis);
-        assertNull(otherAnalysis.getMedian());
     }
 
     /**

@@ -18,6 +18,10 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  */
 public class AnalysisBuilder {
     /**
+     * The magic number hundred.
+     */
+    private static final float HUNDRED = 100F;
+    /**
      * The levels for the confidence intervals.
      */
     private static final Integer[] CONFIDENCE_INTERVAL_LEVELS = new Integer[] {80, 90, 95, 99};
@@ -74,23 +78,6 @@ public class AnalysisBuilder {
     }
 
     /**
-     * Builds the result analysis for the other result in a response scenario.
-     *
-     * @param responseScenario The response scenario.
-     * @return A result analysis for other in a response scenario.
-     */
-    private ResultAnalysis buildOtherAnalysis(final ResponseScenario responseScenario) {
-        ResultAnalysis resultAnalysis = new ResultAnalysis();
-        // TODO: resultAnalysis.setMedian(responseScenario.getMedianOther());
-        Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
-        for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
-            // TODO: confidenceIntervals.put(level, responseScenario.getConfidenceIntervalOther(level));
-        }
-        resultAnalysis.setConfidenceIntervals(confidenceIntervals);
-        return resultAnalysis;
-    }
-
-    /**
      * Builds the response scenario analysis for an opinion poll's main response scenario.
      *
      * @param poll The opinion poll for which to build the response scenario analysis.
@@ -106,7 +93,6 @@ public class AnalysisBuilder {
             resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
-        responseScenarioAnalysis.setOtherAnalysis(buildOtherAnalysis(poll.getMainResponseScenario()));
         return responseScenarioAnalysis;
     }
 
@@ -126,7 +112,6 @@ public class AnalysisBuilder {
             resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
-        responseScenarioAnalysis.setOtherAnalysis(buildOtherAnalysis(responseScenario));
         return responseScenarioAnalysis;
     }
 
@@ -142,14 +127,14 @@ public class AnalysisBuilder {
         ResultAnalysis resultAnalysis = new ResultAnalysis();
         SortableProbabilityMassFunction<Range> probabilityMassFunction = voteSharesAnalysis
                 .getProbabilityMassFunction(electoralList);
-        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * 100F / 36_054_394L);
+        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / 36_054_394L);
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
             Float[] confidenceInterval = new Float[2];
-            confidenceInterval[0] = probabilityMassFunction.getConfidenceInterval(level / 100F).getLowerBound()
-                    .getLowerBound() * 100F / 36_054_394L;
-            confidenceInterval[1] = probabilityMassFunction.getConfidenceInterval(level / 100F).getUpperBound()
-                    .getUpperBound() * 100F / 36_054_394L;
+            confidenceInterval[0] = probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getLowerBound()
+                    .getLowerBound() * HUNDRED / 36_054_394L;
+            confidenceInterval[1] = probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getUpperBound()
+                    .getUpperBound() * HUNDRED / 36_054_394L;
             confidenceIntervals.put(level, confidenceInterval);
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
