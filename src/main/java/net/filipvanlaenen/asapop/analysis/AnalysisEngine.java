@@ -13,6 +13,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionData;
  * Class implementing the engine running the statistical analyses.
  */
 public class AnalysisEngine {
+    private static final long POPULATION_SIZE = 36_054_394L;
     /**
      * The magic number hundred.
      */
@@ -72,7 +73,7 @@ public class AnalysisEngine {
                         .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
                                 * sampleSize / HUNDRED);
                 voteShareAnalysis.add(electoralList,
-                        SampledHypergeometricDistributions.get(sampled, sampleSize, TEN_THOUSAND, 36_054_394L));
+                        SampledHypergeometricDistributions.get(sampled, sampleSize, TEN_THOUSAND, POPULATION_SIZE));
             }
             voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
         }

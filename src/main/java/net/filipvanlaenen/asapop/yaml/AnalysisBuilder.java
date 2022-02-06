@@ -17,6 +17,7 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  * Builder class to build an <code>Analysis</code>.
  */
 public class AnalysisBuilder {
+    private static final long POPULATION_SIZE = 36_054_394L;
     /**
      * The magic number hundred.
      */
@@ -127,14 +128,14 @@ public class AnalysisBuilder {
         ResultAnalysis resultAnalysis = new ResultAnalysis();
         SortableProbabilityMassFunction<Range> probabilityMassFunction = voteSharesAnalysis
                 .getProbabilityMassFunction(electoralList);
-        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / 36_054_394L);
+        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / POPULATION_SIZE);
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
             Float[] confidenceInterval = new Float[2];
             confidenceInterval[0] = probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getLowerBound()
-                    .getLowerBound() * HUNDRED / 36_054_394L;
+                    .getLowerBound() * HUNDRED / POPULATION_SIZE;
             confidenceInterval[1] = probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getUpperBound()
-                    .getUpperBound() * HUNDRED / 36_054_394L;
+                    .getUpperBound() * HUNDRED / POPULATION_SIZE;
             confidenceIntervals.put(level, confidenceInterval);
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);

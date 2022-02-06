@@ -21,6 +21,8 @@ import net.filipvanlaenen.asapop.model.Scope;
  * Unit tests on the <code>AnalysisBuilder</code> class.
  */
 public class AnalysisBuilderTest {
+    private static final int EIGHTY = 80;
+    private static final double ONE_HUNDREDTH = 0.01;
     /**
      * The area.
      */
@@ -145,7 +147,7 @@ public class AnalysisBuilderTest {
      */
     @Test
     public void resultAnalysisShouldContainTheMedianForTheElectoralList() {
-        assertEquals(1.06, resultAnalysis.getMedian(), 0.01);
+        assertEquals(1.06, resultAnalysis.getMedian(), ONE_HUNDREDTH);
     }
 
     /**
@@ -153,8 +155,8 @@ public class AnalysisBuilderTest {
      */
     @Test
     public void resultAnalysisShouldContainThe80PercentConfidenceIntervalForTheElectoralList() {
-        assertEquals(0.69, resultAnalysis.getConfidenceIntervals().get(80)[0], 0.01);
-        assertEquals(1.55, resultAnalysis.getConfidenceIntervals().get(80)[1], 0.01);
+        assertEquals(0.69, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[0], ONE_HUNDREDTH);
+        assertEquals(1.55, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], ONE_HUNDREDTH);
     }
 
     /**
