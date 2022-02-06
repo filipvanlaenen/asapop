@@ -14,13 +14,21 @@ import net.filipvanlaenen.asapop.yaml.ElectionData;
  */
 public class AnalysisEngine {
     /**
+     * The magic number hundred.
+     */
+    private static final double HUNDRED = 100D;
+    /**
+     * The magic number ten thousand, the default number of samples.
+     */
+    private static final long TEN_THOUSAND = 10_000L;
+    /**
      * The opinion polls to run the statistical analyses on.
      */
     private OpinionPolls opinionPolls;
     /**
      * A map containing the vote shares analysis per response scenario.
      */
-    private final Map<ResponseScenario, VoteSharesAnalysis> voteSharesAnalyses = new HashMap<ResponseScenario, VoteSharesAnalysis>();
+    private final Map<ResponseScenario, VoteSharesAnalysis> voteSharesAnalyses;
 
     /**
      * Constructor taking the opinion polls and election data as its parameters.
@@ -30,6 +38,7 @@ public class AnalysisEngine {
      */
     public AnalysisEngine(final OpinionPolls opinionPolls, final ElectionData electionData) {
         this.opinionPolls = opinionPolls;
+        voteSharesAnalyses = new HashMap<ResponseScenario, VoteSharesAnalysis>();
     }
 
     /**
@@ -61,13 +70,11 @@ public class AnalysisEngine {
                 long sampleSize = (long) opinionPoll.getSampleSizeValue();
                 Long sampled = Math
                         .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
-                                * sampleSize * 0.01);
+                                * sampleSize / HUNDRED);
                 voteShareAnalysis.add(electoralList,
-                        SampledHypergeometricDistributions.get(sampled, sampleSize, 20_000L, 36_054_394L));
+                        SampledHypergeometricDistributions.get(sampled, sampleSize, TEN_THOUSAND, 36_054_394L));
             }
-            // TODO: Add Other too
             voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
-            // TODO: Add alternative scenarios
         }
     }
 }
