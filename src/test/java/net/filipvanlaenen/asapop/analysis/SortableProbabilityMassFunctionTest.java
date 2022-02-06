@@ -13,22 +13,6 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the <code>SortableProbabilityMassFunction</code> class.
  */
 public class SortableProbabilityMassFunctionTest {
-    private static final class TestSubclass extends SortableProbabilityMassFunction<Integer> {
-        private TestSubclass(Map<Integer, BigDecimal> pmf) {
-            super(pmf);
-        }
-
-        @Override
-        BigDecimal getKeyWeight(Integer key) {
-            return null;
-        }
-
-        @Override
-        BigDecimal getProbabilityMass(Integer key) {
-            return null;
-        }
-    }
-
     /**
      * The magic number four.
      */
@@ -46,18 +30,70 @@ public class SortableProbabilityMassFunctionTest {
      */
     private static final long NINE = 9L;
     /**
-     * The magic number 0.81.
+     * The magic number ten.
      */
-    private static final double EIGHTY_ONE_PERCENT = 0.81;
+    private static final long TEN = 10L;
+    /**
+     * The magic number twenty.
+     */
+    private static final long TWENTY = 20L;
+    /**
+     * The magic number hundred.
+     */
+    private static final long HUNDRED = 100L;
+    /**
+     * The magic number thousand.
+     */
+    private static final long THOUSAND = 1000L;
     /**
      * The magic number 0.79.
      */
     private static final double SEVENTY_NINE_PERCENT = 0.79;
     /**
+     * The magic number 0.8.
+     */
+    private static final double EIGHTY_PERCENT = 0.8;
+    /**
+     * The magic number 0.81.
+     */
+    private static final double EIGHTY_ONE_PERCENT = 0.81;
+    /**
+     * The range from 350 to 359.
+     */
+    private static final Range RANGE_350_359 = Range.get(350L, 359L);
+    /**
+     * The range from 640 to 649.
+     */
+    private static final Range RANGE_640_649 = Range.get(640L, 649L);
+    /**
      * Test object to run the tests on.
      */
     private static final SortableProbabilityMassFunction<Integer> TEST_OBJECT = new TestSubclass(
             Map.of(1, BigDecimal.ONE));
+
+    /**
+     * Local subclass for <code>SortableProbabilityMassFunction</code> for testing purposes.
+     */
+    private static final class TestSubclass extends SortableProbabilityMassFunction<Integer> {
+        /**
+         * Constructor taking a map with the probability mass function using integers as key.
+         *
+         * @param pmf A map with the probability mass function.
+         */
+        private TestSubclass(final Map<Integer, BigDecimal> pmf) {
+            super(pmf);
+        }
+
+        @Override
+        BigDecimal getKeyWeight(final Integer key) {
+            return null;
+        }
+
+        @Override
+        BigDecimal getProbabilityMass(final Integer key) {
+            return null;
+        }
+    }
 
     /**
      * Verifies that the median is calculated correctly for a hypergeometric distribution of 1 out of 4 in a population
@@ -97,6 +133,24 @@ public class SortableProbabilityMassFunctionTest {
         HypergeometricDistribution binomialDistribution = new HypergeometricDistribution(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 1L),
                 binomialDistribution.getConfidenceInterval(SEVENTY_NINE_PERCENT));
+    }
+
+    /**
+     * Verifies that the number of samples is returned correctly.
+     */
+    @Test
+    public void numberOfSamplesShouldBeEqualToTheSizeOfTheMap() {
+        assertEquals(1L, TEST_OBJECT.getNumberOfSamples());
+    }
+
+    /**
+     * Verifies that the keys are sorted properly before the confidence intervals are calculated.
+     */
+    @Test
+    public void keysShouldBeSortedToCalculateTheConfidenceIntervals() {
+        assertEquals(new ConfidenceInterval<Range>(RANGE_350_359, RANGE_640_649),
+                new SampledHypergeometricDistribution(TEN, TWENTY, HUNDRED, THOUSAND)
+                        .getConfidenceInterval(EIGHTY_PERCENT));
     }
 
     /**

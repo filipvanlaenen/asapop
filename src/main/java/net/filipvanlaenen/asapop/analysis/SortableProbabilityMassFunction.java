@@ -27,7 +27,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     /**
      * A map with calculated confidence intervals.
      */
-    private final Map<Double, ConfidenceInterval<SK>> confidenceIntervals = new HashMap<Double, ConfidenceInterval<SK>>();
+    private final Map<Double, ConfidenceInterval<SK>> confidenceIntervals;
     /**
      * A sorted list with the keys.
      */
@@ -52,6 +52,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         Collections.sort(sortedKeys);
         reverseSortedKeys = new ArrayList<SK>(sortedKeys);
         Collections.reverse(reverseSortedKeys);
+        confidenceIntervals = new HashMap<Double, ConfidenceInterval<SK>>();
     }
 
     /**
@@ -85,6 +86,11 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return null;
     }
 
+    /**
+     * Calculates the sum of all probability masses.
+     *
+     * @return The sum of all probability masses.
+     */
     private BigDecimal calculateProbabilityMassSum() {
         BigDecimal result = BigDecimal.ZERO;
         for (SK key : pmf.keySet()) {
@@ -94,6 +100,12 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return result;
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param obj The object to compare this object to.
+     * @return True if the other object is equal to this object.
+     */
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof SortableProbabilityMassFunction) {
@@ -108,13 +120,13 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * Finds a quantile of a given probability mass fraction.
      *
      * @param probabilityMassFraction The probability mass fraction.
-     * @param sortedKeys              The sorted keys of the probability mass function.
+     * @param sortedKeysList          The sorted keys of the probability mass function.
      * @return The boundary for the quantile.
      */
-    private SK findQuantileBoundary(final BigDecimal probabilityMassFraction, final List<SK> sortedKeys) {
+    private SK findQuantileBoundary(final BigDecimal probabilityMassFraction, final List<SK> sortedKeysList) {
         BigDecimal accumulatedProbabilityMass = BigDecimal.ZERO;
-        SK previousKey = sortedKeys.get(0);
-        for (SK s : sortedKeys) {
+        SK previousKey = sortedKeysList.get(0);
+        for (SK s : sortedKeysList) {
             accumulatedProbabilityMass = accumulatedProbabilityMass.add(
                     getProbabilityMass(s).multiply(getKeyWeight(s), MathContext.DECIMAL128), MathContext.DECIMAL128);
             // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent because
@@ -170,6 +182,12 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return (long) pmf.size();
     }
 
+    /**
+     * Returns the probability mass for a key.
+     *
+     * @param key The key for which to return the probability mass.
+     * @return The probability mass for the key.
+     */
     BigDecimal getProbabilityMass(final SK key) {
         return pmf.get(key);
     }
@@ -186,6 +204,11 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return probabilityMassSum;
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return A hash code value for the object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getClass(), pmf);
