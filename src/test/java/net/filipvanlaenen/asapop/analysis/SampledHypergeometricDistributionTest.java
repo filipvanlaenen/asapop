@@ -30,6 +30,10 @@ public class SampledHypergeometricDistributionTest {
      */
     private static final long SEVEN = 7L;
     /**
+     * The magic number eight.
+     */
+    private static final long EIGHT = 8L;
+    /**
      * The magic number nine.
      */
     private static final long NINE = 9L;
@@ -82,6 +86,8 @@ public class SampledHypergeometricDistributionTest {
     @Test
     public void rangesShouldBeDistributedCorrectlyOverThePopulationSize() {
         assertNotNull(DISTRIBUTION_1_4_4_9.getProbabilityMass(Range.get(SEVEN, NINE)));
+        assertNotNull(
+                new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).getProbabilityMass(Range.get(EIGHT, TEN)));
     }
 
     /**
