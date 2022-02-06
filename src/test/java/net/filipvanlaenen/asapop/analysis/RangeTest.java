@@ -29,10 +29,26 @@ public class RangeTest {
     private static final Range RANGE_1_2 = Range.get(1, 2);
 
     /**
+     * Verifies that the getter for the lower bound is wired correctly to the constructor.
+     */
+    @Test
+    public void getLowerBoundShouldBeWiredCorrectlyToTheConstructor() {
+        assertEquals(1, RANGE_1_2.getLowerBound());
+    }
+
+    /**
+     * Verifies that the getter for the upper bound is wired correctly to the constructor.
+     */
+    @Test
+    public void getUpperBoundShouldBeWiredCorrectlyToTheConstructor() {
+        assertEquals(2, RANGE_1_2.getUpperBound());
+    }
+
+    /**
      * Verifies that a range with a lower lower bound is lower than the other range.
      */
     @Test
-    public void aRangeWithALowerBoundShouldCompareLower() {
+    public void aRangeWithALowerLowerBoundShouldCompareLower() {
         assertTrue(RANGE_0_1.compareTo(RANGE_1_1) < 0);
     }
 

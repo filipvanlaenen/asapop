@@ -82,10 +82,20 @@ public final class Range implements Comparable<Range> {
         return 1L + upperBound - lowerBound;
     }
 
+    /**
+     * Returns the lower bound of the range.
+     *
+     * @return The lower bound of the range.
+     */
     public long getLowerBound() {
         return lowerBound;
     }
 
+    /**
+     * Returns the upper bound of the range.
+     *
+     * @return The upper bound of the range.
+     */
     public long getUpperBound() {
         return upperBound;
     }
