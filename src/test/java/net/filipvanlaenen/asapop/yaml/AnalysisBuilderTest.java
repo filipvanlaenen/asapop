@@ -21,8 +21,26 @@ import net.filipvanlaenen.asapop.model.Scope;
  * Unit tests on the <code>AnalysisBuilder</code> class.
  */
 public class AnalysisBuilderTest {
+    /**
+     * The magic number eighty.
+     */
     private static final int EIGHTY = 80;
+    /**
+     * The magic number one hundredth.
+     */
     private static final double ONE_HUNDREDTH = 0.01;
+    /**
+     * The magic number 0.69.
+     */
+    private static final double FLOAT_0_69 = 0.69;
+    /**
+     * The magic number 1.06.
+     */
+    private static final double FLOAT_1_06 = 1.06;
+    /**
+     * The magic number 1.55.
+     */
+    private static final double FLOAT_1_55 = 1.55;
     /**
      * The area.
      */
@@ -147,7 +165,7 @@ public class AnalysisBuilderTest {
      */
     @Test
     public void resultAnalysisShouldContainTheMedianForTheElectoralList() {
-        assertEquals(1.06, resultAnalysis.getMedian(), ONE_HUNDREDTH);
+        assertEquals(FLOAT_1_06, resultAnalysis.getMedian(), ONE_HUNDREDTH);
     }
 
     /**
@@ -155,8 +173,8 @@ public class AnalysisBuilderTest {
      */
     @Test
     public void resultAnalysisShouldContainThe80PercentConfidenceIntervalForTheElectoralList() {
-        assertEquals(0.69, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[0], ONE_HUNDREDTH);
-        assertEquals(1.55, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], ONE_HUNDREDTH);
+        assertEquals(FLOAT_0_69, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[0], ONE_HUNDREDTH);
+        assertEquals(FLOAT_1_55, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], ONE_HUNDREDTH);
     }
 
     /**
