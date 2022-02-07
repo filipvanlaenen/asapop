@@ -17,11 +17,15 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  * Builder class to build an <code>Analysis</code>.
  */
 public class AnalysisBuilder {
-    private static final long POPULATION_SIZE = 36_054_394L;
     /**
      * The magic number hundred.
      */
     private static final float HUNDRED = 100F;
+    /**
+     * The size of the population (the number of voters for the first round of the French presidential election of
+     * 2017).
+     */
+    private static final long POPULATION_SIZE = 36_054_394L;
     /**
      * The levels for the confidence intervals.
      */

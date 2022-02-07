@@ -14,11 +14,6 @@ import net.filipvanlaenen.asapop.yaml.ElectionData;
  */
 public class AnalysisEngine {
     /**
-     * The size of the population (the number of voters for the first round of the French presidential election of
-     * 2017).
-     */
-    private static final long POPULATION_SIZE = 36_054_394L;
-    /**
      * The magic number hundred.
      */
     private static final double HUNDRED = 100D;
@@ -26,6 +21,11 @@ public class AnalysisEngine {
      * The magic number ten thousand, the default number of samples.
      */
     private static final long TEN_THOUSAND = 10_000L;
+    /**
+     * The size of the population (the number of voters for the first round of the French presidential election of
+     * 2017).
+     */
+    private static final long POPULATION_SIZE = 36_054_394L;
     /**
      * The opinion polls to run the statistical analyses on.
      */
