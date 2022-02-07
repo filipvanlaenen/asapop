@@ -24,6 +24,11 @@ public class AnalysisEngineTest {
      * The magic number ten thousand.
      */
     private static final long TEN_THOUSAND = 10_000L;
+    /**
+     * The size of the population (the number of voters for the first round of the French presidential election of
+     * 2017).
+     */
+    private static final long POPULATION_SIZE = 36_054_394L;
 
     /**
      * Verifies that the getter method <code>getOpinionPolls</code> is wired correctly to the constructor.
@@ -51,7 +56,7 @@ public class AnalysisEngineTest {
         engine.run();
         VoteSharesAnalysis expected = new VoteSharesAnalysis();
         expected.add(ElectoralList.get("A"),
-                SampledHypergeometricDistributions.get(1L, FOUR, TEN_THOUSAND, 36_054_394L));
+                SampledHypergeometricDistributions.get(1L, FOUR, TEN_THOUSAND, POPULATION_SIZE));
         assertEquals(expected, engine.getVoteSharesAnalysis(opinionPoll.getMainResponseScenario()));
     }
 }
