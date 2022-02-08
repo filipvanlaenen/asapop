@@ -2,6 +2,7 @@
 
 - [Getting Started](#getting-started)
 - [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
+- [Analysis](#analysis)
 - [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
 - [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
 
@@ -138,6 +139,29 @@ Below is an example of an electoral list using the key "A" in the opinion poll l
 
 ```
 A: •A: AP •EN: Apple Party •EO: Pomo Partio
+```
+
+## Analysis
+
+An ROPF file can be analysed using the following command:
+
+```
+analyze <ropf-file-name> <election-yaml-file-name> <analysis-result-yaml-file-name>
+```
+
+Assume the opinion polls have been stored in a file called `nn.ropf`, and you want to analyse them based on the election
+specific data in a file called `nn-data.yaml` and then write the results to a file called `nn-result.yaml`, then you can
+use the following command to run the analysis:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar analyze nn.ropf nn-data.yaml nn-result.yaml
+```
+
+For now, no election specific data has been specified yet, so the file `nn-data.yaml` should be an empty YAML file as
+shown below:
+
+```
+---
 ```
 
 ## Conversion from ROPF to CSV
