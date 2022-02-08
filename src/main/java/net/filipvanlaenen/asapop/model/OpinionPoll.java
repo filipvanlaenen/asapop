@@ -13,6 +13,10 @@ import java.util.Set;
  */
 public final class OpinionPoll {
     /**
+     * The magic number hundred.
+     */
+    private static final float HUNDRED = 100F;
+    /**
      * The list with alternative response scenarios.
      */
     private final List<ResponseScenario> alternativeResponseScenarios = new ArrayList<ResponseScenario>();
@@ -36,6 +40,10 @@ public final class OpinionPoll {
      * The fieldwork start.
      */
     private DateOrMonth fieldworkStart;
+    /**
+     * The effective sample size.
+     */
+    private Integer effectiveSampleSize;
     /**
      * The main response scenario.
      */
@@ -87,6 +95,13 @@ public final class OpinionPoll {
         publicationDate = builder.publicationDate;
         sampleSize = builder.sampleSize;
         sampleSizeValue = sampleSize == null ? 0 : Integer.parseInt(sampleSize);
+        if (sampleSize != null) {
+            if (excluded == null) {
+                effectiveSampleSize = sampleSizeValue;
+            } else {
+                effectiveSampleSize = Math.round(sampleSizeValue * (1F - excluded.getValue() / HUNDRED));
+            }
+        }
         scope = builder.scope;
     }
 
@@ -381,6 +396,15 @@ public final class OpinionPoll {
      */
     public Set<String> getCommissioners() {
         return commissioners;
+    }
+
+    /**
+     * Returns the effective sample size. The effective sample size is the sample size minus the excluded responses.
+     *
+     * @return The effective sample size.
+     */
+    public Integer getEffectiveSampleSize() {
+        return effectiveSampleSize;
     }
 
     /**

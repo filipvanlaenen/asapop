@@ -70,16 +70,18 @@ public class AnalysisEngine {
      */
     public void run() {
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
-            VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
-            for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
-                long sampleSize = (long) opinionPoll.getSampleSizeValue();
-                Long sampled = Math
-                        .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
-                                * sampleSize / HUNDRED);
-                voteShareAnalysis.add(electoralList,
-                        SampledHypergeometricDistributions.get(sampled, sampleSize, TEN_THOUSAND, POPULATION_SIZE));
+            Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
+            if (effectiveSampleSize != null) {
+                VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
+                for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
+                    Long sampled = Math
+                            .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
+                                    * effectiveSampleSize / HUNDRED);
+                    voteShareAnalysis.add(electoralList, SampledHypergeometricDistributions.get(sampled,
+                            (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE));
+                }
+                voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
             }
-            voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
         }
     }
 }

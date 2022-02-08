@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -122,6 +123,34 @@ public class OpinionPollTest {
     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSizeValue() {
         OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
         assertEquals(ONE_THOUSAND, poll.getSampleSizeValue());
+    }
+
+    /**
+     * Verifies that the getEffectiveSampleSize returns <code>null</code> when no sample size has been specified.
+     */
+    @Test
+    public void getEffectiveSampleSizeShouldBeNullWhenNoSampleSizeHasBeenSpecified() {
+        OpinionPoll poll = new OpinionPoll.Builder().build();
+        assertNull(poll.getEffectiveSampleSize());
+    }
+
+    /**
+     * Verifies that the getEffectiveSampleSize returns the specified sample size when there are no excluded responses.
+     */
+    @Test
+    public void getEffectiveSampleSizeShouldReturnTheSampleSizeWhenThereAreNoExcludedResponses() {
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
+        assertEquals(ONE_THOUSAND, poll.getEffectiveSampleSize());
+    }
+
+    /**
+     * Verifies that the getEffectiveSampleSize returns the specified sample size minus the excluded responses.
+     */
+    @Test
+    public void getEffectiveSampleSizeShouldReturnTheSampleSizeMinusTheExcludedResponses() {
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1250").setExcluded(DecimalNumber.parse("20"))
+                .build();
+        assertEquals(ONE_THOUSAND, poll.getEffectiveSampleSize());
     }
 
     /**
