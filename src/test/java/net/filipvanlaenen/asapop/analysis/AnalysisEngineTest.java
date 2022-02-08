@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -44,19 +45,42 @@ public class AnalysisEngineTest {
 
     /**
      * Verifies that the analysis engine calculates the probability mass functions for the vote shares of the opinion
-     * polls.
+     * polls based on a sample size with no responses excluded.
      */
     @Test
-    public void runCalculatesTheProbabilityMassFunctionsForTheVoteSharesOfTheOpinionPolls() {
+    public void runShouldCalculateTheVoteShareProbabilityMassFunctionForASampleSizeWithoutExcludedResponses() {
         OpinionPoll opinionPoll = new OpinionPoll.Builder().setSampleSize("4").addResult("A", new ResultValue("25"))
                 .build();
+        verifyProbabilityMassFunctionCalculationForElectoralListA(opinionPoll,
+                SampledHypergeometricDistributions.get(1L, FOUR, TEN_THOUSAND, POPULATION_SIZE));
+    }
+
+    /**
+     * Verifies that the analysis engine calculates the probability mass functions for the vote shares of the opinion
+     * polls based on a sample size and excluded responses.
+     */
+    @Test
+    public void runShouldCalculateTheVoteShareProbabilityMassFunctionForASampleSizeWithExcludedResponses() {
+        OpinionPoll opinionPoll = new OpinionPoll.Builder().setSampleSize("5").setExcluded(DecimalNumber.parse("20"))
+                .addResult("A", new ResultValue("25")).build();
+        verifyProbabilityMassFunctionCalculationForElectoralListA(opinionPoll,
+                SampledHypergeometricDistributions.get(1L, FOUR, TEN_THOUSAND, POPULATION_SIZE));
+    }
+
+    /**
+     * Performs the calculation of the probability mass function for electoral list A.
+     *
+     * @param opinionPoll             The opinion poll.
+     * @param probabilityMassFunction The expected probability mass function.
+     */
+    private void verifyProbabilityMassFunctionCalculationForElectoralListA(final OpinionPoll opinionPoll,
+            final SortableProbabilityMassFunction<Range> probabilityMassFunction) {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
         VoteSharesAnalysis expected = new VoteSharesAnalysis();
-        expected.add(ElectoralList.get("A"),
-                SampledHypergeometricDistributions.get(1L, FOUR, TEN_THOUSAND, POPULATION_SIZE));
+        expected.add(ElectoralList.get("A"), probabilityMassFunction);
         assertEquals(expected, engine.getVoteSharesAnalysis(opinionPoll.getMainResponseScenario()));
     }
 }
