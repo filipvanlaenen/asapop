@@ -1,7 +1,14 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -81,6 +88,111 @@ public class AnalysisEngine {
                             (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE));
                 }
                 voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
+                Map<ElectoralList, List<Range>> ranges = new HashMap<ElectoralList, List<Range>>();
+                List<Long> lowerBounds = new ArrayList<Long>();
+                for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
+                    lowerBounds.add(voteShareAnalysis.getProbabilityMassFunction(electoralList)
+                            .getConfidenceInterval(0.999999).getLowerBound().getLowerBound());
+                }
+                if (lowerBounds.size() > 2) {
+                    System.out.println(opinionPoll.getFieldworkEnd() + " " + opinionPoll.getPollingFirm());
+                    Collections.sort(lowerBounds);
+                    Collections.reverse(lowerBounds);
+                    long lowerBound = lowerBounds.get(1);
+                    double others = 100D;
+                    for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
+                        if (voteShareAnalysis.getProbabilityMassFunction(electoralList).getConfidenceInterval(0.999999)
+                                .getUpperBound().getUpperBound() >= lowerBound) {
+                            ranges.put(electoralList, voteShareAnalysis.getProbabilityMassFunction(electoralList)
+                                    .getConfidenceIntervalKeyList(0.999999));
+                            others -= Double
+                                    .parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText());
+                        }
+                    }
+                    Long sampled = Math.round(others * effectiveSampleSize / HUNDRED);
+                    SampledHypergeometricDistribution pmfOther = SampledHypergeometricDistributions.get(sampled,
+                            (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE);
+                    List<Range> rangesOther = pmfOther.getConfidenceIntervalKeyList(0.999999);
+                    // TODO: Remove ranges that are so high that they're guaranteed to be in 1st or 2nd place
+                    // TODO: Produce a generator to iterate, with widened ranges list if needed
+                    Map<Set<ElectoralList>, BigDecimal> pmf = new HashMap<Set<ElectoralList>, BigDecimal>();
+                    // TODO: Eliminate use of random
+                    Random random = new Random();
+                    long i = 0;
+                    while (i < 2000000) {
+                        ElectoralList first = null;
+                        ElectoralList second = null;
+                        Range a = null;
+                        Range b = null;
+                        BigDecimal p = BigDecimal.ONE;
+                        long m = 0;
+                        for (ElectoralList electoralList : ranges.keySet()) {
+                            List<Range> r = ranges.get(electoralList);
+                            Range value = r.get(random.nextInt(r.size()));
+                            m += value.getMidpoint();
+                            p = p.multiply(voteShareAnalysis.getProbabilityMassFunction(electoralList)
+                                    .getProbabilityMass(value), MathContext.DECIMAL128);
+                            if (a == null) {
+                                first = electoralList;
+                                a = value;
+                            } else if (b == null) {
+                                if (a.compareTo(value) > 0) {
+                                    second = electoralList;
+                                    b = value;
+                                } else {
+                                    second = first;
+                                    b = a;
+                                    first = electoralList;
+                                    a = value;
+                                }
+                            } else if (a.compareTo(value) < 0) {
+                                second = first;
+                                b = a;
+                                first = electoralList;
+                                a = value;
+                            } else if (b.compareTo(value) < 0) {
+                                second = electoralList;
+                                b = value;
+                            }
+                        }
+                        if (m < POPULATION_SIZE) {
+                            Long o = POPULATION_SIZE - m;
+                            if (rangesOther.get(rangesOther.size() - 1).getUpperBound() > o) {
+                                Range otherRange = rangesOther.get(0);
+                                for (Range r : rangesOther) {
+                                    if (r.getUpperBound() > o) {
+                                        otherRange = r;
+                                    }
+                                }
+                                p = p.multiply(pmfOther.getProbabilityMass(otherRange), MathContext.DECIMAL128);
+                                Set<ElectoralList> runoff = Set.of(first, second);
+                                if (pmf.containsKey(runoff)) {
+                                    pmf.put(runoff, p.add(pmf.get(runoff), MathContext.DECIMAL128));
+                                } else {
+                                    pmf.put(runoff, p);
+                                }
+                                i += 1;
+                            }
+                        }
+                    }
+                    // TODO: Store the resulting PMF
+                    BigDecimal sum = BigDecimal.ZERO;
+                    for (BigDecimal bd : pmf.values()) {
+                        sum = sum.add(bd, MathContext.DECIMAL128);
+                    }
+                    sum = sum.divide(new BigDecimal(100), MathContext.DECIMAL128);
+                    for (Set<ElectoralList> runoff : pmf.keySet()) {
+                        String s = "";
+                        for (ElectoralList el : runoff) {
+                            s += el.getKey() + ", ";
+                        }
+                        double p = pmf.get(runoff).divide(sum, MathContext.DECIMAL128).doubleValue();
+                        if (p > 0.001D) {
+                            System.out.println(s + String.format("%,.2f", p) + "%");
+                        }
+                    }
+                    System.out.println();
+                }
             }
         }
     }

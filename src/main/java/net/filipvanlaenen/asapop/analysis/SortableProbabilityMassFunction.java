@@ -153,6 +153,19 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
     }
 
     /**
+     * Returns the keys belonging to the confidence interval for a confidence level as a sorted list.
+     *
+     * @param level The confidence level.
+     * @return A sorted list with the keys belonging to the confidence interval for a confidence level.
+     */
+    public List<SK> getConfidenceIntervalKeyList(final double level) {
+        ConfidenceInterval<SK> confidenceInterval = getConfidenceInterval(level);
+        int fromIndex = sortedKeys.indexOf(confidenceInterval.getLowerBound());
+        int toIndex = sortedKeys.indexOf(confidenceInterval.getUpperBound());
+        return sortedKeys.subList(fromIndex, toIndex + 1);
+    }
+
+    /**
      * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
      * sum, etc.
      *
