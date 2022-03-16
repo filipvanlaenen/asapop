@@ -41,6 +41,10 @@ public class AnalysisEngine {
      * A map containing the vote shares analysis per response scenario.
      */
     private final Map<ResponseScenario, VoteSharesAnalysis> voteSharesAnalyses;
+    /**
+     * A map containing the first round winners analysis per response scenario.
+     */
+    private final Map<ResponseScenario, FirstRoundWinnersAnalysis> firstRoundWinnersAnalyses;
 
     /**
      * Constructor taking the opinion polls and election data as its parameters.
@@ -51,6 +55,11 @@ public class AnalysisEngine {
     public AnalysisEngine(final OpinionPolls opinionPolls, final ElectionData electionData) {
         this.opinionPolls = opinionPolls;
         voteSharesAnalyses = new HashMap<ResponseScenario, VoteSharesAnalysis>();
+        firstRoundWinnersAnalyses = new HashMap<ResponseScenario, FirstRoundWinnersAnalysis>();
+    }
+
+    public FirstRoundWinnersAnalysis getFirstRoundWinnersAnalysis(final ResponseScenario responseScenario) {
+        return firstRoundWinnersAnalyses.get(responseScenario);
     }
 
     /**
@@ -76,7 +85,9 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
+        System.out.println("Number of opinion polls: " + opinionPolls.getOpinionPolls().size());
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
+            System.out.println(opinionPoll.getFieldworkEnd() + " " + opinionPoll.getPollingFirm());
             Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
             if (effectiveSampleSize != null) {
                 VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
@@ -88,6 +99,27 @@ public class AnalysisEngine {
                             (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE));
                 }
                 voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
+                List<SampledHypergeometricDistribution> probabilityMassFunctions = voteShareAnalysis
+                        .getProbabilityMassFunctions();
+                SampledMultivariateHypergeometricDistribution sampledMultivariateHypergeometricDistribution = SampledMultivariateHypergeometricDistributions
+                        .get(probabilityMassFunctions);
+                FirstRoundWinnersAnalysis frwa = new FirstRoundWinnersAnalysis(voteShareAnalysis,
+                        sampledMultivariateHypergeometricDistribution);
+                firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(), frwa);
+                for (Set<ElectoralList> electoralListSet : frwa.getElectoralListSets()) {
+                    String s = "";
+                    for (ElectoralList electoralList : electoralListSet) {
+                        s += electoralList.getKey() + ", ";
+                    }
+                    double p = frwa.getProbabilityMass(electoralListSet);
+                    if (p > 0.001D) {
+                        System.out.println(s + String.format("%,.2f", p) + "%");
+                    }
+                }
+                System.out.println();
+                /**
+                 * Below to be deleted.
+                 */
                 Map<ElectoralList, List<Range>> ranges = new HashMap<ElectoralList, List<Range>>();
                 List<Long> lowerBounds = new ArrayList<Long>();
                 for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
@@ -95,7 +127,6 @@ public class AnalysisEngine {
                             .getConfidenceInterval(0.999999).getLowerBound().getLowerBound());
                 }
                 if (lowerBounds.size() > 2) {
-                    System.out.println(opinionPoll.getFieldworkEnd() + " " + opinionPoll.getPollingFirm());
                     Collections.sort(lowerBounds);
                     Collections.reverse(lowerBounds);
                     long lowerBound = lowerBounds.get(1);
@@ -193,6 +224,9 @@ public class AnalysisEngine {
                     }
                     System.out.println();
                 }
+                /**
+                 * End of code to be deleted.
+                 */
             }
         }
     }

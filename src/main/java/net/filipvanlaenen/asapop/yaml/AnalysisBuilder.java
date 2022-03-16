@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
+import net.filipvanlaenen.asapop.analysis.FirstRoundWinnersAnalysis;
 import net.filipvanlaenen.asapop.analysis.Range;
 import net.filipvanlaenen.asapop.analysis.SortableProbabilityMassFunction;
 import net.filipvanlaenen.asapop.analysis.VoteSharesAnalysis;
@@ -98,6 +99,19 @@ public class AnalysisBuilder {
             resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
+        FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
+        FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
+                .getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
+        Map<Set<String>, Double> firstRoundProbabilityMassFunction = new HashMap<Set<String>, Double>();
+        for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
+            Set<String> electoralListKeySet = new HashSet<String>();
+            for (ElectoralList electoralList : electoralListSet) {
+                electoralListKeySet.add(electoralList.getKey());
+            }
+            firstRoundProbabilityMassFunction.put(electoralListKeySet, firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+        }
+        firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
+        responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);
         return responseScenarioAnalysis;
     }
 

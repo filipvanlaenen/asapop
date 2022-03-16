@@ -74,7 +74,7 @@ public class AnalysisEngineTest {
      * @param probabilityMassFunction The expected probability mass function.
      */
     private void verifyProbabilityMassFunctionCalculationForElectoralListA(final OpinionPoll opinionPoll,
-            final SortableProbabilityMassFunction<Range> probabilityMassFunction) {
+            final SampledHypergeometricDistribution probabilityMassFunction) {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);

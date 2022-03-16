@@ -13,6 +13,10 @@ public class ResponseScenarioAnalysis {
      */
     private String area;
     /**
+     * The analysis of the first round.
+     */
+    private FirstRoundAnalysis firstRoundAnalysis;
+    /**
      * The analysis for the result for other.
      */
     private ResultAnalysis otherAnalysis;
@@ -32,6 +36,10 @@ public class ResponseScenarioAnalysis {
      */
     public String getArea() {
         return area;
+    }
+
+    public FirstRoundAnalysis getFirstRoundAnalysis() {
+        return firstRoundAnalysis;
     }
 
     /**
@@ -68,6 +76,10 @@ public class ResponseScenarioAnalysis {
      */
     public void setArea(final String area) {
         this.area = area;
+    }
+
+    public void setFirstRoundAnalysis(final FirstRoundAnalysis firstRoundAnalysis) {
+        this.firstRoundAnalysis = firstRoundAnalysis;
     }
 
     /**
