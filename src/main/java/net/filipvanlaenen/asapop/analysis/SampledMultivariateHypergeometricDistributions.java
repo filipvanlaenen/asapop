@@ -10,7 +10,8 @@ class SampledMultivariateHypergeometricDistributions {
     private static final Map<List<SampledHypergeometricDistribution>, SampledMultivariateHypergeometricDistribution> CACHE = new HashMap<List<SampledHypergeometricDistribution>, SampledMultivariateHypergeometricDistribution>();
 
     static SampledMultivariateHypergeometricDistribution get(
-            List<SampledHypergeometricDistribution> probabilityMassFunctions) {
+            List<SampledHypergeometricDistribution> probabilityMassFunctions, long populationSize,
+            int effectiveSampleSize, long numberOfIterations) {
         List<SampledHypergeometricDistribution> key = new ArrayList<SampledHypergeometricDistribution>(
                 probabilityMassFunctions);
         key.sort(new Comparator<SampledHypergeometricDistribution>() {
@@ -19,8 +20,10 @@ class SampledMultivariateHypergeometricDistributions {
                 return spmf0.getMedian().compareTo(spmf1.getMedian());
             }
         });
+        // TODO: Should verify the number of iterations of the cache contains the key.
         if (!CACHE.containsKey(key)) {
-            CACHE.put(key, new SampledMultivariateHypergeometricDistribution(probabilityMassFunctions));
+            CACHE.put(key, new SampledMultivariateHypergeometricDistribution(probabilityMassFunctions, populationSize,
+                    effectiveSampleSize, numberOfIterations));
         }
         return CACHE.get(key);
     }
