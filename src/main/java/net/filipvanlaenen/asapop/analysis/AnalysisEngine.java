@@ -9,6 +9,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 
 /**
@@ -80,9 +81,7 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
-        System.out.println("Number of opinion polls: " + opinionPolls.getOpinionPolls().size());
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
-            System.out.println(opinionPoll.getFieldworkEnd() + " " + opinionPoll.getPollingFirm());
             Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
             if (effectiveSampleSize != null) {
                 VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
@@ -94,24 +93,15 @@ public class AnalysisEngine {
                             (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE));
                 }
                 voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
-                List<SampledHypergeometricDistribution> probabilityMassFunctions = voteShareAnalysis
-                        .getProbabilityMassFunctions();
-                SampledMultivariateHypergeometricDistribution sampledMultivariateHypergeometricDistribution = SampledMultivariateHypergeometricDistributions
-                        .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, TEN_THOUSAND);
-                FirstRoundWinnersAnalysis frwa = new FirstRoundWinnersAnalysis(voteShareAnalysis,
-                        sampledMultivariateHypergeometricDistribution);
-                firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(), frwa);
-                for (Set<ElectoralList> electoralListSet : frwa.getElectoralListSets()) {
-                    String s = "";
-                    for (ElectoralList electoralList : electoralListSet) {
-                        s += electoralList.getKey() + ", ";
-                    }
-                    double p = frwa.getProbabilityMass(electoralListSet);
-                    if (p > 0.001D) {
-                        System.out.println(s + String.format("%,.2f", p) + "%");
-                    }
+                if (opinionPoll.getScope() == Scope.PresidentialFirstRound) {
+                    List<SampledHypergeometricDistribution> probabilityMassFunctions = voteShareAnalysis
+                            .getProbabilityMassFunctions();
+                    SampledMultivariateHypergeometricDistribution sampledMultivariateHypergeometricDistribution = SampledMultivariateHypergeometricDistributions
+                            .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, TEN_THOUSAND);
+                    FirstRoundWinnersAnalysis frwa = new FirstRoundWinnersAnalysis(voteShareAnalysis,
+                            sampledMultivariateHypergeometricDistribution);
+                    firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(), frwa);
                 }
-                System.out.println();
             }
         }
     }

@@ -13,6 +13,7 @@ import net.filipvanlaenen.asapop.analysis.VoteSharesAnalysis;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Builder class to build an <code>Analysis</code>.
@@ -99,19 +100,22 @@ public class AnalysisBuilder {
             resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
-        FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
-        FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
-                .getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
-        Map<Set<String>, Double> firstRoundProbabilityMassFunction = new HashMap<Set<String>, Double>();
-        for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
-            Set<String> electoralListKeySet = new HashSet<String>();
-            for (ElectoralList electoralList : electoralListSet) {
-                electoralListKeySet.add(electoralList.getKey());
+        if (poll.getScope() == Scope.PresidentialFirstRound) {
+            FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
+            FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
+                    .getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
+            Map<Set<String>, Double> firstRoundProbabilityMassFunction = new HashMap<Set<String>, Double>();
+            for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
+                Set<String> electoralListKeySet = new HashSet<String>();
+                for (ElectoralList electoralList : electoralListSet) {
+                    electoralListKeySet.add(electoralList.getKey());
+                }
+                firstRoundProbabilityMassFunction.put(electoralListKeySet,
+                        firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
             }
-            firstRoundProbabilityMassFunction.put(electoralListKeySet, firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+            firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
+            responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);
         }
-        firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
-        responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);
         return responseScenarioAnalysis;
     }
 
