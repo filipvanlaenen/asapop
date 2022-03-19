@@ -13,7 +13,7 @@ import java.util.Set;
 
 class SampledMultivariateHypergeometricDistribution {
     private final Map<SampledHypergeometricDistribution, Integer> probabilityMassFunctionCardinalities = new HashMap<SampledHypergeometricDistribution, Integer>();
-    private final Map<SampledHypergeometricDistribution, BigDecimal> accumulatedSingleWinnerProbabilityMasses = new HashMap<SampledHypergeometricDistribution, BigDecimal>();
+    private final Map<Integer, BigDecimal> accumulatedSingleWinnerProbabilityMasses = new HashMap<Integer, BigDecimal>();
     private final Map<SampledHypergeometricDistribution, Double> singleWinnerProbabilityMasses = new HashMap<SampledHypergeometricDistribution, Double>();
     private final Map<Set<Integer>, BigDecimal> accumulatedPairProbabilityMasses = new HashMap<Set<Integer>, BigDecimal>();
     private final Map<Set<SampledHypergeometricDistribution>, Double> pairProbabilityMasses = new HashMap<Set<SampledHypergeometricDistribution>, Double>();
@@ -39,11 +39,23 @@ class SampledMultivariateHypergeometricDistribution {
             sumOfProbabilityMasses = sumOfProbabilityMasses.add(mass, MathContext.DECIMAL128);
         }
         sumOfProbabilityMasses = sumOfProbabilityMasses.divide(new BigDecimal(100), MathContext.DECIMAL128);
-        for (SampledHypergeometricDistribution key : accumulatedSingleWinnerProbabilityMasses.keySet()) {
-            singleWinnerProbabilityMasses.put(key, accumulatedSingleWinnerProbabilityMasses.get(key)
-                    .divide(sumOfProbabilityMasses, MathContext.DECIMAL128).doubleValue());
+        for (Integer indexKey : accumulatedSingleWinnerProbabilityMasses.keySet()) {
+            SampledHypergeometricDistribution key = relevantProbabilityMassFunctions.get(indexKey);
+            if (singleWinnerProbabilityMasses.containsKey(key)) {
+                singleWinnerProbabilityMasses.put(key,
+                        singleWinnerProbabilityMasses.get(key) + accumulatedSingleWinnerProbabilityMasses.get(indexKey)
+                                .divide(sumOfProbabilityMasses, MathContext.DECIMAL128).doubleValue());
+
+            } else {
+                singleWinnerProbabilityMasses.put(key, accumulatedSingleWinnerProbabilityMasses.get(indexKey)
+                        .divide(sumOfProbabilityMasses, MathContext.DECIMAL128).doubleValue());
+            }
         }
-        // TODO: Adjust singleWinnerProbabilityMasses for cardinalities
+        Set<SampledHypergeometricDistribution> keys = singleWinnerProbabilityMasses.keySet();
+        for (SampledHypergeometricDistribution key : keys) {
+            singleWinnerProbabilityMasses.put(key,
+                    singleWinnerProbabilityMasses.get(key) / probabilityMassFunctionCardinalities.get(key));
+        }
         for (Set<Integer> key : accumulatedPairProbabilityMasses.keySet()) {
             Set<SampledHypergeometricDistribution> actualKey = new HashSet<SampledHypergeometricDistribution>();
             for (Integer i : key) {
@@ -76,12 +88,17 @@ class SampledMultivariateHypergeometricDistribution {
 
     private void runSimulations(Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
             SampledHypergeometricDistribution otherPmf, long populationSize) {
+        long halfPopulationSize = populationSize / 2L;
         // TODO: Eliminate use of random
         Random random = new Random();
         long i = 0;
         List<Range> otherRanges = rangesMap.get(otherPmf);
         long otherRangesUpperbound = otherRanges.get(otherRanges.size() - 1).getUpperBound();
         int numberOfRelevantProbabilityMassFunctions = relevantProbabilityMassFunctions.size();
+        /**
+         * Using SampledHypergeometricDistribution as a key is time consuming, hence we build a parallel list with
+         * ranges.
+         */
         List<List<Range>> rangesList = new ArrayList<List<Range>>();
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
             rangesList.add(rangesMap.get(probabilityMassFunction));
@@ -133,13 +150,21 @@ class SampledMultivariateHypergeometricDistribution {
                         }
                     }
                     p = p.multiply(otherPmf.getProbabilityMass(otherRange), MathContext.DECIMAL128);
-                    // TODO: Check for majority first
-                    Set<Integer> runoffPair = Set.of(firstIndex, secondIndex);
-                    if (accumulatedPairProbabilityMasses.containsKey(runoffPair)) {
-                        accumulatedPairProbabilityMasses.put(runoffPair,
-                                p.add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));
+                    if (firstRange.getMidpoint() > halfPopulationSize) {
+                        if (accumulatedSingleWinnerProbabilityMasses.containsKey(firstIndex)) {
+                            accumulatedSingleWinnerProbabilityMasses.put(firstIndex, p.add(
+                                    accumulatedSingleWinnerProbabilityMasses.get(firstIndex), MathContext.DECIMAL128));
+                        } else {
+                            accumulatedSingleWinnerProbabilityMasses.put(firstIndex, p);
+                        }
                     } else {
-                        accumulatedPairProbabilityMasses.put(runoffPair, p);
+                        Set<Integer> runoffPair = Set.of(firstIndex, secondIndex);
+                        if (accumulatedPairProbabilityMasses.containsKey(runoffPair)) {
+                            accumulatedPairProbabilityMasses.put(runoffPair,
+                                    p.add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));
+                        } else {
+                            accumulatedPairProbabilityMasses.put(runoffPair, p);
+                        }
                     }
                     i += 1;
                 }
