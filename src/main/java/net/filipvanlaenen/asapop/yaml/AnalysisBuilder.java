@@ -107,14 +107,16 @@ public class AnalysisBuilder {
                     .getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
             if (firstRoundWinnersAnalysis != null) {
                 FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
-                Map<Set<String>, Double> firstRoundProbabilityMassFunction = new HashMap<Set<String>, Double>();
+                Set<FirstRoundResultProbabilityMass> firstRoundProbabilityMassFunction  = new HashSet<FirstRoundResultProbabilityMass>();
                 for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
+                    FirstRoundResultProbabilityMass firstRoundResultAnalysis = new FirstRoundResultProbabilityMass();
                     Set<String> electoralListKeySet = new HashSet<String>();
                     for (ElectoralList electoralList : electoralListSet) {
                         electoralListKeySet.add(electoralList.getKey());
                     }
-                    firstRoundProbabilityMassFunction.put(electoralListKeySet,
-                            firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+                    firstRoundResultAnalysis.setElectoralLists(electoralListKeySet);
+                    firstRoundResultAnalysis.setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+                    firstRoundProbabilityMassFunction.add(firstRoundResultAnalysis);
                 }
                 firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
                 responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);

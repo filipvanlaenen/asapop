@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class FirstRoundAnalysis {
-    private Map<Set<String>, Double> probabilityMassFunction;
+    private Set<FirstRoundResultProbabilityMass> probabilityMassFunction;
 
-    public Map<Set<String>, Double> getProbabilityMassFunction() {
+    public Set<FirstRoundResultProbabilityMass> getProbabilityMassFunction() {
         return probabilityMassFunction;
     }
 
-    public void setProbabilityMassFunction(final Map<Set<String>, Double> probabilityMassFunction) {
+    public void setProbabilityMassFunction(final Set<FirstRoundResultProbabilityMass> probabilityMassFunction) {
         this.probabilityMassFunction = probabilityMassFunction;
     }
 }
