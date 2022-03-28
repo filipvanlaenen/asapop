@@ -13,7 +13,7 @@ public class ResponseScenarioAnalysis {
      */
     private String area;
     /**
-     * The analysis of the first round.
+     * The analysis of the first round of a presidential election.
      */
     private FirstRoundAnalysis firstRoundAnalysis;
     /**
@@ -38,6 +38,11 @@ public class ResponseScenarioAnalysis {
         return area;
     }
 
+    /**
+     * Returns the analysis of the first round of a presidential election.
+     *
+     * @return The analysis of the first round of a presidential election.
+     */
     public FirstRoundAnalysis getFirstRoundAnalysis() {
         return firstRoundAnalysis;
     }
@@ -78,6 +83,11 @@ public class ResponseScenarioAnalysis {
         this.area = area;
     }
 
+    /**
+     * Sets the analysis of the first round of a presidential election.
+     *
+     * @param firstRoundAnalysis The analysis of the first round of a presidential election.
+     */
     public void setFirstRoundAnalysis(final FirstRoundAnalysis firstRoundAnalysis) {
         this.firstRoundAnalysis = firstRoundAnalysis;
     }

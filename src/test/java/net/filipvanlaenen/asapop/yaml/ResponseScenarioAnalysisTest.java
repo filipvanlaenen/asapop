@@ -55,4 +55,16 @@ public class ResponseScenarioAnalysisTest {
         responseScenarioAnalysis.setScope("SCOPE");
         assertEquals("SCOPE", responseScenarioAnalysis.getScope());
     }
+
+    /**
+     * Verifies that the getter method <code>getFirstRoundAnalysis</code> is wired correctly to the setter method
+     * <code>setFirstRoundAnalysis</code>.
+     */
+    @Test
+    public void getFirstRoundAnalysisShouldBeWiredCorrectlyToSetFirstRoundAnalysis() {
+        ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
+        FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
+        responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);
+        assertEquals(firstRoundAnalysis, responseScenarioAnalysis.getFirstRoundAnalysis());
+    }
 }
