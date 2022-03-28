@@ -3,7 +3,6 @@ package net.filipvanlaenen.asapop.analysis;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -81,7 +80,19 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
+        Map<String, OpinionPoll> latestPolls = new HashMap<String, OpinionPoll>();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
+            String pollingFirm = opinionPoll.getPollingFirm();
+            if (latestPolls.containsKey(pollingFirm)) {
+                if (latestPolls.get(pollingFirm).getFieldworkEnd().getEnd()
+                        .compareTo(opinionPoll.getFieldworkEnd().getEnd()) < 0) {
+                    latestPolls.put(pollingFirm, opinionPoll);
+                }
+            } else {
+                latestPolls.put(pollingFirm, opinionPoll);
+            }
+        }
+        for (OpinionPoll opinionPoll : latestPolls.values()) {
             Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
             if (effectiveSampleSize != null) {
                 VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();

@@ -94,27 +94,31 @@ public class AnalysisBuilder {
         ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
         responseScenarioAnalysis.setArea(poll.getArea());
         responseScenarioAnalysis.setScope(nullOrToString(poll.getScope()));
-        Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
         VoteSharesAnalysis voteSharesAnalysis = engine.getVoteSharesAnalysis(poll.getMainResponseScenario());
-        for (ElectoralList electoralList : poll.getElectoralLists()) {
-            resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
+        if (voteSharesAnalysis != null) {
+            Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
+            for (ElectoralList electoralList : poll.getElectoralLists()) {
+                resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
+            }
+            responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         }
-        responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         if (poll.getScope() == Scope.PresidentialFirstRound) {
-            FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
             FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
                     .getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
-            Map<Set<String>, Double> firstRoundProbabilityMassFunction = new HashMap<Set<String>, Double>();
-            for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
-                Set<String> electoralListKeySet = new HashSet<String>();
-                for (ElectoralList electoralList : electoralListSet) {
-                    electoralListKeySet.add(electoralList.getKey());
+            if (firstRoundWinnersAnalysis != null) {
+                FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
+                Map<Set<String>, Double> firstRoundProbabilityMassFunction = new HashMap<Set<String>, Double>();
+                for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
+                    Set<String> electoralListKeySet = new HashSet<String>();
+                    for (ElectoralList electoralList : electoralListSet) {
+                        electoralListKeySet.add(electoralList.getKey());
+                    }
+                    firstRoundProbabilityMassFunction.put(electoralListKeySet,
+                            firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
                 }
-                firstRoundProbabilityMassFunction.put(electoralListKeySet,
-                        firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+                firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
+                responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);
             }
-            firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
-            responseScenarioAnalysis.setFirstRoundAnalysis(firstRoundAnalysis);
         }
         return responseScenarioAnalysis;
     }
