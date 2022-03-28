@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -114,18 +115,18 @@ public class SortableProbabilityMassFunctionTest {
     }
 
     /**
-     * Verifies that the 80% confidence interval [0, 0] is calculated correctly for a hypergeometric distribution of 0
+     * Verifies that the 81% confidence interval [0, 2] is calculated correctly for a hypergeometric distribution of 0
      * out of 8 in a population of 9.
      */
     @Test
-    public void confidenceInterval81ShouldBe0To0ForHypergeometricDistribution0OutOf8In9() {
+    public void confidenceInterval81ShouldBe0To2ForHypergeometricDistribution0OutOf8In9() {
         HypergeometricDistribution binomialDistribution = new HypergeometricDistribution(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 2L),
                 binomialDistribution.getConfidenceInterval(EIGHTY_ONE_PERCENT));
     }
 
     /**
-     * Verifies that the 91% confidence interval [0, 1] is calculated correctly for a hypergeometric distribution of 0
+     * Verifies that the 79% confidence interval [0, 1] is calculated correctly for a hypergeometric distribution of 0
      * out of 8 in a population of 9.
      */
     @Test
@@ -133,6 +134,16 @@ public class SortableProbabilityMassFunctionTest {
         HypergeometricDistribution binomialDistribution = new HypergeometricDistribution(0L, EIGHT, NINE);
         assertEquals(new ConfidenceInterval<Long>(0L, 1L),
                 binomialDistribution.getConfidenceInterval(SEVENTY_NINE_PERCENT));
+    }
+
+    /**
+     * Verifies that the 81% confidence interval key list [0, 1, 2] is calculated correctly for a hypergeometric
+     * distribution of 0 out of 8 in a population of 9.
+     */
+    @Test
+    public void confidenceInterval81KeyListShouldBe0To2ForHypergeometricDistribution0OutOf8In9() {
+        HypergeometricDistribution binomialDistribution = new HypergeometricDistribution(0L, EIGHT, NINE);
+        assertEquals(List.of(0L, 1L, 2L), binomialDistribution.getConfidenceIntervalKeyList(EIGHTY_ONE_PERCENT));
     }
 
     /**
