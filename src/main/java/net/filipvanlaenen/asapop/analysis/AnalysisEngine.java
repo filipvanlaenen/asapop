@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,66 @@ public class AnalysisEngine {
         firstRoundWinnersAnalyses = new HashMap<ResponseScenario, FirstRoundWinnersAnalysis>();
     }
 
+    /**
+     * Calculates the first round winners analysis.
+     *
+     * @param voteSharesAnalysis  The vote shares analysis.
+     * @param effectiveSampleSize The effective sample size of the response scenario.
+     * @return The first round winners analysis.
+     */
+    private FirstRoundWinnersAnalysis calculateFirstRoundWinnersAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
+            final Integer effectiveSampleSize) {
+        List<SampledHypergeometricDistribution> probabilityMassFunctions = voteSharesAnalysis
+                .getProbabilityMassFunctions();
+        return new FirstRoundWinnersAnalysis(voteSharesAnalysis, SampledMultivariateHypergeometricDistributions
+                .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, TEN_THOUSAND));
+    }
+
+    /**
+     * Calculates the most recent polls, i.e. for each polling firm the most recent poll.
+     *
+     * @return A collection with the most recent polls.
+     */
+    private Collection<OpinionPoll> calculateMostRecentPolls() {
+        Map<String, OpinionPoll> mostRecentPollMap = new HashMap<String, OpinionPoll>();
+        for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
+            String pollingFirm = opinionPoll.getPollingFirm();
+            if (mostRecentPollMap.containsKey(pollingFirm)) {
+                if (mostRecentPollMap.get(pollingFirm).getFieldworkEnd().getEnd()
+                        .compareTo(opinionPoll.getFieldworkEnd().getEnd()) < 0) {
+                    mostRecentPollMap.put(pollingFirm, opinionPoll);
+                }
+            } else {
+                mostRecentPollMap.put(pollingFirm, opinionPoll);
+            }
+        }
+        return mostRecentPollMap.values();
+    }
+
+    /**
+     * Calculates the vote shares analysis for an opinion poll.
+     *
+     * @param opinionPoll The opinion poll.
+     * @return The vote shares analysis.
+     */
+    private VoteSharesAnalysis calculateVoteSharesAnalysis(final OpinionPoll opinionPoll) {
+        Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
+        VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
+        for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
+            double result = Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText());
+            Long sampled = Math.round(result * effectiveSampleSize / HUNDRED);
+            voteShareAnalysis.add(electoralList, SampledHypergeometricDistributions.get(sampled,
+                    (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE));
+        }
+        return voteShareAnalysis;
+    }
+
+    /**
+     * Returns the first round winners analysis for a response scenario.
+     *
+     * @param responseScenario The response scenario for which to return the vote shares analysis.
+     * @return The first round winners analysis for the response scenario.
+     */
     public FirstRoundWinnersAnalysis getFirstRoundWinnersAnalysis(final ResponseScenario responseScenario) {
         return firstRoundWinnersAnalyses.get(responseScenario);
     }
@@ -70,7 +131,7 @@ public class AnalysisEngine {
      * Returns the vote shares analysis for a response scenario.
      *
      * @param responseScenario The response scenario for which to return the vote shares analysis.
-     * @return The vote shares analysis for the opinion poll.
+     * @return The vote shares analysis for the response scenario.
      */
     public VoteSharesAnalysis getVoteSharesAnalysis(final ResponseScenario responseScenario) {
         return voteSharesAnalyses.get(responseScenario);
@@ -80,38 +141,14 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
-        Map<String, OpinionPoll> latestPolls = new HashMap<String, OpinionPoll>();
-        for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
-            String pollingFirm = opinionPoll.getPollingFirm();
-            if (latestPolls.containsKey(pollingFirm)) {
-                if (latestPolls.get(pollingFirm).getFieldworkEnd().getEnd()
-                        .compareTo(opinionPoll.getFieldworkEnd().getEnd()) < 0) {
-                    latestPolls.put(pollingFirm, opinionPoll);
-                }
-            } else {
-                latestPolls.put(pollingFirm, opinionPoll);
-            }
-        }
-        for (OpinionPoll opinionPoll : latestPolls.values()) {
+        for (OpinionPoll opinionPoll : calculateMostRecentPolls()) {
             Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
             if (effectiveSampleSize != null) {
-                VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
-                for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
-                    Long sampled = Math
-                            .round(Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText())
-                                    * effectiveSampleSize / HUNDRED);
-                    voteShareAnalysis.add(electoralList, SampledHypergeometricDistributions.get(sampled,
-                            (long) effectiveSampleSize, TEN_THOUSAND, POPULATION_SIZE));
-                }
+                VoteSharesAnalysis voteShareAnalysis = calculateVoteSharesAnalysis(opinionPoll);
                 voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
                 if (opinionPoll.getScope() == Scope.PresidentialFirstRound) {
-                    List<SampledHypergeometricDistribution> probabilityMassFunctions = voteShareAnalysis
-                            .getProbabilityMassFunctions();
-                    SampledMultivariateHypergeometricDistribution sampledMultivariateHypergeometricDistribution = SampledMultivariateHypergeometricDistributions
-                            .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, TEN_THOUSAND);
-                    FirstRoundWinnersAnalysis frwa = new FirstRoundWinnersAnalysis(voteShareAnalysis,
-                            sampledMultivariateHypergeometricDistribution);
-                    firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(), frwa);
+                    firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(),
+                            calculateFirstRoundWinnersAnalysis(voteShareAnalysis, effectiveSampleSize));
                 }
             }
         }
