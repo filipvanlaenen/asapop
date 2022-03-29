@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -82,5 +83,55 @@ public class AnalysisEngineTest {
         VoteSharesAnalysis expected = new VoteSharesAnalysis();
         expected.add(ElectoralList.get("A"), probabilityMassFunction);
         assertEquals(expected, engine.getVoteSharesAnalysis(opinionPoll.getMainResponseScenario()));
+    }
+
+    /**
+     * Verifies that when only one poll is registered, it is returned as the most recent poll.
+     */
+    @Test
+    public void shouldReturnSinglePollAsMostRecentPoll() {
+        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
+                .build();
+        OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
+        ElectionData electionData = new ElectionData();
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
+        assertEquals(Set.of(opinionPoll), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+    }
+
+    /**
+     * Verifies that when two polls by the same polling firm are registered, the most recent one is returned as the most
+     * recent poll.
+     */
+    @Test
+    public void shouldReturnMostRecentOfTwoOpinionPolls() {
+        OpinionPoll opinionPoll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
+                .build();
+        OpinionPoll opinionPoll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-28")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
+                .build();
+        OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
+        ElectionData electionData = new ElectionData();
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
+        assertEquals(Set.of(opinionPoll1), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+    }
+
+    /**
+     * Verifies that when two polls by different polling firms are registered, both are returned as the most recent
+     * polls.
+     */
+    @Test
+    public void shouldReturnMostRecentOpinionPollsOfBothPollingFirms() {
+        OpinionPoll opinionPoll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
+                .build();
+        OpinionPoll opinionPoll2 = new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkEnd("2022-03-28")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
+                .build();
+        OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
+        ElectionData electionData = new ElectionData();
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
+        assertEquals(Set.of(opinionPoll1, opinionPoll2), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
     }
 }

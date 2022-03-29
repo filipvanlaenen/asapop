@@ -74,7 +74,7 @@ public class AnalysisEngine {
      *
      * @return A collection with the most recent polls.
      */
-    private Collection<OpinionPoll> calculateMostRecentPolls() {
+    Collection<OpinionPoll> calculateMostRecentPolls() {
         Map<String, OpinionPoll> mostRecentPollMap = new HashMap<String, OpinionPoll>();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             String pollingFirm = opinionPoll.getPollingFirm();
