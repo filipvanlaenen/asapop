@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,15 +29,25 @@ public class VoteSharesAnalysisTest {
      */
     private static final long TEN = 10L;
     /**
+     * A probability mass function for testing purposes.
+     */
+    private static SampledHypergeometricDistribution probabilityMassFunction1;
+    /**
+     * Another probability mass function for testing purposes.
+     */
+    private static SampledHypergeometricDistribution probabilityMassFunction2;
+    /**
      * The vote shares analysis object to run the tests on.
      */
     private static VoteSharesAnalysis voteSharesAnalysis;
 
     /**
-     * Initializes the test objects.
+     * Initializes the VoteSharesAnalysis test object.
      */
     @BeforeAll
     public static void createVoteSharesAnalysis() {
+        probabilityMassFunction1 = SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN);
+        probabilityMassFunction2 = SampledHypergeometricDistributions.get(2L, FOUR, FIVE, TEN);
         voteSharesAnalysis = createVoteSharesAnalysisObject();
     }
 
@@ -45,10 +58,8 @@ public class VoteSharesAnalysisTest {
      */
     public static VoteSharesAnalysis createVoteSharesAnalysisObject() {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
-        voteSharesAnalysisObject.add(ElectoralList.get("A"),
-                SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN));
-        voteSharesAnalysisObject.add(ElectoralList.get("B"),
-                SampledHypergeometricDistributions.get(2L, FOUR, FIVE, TEN));
+        voteSharesAnalysisObject.add(ElectoralList.get("A"), probabilityMassFunction1);
+        voteSharesAnalysisObject.add(ElectoralList.get("B"), probabilityMassFunction2);
         return voteSharesAnalysisObject;
     }
 
@@ -57,8 +68,26 @@ public class VoteSharesAnalysisTest {
      */
     @Test
     public void shouldReturnTheCorrectProbabilityMassFunctionForAnElectoralList() {
-        assertEquals(SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN),
-                voteSharesAnalysis.getProbabilityMassFunction(ElectoralList.get("A")));
+        assertEquals(probabilityMassFunction1, voteSharesAnalysis.getProbabilityMassFunction(ElectoralList.get("A")));
+    }
+
+    /**
+     * Verifies that the electoral lists are returned.
+     */
+    @Test
+    public void shouldReturnTheElectoralLists() {
+        assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), voteSharesAnalysis.getElectoralLists());
+    }
+
+    /**
+     * Verifies that the probability mass functions are returned.
+     */
+    @Test
+    public void shouldReturnTheProbabilityMassFunctions() {
+        assertTrue(Set
+                .of(List.of(probabilityMassFunction1, probabilityMassFunction2),
+                        List.of(probabilityMassFunction2, probabilityMassFunction1))
+                .contains(voteSharesAnalysis.getProbabilityMassFunctions()));
     }
 
     /**

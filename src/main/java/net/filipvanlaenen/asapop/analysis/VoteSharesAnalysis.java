@@ -16,7 +16,14 @@ public final class VoteSharesAnalysis {
     /**
      * A map containing a probability mass function per electoral list.
      */
-    private final Map<ElectoralList, SampledHypergeometricDistribution> probabilityMassFunctions = new HashMap<ElectoralList, SampledHypergeometricDistribution>();
+    private final Map<ElectoralList, SampledHypergeometricDistribution> probabilityMassFunctions;
+
+    /**
+     * Default constructor.
+     */
+    public VoteSharesAnalysis() {
+        probabilityMassFunctions = new HashMap<ElectoralList, SampledHypergeometricDistribution>();
+    }
 
     /**
      * Adds an electoral list with its probability mass function.
@@ -38,6 +45,11 @@ public final class VoteSharesAnalysis {
         }
     }
 
+    /**
+     * Returns the electoral lists.
+     *
+     * @return The electoral lists.
+     */
     Set<ElectoralList> getElectoralLists() {
         return probabilityMassFunctions.keySet();
     }
@@ -52,6 +64,13 @@ public final class VoteSharesAnalysis {
         return probabilityMassFunctions.get(electoralList);
     }
 
+    /**
+     * Returns a list with the probability mass functions.
+     *
+     * A list and not a set is returned because there may be duplicates.
+     *
+     * @return A list with the probability mass functions.
+     */
     List<SampledHypergeometricDistribution> getProbabilityMassFunctions() {
         return new ArrayList<SampledHypergeometricDistribution>(probabilityMassFunctions.values());
     }
