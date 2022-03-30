@@ -1,9 +1,12 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -75,19 +78,31 @@ public class AnalysisEngine {
      * @return A collection with the most recent polls.
      */
     Collection<OpinionPoll> calculateMostRecentPolls() {
-        Map<String, OpinionPoll> mostRecentPollMap = new HashMap<String, OpinionPoll>();
+        Map<String, Set<OpinionPoll>> mostRecentPollMap = new HashMap<String, Set<OpinionPoll>>();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             String pollingFirm = opinionPoll.getPollingFirm();
             if (mostRecentPollMap.containsKey(pollingFirm)) {
-                if (mostRecentPollMap.get(pollingFirm).getFieldworkEnd().getEnd()
-                        .compareTo(opinionPoll.getFieldworkEnd().getEnd()) < 0) {
-                    mostRecentPollMap.put(pollingFirm, opinionPoll);
+                LocalDate mostRecentDate = mostRecentPollMap.get(pollingFirm).iterator().next().getFieldworkEnd()
+                        .getEnd();
+                int moreRecent = mostRecentDate.compareTo(opinionPoll.getFieldworkEnd().getEnd());
+                if (moreRecent < 0) {
+                    Set<OpinionPoll> value = new HashSet<OpinionPoll>();
+                    value.add(opinionPoll);
+                    mostRecentPollMap.put(pollingFirm, value);
+                } else if (moreRecent == 0) {
+                    mostRecentPollMap.get(pollingFirm).add(opinionPoll);
                 }
             } else {
-                mostRecentPollMap.put(pollingFirm, opinionPoll);
+                Set<OpinionPoll> value = new HashSet<OpinionPoll>();
+                value.add(opinionPoll);
+                mostRecentPollMap.put(pollingFirm, value);
             }
         }
-        return mostRecentPollMap.values();
+        Set<OpinionPoll> result = new HashSet<OpinionPoll>();
+        for (Set<OpinionPoll> value : mostRecentPollMap.values()) {
+            result.addAll(value);
+        }
+        return result;
     }
 
     /**

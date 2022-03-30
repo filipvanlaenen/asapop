@@ -134,4 +134,22 @@ public class AnalysisEngineTest {
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         assertEquals(Set.of(opinionPoll1, opinionPoll2), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
     }
+
+    /**
+     * Verifies that when two polls by the same polling firm are registered with the same end date, both are returned as
+     * the most recent polls.
+     */
+    @Test
+    public void shouldReturnBothRecentOpinionPollsOfPollingFirm() {
+        OpinionPoll opinionPoll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
+                .build();
+        OpinionPoll opinionPoll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
+                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("26"))
+                .build();
+        OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
+        ElectionData electionData = new ElectionData();
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
+        assertEquals(Set.of(opinionPoll1, opinionPoll2), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+    }
 }
