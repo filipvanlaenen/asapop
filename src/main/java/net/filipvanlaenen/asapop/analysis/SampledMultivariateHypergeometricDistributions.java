@@ -36,7 +36,7 @@ final class SampledMultivariateHypergeometricDistributions {
      */
     static SampledMultivariateHypergeometricDistribution get(
             final List<SampledHypergeometricDistribution> probabilityMassFunctions, final long populationSize,
-            final int sampleSize, final long minimalNumberOfIterations) {
+            final long sampleSize, final long minimalNumberOfIterations) {
         List<SampledHypergeometricDistribution> key = new ArrayList<SampledHypergeometricDistribution>(
                 probabilityMassFunctions);
         key.sort(new Comparator<SampledHypergeometricDistribution>() {

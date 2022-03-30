@@ -21,7 +21,7 @@ class SampledMultivariateHypergeometricDistribution {
     private long numberOfIterations;
 
     SampledMultivariateHypergeometricDistribution(List<SampledHypergeometricDistribution> probabilityMassFunctions,
-            long populationSize, int effectiveSampleSize, final long numberOfIterations) {
+            long populationSize, long effectiveSampleSize, final long numberOfIterations) {
         calculateCardinalities(probabilityMassFunctions);
         filterRelevantProbabilityFunctions(probabilityMassFunctions);
         SampledHypergeometricDistribution otherPmf = calculateProbabilityMassFunctionForOthers(populationSize,
@@ -186,7 +186,7 @@ class SampledMultivariateHypergeometricDistribution {
     }
 
     private SampledHypergeometricDistribution calculateProbabilityMassFunctionForOthers(long populationSize,
-            int effectiveSampleSize, long numberOfIterations) {
+            long effectiveSampleSize, long numberOfIterations) {
         long others = populationSize;
         // TODO: Should be calculated based on the numbers registered in the poll, not the medians from the PMFs
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
