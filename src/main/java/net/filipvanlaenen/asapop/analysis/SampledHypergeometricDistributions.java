@@ -21,14 +21,14 @@ final class SampledHypergeometricDistributions {
     }
 
     /**
-     * Returns a hypergeometric distribution for a given value measured in a sample size for a population size, with at
-     * least a given number of samples.
+     * Returns a sampled hypergeometric distribution for a given value measured in a sample size for a population size,
+     * with at least a given number of samples.
      *
      * @param value                  The measured value.
      * @param sampleSize             The sample size.
      * @param minimalNumberOfSamples The number of samples.
      * @param populationSize         The population size.
-     * @return A hypergeometric distribution.
+     * @return A sampled hypergeometric distribution.
      */
     static SampledHypergeometricDistribution get(final Long value, final Long sampleSize,
             final Long minimalNumberOfSamples, final Long populationSize) {

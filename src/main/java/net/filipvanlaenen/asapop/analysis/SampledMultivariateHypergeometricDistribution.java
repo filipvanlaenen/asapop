@@ -18,6 +18,7 @@ class SampledMultivariateHypergeometricDistribution {
     private final Map<Set<Integer>, BigDecimal> accumulatedPairProbabilityMasses = new HashMap<Set<Integer>, BigDecimal>();
     private final Map<Set<SampledHypergeometricDistribution>, Double> pairProbabilityMasses = new HashMap<Set<SampledHypergeometricDistribution>, Double>();
     private final List<SampledHypergeometricDistribution> relevantProbabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
+    private long numberOfIterations;
 
     SampledMultivariateHypergeometricDistribution(List<SampledHypergeometricDistribution> probabilityMassFunctions,
             long populationSize, int effectiveSampleSize, final long numberOfIterations) {
@@ -87,11 +88,11 @@ class SampledMultivariateHypergeometricDistribution {
     }
 
     private void runSimulations(Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
-            SampledHypergeometricDistribution otherPmf, long populationSize, final long numberOfIterations) {
+            SampledHypergeometricDistribution otherPmf, long populationSize, final long requestedNumberOfIterations) {
         long halfPopulationSize = populationSize / 2L;
         // TODO: Eliminate use of random
         Random random = new Random();
-        long i = 0;
+        numberOfIterations = 0;
         List<Range> otherRanges = rangesMap.get(otherPmf);
         long otherRangesUpperbound = otherRanges.get(otherRanges.size() - 1).getUpperBound();
         int numberOfRelevantProbabilityMassFunctions = relevantProbabilityMassFunctions.size();
@@ -103,7 +104,7 @@ class SampledMultivariateHypergeometricDistribution {
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
             rangesList.add(rangesMap.get(probabilityMassFunction));
         }
-        while (i < numberOfIterations) {
+        while (numberOfIterations < requestedNumberOfIterations) {
             BigDecimal p = BigDecimal.ONE;
             long sumOfMidpoints = 0;
             Range firstRange = null;
@@ -166,7 +167,7 @@ class SampledMultivariateHypergeometricDistribution {
                             accumulatedPairProbabilityMasses.put(runoffPair, p);
                         }
                     }
-                    i += 1;
+                    numberOfIterations += 1;
                 }
             }
         }
@@ -226,6 +227,10 @@ class SampledMultivariateHypergeometricDistribution {
         }
     }
 
+    long getNumberOfIterations() {
+        return numberOfIterations;
+    }
+
     double getProbabilityMass(SampledHypergeometricDistribution of) {
         if (singleWinnerProbabilityMasses.containsKey(of)) {
             return singleWinnerProbabilityMasses.get(of);
@@ -242,4 +247,5 @@ class SampledMultivariateHypergeometricDistribution {
             return 0D;
         }
     }
+
 }
