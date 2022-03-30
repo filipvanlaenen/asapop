@@ -11,24 +11,104 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * Class representing a multivariate hypergeometric distribution, but sampled.
+ */
 class SampledMultivariateHypergeometricDistribution {
-    private final Map<SampledHypergeometricDistribution, Integer> probabilityMassFunctionCardinalities = new HashMap<SampledHypergeometricDistribution, Integer>();
-    private final Map<Integer, BigDecimal> accumulatedSingleWinnerProbabilityMasses = new HashMap<Integer, BigDecimal>();
-    private final Map<SampledHypergeometricDistribution, Double> singleWinnerProbabilityMasses = new HashMap<SampledHypergeometricDistribution, Double>();
-    private final Map<Set<Integer>, BigDecimal> accumulatedPairProbabilityMasses = new HashMap<Set<Integer>, BigDecimal>();
-    private final Map<Set<SampledHypergeometricDistribution>, Double> pairProbabilityMasses = new HashMap<Set<SampledHypergeometricDistribution>, Double>();
-    private final List<SampledHypergeometricDistribution> relevantProbabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
+    /**
+     * A map with the cardinalities for each of the unique probability mass functions.
+     */
+    private final Map<SampledHypergeometricDistribution, Integer> probabilityMassFunctionCardinalities;
+    /**
+     * A map with the accumulated probability masses for the probability mass functions as single winners of the first
+     * round, with equal probability mass functions combined together.
+     */
+    private final Map<Integer, BigDecimal> accumulatedSingleWinnerProbabilityMasses;
+    /**
+     * A map with the probability masses for the probability mass functions as single winners of the first round.
+     */
+    private final Map<SampledHypergeometricDistribution, Double> singleWinnerProbabilityMasses;
+    /**
+     * A map with the accumulated probability masses for pairs of probability mass functions as winners of the first
+     * round, with equal probability mass functions combined together.
+     */
+    private final Map<Set<Integer>, BigDecimal> accumulatedPairProbabilityMasses;
+    /**
+     * A map with the probability masses for the probability mass function pairs as winners of the first round.
+     */
+    private final Map<Set<SampledHypergeometricDistribution>, Double> pairProbabilityMasses;
+    /**
+     * A list with the probability mass functions with a non-zero probability of winning the first round.
+     */
+    private final List<SampledHypergeometricDistribution> relevantProbabilityMassFunctions;
+    /**
+     * The number of iterations performed.
+     */
     private long numberOfIterations;
 
-    SampledMultivariateHypergeometricDistribution(List<SampledHypergeometricDistribution> probabilityMassFunctions,
-            long populationSize, long effectiveSampleSize, final long numberOfIterations) {
+    /**
+     * Creates a sampled multivariate hypergeometric distribution based on a set of probability mass functions for an
+     * sample size in a population size, for a requested number of iterations.
+     *
+     * @param probabilityMassFunctions    The probability mass functions to base the sampled multivariate hypergeometric
+     *                                    distribution on.
+     * @param populationSize              The population size.
+     * @param sampleSize                  The sample size.
+     * @param requestedNumberOfIterations The requested number of iterations.
+     */
+    SampledMultivariateHypergeometricDistribution(
+            final List<SampledHypergeometricDistribution> probabilityMassFunctions, final long populationSize,
+            final long sampleSize, final long requestedNumberOfIterations) {
+        probabilityMassFunctionCardinalities = new HashMap<SampledHypergeometricDistribution, Integer>();
+        accumulatedSingleWinnerProbabilityMasses = new HashMap<Integer, BigDecimal>();
+        singleWinnerProbabilityMasses = new HashMap<SampledHypergeometricDistribution, Double>();
+        accumulatedPairProbabilityMasses = new HashMap<Set<Integer>, BigDecimal>();
+        pairProbabilityMasses = new HashMap<Set<SampledHypergeometricDistribution>, Double>();
+        relevantProbabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
         calculateCardinalities(probabilityMassFunctions);
         filterRelevantProbabilityFunctions(probabilityMassFunctions);
         SampledHypergeometricDistribution otherPmf = calculateProbabilityMassFunctionForOthers(populationSize,
-                effectiveSampleSize, numberOfIterations);
+                sampleSize);
         Map<SampledHypergeometricDistribution, List<Range>> ranges = calculateRanges(otherPmf);
-        runSimulations(ranges, otherPmf, populationSize, numberOfIterations);
+        runSimulations(ranges, otherPmf, populationSize, requestedNumberOfIterations);
         convertAccumulatedProbabilityMassesToProbabilityMasses();
+    }
+
+    private void calculateCardinalities(final List<SampledHypergeometricDistribution> probabilityMassFunctions) {
+        for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
+            if (probabilityMassFunctionCardinalities.containsKey(probabilityMassFunction)) {
+                probabilityMassFunctionCardinalities.put(probabilityMassFunction,
+                        probabilityMassFunctionCardinalities.get(probabilityMassFunction) + 1);
+            } else {
+                probabilityMassFunctionCardinalities.put(probabilityMassFunction, 1);
+            }
+        }
+    }
+
+    private SampledHypergeometricDistribution calculateProbabilityMassFunctionForOthers(final long populationSize,
+            final long effectiveSampleSize) {
+        long others = populationSize;
+        // TODO: Should be calculated based on the numbers registered in the poll, not the medians from the PMFs
+        for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
+            others -= probabilityMassFunction.getMedian().getMidpoint();
+        }
+        Long sampled = Math.round(((double) others * effectiveSampleSize) / populationSize);
+        // TODO: Should be according to the precision (1, 0.5 or 0.1).
+        long numberOfIterations = relevantProbabilityMassFunctions.iterator().next().getNumberOfSamples();
+        return SampledHypergeometricDistributions.get(sampled, (long) effectiveSampleSize, numberOfIterations,
+                populationSize);
+    }
+
+    private Map<SampledHypergeometricDistribution, List<Range>> calculateRanges(
+            final SampledHypergeometricDistribution otherPmf) {
+        Map<SampledHypergeometricDistribution, List<Range>> ranges = new HashMap<SampledHypergeometricDistribution, List<Range>>();
+        ranges.put(otherPmf, otherPmf.getConfidenceIntervalKeyList(0.999999));
+        for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
+            if (!ranges.containsKey(probabilityMassFunction)) {
+                ranges.put(probabilityMassFunction, probabilityMassFunction.getConfidenceIntervalKeyList(0.999999));
+            }
+        }
+        return ranges;
     }
 
     private void convertAccumulatedProbabilityMassesToProbabilityMasses() {
@@ -87,8 +167,68 @@ class SampledMultivariateHypergeometricDistribution {
         }
     }
 
-    private void runSimulations(Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
-            SampledHypergeometricDistribution otherPmf, long populationSize, final long requestedNumberOfIterations) {
+    private void filterRelevantProbabilityFunctions(
+            final List<SampledHypergeometricDistribution> probabilityMassFunctions) {
+        if (probabilityMassFunctions.size() <= 2) {
+            return;
+        }
+        List<Long> lowerBounds = new ArrayList<Long>();
+        for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
+            lowerBounds.add(probabilityMassFunction.getConfidenceInterval(0.999999).getLowerBound().getLowerBound());
+        }
+        Collections.sort(lowerBounds);
+        Collections.reverse(lowerBounds);
+        long lowerBound = lowerBounds.get(1);
+        for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
+            if (probabilityMassFunction.getConfidenceInterval(0.999999).getUpperBound().getUpperBound() >= lowerBound) {
+                relevantProbabilityMassFunctions.add(probabilityMassFunction);
+            }
+        }
+    }
+
+    /**
+     * Returns the number of iterations performed.
+     *
+     * @return The number of iterations performed.
+     */
+    long getNumberOfIterations() {
+        return numberOfIterations;
+    }
+
+    /**
+     * Returns the probability mass for a probability mass function as a single winner of the first round.
+     *
+     * @param pmf The probability mass function.
+     * @return The probability mass for a probability mass function as a single winner of the first round.
+     */
+    double getProbabilityMass(final SampledHypergeometricDistribution pmf) {
+        if (singleWinnerProbabilityMasses.containsKey(pmf)) {
+            return singleWinnerProbabilityMasses.get(pmf);
+        } else {
+            return 0D;
+        }
+    }
+
+    /**
+     * Returns the probability mass for a pair of probability mass functions as winners of the first round.
+     *
+     * @param pmf1 A probability mass function.
+     * @param pmf2 A probability mass function.
+     * @return The probability mass for a pair of probability mass functions as winners of the first round.
+     */
+    double getProbabilityMass(final SampledHypergeometricDistribution pmf1,
+            final SampledHypergeometricDistribution pmf2) {
+        Set<SampledHypergeometricDistribution> key = pmf1.equals(pmf2) ? Set.of(pmf1) : Set.of(pmf1, pmf2);
+        if (pairProbabilityMasses.containsKey(key)) {
+            return pairProbabilityMasses.get(key);
+        } else {
+            return 0D;
+        }
+    }
+
+    private void runSimulations(final Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
+            final SampledHypergeometricDistribution otherPmf, final long populationSize,
+            final long requestedNumberOfIterations) {
         long halfPopulationSize = populationSize / 2L;
         // TODO: Eliminate use of random
         Random random = new Random();
@@ -172,80 +312,4 @@ class SampledMultivariateHypergeometricDistribution {
             }
         }
     }
-
-    private Map<SampledHypergeometricDistribution, List<Range>> calculateRanges(
-            SampledHypergeometricDistribution otherPmf) {
-        Map<SampledHypergeometricDistribution, List<Range>> ranges = new HashMap<SampledHypergeometricDistribution, List<Range>>();
-        ranges.put(otherPmf, otherPmf.getConfidenceIntervalKeyList(0.999999));
-        for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
-            if (!ranges.containsKey(probabilityMassFunction)) {
-                ranges.put(probabilityMassFunction, probabilityMassFunction.getConfidenceIntervalKeyList(0.999999));
-            }
-        }
-        return ranges;
-    }
-
-    private SampledHypergeometricDistribution calculateProbabilityMassFunctionForOthers(long populationSize,
-            long effectiveSampleSize, long numberOfIterations) {
-        long others = populationSize;
-        // TODO: Should be calculated based on the numbers registered in the poll, not the medians from the PMFs
-        for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
-            others -= probabilityMassFunction.getMedian().getMidpoint();
-        }
-        Long sampled = Math.round(((double) others * effectiveSampleSize) / populationSize);
-        // TODO: Should be according to the precision (1, 0.5 or 0.1).
-        return SampledHypergeometricDistributions.get(sampled, (long) effectiveSampleSize, numberOfIterations,
-                populationSize);
-    }
-
-    private void filterRelevantProbabilityFunctions(List<SampledHypergeometricDistribution> probabilityMassFunctions) {
-        if (probabilityMassFunctions.size() <= 2) {
-            return;
-        }
-        List<Long> lowerBounds = new ArrayList<Long>();
-        for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
-            lowerBounds.add(probabilityMassFunction.getConfidenceInterval(0.999999).getLowerBound().getLowerBound());
-        }
-        Collections.sort(lowerBounds);
-        Collections.reverse(lowerBounds);
-        long lowerBound = lowerBounds.get(1);
-        for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
-            if (probabilityMassFunction.getConfidenceInterval(0.999999).getUpperBound().getUpperBound() >= lowerBound) {
-                relevantProbabilityMassFunctions.add(probabilityMassFunction);
-            }
-        }
-    }
-
-    private void calculateCardinalities(List<SampledHypergeometricDistribution> probabilityMassFunctions) {
-        for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
-            if (probabilityMassFunctionCardinalities.containsKey(probabilityMassFunction)) {
-                probabilityMassFunctionCardinalities.put(probabilityMassFunction,
-                        probabilityMassFunctionCardinalities.get(probabilityMassFunction) + 1);
-            } else {
-                probabilityMassFunctionCardinalities.put(probabilityMassFunction, 1);
-            }
-        }
-    }
-
-    long getNumberOfIterations() {
-        return numberOfIterations;
-    }
-
-    double getProbabilityMass(SampledHypergeometricDistribution of) {
-        if (singleWinnerProbabilityMasses.containsKey(of)) {
-            return singleWinnerProbabilityMasses.get(of);
-        } else {
-            return 0D;
-        }
-    }
-
-    double getProbabilityMass(SampledHypergeometricDistribution of1, SampledHypergeometricDistribution of2) {
-        Set<SampledHypergeometricDistribution> key = of1.equals(of2) ? Set.of(of1) : Set.of(of1, of2);
-        if (pairProbabilityMasses.containsKey(key)) {
-            return pairProbabilityMasses.get(key);
-        } else {
-            return 0D;
-        }
-    }
-
 }
