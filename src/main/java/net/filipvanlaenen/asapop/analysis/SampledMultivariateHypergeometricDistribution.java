@@ -16,6 +16,10 @@ import java.util.Set;
  */
 class SampledMultivariateHypergeometricDistribution {
     /**
+     * The magic number 0.999999 (six nines).
+     */
+    private static final double SIX_NINES = 0.999999;
+    /**
      * A map with the cardinalities for each of the unique probability mass functions.
      */
     private final Map<SampledHypergeometricDistribution, Integer> probabilityMassFunctionCardinalities;
@@ -74,6 +78,12 @@ class SampledMultivariateHypergeometricDistribution {
         convertAccumulatedProbabilityMassesToProbabilityMasses();
     }
 
+    /**
+     * Calculates how many times each probability mass function occurs in the input.
+     *
+     * @param probabilityMassFunctions The probability mass functions to base the sampled multivariate hypergeometric
+     *                                 distribution on.
+     */
     private void calculateCardinalities(final List<SampledHypergeometricDistribution> probabilityMassFunctions) {
         for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
             if (probabilityMassFunctionCardinalities.containsKey(probabilityMassFunction)) {
@@ -102,10 +112,10 @@ class SampledMultivariateHypergeometricDistribution {
     private Map<SampledHypergeometricDistribution, List<Range>> calculateRanges(
             final SampledHypergeometricDistribution otherPmf) {
         Map<SampledHypergeometricDistribution, List<Range>> ranges = new HashMap<SampledHypergeometricDistribution, List<Range>>();
-        ranges.put(otherPmf, otherPmf.getConfidenceIntervalKeyList(0.999999));
+        ranges.put(otherPmf, otherPmf.getConfidenceIntervalKeyList(SIX_NINES));
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
             if (!ranges.containsKey(probabilityMassFunction)) {
-                ranges.put(probabilityMassFunction, probabilityMassFunction.getConfidenceIntervalKeyList(0.999999));
+                ranges.put(probabilityMassFunction, probabilityMassFunction.getConfidenceIntervalKeyList(SIX_NINES));
             }
         }
         return ranges;
@@ -174,13 +184,14 @@ class SampledMultivariateHypergeometricDistribution {
         }
         List<Long> lowerBounds = new ArrayList<Long>();
         for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
-            lowerBounds.add(probabilityMassFunction.getConfidenceInterval(0.999999).getLowerBound().getLowerBound());
+            lowerBounds.add(probabilityMassFunction.getConfidenceInterval(SIX_NINES).getLowerBound().getLowerBound());
         }
         Collections.sort(lowerBounds);
         Collections.reverse(lowerBounds);
         long lowerBound = lowerBounds.get(1);
         for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
-            if (probabilityMassFunction.getConfidenceInterval(0.999999).getUpperBound().getUpperBound() >= lowerBound) {
+            if (probabilityMassFunction.getConfidenceInterval(SIX_NINES).getUpperBound()
+                    .getUpperBound() >= lowerBound) {
                 relevantProbabilityMassFunctions.add(probabilityMassFunction);
             }
         }
