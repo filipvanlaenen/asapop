@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 
 /**
@@ -151,5 +153,22 @@ public class AnalysisEngineTest {
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         assertEquals(Set.of(opinionPoll1, opinionPoll2), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+    }
+
+    /**
+     * Verifies that the first round winners analysis is calculated for an opinion poll scoped for the first round of a
+     * presidential election.
+     */
+    @Test
+    public void shouldCalculateFirstRoundWinnersAnalysisForFirstRoundOpinionPoll() {
+        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm("ACME")
+                .setScope(Scope.PresidentialFirstRound).setFieldworkEnd("2022-03-29").setSampleSize("500")
+                .addResult("A", new ResultValue("30")).addResult("B", new ResultValue("30"))
+                .addResult("C", new ResultValue("30")).build();
+        OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
+        ElectionData electionData = new ElectionData();
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
+        engine.run(1);
+        assertNotNull(engine.getFirstRoundWinnersAnalysis(opinionPoll.getMainResponseScenario()));
     }
 }

@@ -65,11 +65,11 @@ public class AnalysisEngine {
      * @return The first round winners analysis.
      */
     private FirstRoundWinnersAnalysis calculateFirstRoundWinnersAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
-            final Integer effectiveSampleSize) {
+            final Integer effectiveSampleSize, final long numberOfMultivariateIterations) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = voteSharesAnalysis
                 .getProbabilityMassFunctions();
         return new FirstRoundWinnersAnalysis(voteSharesAnalysis, SampledMultivariateHypergeometricDistributions
-                .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, TEN_THOUSAND));
+                .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, numberOfMultivariateIterations));
     }
 
     /**
@@ -156,6 +156,13 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
+        run(TEN_THOUSAND);
+    }
+
+    /**
+     * Runs the statistical analyses with a specified number of iterations for the multivariate analysis.
+     */
+    public void run(final long numberOfMultivariateIterations) {
         for (OpinionPoll opinionPoll : calculateMostRecentPolls()) {
             Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
             if (effectiveSampleSize != null) {
@@ -163,7 +170,8 @@ public class AnalysisEngine {
                 voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
                 if (opinionPoll.getScope() == Scope.PresidentialFirstRound) {
                     firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(),
-                            calculateFirstRoundWinnersAnalysis(voteShareAnalysis, effectiveSampleSize));
+                            calculateFirstRoundWinnersAnalysis(voteShareAnalysis, effectiveSampleSize,
+                                    numberOfMultivariateIterations));
                 }
             }
         }

@@ -20,13 +20,13 @@ class SampledMultivariateHypergeometricDistribution {
     private final List<SampledHypergeometricDistribution> relevantProbabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
 
     SampledMultivariateHypergeometricDistribution(List<SampledHypergeometricDistribution> probabilityMassFunctions,
-            long populationSize, int effectiveSampleSize, long numberOfIterations) {
+            long populationSize, int effectiveSampleSize, final long numberOfIterations) {
         calculateCardinalities(probabilityMassFunctions);
         filterRelevantProbabilityFunctions(probabilityMassFunctions);
         SampledHypergeometricDistribution otherPmf = calculateProbabilityMassFunctionForOthers(populationSize,
                 effectiveSampleSize, numberOfIterations);
         Map<SampledHypergeometricDistribution, List<Range>> ranges = calculateRanges(otherPmf);
-        runSimulations(ranges, otherPmf, populationSize);
+        runSimulations(ranges, otherPmf, populationSize, numberOfIterations);
         convertAccumulatedProbabilityMassesToProbabilityMasses();
     }
 
@@ -87,7 +87,7 @@ class SampledMultivariateHypergeometricDistribution {
     }
 
     private void runSimulations(Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
-            SampledHypergeometricDistribution otherPmf, long populationSize) {
+            SampledHypergeometricDistribution otherPmf, long populationSize, final long numberOfIterations) {
         long halfPopulationSize = populationSize / 2L;
         // TODO: Eliminate use of random
         Random random = new Random();
@@ -103,7 +103,7 @@ class SampledMultivariateHypergeometricDistribution {
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
             rangesList.add(rangesMap.get(probabilityMassFunction));
         }
-        while (i < 2_000_000) {
+        while (i < numberOfIterations) {
             BigDecimal p = BigDecimal.ONE;
             long sumOfMidpoints = 0;
             Range firstRange = null;
