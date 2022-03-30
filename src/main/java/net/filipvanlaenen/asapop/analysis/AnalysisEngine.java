@@ -60,8 +60,9 @@ public class AnalysisEngine {
     /**
      * Calculates the first round winners analysis.
      *
-     * @param voteSharesAnalysis  The vote shares analysis.
-     * @param effectiveSampleSize The effective sample size of the response scenario.
+     * @param voteSharesAnalysis             The vote shares analysis.
+     * @param effectiveSampleSize            The effective sample size of the response scenario.
+     * @param numberOfMultivariateIterations Number of iterations for the multivariate analysis.
      * @return The first round winners analysis.
      */
     private FirstRoundWinnersAnalysis calculateFirstRoundWinnersAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
@@ -161,6 +162,8 @@ public class AnalysisEngine {
 
     /**
      * Runs the statistical analyses with a specified number of iterations for the multivariate analysis.
+     *
+     * @param numberOfMultivariateIterations Number of iterations for the multivariate analysis.
      */
     public void run(final long numberOfMultivariateIterations) {
         for (OpinionPoll opinionPoll : calculateMostRecentPolls()) {

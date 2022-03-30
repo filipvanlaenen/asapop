@@ -1,7 +1,6 @@
 package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,9 +20,17 @@ import net.filipvanlaenen.asapop.yaml.ElectionData;
  */
 public class AnalysisEngineTest {
     /**
+     * Precision for floating point assertions.
+     */
+    private static final double DELTA = 1E-5;
+    /**
      * The magic number four.
      */
     private static final long FOUR = 4L;
+    /**
+     * The magic number one third (as a percentage).
+     */
+    private static final double ONE_THIRD = 33.33333D;
     /**
      * The magic number ten thousand.
      */
@@ -169,6 +176,10 @@ public class AnalysisEngineTest {
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run(1);
-        assertNotNull(engine.getFirstRoundWinnersAnalysis(opinionPoll.getMainResponseScenario()));
+        FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
+                .getFirstRoundWinnersAnalysis(opinionPoll.getMainResponseScenario());
+        assertEquals(ONE_THIRD,
+                firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("A"), ElectoralList.get("B"))),
+                DELTA);
     }
 }
