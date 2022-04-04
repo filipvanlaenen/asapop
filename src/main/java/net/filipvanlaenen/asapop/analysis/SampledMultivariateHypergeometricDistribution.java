@@ -293,14 +293,22 @@ class SampledMultivariateHypergeometricDistribution {
         }
     }
 
+    /**
+     * Runs the simulations.
+     *
+     * @param rangesMap                        The map with the ranges for the probability mass function.
+     * @param probabilityMassFunctionForOthers The probability mass function for the others.
+     * @param populationSize                   The population size.
+     * @param requestedNumberOfIterations      The requested number of iterations.
+     */
     private void runSimulations(final Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
-            final SampledHypergeometricDistribution otherPmf, final long populationSize,
+            final SampledHypergeometricDistribution probabilityMassFunctionForOthers, final long populationSize,
             final long requestedNumberOfIterations) {
         long halfPopulationSize = populationSize / 2L;
         // TODO: Eliminate use of random
         Random random = new Random();
         numberOfIterations = 0;
-        List<Range> otherRanges = rangesMap.get(otherPmf);
+        List<Range> otherRanges = rangesMap.get(probabilityMassFunctionForOthers);
         long otherRangesUpperbound = otherRanges.get(otherRanges.size() - 1).getUpperBound();
         int numberOfRelevantProbabilityMassFunctions = relevantProbabilityMassFunctions.size();
         /**
@@ -312,66 +320,70 @@ class SampledMultivariateHypergeometricDistribution {
             rangesList.add(rangesMap.get(probabilityMassFunction));
         }
         while (numberOfIterations < requestedNumberOfIterations) {
-            BigDecimal p = BigDecimal.ONE;
+            BigDecimal probabilityMass = BigDecimal.ONE;
             long sumOfMidpoints = 0;
-            Range firstRange = null;
-            Range secondRange = null;
-            Integer firstIndex = null;
-            Integer secondIndex = null;
-            for (int j = 0; j < numberOfRelevantProbabilityMassFunctions; j++) {
-                SampledHypergeometricDistribution probabilityMassFunction = relevantProbabilityMassFunctions.get(j);
-                List<Range> ranges = rangesList.get(j);
+            Range largestRange = null;
+            Range secondLargestRange = null;
+            Integer indexOfLargestRange = null;
+            Integer indexOfSecondLargestRange = null;
+            for (int i = 0; i < numberOfRelevantProbabilityMassFunctions; i++) {
+                SampledHypergeometricDistribution probabilityMassFunction = relevantProbabilityMassFunctions.get(i);
+                List<Range> ranges = rangesList.get(i);
                 Range range = ranges.get(random.nextInt(ranges.size()));
                 sumOfMidpoints += range.getMidpoint();
-                p = p.multiply(probabilityMassFunction.getProbabilityMass(range), MathContext.DECIMAL128);
-                if (firstRange == null) {
-                    firstRange = range;
-                    firstIndex = j;
-                } else if (secondRange == null) {
-                    if (firstRange.compareTo(range) > 0) {
-                        secondRange = range;
-                        secondIndex = j;
+                probabilityMass = probabilityMass.multiply(probabilityMassFunction.getProbabilityMass(range),
+                        MathContext.DECIMAL128);
+                if (largestRange == null) {
+                    largestRange = range;
+                    indexOfLargestRange = i;
+                } else if (secondLargestRange == null) {
+                    if (largestRange.compareTo(range) > 0) {
+                        secondLargestRange = range;
+                        indexOfSecondLargestRange = i;
                     } else {
-                        secondRange = firstRange;
-                        secondIndex = firstIndex;
-                        firstRange = range;
-                        firstIndex = j;
+                        secondLargestRange = largestRange;
+                        indexOfSecondLargestRange = indexOfLargestRange;
+                        largestRange = range;
+                        indexOfLargestRange = i;
                     }
-                } else if (firstRange.compareTo(range) < 0) {
-                    secondRange = firstRange;
-                    secondIndex = firstIndex;
-                    firstRange = range;
-                    firstIndex = j;
-                } else if (secondRange.compareTo(range) < 0) {
-                    secondRange = range;
-                    secondIndex = j;
+                } else if (largestRange.compareTo(range) < 0) {
+                    secondLargestRange = largestRange;
+                    indexOfSecondLargestRange = indexOfLargestRange;
+                    largestRange = range;
+                    indexOfLargestRange = i;
+                } else if (secondLargestRange.compareTo(range) < 0) {
+                    secondLargestRange = range;
+                    indexOfSecondLargestRange = i;
                 }
             }
             if (sumOfMidpoints < populationSize) {
-                Long o = populationSize - sumOfMidpoints;
-                if (otherRangesUpperbound > o) {
+                Long remainder = populationSize - sumOfMidpoints;
+                if (otherRangesUpperbound > remainder) {
                     Range otherRange = otherRanges.get(0);
                     for (Range r : otherRanges) {
-                        if (r.getUpperBound() > o) {
+                        if (r.getUpperBound() > remainder) {
                             otherRange = r;
                             break;
                         }
                     }
-                    p = p.multiply(otherPmf.getProbabilityMass(otherRange), MathContext.DECIMAL128);
-                    if (firstRange.getMidpoint() > halfPopulationSize) {
-                        if (accumulatedSingleWinnerProbabilityMasses.containsKey(firstIndex)) {
-                            accumulatedSingleWinnerProbabilityMasses.put(firstIndex, p.add(
-                                    accumulatedSingleWinnerProbabilityMasses.get(firstIndex), MathContext.DECIMAL128));
+                    probabilityMass = probabilityMass.multiply(
+                            probabilityMassFunctionForOthers.getProbabilityMass(otherRange), MathContext.DECIMAL128);
+                    if (largestRange.getMidpoint() > halfPopulationSize) {
+                        if (accumulatedSingleWinnerProbabilityMasses.containsKey(indexOfLargestRange)) {
+                            accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange,
+                                    probabilityMass.add(
+                                            accumulatedSingleWinnerProbabilityMasses.get(indexOfLargestRange),
+                                            MathContext.DECIMAL128));
                         } else {
-                            accumulatedSingleWinnerProbabilityMasses.put(firstIndex, p);
+                            accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange, probabilityMass);
                         }
                     } else {
-                        Set<Integer> runoffPair = Set.of(firstIndex, secondIndex);
+                        Set<Integer> runoffPair = Set.of(indexOfLargestRange, indexOfSecondLargestRange);
                         if (accumulatedPairProbabilityMasses.containsKey(runoffPair)) {
-                            accumulatedPairProbabilityMasses.put(runoffPair,
-                                    p.add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));
+                            accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass
+                                    .add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));
                         } else {
-                            accumulatedPairProbabilityMasses.put(runoffPair, p);
+                            accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass);
                         }
                     }
                     numberOfIterations += 1;
