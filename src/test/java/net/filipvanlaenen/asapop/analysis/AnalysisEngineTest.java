@@ -22,7 +22,7 @@ public class AnalysisEngineTest {
     /**
      * Precision for floating point assertions.
      */
-    private static final double DELTA = 1E-5;
+    private static final double DELTA = 1E-6;
     /**
      * The magic number four.
      */
@@ -30,7 +30,7 @@ public class AnalysisEngineTest {
     /**
      * The magic number one third (as a percentage).
      */
-    private static final double ONE_THIRD = 33.33333D;
+    private static final double ONE_THIRD = 0.3333333D;
     /**
      * The magic number ten thousand.
      */
