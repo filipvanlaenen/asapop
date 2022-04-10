@@ -28,6 +28,10 @@ public class AnalysisEngine {
      */
     private static final long TEN_THOUSAND = 10_000L;
     /**
+     * The magic number two million, the default number of simulations.
+     */
+    private static final long TWO_MILLION = 2_000_000L;
+    /**
      * The size of the population (the number of voters for the first round of the French presidential election of
      * 2017).
      */
@@ -157,7 +161,7 @@ public class AnalysisEngine {
      * Runs the statistical analyses.
      */
     public void run() {
-        run(TEN_THOUSAND);
+        run(TWO_MILLION);
     }
 
     /**
