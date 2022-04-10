@@ -48,6 +48,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final double DOUBLE_0_36 = 0.36D;
     /**
+     * The magic number one half.
+     */
+    private static final double ONE_HALF = 0.5D;
+    /**
      * The magic number one hundred.
      */
     private static final long ONE_HUNDRED = 100L;
@@ -107,6 +111,15 @@ public class SampledMultivariateHypergeometricDistributionTest {
 
     /**
      * Verifies that when there are three candidates, one with half of the support, and two with equal small support,
+     * the probability that the large candidate wins the first round is one half.
+     */
+    @Test
+    public void aCandidateWithHalfOfTheSupportAgainstTwoSmallCandidatesShouldHaveProbabilityOfOneHalf() {
+        assertProbabilityEquals(ONE_HALF, LARGE_DELTA, 0, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are three candidates, one with half of the support, and two with equal small support,
      * the probability that one of the smaller candidates wins the first round together with the large candidate is one
      * quarter.
      */
@@ -116,7 +129,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
     }
 
     /**
-     * Asserts of a pair of candidates to be equal within a given delta.
+     * Asserts the probability of a pair of candidates to be equal within a given delta.
      *
      * @param expected The expected probability.
      * @param delta    The margin of error.
@@ -125,15 +138,42 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param values   The sample values for the candidates.
      */
     private void assertProbabilityEquals(double expected, double delta, int i0, int i1, long... values) {
-        List<SampledHypergeometricDistribution> probabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
-        for (long value : values) {
-            probabilityMassFunctions.add(
-                    SampledHypergeometricDistributions.get(value, SAMPLE_SIZE, NUMBER_OF_SAMPLES, POPULATION_SIZE));
-        }
+        List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
         SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
                 probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i0),
                 probabilityMassFunctions.get(i1));
         assertEquals(expected, actual, delta);
+    }
+
+    /**
+     * Asserts of the probability of a single candidate to be equal within a given delta.
+     *
+     * @param expected The expected probability.
+     * @param delta    The margin of error.
+     * @param i        The index of the candidate.
+     * @param values   The sample values for the candidates.
+     */
+    private void assertProbabilityEquals(double expected, double delta, int i, long... values) {
+        List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
+        SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
+                probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
+        double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i));
+        assertEquals(expected, actual, delta);
+    }
+
+    /**
+     * Creates a list of probability mass functions based on a set of values.
+     *
+     * @param values The sample values for the candidates.
+     * @return A list of probability mass functions based on a set of values.
+     */
+    private List<SampledHypergeometricDistribution> createProbabilityMassFunctions(long... values) {
+        List<SampledHypergeometricDistribution> probabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
+        for (long value : values) {
+            probabilityMassFunctions.add(
+                    SampledHypergeometricDistributions.get(value, SAMPLE_SIZE, NUMBER_OF_SAMPLES, POPULATION_SIZE));
+        }
+        return probabilityMassFunctions;
     }
 }
