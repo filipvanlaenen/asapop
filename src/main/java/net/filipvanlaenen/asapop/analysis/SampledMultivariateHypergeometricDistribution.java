@@ -356,6 +356,7 @@ class SampledMultivariateHypergeometricDistribution {
                     indexOfSecondLargestRange = i;
                 }
             }
+            // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
             if (sumOfMidpoints < populationSize) {
                 Long remainder = populationSize - sumOfMidpoints;
                 if (otherRangesUpperbound > remainder) {

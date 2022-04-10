@@ -73,6 +73,18 @@ public class SampledMultivariateHypergeometricDistributionTest {
     private static final long FIVE_HUNDRED = 500L;
 
     /**
+     * Verifies that the requested number of iterations are performed.
+     */
+    @Test
+    public void shouldPerformTheRequestedNumberOfIterations() {
+        List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(THREE_HUNDRED,
+                THREE_HUNDRED, THREE_HUNDRED);
+        SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
+                probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
+        assertEquals(NUMBER_OF_ITERATIONS, multivariateDistribution.getNumberOfIterations());
+    }
+
+    /**
      * Verifies that when there are two candidates with the same support, these two candidates are certain to win the
      * first round.
      */
