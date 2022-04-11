@@ -72,15 +72,15 @@ class SampledMultivariateHypergeometricDistribution {
         calculateCardinalities(probabilityMassFunctions);
         filterRelevantProbabilityMassFunctions(probabilityMassFunctions);
         long halfPopulationSize = populationSize / 2L;
-        ConfidenceInterval<Range> largestPmf = relevantProbabilityMassFunctions.get(0).getConfidenceInterval(SIX_NINES);
+        ConfidenceInterval<Range> confidenceIntervalOfLargestList = relevantProbabilityMassFunctions.get(0).getConfidenceInterval(SIX_NINES);
         // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
-        if (largestPmf.getLowerBound().getLowerBound() > halfPopulationSize) {
+        if (confidenceIntervalOfLargestList.getLowerBound().getLowerBound() > halfPopulationSize) {
             accumulatedSingleWinnerProbabilityMasses.put(0, BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
         } else
         // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
         if (relevantProbabilityMassFunctions.size() <= 2
-                && largestPmf.getUpperBound().getUpperBound() < halfPopulationSize) {
+                && confidenceIntervalOfLargestList.getUpperBound().getUpperBound() < halfPopulationSize) {
             accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
                     BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
@@ -336,7 +336,6 @@ class SampledMultivariateHypergeometricDistribution {
             final SampledHypergeometricDistribution probabilityMassFunctionForOthers, final long populationSize,
             final long requestedNumberOfIterations) {
         long halfPopulationSize = populationSize / 2L;
-        // TODO: Eliminate use of random
         Random random = new Random();
         numberOfIterations = 0;
         List<Range> otherRanges = rangesMap.get(probabilityMassFunctionForOthers);
