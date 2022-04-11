@@ -73,15 +73,18 @@ class SampledMultivariateHypergeometricDistribution {
         filterRelevantProbabilityMassFunctions(probabilityMassFunctions);
         long halfPopulationSize = populationSize / 2L;
         // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
-        if (relevantProbabilityMassFunctions.get(0).getConfidenceInterval(SIX_NINES).getLowerBound()
-                .getLowerBound() > halfPopulationSize) {
+        ConfidenceInterval<Range> largestPmf = relevantProbabilityMassFunctions.get(0).getConfidenceInterval(SIX_NINES);
+        if (largestPmf.getLowerBound().getLowerBound() > halfPopulationSize) {
             accumulatedSingleWinnerProbabilityMasses.put(0, BigDecimal.ONE);
+            numberOfIterations = requestedNumberOfIterations;
+        } else if (relevantProbabilityMassFunctions.size() < 3
+                && largestPmf.getUpperBound().getUpperBound() < halfPopulationSize) {
+            accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
+                    BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
         } else
         // TODO: 1 candidate around fifty percent: single x%, pair with unknown second: 100-x%
-        // TODO: 1 candidate below fifty percent: pair with unknown second: 100%
         // TODO: 2 candidates, one around fifty percent and one below: single x%, pair 100-x%
-        // TODO: 2 candidates, both below fifty percent: pair 100%
         {
             SampledHypergeometricDistribution otherPmf = calculateProbabilityMassFunctionForOthers(populationSize,
                     sampleSize);
@@ -215,7 +218,7 @@ class SampledMultivariateHypergeometricDistribution {
         for (Set<Integer> key : accumulatedPairProbabilityMasses.keySet()) {
             Set<SampledHypergeometricDistribution> actualKey = new HashSet<SampledHypergeometricDistribution>();
             for (Integer i : key) {
-                actualKey.add(relevantProbabilityMassFunctions.get(i));
+                actualKey.add(i == -1 ? null : relevantProbabilityMassFunctions.get(i));
             }
             if (pairProbabilityMasses.containsKey(actualKey)) {
                 pairProbabilityMasses.put(actualKey,
@@ -235,7 +238,9 @@ class SampledMultivariateHypergeometricDistribution {
             } else {
                 int factor = 1;
                 for (SampledHypergeometricDistribution pmf : key) {
-                    factor *= probabilityMassFunctionCardinalities.get(pmf);
+                    if (pmf != null) {
+                        factor *= probabilityMassFunctionCardinalities.get(pmf);
+                    }
                 }
                 pairProbabilityMasses.put(key, pairProbabilityMasses.get(key) / factor);
             }
@@ -305,7 +310,11 @@ class SampledMultivariateHypergeometricDistribution {
      */
     double getProbabilityMass(final SampledHypergeometricDistribution pmf1,
             final SampledHypergeometricDistribution pmf2) {
-        Set<SampledHypergeometricDistribution> key = pmf1.equals(pmf2) ? Set.of(pmf1) : Set.of(pmf1, pmf2);
+        Set<SampledHypergeometricDistribution> key = new HashSet<SampledHypergeometricDistribution>();
+        key.add(pmf1);
+        if (!pmf1.equals(pmf2)) {
+            key.add(pmf2);
+        }
         if (pairProbabilityMasses.containsKey(key)) {
             return pairProbabilityMasses.get(key);
         } else {

@@ -94,12 +94,20 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void singleCandidateWithSupportAboveFiftyPercentShouldBeCertainToWin() {
-        assertProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED);
+        assertSingleWinnerProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED);
     }
 
     // TODO: assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED);
     // TODO: assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, null, FIVE_HUNDRED);
-    // TODO: assertProbabilityEquals(1D, SMALL_DELTA, 0, null, THREE_HUNDRED);
+
+    /**
+     * Verifies that when there's only one candidate, and the candidate's support is well below fifty percent, the
+     * candidate is certain not to win the first round.
+     */
+    @Test
+    public void singleCandidateWithSupportBelowFiftyPercentShouldBeCertainToNotWin() {
+        assertPairProbabilityEquals(1D, SMALL_DELTA, 0, null, THREE_HUNDRED);
+    }
 
     /**
      * Verifies that when there are two candidates, and the largest candidate's support is well above fifty percent,
@@ -107,7 +115,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void largestCandidateOfTwoWithSupportAboveFiftyPercentShouldBeCertainToWin() {
-        assertProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED, ONE_HUNDRED);
+        assertSingleWinnerProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED, ONE_HUNDRED);
     }
 
     /**
@@ -116,7 +124,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     // TODO @Test
     public void largestCandidateOfTwoWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityToWin() {
-        assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED, THREE_HUNDRED);
+        assertSingleWinnerProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED, THREE_HUNDRED);
     }
 
     /**
@@ -125,7 +133,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     // TODO @Test
     public void largestCandidateOfTwoWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityNotToWin() {
-        assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, 1, FIVE_HUNDRED, THREE_HUNDRED);
+        assertPairProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, 1, FIVE_HUNDRED, THREE_HUNDRED);
     }
 
     /**
@@ -134,7 +142,8 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void twoCandidatesWithSupportOfAlmostFiftyPercentShouldHaveSlightlyLessThanOneHalfToWin() {
-        assertProbabilityEquals(DOUBLE_0_45, LARGE_DELTA, 0, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
+        assertSingleWinnerProbabilityEquals(DOUBLE_0_45, LARGE_DELTA, 0, FOUR_HUNDRED_NINETY_NINE,
+                FOUR_HUNDRED_NINETY_NINE);
     }
 
     /**
@@ -143,7 +152,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void twoCandidatesWithSupportOfAlmostFiftyPercentShouldHaveALowProbabilityNotToWin() {
-        assertProbabilityEquals(DOUBLE_0_10, LARGE_DELTA, 0, 1, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
+        assertPairProbabilityEquals(DOUBLE_0_10, LARGE_DELTA, 0, 1, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
     }
 
     /**
@@ -152,7 +161,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void twoCandidatesWithTheSameSupportShouldBeCertainToWin() {
-        assertProbabilityEquals(1, SMALL_DELTA, 0, 1, THREE_HUNDRED, THREE_HUNDRED);
+        assertPairProbabilityEquals(1, SMALL_DELTA, 0, 1, THREE_HUNDRED, THREE_HUNDRED);
     }
 
     /**
@@ -161,7 +170,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void largestCandidateOfThreeWithSupportAboveFiftyPercentShouldBeCertainToWin() {
-        assertProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
+        assertSingleWinnerProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
     }
 
     /**
@@ -170,7 +179,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void aCandidateWithHalfOfTheSupportAgainstTwoSmallCandidatesShouldHaveProbabilityOfOneHalf() {
-        assertProbabilityEquals(ONE_HALF, LARGE_DELTA, 0, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
+        assertSingleWinnerProbabilityEquals(ONE_HALF, LARGE_DELTA, 0, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
     }
 
     /**
@@ -180,7 +189,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void aCandidateWithHalfOfTheSupportTogetherWithOneOfTwoSmallCandidatesShouldHaveProbabilityOfOneQuarter() {
-        assertProbabilityEquals(ONE_QUARTER, LARGE_DELTA, 0, 1, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
+        assertPairProbabilityEquals(ONE_QUARTER, LARGE_DELTA, 0, 1, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
     }
 
     /**
@@ -189,7 +198,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void threeCandidatesWithTheSameSupportShouldEachHaveAProbabilityOfOneThird() {
-        assertProbabilityEquals(ONE_THIRD, SMALL_DELTA, 0, 1, THREE_HUNDRED, THREE_HUNDRED, THREE_HUNDRED);
+        assertPairProbabilityEquals(ONE_THIRD, SMALL_DELTA, 0, 1, THREE_HUNDRED, THREE_HUNDRED, THREE_HUNDRED);
     }
 
     /**
@@ -198,7 +207,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void twoLargestOfThreeCandidatesWithTheAlmostSameSupportShouldHaveAProbabilityAboveOneThird() {
-        assertProbabilityEquals(DOUBLE_0_36, LARGE_DELTA, 0, 1, THREE_HUNDRED_ONE, THREE_HUNDRED,
+        assertPairProbabilityEquals(DOUBLE_0_36, LARGE_DELTA, 0, 1, THREE_HUNDRED_ONE, THREE_HUNDRED,
                 TWO_HUNDRED_NINETY_NINE);
     }
 
@@ -207,7 +216,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void manySmallCandidatesShouldNotDisturbTheCalculationForTheLargeCandidates() {
-        assertProbabilityEquals(DOUBLE_0_36, LARGE_DELTA, 0, 1, THREE_HUNDRED_ONE, THREE_HUNDRED,
+        assertPairProbabilityEquals(DOUBLE_0_36, LARGE_DELTA, 0, 1, THREE_HUNDRED_ONE, THREE_HUNDRED,
                 TWO_HUNDRED_NINETY_NINE, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
     }
 
@@ -221,12 +230,12 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param i1       The index of the second candidate in the pair.
      * @param values   The sample values for the candidates.
      */
-    private void assertProbabilityEquals(double expected, double delta, int i0, int i1, long... values) {
+    private void assertPairProbabilityEquals(double expected, double delta, Integer i0, Integer i1, long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
         SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
                 probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i0),
-                probabilityMassFunctions.get(i1));
+                i1 == null ? null : probabilityMassFunctions.get(i1));
         assertEquals(expected, actual, delta);
         assertEquals(NUMBER_OF_ITERATIONS, multivariateDistribution.getNumberOfIterations());
     }
@@ -240,7 +249,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param i        The index of the candidate.
      * @param values   The sample values for the candidates.
      */
-    private void assertProbabilityEquals(double expected, double delta, int i, long... values) {
+    private void assertSingleWinnerProbabilityEquals(double expected, double delta, Integer i, long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
         SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
                 probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
