@@ -30,7 +30,11 @@ public class SampledMultivariateHypergeometricDistributionTest {
     /**
      * Precision for floating point assertions where high precision can be expected.
      */
-    private static final double SMALL_DELTA = 1E-6;
+    private static final double SMALL_DELTA = 1E-8;
+    /**
+     * Precision for floating point assertions where moderate precision can be expected.
+     */
+    private static final double MODERATE_DELTA = 1E-4;
     /**
      * Precision for floating point assertions where low precision can be expected.
      */
@@ -46,7 +50,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
     /**
      * The magic number one third.
      */
-    private static final double ONE_THIRD = 0.3333333D;
+    private static final double ONE_THIRD = 0.333333333D;
     /**
      * The magic number 0.36.
      */
@@ -122,18 +126,18 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * Verifies that when there are two candidates, and the largest candidate's support is fifty percent, that candidate
      * has a probability of fifty percent to win the first round.
      */
-    // TODO @Test
+    @Test
     public void largestCandidateOfTwoWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityToWin() {
-        assertSingleWinnerProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED, THREE_HUNDRED);
+        assertSingleWinnerProbabilityEquals(ONE_HALF, MODERATE_DELTA, 0, FIVE_HUNDRED, THREE_HUNDRED);
     }
 
     /**
      * Verifies that when there are two candidates, and the largest candidate's support is fifty percent, there's a
      * fifty percent probability for a second round.
      */
-    // TODO @Test
+    @Test
     public void largestCandidateOfTwoWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityNotToWin() {
-        assertPairProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, 1, FIVE_HUNDRED, THREE_HUNDRED);
+        assertPairProbabilityEquals(ONE_HALF, MODERATE_DELTA, 0, 1, FIVE_HUNDRED, THREE_HUNDRED);
     }
 
     /**

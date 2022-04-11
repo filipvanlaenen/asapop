@@ -72,7 +72,8 @@ class SampledMultivariateHypergeometricDistribution {
         calculateCardinalities(probabilityMassFunctions);
         filterRelevantProbabilityMassFunctions(probabilityMassFunctions);
         long halfPopulationSize = populationSize / 2L;
-        ConfidenceInterval<Range> confidenceIntervalOfLargestList = relevantProbabilityMassFunctions.get(0).getConfidenceInterval(SIX_NINES);
+        ConfidenceInterval<Range> confidenceIntervalOfLargestList = relevantProbabilityMassFunctions.get(0)
+                .getConfidenceInterval(SIX_NINES);
         // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
         if (confidenceIntervalOfLargestList.getLowerBound().getLowerBound() > halfPopulationSize) {
             accumulatedSingleWinnerProbabilityMasses.put(0, BigDecimal.ONE);
@@ -84,10 +85,17 @@ class SampledMultivariateHypergeometricDistribution {
             accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
                     BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
-        } else
-        // TODO: 1 candidate around fifty percent: single x%, pair with unknown second: 100-x%
-        // TODO: 2 candidates, one around fifty percent and one below: single x%, pair 100-x%
-        {
+        } else if (relevantProbabilityMassFunctions.size() <= 2
+                && confidenceIntervalOfLargestList.getUpperBound().getUpperBound() > halfPopulationSize
+                && relevantProbabilityMassFunctions.get(1).getConfidenceInterval(SIX_NINES).getUpperBound()
+                        .getUpperBound() < halfPopulationSize) {
+            double probabilityForDirectWin = relevantProbabilityMassFunctions.get(0)
+                    .getProbabilityMassAbove(halfPopulationSize);
+            accumulatedSingleWinnerProbabilityMasses.put(0, new BigDecimal(probabilityForDirectWin));
+            accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
+                    new BigDecimal(1D - probabilityForDirectWin));
+            numberOfIterations = requestedNumberOfIterations;
+        } else {
             SampledHypergeometricDistribution otherPmf = calculateProbabilityMassFunctionForOthers(populationSize,
                     sampleSize);
             Map<SampledHypergeometricDistribution, List<Range>> ranges = calculateRanges(otherPmf);

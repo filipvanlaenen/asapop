@@ -210,11 +210,15 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      *
      * @return The sum of the probability masses.
      */
-    private BigDecimal getProbabilityMassSum() {
+    protected BigDecimal getProbabilityMassSum() {
         if (probabilityMassSum == null) {
             probabilityMassSum = calculateProbabilityMassSum();
         }
         return probabilityMassSum;
+    }
+
+    protected List<SK> getSortedKeys() {
+        return Collections.unmodifiableList(sortedKeys);
     }
 
     /**

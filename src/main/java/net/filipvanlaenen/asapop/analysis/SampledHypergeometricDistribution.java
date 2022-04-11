@@ -56,4 +56,18 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
     BigDecimal getKeyWeight(final Range key) {
         return new BigDecimal(key.getLength());
     }
+
+    double getProbabilityMassAbove(long threshold) {
+        BigDecimal accumulated = BigDecimal.ZERO;
+        for (Range r : getSortedKeys()) {
+            if (r.getLowerBound() >= threshold) {
+                accumulated = accumulated.add(getProbabilityMass(r).multiply(getKeyWeight(r), MathContext.DECIMAL128),
+                        MathContext.DECIMAL128);
+            } else if (r.getUpperBound() > threshold) {
+                accumulated = accumulated.add(getProbabilityMass(r).multiply(
+                        new BigDecimal(r.getUpperBound() - threshold), MathContext.DECIMAL128), MathContext.DECIMAL128);
+            }
+        }
+        return accumulated.divide(getProbabilityMassSum(), MathContext.DECIMAL128).doubleValue();
+    }
 }
