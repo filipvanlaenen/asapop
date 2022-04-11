@@ -230,7 +230,8 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param i1       The index of the second candidate in the pair.
      * @param values   The sample values for the candidates.
      */
-    private void assertPairProbabilityEquals(double expected, double delta, Integer i0, Integer i1, long... values) {
+    private void assertPairProbabilityEquals(final double expected, final double delta, final Integer i0,
+            final Integer i1, final long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
         SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
                 probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
@@ -249,7 +250,8 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param i        The index of the candidate.
      * @param values   The sample values for the candidates.
      */
-    private void assertSingleWinnerProbabilityEquals(double expected, double delta, Integer i, long... values) {
+    private void assertSingleWinnerProbabilityEquals(final double expected, final double delta, final Integer i,
+            final long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
         SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
                 probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
@@ -264,7 +266,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param values The sample values for the candidates.
      * @return A list of probability mass functions based on a set of values.
      */
-    private List<SampledHypergeometricDistribution> createProbabilityMassFunctions(long... values) {
+    private List<SampledHypergeometricDistribution> createProbabilityMassFunctions(final long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
         for (long value : values) {
             probabilityMassFunctions.add(
