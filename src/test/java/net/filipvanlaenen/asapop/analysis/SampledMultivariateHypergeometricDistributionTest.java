@@ -36,6 +36,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final double LARGE_DELTA = 0.05;
     /**
+     * The magic number 0.10.
+     */
+    private static final double DOUBLE_0_10 = 0.10D;
+    /**
      * The magic number one quarter.
      */
     private static final double ONE_QUARTER = 0.25D;
@@ -48,6 +52,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final double DOUBLE_0_36 = 0.36D;
     /**
+     * The magic number 0.45.
+     */
+    private static final double DOUBLE_0_45 = 0.45D;
+    /**
      * The magic number one half.
      */
     private static final double ONE_HALF = 0.5D;
@@ -56,7 +64,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final long ONE_HUNDRED = 100L;
     /**
-     * The magic numbet two hundred ninety-nine.
+     * The magic number two hundred ninety-nine.
      */
     private static final long TWO_HUNDRED_NINETY_NINE = 299L;
     /**
@@ -68,20 +76,74 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final long THREE_HUNDRED_ONE = 301L;
     /**
+     * The magic number four hundred ninety-nine.
+     */
+    private static final long FOUR_HUNDRED_NINETY_NINE = 499L;
+    /**
      * The magic number five hundred.
      */
     private static final long FIVE_HUNDRED = 500L;
+    /**
+     * The magic number seven hundred.
+     */
+    private static final long SEVEN_HUNDRED = 700L;
 
     /**
-     * Verifies that the requested number of iterations are performed.
+     * Verifies that when there's only one candidate, and the candidate's support is well above fifty percent, the
+     * candidate is certain to win the first round.
      */
     @Test
-    public void shouldPerformTheRequestedNumberOfIterations() {
-        List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(THREE_HUNDRED,
-                THREE_HUNDRED, THREE_HUNDRED);
-        SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
-                probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
-        assertEquals(NUMBER_OF_ITERATIONS, multivariateDistribution.getNumberOfIterations());
+    public void singleCandidateWithSupportAboveFiftyPercentShouldBeCertainToWin() {
+        assertProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED);
+    }
+
+    // TODO: assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED);
+    // TODO: assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, null, FIVE_HUNDRED);
+    // TODO: assertProbabilityEquals(1D, SMALL_DELTA, 0, null, THREE_HUNDRED);
+
+    /**
+     * Verifies that when there are two candidates, and the largest candidate's support is well above fifty percent,
+     * that candidate is certain to win the first round.
+     */
+    @Test
+    public void largestCandidateOfTwoWithSupportAboveFiftyPercentShouldBeCertainToWin() {
+        assertProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED, ONE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are two candidates, and the largest candidate's support is fifty percent, that candidate
+     * has a probability of fifty percent to win the first round.
+     */
+    // TODO @Test
+    public void largestCandidateOfTwoWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityToWin() {
+        assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED, THREE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are two candidates, and the largest candidate's support is fifty percent, there's a
+     * fifty percent probability for a second round.
+     */
+    // TODO @Test
+    public void largestCandidateOfTwoWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityNotToWin() {
+        assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, 1, FIVE_HUNDRED, THREE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are two candidates both with almost fifty percent support, each has a slightly less than
+     * fifty percent probability to win the first round.
+     */
+    @Test
+    public void twoCandidatesWithSupportOfAlmostFiftyPercentShouldHaveSlightlyLessThanOneHalfToWin() {
+        assertProbabilityEquals(DOUBLE_0_45, LARGE_DELTA, 0, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
+    }
+
+    /**
+     * Verifies that when there are two candidates both with almost fifty percent support, there's a small probability
+     * for a second round.
+     */
+    @Test
+    public void twoCandidatesWithSupportOfAlmostFiftyPercentShouldHaveALowProbabilityNotToWin() {
+        assertProbabilityEquals(DOUBLE_0_10, LARGE_DELTA, 0, 1, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
     }
 
     /**
@@ -91,6 +153,34 @@ public class SampledMultivariateHypergeometricDistributionTest {
     @Test
     public void twoCandidatesWithTheSameSupportShouldBeCertainToWin() {
         assertProbabilityEquals(1, SMALL_DELTA, 0, 1, THREE_HUNDRED, THREE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are three candidates, and the largest candidate's support is well above fifty percent,
+     * that candidate is certain to win the first round.
+     */
+    @Test
+    public void largestCandidateOfThreeWithSupportAboveFiftyPercentShouldBeCertainToWin() {
+        assertProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are three candidates, one with half of the support, and two with equal small support,
+     * the probability that the large candidate wins the first round is one half.
+     */
+    @Test
+    public void aCandidateWithHalfOfTheSupportAgainstTwoSmallCandidatesShouldHaveProbabilityOfOneHalf() {
+        assertProbabilityEquals(ONE_HALF, LARGE_DELTA, 0, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there are three candidates, one with half of the support, and two with equal small support,
+     * the probability that one of the smaller candidates wins the first round together with the large candidate is one
+     * quarter.
+     */
+    @Test
+    public void aCandidateWithHalfOfTheSupportTogetherWithOneOfTwoSmallCandidatesShouldHaveProbabilityOfOneQuarter() {
+        assertProbabilityEquals(ONE_QUARTER, LARGE_DELTA, 0, 1, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
     }
 
     /**
@@ -122,26 +212,8 @@ public class SampledMultivariateHypergeometricDistributionTest {
     }
 
     /**
-     * Verifies that when there are three candidates, one with half of the support, and two with equal small support,
-     * the probability that the large candidate wins the first round is one half.
-     */
-    @Test
-    public void aCandidateWithHalfOfTheSupportAgainstTwoSmallCandidatesShouldHaveProbabilityOfOneHalf() {
-        assertProbabilityEquals(ONE_HALF, LARGE_DELTA, 0, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
-    }
-
-    /**
-     * Verifies that when there are three candidates, one with half of the support, and two with equal small support,
-     * the probability that one of the smaller candidates wins the first round together with the large candidate is one
-     * quarter.
-     */
-    @Test
-    public void aCandidateWithHalfOfTheSupportTogetherWithOneOfTwoSmallCandidatesShouldHaveProbabilityOfOneQuarter() {
-        assertProbabilityEquals(ONE_QUARTER, LARGE_DELTA, 0, 1, FIVE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED);
-    }
-
-    /**
-     * Asserts the probability of a pair of candidates to be equal within a given delta.
+     * Asserts the probability of a pair of candidates to be equal within a given delta. Asserts also that the number of
+     * iterations is set correctly.
      *
      * @param expected The expected probability.
      * @param delta    The margin of error.
@@ -156,10 +228,12 @@ public class SampledMultivariateHypergeometricDistributionTest {
         double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i0),
                 probabilityMassFunctions.get(i1));
         assertEquals(expected, actual, delta);
+        assertEquals(NUMBER_OF_ITERATIONS, multivariateDistribution.getNumberOfIterations());
     }
 
     /**
-     * Asserts of the probability of a single candidate to be equal within a given delta.
+     * Asserts of the probability of a single candidate to be equal within a given delta. Asserts also that the number
+     * of iterations is set correctly.
      *
      * @param expected The expected probability.
      * @param delta    The margin of error.
@@ -172,6 +246,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
                 probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i));
         assertEquals(expected, actual, delta);
+        assertEquals(NUMBER_OF_ITERATIONS, multivariateDistribution.getNumberOfIterations());
     }
 
     /**
