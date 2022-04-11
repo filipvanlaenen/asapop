@@ -233,8 +233,9 @@ public class SampledMultivariateHypergeometricDistributionTest {
     private void assertPairProbabilityEquals(final double expected, final double delta, final Integer i0,
             final Integer i1, final long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
-        SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
-                probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
+        SampledMultivariateHypergeometricDistribution multivariateDistribution;
+        multivariateDistribution = new SampledMultivariateHypergeometricDistribution(probabilityMassFunctions,
+                POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i0),
                 i1 == null ? null : probabilityMassFunctions.get(i1));
         assertEquals(expected, actual, delta);
@@ -253,8 +254,9 @@ public class SampledMultivariateHypergeometricDistributionTest {
     private void assertSingleWinnerProbabilityEquals(final double expected, final double delta, final Integer i,
             final long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions = createProbabilityMassFunctions(values);
-        SampledMultivariateHypergeometricDistribution multivariateDistribution = new SampledMultivariateHypergeometricDistribution(
-                probabilityMassFunctions, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
+        SampledMultivariateHypergeometricDistribution multivariateDistribution;
+        multivariateDistribution = new SampledMultivariateHypergeometricDistribution(probabilityMassFunctions,
+                POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         double actual = multivariateDistribution.getProbabilityMass(probabilityMassFunctions.get(i));
         assertEquals(expected, actual, delta);
         assertEquals(NUMBER_OF_ITERATIONS, multivariateDistribution.getNumberOfIterations());
@@ -267,7 +269,8 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @return A list of probability mass functions based on a set of values.
      */
     private List<SampledHypergeometricDistribution> createProbabilityMassFunctions(final long... values) {
-        List<SampledHypergeometricDistribution> probabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
+        List<SampledHypergeometricDistribution> probabilityMassFunctions;
+        probabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
         for (long value : values) {
             probabilityMassFunctions.add(
                     SampledHypergeometricDistributions.get(value, SAMPLE_SIZE, NUMBER_OF_SAMPLES, POPULATION_SIZE));
