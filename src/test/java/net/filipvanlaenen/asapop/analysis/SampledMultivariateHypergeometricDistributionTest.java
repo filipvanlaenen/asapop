@@ -18,7 +18,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
     /**
      * The number of samples in the hypergeometric distributions.
      */
-    private static final long NUMBER_OF_SAMPLES = 10_000L;
+    private static final long NUMBER_OF_SAMPLES = 2_000L;
     /**
      * The sample size for the polls.
      */
