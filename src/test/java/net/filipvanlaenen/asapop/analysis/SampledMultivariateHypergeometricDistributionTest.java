@@ -1,6 +1,8 @@
 package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +93,11 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * The magic number seven hundred.
      */
     private static final long SEVEN_HUNDRED = 700L;
+    /**
+     * Confidence interval to test the utility methods on.
+     */
+    private static final ConfidenceInterval<Range> CONFIDENCE_INTERVAL = new ConfidenceInterval<Range>(
+            Range.get(ONE_HUNDRED, TWO_HUNDRED_NINETY_NINE), Range.get(FOUR_HUNDRED_NINETY_NINE, FIVE_HUNDRED));
 
     /**
      * Verifies that when there's only one candidate, and the candidate's support is well above fifty percent, the
@@ -295,5 +302,40 @@ public class SampledMultivariateHypergeometricDistributionTest {
                     SampledHypergeometricDistributions.get(value, SAMPLE_SIZE, NUMBER_OF_SAMPLES, POPULATION_SIZE));
         }
         return probabilityMassFunctions;
+    }
+
+    /**
+     * Verifies that the test confidence interval is above 1.
+     */
+    @Test
+    public void confidenceIntervalShouldBeAboveOne() {
+        assertTrue(SampledMultivariateHypergeometricDistribution.isConfidenceIntervalAbove(CONFIDENCE_INTERVAL, 1L));
+    }
+
+    /**
+     * Verifies that the test confidence interval is not above 100.
+     */
+    @Test
+    public void confidenceIntervalShouldNotBeAboveOneHundred() {
+        assertFalse(SampledMultivariateHypergeometricDistribution.isConfidenceIntervalAbove(CONFIDENCE_INTERVAL,
+                ONE_HUNDRED));
+    }
+
+    /**
+     * Verifies that the test confidence interval is below 1000.
+     */
+    @Test
+    public void confidenceIntervalShouldBeBelowOneThousand() {
+        assertTrue(SampledMultivariateHypergeometricDistribution.isConfidenceIntervalBelow(CONFIDENCE_INTERVAL,
+                SEVEN_HUNDRED));
+    }
+
+    /**
+     * Verifies that the test confidence interval is not beow 700.
+     */
+    @Test
+    public void confidenceIntervalShouldNotBeBelowSevenHundred() {
+        assertFalse(SampledMultivariateHypergeometricDistribution.isConfidenceIntervalBelow(CONFIDENCE_INTERVAL,
+                FIVE_HUNDRED));
     }
 }

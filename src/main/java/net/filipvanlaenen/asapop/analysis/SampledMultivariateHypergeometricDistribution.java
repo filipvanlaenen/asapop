@@ -279,9 +279,7 @@ class SampledMultivariateHypergeometricDistribution {
             Collections.reverse(lowerBounds);
             long lowerBound = lowerBounds.get(1);
             for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
-                // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
-                if (probabilityMassFunction.getConfidenceInterval(SIX_NINES).getUpperBound()
-                        .getUpperBound() >= lowerBound) {
+                if (!isConfidenceIntervalBelow(probabilityMassFunction.getConfidenceInterval(SIX_NINES), lowerBound)) {
                     relevantProbabilityMassFunctions.add(probabilityMassFunction);
                 }
             }
@@ -339,8 +337,7 @@ class SampledMultivariateHypergeometricDistribution {
      * @param threshold          A threshold.
      * @return True if the lower bound of the confidence interval is above the threshold, false otherwise.
      */
-    private boolean isConfidenceIntervalAbove(final ConfidenceInterval<Range> confidenceInterval,
-            final long threshold) {
+    static boolean isConfidenceIntervalAbove(final ConfidenceInterval<Range> confidenceInterval, final long threshold) {
         return confidenceInterval.getLowerBound().getLowerBound() > threshold;
     }
 
@@ -351,8 +348,7 @@ class SampledMultivariateHypergeometricDistribution {
      * @param threshold          A threshold.
      * @return True if the upper bound of the confidence interval is below the threshold, false otherwise.
      */
-    private boolean isConfidenceIntervalBelow(final ConfidenceInterval<Range> confidenceInterval,
-            final long threshold) {
+    static boolean isConfidenceIntervalBelow(final ConfidenceInterval<Range> confidenceInterval, final long threshold) {
         return confidenceInterval.getUpperBound().getUpperBound() < threshold;
     }
 
