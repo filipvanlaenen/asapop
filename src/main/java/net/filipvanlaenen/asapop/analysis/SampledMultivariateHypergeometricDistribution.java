@@ -74,21 +74,21 @@ class SampledMultivariateHypergeometricDistribution {
         long halfPopulationSize = populationSize / 2L;
         ConfidenceInterval<Range> confidenceIntervalOfLargestList = relevantProbabilityMassFunctions.get(0)
                 .getConfidenceInterval(SIX_NINES);
-        // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
-        if (confidenceIntervalOfLargestList.getLowerBound().getLowerBound() > halfPopulationSize) {
+        if (isConfidenceIntervalAbove(confidenceIntervalOfLargestList, halfPopulationSize)) {
             accumulatedSingleWinnerProbabilityMasses.put(0, BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
         } else
         // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
         if (relevantProbabilityMassFunctions.size() <= 2
-                && confidenceIntervalOfLargestList.getUpperBound().getUpperBound() < halfPopulationSize) {
+                && isConfidenceIntervalBelow(confidenceIntervalOfLargestList, halfPopulationSize)) {
             accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
                     BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
         } else if (relevantProbabilityMassFunctions.size() <= 2
-                && confidenceIntervalOfLargestList.getUpperBound().getUpperBound() > halfPopulationSize
-                && (relevantProbabilityMassFunctions.size() == 1 || relevantProbabilityMassFunctions.get(1)
-                        .getConfidenceInterval(SIX_NINES).getUpperBound().getUpperBound() < halfPopulationSize)) {
+                && !isConfidenceIntervalBelow(confidenceIntervalOfLargestList, halfPopulationSize)
+                && (relevantProbabilityMassFunctions.size() == 1 || isConfidenceIntervalBelow(
+                        relevantProbabilityMassFunctions.get(1).getConfidenceInterval(SIX_NINES),
+                        halfPopulationSize))) {
             double probabilityForDirectWin = relevantProbabilityMassFunctions.get(0)
                     .getProbabilityMassAbove(halfPopulationSize);
             accumulatedSingleWinnerProbabilityMasses.put(0, new BigDecimal(probabilityForDirectWin));
@@ -333,6 +333,30 @@ class SampledMultivariateHypergeometricDistribution {
     }
 
     /**
+     * Checks whether a confidence interval is above a threshold.
+     *
+     * @param confidenceInterval A confidence interval.
+     * @param threshold          A threshold.
+     * @return True if the lower bound of the confidence interval is above the threshold, false otherwise.
+     */
+    private boolean isConfidenceIntervalAbove(final ConfidenceInterval<Range> confidenceInterval,
+            final long threshold) {
+        return confidenceInterval.getLowerBound().getLowerBound() > threshold;
+    }
+
+    /**
+     * Checks whether a confidence interval is below a threshold.
+     *
+     * @param confidenceInterval A confidence interval.
+     * @param threshold          A threshold.
+     * @return True if the upper bound of the confidence interval is below the threshold, false otherwise.
+     */
+    private boolean isConfidenceIntervalBelow(final ConfidenceInterval<Range> confidenceInterval,
+            final long threshold) {
+        return confidenceInterval.getUpperBound().getUpperBound() < threshold;
+    }
+
+    /**
      * Runs the simulations.
      *
      * @param rangesMap                        The map with the ranges for the probability mass function.
@@ -404,6 +428,8 @@ class SampledMultivariateHypergeometricDistribution {
                 if (otherRangesUpperbound > remainder) {
                     Range otherRange = otherRanges.get(0);
                     for (Range r : otherRanges) {
+                        // EQMU: Changing the conditional boundary below produces a mutant that is practically
+                        // equivalent.
                         if (r.getUpperBound() > remainder) {
                             otherRange = r;
                             break;
