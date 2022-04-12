@@ -217,6 +217,11 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return probabilityMassSum;
     }
 
+    /**
+     * Returns all the keys as a sorted list.
+     *
+     * @return An unmodifiable list with all the keys in sorted order.
+     */
     protected List<SK> getSortedKeys() {
         return Collections.unmodifiableList(sortedKeys);
     }

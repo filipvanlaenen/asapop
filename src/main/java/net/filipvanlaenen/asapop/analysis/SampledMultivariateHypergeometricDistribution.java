@@ -87,8 +87,8 @@ class SampledMultivariateHypergeometricDistribution {
             numberOfIterations = requestedNumberOfIterations;
         } else if (relevantProbabilityMassFunctions.size() <= 2
                 && confidenceIntervalOfLargestList.getUpperBound().getUpperBound() > halfPopulationSize
-                && relevantProbabilityMassFunctions.get(1).getConfidenceInterval(SIX_NINES).getUpperBound()
-                        .getUpperBound() < halfPopulationSize) {
+                && (relevantProbabilityMassFunctions.size() == 1 || relevantProbabilityMassFunctions.get(1)
+                        .getConfidenceInterval(SIX_NINES).getUpperBound().getUpperBound() < halfPopulationSize)) {
             double probabilityForDirectWin = relevantProbabilityMassFunctions.get(0)
                     .getProbabilityMassAbove(halfPopulationSize);
             accumulatedSingleWinnerProbabilityMasses.put(0, new BigDecimal(probabilityForDirectWin));

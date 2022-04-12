@@ -15,6 +15,10 @@ import org.junit.jupiter.api.Test;
  */
 public class SortableProbabilityMassFunctionTest {
     /**
+     * The magic number three.
+     */
+    private static final long THREE = 3L;
+    /**
      * The magic number four.
      */
     private static final long FOUR = 4L;
@@ -94,6 +98,15 @@ public class SortableProbabilityMassFunctionTest {
         BigDecimal getProbabilityMass(final Integer key) {
             return null;
         }
+    }
+
+    /**
+     * Verifies that all keys are returned and in sorted order when requested.
+     */
+    @Test
+    public void sortedKeysShouldReturnAllKeysInSortedOrder() {
+        assertEquals(List.of(0L, 1L, 2L, THREE, FOUR, FIVE),
+                new HypergeometricDistribution(1L, FOUR, FIVE).getSortedKeys());
     }
 
     /**

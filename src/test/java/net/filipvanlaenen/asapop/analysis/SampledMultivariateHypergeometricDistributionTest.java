@@ -101,8 +101,23 @@ public class SampledMultivariateHypergeometricDistributionTest {
         assertSingleWinnerProbabilityEquals(1D, SMALL_DELTA, 0, SEVEN_HUNDRED);
     }
 
-    // TODO: assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, FIVE_HUNDRED);
-    // TODO: assertProbabilityEquals(ONE_HALF, SMALL_DELTA, 0, null, FIVE_HUNDRED);
+    /**
+     * Verifies that when there's only one candidate, and the candidate's support is fifty percent, the candidate has a
+     * probability of fifty percent to win the first round.
+     */
+    @Test
+    public void singleCandidateWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityToWin() {
+        assertSingleWinnerProbabilityEquals(ONE_HALF, MODERATE_DELTA, 0, FIVE_HUNDRED);
+    }
+
+    /**
+     * Verifies that when there's only one candidate, and the candidate's support is fifty percent, the candidate has a
+     * probability of fifty percent not to win the first round.
+     */
+    @Test
+    public void singleCandidateWithSupportOfFiftyPercentShouldHaveFiftyPercentProbabilityNotToWin() {
+        assertPairProbabilityEquals(ONE_HALF, MODERATE_DELTA, 0, null, FIVE_HUNDRED);
+    }
 
     /**
      * Verifies that when there's only one candidate, and the candidate's support is well below fifty percent, the
