@@ -237,10 +237,12 @@ public class ExporterTest {
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         OpinionPoll poll3 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-04")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll4 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-05")
-                .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        List<OpinionPoll> expected = List.of(poll4, poll3, poll2, poll1);
-        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4)));
+        OpinionPoll poll4 = new OpinionPoll.Builder().setPollingFirm("ACME").setSampleSize("800")
+                .setFieldworkEnd("2021-08-05").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        OpinionPoll poll5 = new OpinionPoll.Builder().setPollingFirm("BCME").setSampleSize("1000")
+                .setFieldworkEnd("2021-08-05").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        List<OpinionPoll> expected = List.of(poll5, poll4, poll3, poll2, poll1);
+        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4, poll5)));
     }
 
     /**
