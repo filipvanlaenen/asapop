@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -107,6 +108,7 @@ class SampledMultivariateHypergeometricDistribution {
      * The magic number 0.999999 (six nines).
      */
     private static final double SIX_NINES = 0.999999;
+    private final List<SampledHypergeometricDistribution> probabilityMassFunctions;
     /**
      * A map with the cardinalities for each of the unique probability mass functions.
      */
@@ -151,14 +153,15 @@ class SampledMultivariateHypergeometricDistribution {
     SampledMultivariateHypergeometricDistribution(
             final List<SampledHypergeometricDistribution> probabilityMassFunctions, final long populationSize,
             final long sampleSize, final long requestedNumberOfIterations) {
+        this.probabilityMassFunctions = Collections.unmodifiableList(probabilityMassFunctions);
         probabilityMassFunctionCardinalities = new HashMap<SampledHypergeometricDistribution, Integer>();
         accumulatedSingleWinnerProbabilityMasses = new HashMap<Integer, BigDecimal>();
         singleWinnerProbabilityMasses = new HashMap<SampledHypergeometricDistribution, Double>();
         accumulatedPairProbabilityMasses = new HashMap<Set<Integer>, BigDecimal>();
         pairProbabilityMasses = new HashMap<Set<SampledHypergeometricDistribution>, Double>();
         relevantProbabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
-        calculateCardinalities(probabilityMassFunctions);
-        filterRelevantProbabilityMassFunctions(probabilityMassFunctions);
+        calculateCardinalities();
+        filterRelevantProbabilityMassFunctions();
         long halfPopulationSize = populationSize / 2L;
         ConfidenceInterval<Range> confidenceIntervalOfLargestList = relevantProbabilityMassFunctions.get(0)
                 .getConfidenceInterval(SIX_NINES);
@@ -194,11 +197,8 @@ class SampledMultivariateHypergeometricDistribution {
 
     /**
      * Calculates how many times each probability mass function occurs in the input.
-     *
-     * @param probabilityMassFunctions The probability mass functions to base the sampled multivariate hypergeometric
-     *                                 distribution on.
      */
-    private void calculateCardinalities(final List<SampledHypergeometricDistribution> probabilityMassFunctions) {
+    private void calculateCardinalities() {
         for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
             if (probabilityMassFunctionCardinalities.containsKey(probabilityMassFunction)) {
                 probabilityMassFunctionCardinalities.put(probabilityMassFunction,
@@ -344,15 +344,23 @@ class SampledMultivariateHypergeometricDistribution {
         }
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof SampledMultivariateHypergeometricDistribution) {
+            SampledMultivariateHypergeometricDistribution other = (SampledMultivariateHypergeometricDistribution) obj;
+            return other.probabilityMassFunctions.equals(probabilityMassFunctions)
+                    && other.numberOfIterations == numberOfIterations;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Filters out the relevant probability mass functions. A probability mass function is relevant if it is one of the
      * two largest probability mass functions, or its 99.9999% confidence interval overlaps with the second largest
      * probability mass function.
-     *
-     * @param probabilityMassFunctions The probability mass functions to filter from.
      */
-    private void filterRelevantProbabilityMassFunctions(
-            final List<SampledHypergeometricDistribution> probabilityMassFunctions) {
+    private void filterRelevantProbabilityMassFunctions() {
         if (probabilityMassFunctions.size() <= 1) {
             relevantProbabilityMassFunctions.addAll(probabilityMassFunctions);
         } else {
@@ -414,6 +422,11 @@ class SampledMultivariateHypergeometricDistribution {
         } else {
             return 0D;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(probabilityMassFunctions, numberOfIterations);
     }
 
     /**
