@@ -488,10 +488,8 @@ class SampledMultivariateHypergeometricDistribution {
                         MathContext.DECIMAL128);
                 winnersRegister.update(range, i);
             }
-            // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
             if (sumOfMidpoints < populationSize) {
                 Long remainder = populationSize - sumOfMidpoints;
-                // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
                 if (otherRangesUpperbound > remainder) {
                     Range otherRange = otherRanges.get(0);
                     for (Range r : otherRanges) {
@@ -505,7 +503,6 @@ class SampledMultivariateHypergeometricDistribution {
                     probabilityMass = probabilityMass.multiply(
                             probabilityMassFunctionForOthers.getProbabilityMass(otherRange), MathContext.DECIMAL128);
                     int indexOfLargestRange = winnersRegister.getIndexOfLargestRange();
-                    // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
                     if (winnersRegister.getLargestRange().getMidpoint() > halfPopulationSize) {
                         if (accumulatedSingleWinnerProbabilityMasses.containsKey(indexOfLargestRange)) {
                             accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange,

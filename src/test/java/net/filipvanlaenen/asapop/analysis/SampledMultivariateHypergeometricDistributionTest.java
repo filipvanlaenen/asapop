@@ -104,6 +104,12 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final ConfidenceInterval<Range> CONFIDENCE_INTERVAL = new ConfidenceInterval<Range>(
             Range.get(ONE_HUNDRED, TWO_HUNDRED_NINETY_NINE), Range.get(FOUR_HUNDRED_NINETY_NINE, FIVE_HUNDRED));
+    /**
+     * Multivariate distribution to run the equality tests on.
+     */
+    private static final SampledMultivariateHypergeometricDistribution MULTIVARIATE_DISTRIBUTION = new SampledMultivariateHypergeometricDistribution(
+            createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE, SAMPLE_SIZE,
+            NUMBER_OF_ITERATIONS);
 
     /**
      * Verifies that when there's only one candidate, and the candidate's support is well above fifty percent, the
@@ -300,7 +306,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * @param values The sample values for the candidates.
      * @return A list of probability mass functions based on a set of values.
      */
-    private List<SampledHypergeometricDistribution> createProbabilityMassFunctions(final long... values) {
+    private static List<SampledHypergeometricDistribution> createProbabilityMassFunctions(final long... values) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions;
         probabilityMassFunctions = new ArrayList<SampledHypergeometricDistribution>();
         for (long value : values) {
@@ -432,4 +438,107 @@ public class SampledMultivariateHypergeometricDistributionTest {
         assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
         assertEquals(1, winnersRegister.getIndexOfSecondLargestRange());
     }
+
+    /**
+     * Verifies that a sampled multivariate hypergeometric distribution is not equal to null.
+     */
+    @Test
+    public void aSampledMultivariateHypergeometricDistributionShouldNotBeEqualToNull() {
+        assertFalse(MULTIVARIATE_DISTRIBUTION.equals(null));
+    }
+
+    /**
+     * Verifies that a sampled multivariate hypergeometric distribution is not equal to an object of another class, like
+     * a string.
+     */
+    @Test
+    public void aSampledMultivariateHypergeometricDistributionShouldNotBeEqualToAString() {
+        assertFalse(MULTIVARIATE_DISTRIBUTION.equals(""));
+    }
+
+    /**
+     * Verifies that a sampled multivariate hypergeometric distribution is equal to itself.
+     */
+    @Test
+    public void aSampledMultivariateHypergeometricDistributionShouldBeEqualToItself() {
+        assertTrue(MULTIVARIATE_DISTRIBUTION.equals(MULTIVARIATE_DISTRIBUTION));
+    }
+
+    /**
+     * Verifies that calling hashCode twice on a sampled multivariate hypergeometric distribution returns the same
+     * result.
+     */
+    @Test
+    public void callingHashCodeTwiceOnASampledMultivariateHypergeometricDistributionReturnsTheSameResult() {
+        assertEquals(MULTIVARIATE_DISTRIBUTION.hashCode(), MULTIVARIATE_DISTRIBUTION.hashCode());
+    }
+
+    /**
+     * Verifies that two sampled multivariate hypergeometric distributions constructed with the same parameter are
+     * equal.
+     */
+    @Test
+    public void twoSampledMultivariateHypergeometricDistributionsConstructedWithTheSameParameterShouldBeEqual() {
+        assertEquals(MULTIVARIATE_DISTRIBUTION,
+                new SampledMultivariateHypergeometricDistribution(
+                        createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
+                        SAMPLE_SIZE, NUMBER_OF_ITERATIONS));
+    }
+
+    /**
+     * Verifies that two sampled multivariate hypergeometric distributions constructed with the same parameters return
+     * the same hashCode.
+     */
+    @Test
+    public void twoSampledMultivariateHypergeometricDistributionsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
+        assertEquals(MULTIVARIATE_DISTRIBUTION.hashCode(),
+                new SampledMultivariateHypergeometricDistribution(
+                        createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
+                        SAMPLE_SIZE, NUMBER_OF_ITERATIONS).hashCode());
+    }
+
+    /**
+     * Verifies that two sampled multivariate hypergeometric distributions with different probability mass functions are
+     * not equal.
+     */
+    @Test
+    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentProbabilityMassFunctionsShouldNotBeEqual() {
+        assertFalse(MULTIVARIATE_DISTRIBUTION.equals(new SampledMultivariateHypergeometricDistribution(
+                createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
+                SAMPLE_SIZE, NUMBER_OF_ITERATIONS)));
+    }
+
+    /**
+     * Verifies that two sampled multivariate hypergeometric distributions with different probability mass functions
+     * have different hash codes.
+     */
+    @Test
+    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentProbabilityMassFunctionsShouldHaveDifferentHashCodes() {
+        assertFalse(MULTIVARIATE_DISTRIBUTION.hashCode() == new SampledMultivariateHypergeometricDistribution(
+                createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
+                SAMPLE_SIZE, NUMBER_OF_ITERATIONS).hashCode());
+    }
+
+    /**
+     * Verifies that two sampled multivariate hypergeometric distributions with different number of iterations are not
+     * equal.
+     */
+    @Test
+    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentNumberOfIterationsShouldNotBeEqual() {
+        assertFalse(MULTIVARIATE_DISTRIBUTION.equals(new SampledMultivariateHypergeometricDistribution(
+                createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE, SAMPLE_SIZE,
+                NUMBER_OF_ITERATIONS + 1L)));
+    }
+
+    /**
+     * Verifies that two sampled multivariate hypergeometric distributions with different number of iterations have
+     * different hash codes.
+     */
+    @Test
+    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentNumberOfIterationsShouldHaveDifferentHashCodes() {
+        assertFalse(MULTIVARIATE_DISTRIBUTION.hashCode() == new SampledMultivariateHypergeometricDistribution(
+                createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE, SAMPLE_SIZE,
+                NUMBER_OF_ITERATIONS + 1L).hashCode());
+    }
+
 }
