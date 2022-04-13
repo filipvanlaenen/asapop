@@ -57,13 +57,22 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
         return new BigDecimal(key.getLength());
     }
 
-    double getProbabilityMassAbove(long threshold) {
+    /**
+     * Returns the fraction of probability masses (strictly) above a threshold.
+     *
+     * @param threshold A threshold.
+     * @return The fraction of probability masses above the threshold.
+     */
+    double getProbabilityMassFractionAbove(final long threshold) {
         BigDecimal accumulated = BigDecimal.ZERO;
         for (Range r : getSortedKeys()) {
-            if (r.getLowerBound() >= threshold) {
+            if (r.getLowerBound() > threshold) {
                 accumulated = accumulated.add(getProbabilityMass(r).multiply(getKeyWeight(r), MathContext.DECIMAL128),
                         MathContext.DECIMAL128);
-            } else if (r.getUpperBound() > threshold) {
+            } else
+            // EQMU: Changing the conditional boundary below produces a mutant that is equivalent because the
+            // calculation in the clause will add zero if the upper bound is equal to the threshold.
+            if (r.getUpperBound() > threshold) {
                 accumulated = accumulated.add(getProbabilityMass(r).multiply(
                         new BigDecimal(r.getUpperBound() - threshold), MathContext.DECIMAL128), MathContext.DECIMAL128);
             }

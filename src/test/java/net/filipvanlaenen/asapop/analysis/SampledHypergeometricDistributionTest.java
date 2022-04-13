@@ -89,4 +89,35 @@ public class SampledHypergeometricDistributionTest {
         assertNotNull(
                 new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).getProbabilityMass(Range.get(EIGHT, TEN)));
     }
+
+    /**
+     * Verifies that when the threshold is set to zero, the probability mass fraction above it is 1 if the sample value
+     * is larger than zero.
+     */
+    @Test
+    public void probabilityMassFractionShouldBeOneAboveZeroForNonZeroSample() {
+        assertEquals(1D, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(0L));
+    }
+
+    /**
+     * Verifies that when the threshold is equal to the lower bound of the lowest range with non-zero probability mass,
+     * the probability mass fraction is correctly reduced.
+     */
+    @Test
+    public void probabilityMassFractionShouldBeReducedForPartOfLowestRange() {
+        double sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum().doubleValue();
+        double expected = (sum - DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)).doubleValue()) / sum;
+        assertEquals(expected, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(2L));
+    }
+
+    /**
+     * Verifies that when the threshold is equal to the upper bound of the lowest range with non-zero probability mass,
+     * the probability mass fraction is correctly reduced.
+     */
+    @Test
+    public void probabilityMassFractionShouldBeReducedForEntireLowestRange() {
+        double sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum().doubleValue();
+        double expected = (sum - 2 * DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)).doubleValue()) / sum;
+        assertEquals(expected, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(THREE));
+    }
 }

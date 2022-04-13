@@ -181,7 +181,7 @@ class SampledMultivariateHypergeometricDistribution {
                         relevantProbabilityMassFunctions.get(1).getConfidenceInterval(SIX_NINES),
                         halfPopulationSize))) {
             double probabilityForDirectWin = relevantProbabilityMassFunctions.get(0)
-                    .getProbabilityMassAbove(halfPopulationSize);
+                    .getProbabilityMassFractionAbove(halfPopulationSize);
             accumulatedSingleWinnerProbabilityMasses.put(0, new BigDecimal(probabilityForDirectWin));
             accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
                     new BigDecimal(1D - probabilityForDirectWin));
