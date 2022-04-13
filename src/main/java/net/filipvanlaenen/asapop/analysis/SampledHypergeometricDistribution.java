@@ -63,7 +63,7 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
      * @param threshold A threshold.
      * @return The fraction of probability masses above the threshold.
      */
-    double getProbabilityMassFractionAbove(final long threshold) {
+    BigDecimal getProbabilityMassFractionAbove(final long threshold) {
         BigDecimal accumulated = BigDecimal.ZERO;
         for (Range r : getSortedKeys()) {
             if (r.getLowerBound() > threshold) {
@@ -77,6 +77,6 @@ class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<
                         new BigDecimal(r.getUpperBound() - threshold), MathContext.DECIMAL128), MathContext.DECIMAL128);
             }
         }
-        return accumulated.divide(getProbabilityMassSum(), MathContext.DECIMAL128).doubleValue();
+        return accumulated.divide(getProbabilityMassSum(), MathContext.DECIMAL128);
     }
 }

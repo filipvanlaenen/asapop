@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.junit.jupiter.api.Test;
 
@@ -50,8 +51,8 @@ public class SampledHypergeometricDistributionTest {
     /**
      * A hypergeometric distribution to run the tests on.
      */
-    private static final SampledHypergeometricDistribution DISTRIBUTION_1_4_5_9 = new SampledHypergeometricDistribution(
-            1L, FOUR, FIVE, NINE);
+    private static final SampledHypergeometricDistribution DISTRIBUTION_1_4_5_9 =
+            new SampledHypergeometricDistribution(1L, FOUR, FIVE, NINE);
 
     /**
      * Verifies that the number of samples is returned correctly.
@@ -96,7 +97,7 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void probabilityMassFractionShouldBeOneAboveZeroForNonZeroSample() {
-        assertEquals(1D, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(0L));
+        assertEquals(BigDecimal.ONE, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(0L));
     }
 
     /**
@@ -105,8 +106,10 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void probabilityMassFractionShouldBeReducedForPartOfLowestRange() {
-        double sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum().doubleValue();
-        double expected = (sum - DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)).doubleValue()) / sum;
+        BigDecimal sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum();
+        BigDecimal expected =
+                sum.subtract(DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)), MathContext.DECIMAL128)
+                        .divide(sum, MathContext.DECIMAL128);
         assertEquals(expected, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(2L));
     }
 
@@ -116,8 +119,10 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void probabilityMassFractionShouldBeReducedForEntireLowestRange() {
-        double sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum().doubleValue();
-        double expected = (sum - 2 * DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)).doubleValue()) / sum;
+        BigDecimal sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum();
+        BigDecimal expected =
+                sum.subtract(DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)).multiply(new BigDecimal("2"),
+                        MathContext.DECIMAL128), MathContext.DECIMAL128).divide(sum, MathContext.DECIMAL128);
         assertEquals(expected, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(THREE));
     }
 }

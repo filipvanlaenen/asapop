@@ -107,9 +107,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
     /**
      * Multivariate distribution to run the equality tests on.
      */
-    private static final SampledMultivariateHypergeometricDistribution MULTIVARIATE_DISTRIBUTION = new SampledMultivariateHypergeometricDistribution(
-            createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE, SAMPLE_SIZE,
-            NUMBER_OF_ITERATIONS);
+    private static final SampledMultivariateHypergeometricDistribution MULTIVARIATE_DISTRIBUTION =
+            new SampledMultivariateHypergeometricDistribution(
+                    createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
+                    SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
 
     /**
      * Verifies that when there's only one candidate, and the candidate's support is well above fifty percent, the
@@ -490,7 +491,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * the same hashCode.
      */
     @Test
-    public void twoSampledMultivariateHypergeometricDistributionsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
+    public void twoSampledMultivariateHypergeometricDistributionsConstructedWithSameParametersShouldHaveSameHashCode() {
         assertEquals(MULTIVARIATE_DISTRIBUTION.hashCode(),
                 new SampledMultivariateHypergeometricDistribution(
                         createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
@@ -502,7 +503,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * not equal.
      */
     @Test
-    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentProbabilityMassFunctionsShouldNotBeEqual() {
+    public void sampledMultivariateHypergeometricDistributionsWithDifferentProbabilityMassFunctionsShouldNotBeEqual() {
         assertFalse(MULTIVARIATE_DISTRIBUTION.equals(new SampledMultivariateHypergeometricDistribution(
                 createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
                 SAMPLE_SIZE, NUMBER_OF_ITERATIONS)));
@@ -513,7 +514,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * have different hash codes.
      */
     @Test
-    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentProbabilityMassFunctionsShouldHaveDifferentHashCodes() {
+    public void sampledMultivariateHypergeometricDistributionsWithDifferentPMFsShouldHaveDifferentHashCodes() {
         assertFalse(MULTIVARIATE_DISTRIBUTION.hashCode() == new SampledMultivariateHypergeometricDistribution(
                 createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE,
                 SAMPLE_SIZE, NUMBER_OF_ITERATIONS).hashCode());
@@ -535,10 +536,9 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * different hash codes.
      */
     @Test
-    public void twoSampledMultivariateHypergeometricDistributionsWithDifferentNumberOfIterationsShouldHaveDifferentHashCodes() {
+    public void sampledMultivariateHypergeometricDistributionsWithDifferentNoOfIterationsShouldHaveDifferentHashCode() {
         assertFalse(MULTIVARIATE_DISTRIBUTION.hashCode() == new SampledMultivariateHypergeometricDistribution(
                 createProbabilityMassFunctions(FIVE_HUNDRED, THREE_HUNDRED, ONE_HUNDRED), POPULATION_SIZE, SAMPLE_SIZE,
                 NUMBER_OF_ITERATIONS + 1L).hashCode());
     }
-
 }

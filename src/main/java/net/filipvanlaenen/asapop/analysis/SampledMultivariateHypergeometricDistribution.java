@@ -166,8 +166,8 @@ class SampledMultivariateHypergeometricDistribution {
         calculateCardinalities();
         filterRelevantProbabilityMassFunctions();
         long halfPopulationSize = populationSize / 2L;
-        ConfidenceInterval<Range> confidenceIntervalOfLargestList = relevantProbabilityMassFunctions.get(0)
-                .getConfidenceInterval(SIX_NINES);
+        ConfidenceInterval<Range> confidenceIntervalOfLargestList =
+                relevantProbabilityMassFunctions.get(0).getConfidenceInterval(SIX_NINES);
         if (isConfidenceIntervalAbove(confidenceIntervalOfLargestList, halfPopulationSize)) {
             accumulatedSingleWinnerProbabilityMasses.put(0, BigDecimal.ONE);
             numberOfIterations = requestedNumberOfIterations;
@@ -183,15 +183,15 @@ class SampledMultivariateHypergeometricDistribution {
                 && (relevantProbabilityMassFunctions.size() == 1 || isConfidenceIntervalBelow(
                         relevantProbabilityMassFunctions.get(1).getConfidenceInterval(SIX_NINES),
                         halfPopulationSize))) {
-            double probabilityForDirectWin = relevantProbabilityMassFunctions.get(0)
-                    .getProbabilityMassFractionAbove(halfPopulationSize);
-            accumulatedSingleWinnerProbabilityMasses.put(0, new BigDecimal(probabilityForDirectWin));
+            BigDecimal probabilityForDirectWin =
+                    relevantProbabilityMassFunctions.get(0).getProbabilityMassFractionAbove(halfPopulationSize);
+            accumulatedSingleWinnerProbabilityMasses.put(0, probabilityForDirectWin);
             accumulatedPairProbabilityMasses.put(Set.of(0, relevantProbabilityMassFunctions.size() == 1 ? -1 : 1),
-                    new BigDecimal(1D - probabilityForDirectWin));
+                    BigDecimal.ONE.subtract(probabilityForDirectWin, MathContext.DECIMAL128));
             numberOfIterations = requestedNumberOfIterations;
         } else {
-            SampledHypergeometricDistribution otherPmf = calculateProbabilityMassFunctionForOthers(populationSize,
-                    sampleSize);
+            SampledHypergeometricDistribution otherPmf =
+                    calculateProbabilityMassFunctionForOthers(populationSize, sampleSize);
             Map<SampledHypergeometricDistribution, List<Range>> ranges = calculateRanges(otherPmf);
             runSimulations(ranges, otherPmf, populationSize, requestedNumberOfIterations);
         }
@@ -469,6 +469,7 @@ class SampledMultivariateHypergeometricDistribution {
         Random random = new Random();
         numberOfIterations = 0;
         List<Range> otherRanges = rangesMap.get(probabilityMassFunctionForOthers);
+        long otherRangesLowerbound = otherRanges.get(0).getLowerBound();
         long otherRangesUpperbound = otherRanges.get(otherRanges.size() - 1).getUpperBound();
         int numberOfRelevantProbabilityMassFunctions = relevantProbabilityMassFunctions.size();
         // Using SampledHypergeometricDistribution as a key is time consuming, hence we build a parallel list with
@@ -480,54 +481,51 @@ class SampledMultivariateHypergeometricDistribution {
         WinnersRegister winnersRegister = new WinnersRegister();
         while (numberOfIterations < requestedNumberOfIterations) {
             BigDecimal probabilityMass = BigDecimal.ONE;
-            long sumOfMidpoints = 0;
+            long remainderForOther = populationSize;
             winnersRegister.initialize();
             for (int i = 0; i < numberOfRelevantProbabilityMassFunctions; i++) {
                 SampledHypergeometricDistribution probabilityMassFunction = relevantProbabilityMassFunctions.get(i);
                 List<Range> ranges = rangesList.get(i);
                 Range range = ranges.get(random.nextInt(ranges.size()));
-                sumOfMidpoints += range.getMidpoint();
+                remainderForOther -= range.getMidpoint();
                 probabilityMass = probabilityMass.multiply(probabilityMassFunction.getProbabilityMass(range),
                         MathContext.DECIMAL128);
                 winnersRegister.update(range, i);
             }
-            if (sumOfMidpoints < populationSize) {
-                Long remainder = populationSize - sumOfMidpoints;
-                if (otherRangesUpperbound > remainder) {
-                    Range otherRange = otherRanges.get(0);
-                    for (Range r : otherRanges) {
-                        // EQMU: Changing the conditional boundary below produces a mutant that is practically
-                        // equivalent.
-                        if (r.getUpperBound() > remainder) {
-                            otherRange = r;
-                            break;
-                        }
+            if (otherRangesLowerbound <= remainderForOther && remainderForOther <= otherRangesUpperbound) {
+                Range otherRange = otherRanges.get(0);
+                for (Range r : otherRanges) {
+                    // EQMU: Changing the conditional boundary below produces a mutant that is practically
+                    // equivalent.
+                    if (r.getUpperBound() > remainderForOther) {
+                        otherRange = r;
+                        break;
                     }
-                    probabilityMass = probabilityMass.multiply(
-                            probabilityMassFunctionForOthers.getProbabilityMass(otherRange), MathContext.DECIMAL128);
-                    int indexOfLargestRange = winnersRegister.getIndexOfLargestRange();
-                    if (winnersRegister.getLargestRange().getMidpoint() > halfPopulationSize) {
-                        if (accumulatedSingleWinnerProbabilityMasses.containsKey(indexOfLargestRange)) {
-                            accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange,
-                                    probabilityMass.add(
-                                            accumulatedSingleWinnerProbabilityMasses.get(indexOfLargestRange),
-                                            MathContext.DECIMAL128));
-                        } else {
-                            accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange, probabilityMass);
-                        }
-                    } else {
-                        Set<Integer> runoffPair = Set.of(indexOfLargestRange,
-                                winnersRegister.getIndexOfSecondLargestRange());
-                        if (accumulatedPairProbabilityMasses.containsKey(runoffPair)) {
-                            accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass
-                                    .add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));
-                        } else {
-                            accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass);
-                        }
-                    }
-                    numberOfIterations += 1;
                 }
+                probabilityMass = probabilityMass.multiply(
+                        probabilityMassFunctionForOthers.getProbabilityMass(otherRange), MathContext.DECIMAL128);
+                int indexOfLargestRange = winnersRegister.getIndexOfLargestRange();
+                if (winnersRegister.getLargestRange().getMidpoint() > halfPopulationSize) {
+                    if (accumulatedSingleWinnerProbabilityMasses.containsKey(indexOfLargestRange)) {
+                        accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange,
+                                probabilityMass.add(accumulatedSingleWinnerProbabilityMasses.get(indexOfLargestRange),
+                                        MathContext.DECIMAL128));
+                    } else {
+                        accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange, probabilityMass);
+                    }
+                } else {
+                    Set<Integer> runoffPair =
+                            Set.of(indexOfLargestRange, winnersRegister.getIndexOfSecondLargestRange());
+                    if (accumulatedPairProbabilityMasses.containsKey(runoffPair)) {
+                        accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass
+                                .add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));
+                    } else {
+                        accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass);
+                    }
+                }
+                numberOfIterations += 1;
             }
+
         }
     }
 }
