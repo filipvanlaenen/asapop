@@ -139,9 +139,29 @@ class SampledMultivariateHypergeometricDistribution {
      */
     private final List<SampledHypergeometricDistribution> relevantProbabilityMassFunctions;
     /**
+     * The probability mass function for others.
+     */
+    private SampledHypergeometricDistribution probabilityMassFunctionForOthers;
+    /**
+     * A map containing the ranges per probability mass function.
+     */
+    private Map<SampledHypergeometricDistribution, List<Range>> rangesMap;
+    /**
      * The number of iterations performed.
      */
     private long numberOfIterations;
+    /**
+     * The lower bound for the remainder.
+     */
+    private long lowerBoundForRemainder;
+    /**
+     * The upper bound for the remainder.
+     */
+    private long upperBoundForRemainder;
+    /**
+     * A map containing the probability masses per remainder.
+     */
+    private Map<Long, BigDecimal> probabilityMassesForRemainders = new HashMap<Long, BigDecimal>();
 
     /**
      * Creates a sampled multivariate hypergeometric distribution based on a set of probability mass functions for an
@@ -190,10 +210,12 @@ class SampledMultivariateHypergeometricDistribution {
                     BigDecimal.ONE.subtract(probabilityForDirectWin, MathContext.DECIMAL128));
             numberOfIterations = requestedNumberOfIterations;
         } else {
-            SampledHypergeometricDistribution otherPmf =
-                    calculateProbabilityMassFunctionForOthers(populationSize, sampleSize);
-            Map<SampledHypergeometricDistribution, List<Range>> ranges = calculateRanges(otherPmf);
-            runSimulations(ranges, otherPmf, populationSize, requestedNumberOfIterations);
+            probabilityMassFunctionForOthers = calculateProbabilityMassFunctionForOthers(populationSize, sampleSize);
+            rangesMap = calculateRanges();
+            List<Range> rangesForOthers = rangesMap.get(probabilityMassFunctionForOthers);
+            lowerBoundForRemainder = rangesForOthers.get(0).getLowerBound();
+            upperBoundForRemainder = rangesForOthers.get(rangesForOthers.size() - 1).getUpperBound();
+            runSimulations(populationSize, requestedNumberOfIterations);
         }
         convertAccumulatedProbabilityMassesToProbabilityMasses();
     }
@@ -236,13 +258,10 @@ class SampledMultivariateHypergeometricDistribution {
      * Calculates the list of ranges of the 99.9999% confidence interval for each of the relevant probability mass
      * functions.
      *
-     * @param probabilityMassFunctionForOthers The probability mass function for others relative to the relevant
-     *                                         probability mass functions.
      * @return A map containing the list of ranges of the 99.9999% confidence interval for each relevant probability
      *         mass function.
      */
-    private Map<SampledHypergeometricDistribution, List<Range>> calculateRanges(
-            final SampledHypergeometricDistribution probabilityMassFunctionForOthers) {
+    private Map<SampledHypergeometricDistribution, List<Range>> calculateRanges() {
         Map<SampledHypergeometricDistribution, List<Range>> ranges;
         ranges = new HashMap<SampledHypergeometricDistribution, List<Range>>();
         ranges.put(probabilityMassFunctionForOthers,
@@ -427,6 +446,31 @@ class SampledMultivariateHypergeometricDistribution {
         }
     }
 
+    /**
+     * Returns the probability mass for the remainder.
+     *
+     * @param remainder The remainder.
+     * @return The probability mass for the remainder.
+     */
+    private BigDecimal getProbabilityMassForRemainder(final long remainder) {
+        // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
+        // EQMU: Changing the second conditional boundary below produces a mutant that is practically equivalent.
+        if (remainder < lowerBoundForRemainder || upperBoundForRemainder < remainder) {
+            return BigDecimal.ZERO;
+        }
+        if (!probabilityMassesForRemainders.containsKey(remainder)) {
+            List<Range> rangesForOther = rangesMap.get(probabilityMassFunctionForOthers);
+            for (Range r : rangesForOther) {
+                // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
+                if (r.getUpperBound() >= remainder) {
+                    probabilityMassesForRemainders.put(remainder,
+                            probabilityMassFunctionForOthers.getProbabilityMass(r));
+                }
+            }
+        }
+        return probabilityMassesForRemainders.get(remainder);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(probabilityMassFunctions, numberOfIterations);
@@ -457,20 +501,13 @@ class SampledMultivariateHypergeometricDistribution {
     /**
      * Runs the simulations.
      *
-     * @param rangesMap                        The map with the ranges for the probability mass function.
-     * @param probabilityMassFunctionForOthers The probability mass function for the others.
-     * @param populationSize                   The population size.
-     * @param requestedNumberOfIterations      The requested number of iterations.
+     * @param populationSize              The population size.
+     * @param requestedNumberOfIterations The requested number of iterations.
      */
-    private void runSimulations(final Map<SampledHypergeometricDistribution, List<Range>> rangesMap,
-            final SampledHypergeometricDistribution probabilityMassFunctionForOthers, final long populationSize,
-            final long requestedNumberOfIterations) {
+    private void runSimulations(final long populationSize, final long requestedNumberOfIterations) {
         long halfPopulationSize = populationSize / 2L;
         Random random = new Random();
         numberOfIterations = 0;
-        List<Range> otherRanges = rangesMap.get(probabilityMassFunctionForOthers);
-        long otherRangesLowerbound = otherRanges.get(0).getLowerBound();
-        long otherRangesUpperbound = otherRanges.get(otherRanges.size() - 1).getUpperBound();
         int numberOfRelevantProbabilityMassFunctions = relevantProbabilityMassFunctions.size();
         // Using SampledHypergeometricDistribution as a key is time consuming, hence we build a parallel list with
         // ranges.
@@ -481,30 +518,22 @@ class SampledMultivariateHypergeometricDistribution {
         WinnersRegister winnersRegister = new WinnersRegister();
         while (numberOfIterations < requestedNumberOfIterations) {
             BigDecimal probabilityMass = BigDecimal.ONE;
-            long remainderForOther = populationSize;
+            long remainder = populationSize;
             winnersRegister.initialize();
             for (int i = 0; i < numberOfRelevantProbabilityMassFunctions; i++) {
                 SampledHypergeometricDistribution probabilityMassFunction = relevantProbabilityMassFunctions.get(i);
                 List<Range> ranges = rangesList.get(i);
                 Range range = ranges.get(random.nextInt(ranges.size()));
-                remainderForOther -= range.getMidpoint();
+                remainder -= range.getMidpoint();
                 probabilityMass = probabilityMass.multiply(probabilityMassFunction.getProbabilityMass(range),
                         MathContext.DECIMAL128);
                 winnersRegister.update(range, i);
             }
-            if (otherRangesLowerbound <= remainderForOther && remainderForOther <= otherRangesUpperbound) {
-                Range otherRange = otherRanges.get(0);
-                for (Range r : otherRanges) {
-                    // EQMU: Changing the conditional boundary below produces a mutant that is practically
-                    // equivalent.
-                    if (r.getUpperBound() > remainderForOther) {
-                        otherRange = r;
-                        break;
-                    }
-                }
-                probabilityMass = probabilityMass.multiply(
-                        probabilityMassFunctionForOthers.getProbabilityMass(otherRange), MathContext.DECIMAL128);
+            BigDecimal probabilityMassForOther = getProbabilityMassForRemainder(remainder);
+            if (!probabilityMassForOther.equals(BigDecimal.ZERO)) {
+                probabilityMass = probabilityMass.multiply(probabilityMassForOther, MathContext.DECIMAL128);
                 int indexOfLargestRange = winnersRegister.getIndexOfLargestRange();
+                // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
                 if (winnersRegister.getLargestRange().getMidpoint() > halfPopulationSize) {
                     if (accumulatedSingleWinnerProbabilityMasses.containsKey(indexOfLargestRange)) {
                         accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange,
@@ -525,7 +554,6 @@ class SampledMultivariateHypergeometricDistribution {
                 }
                 numberOfIterations += 1;
             }
-
         }
     }
 }

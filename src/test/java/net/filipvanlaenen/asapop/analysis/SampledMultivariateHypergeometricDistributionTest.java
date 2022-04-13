@@ -44,25 +44,25 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     private static final double LARGE_DELTA = 0.05;
     /**
-     * The magic number 0.10.
-     */
-    private static final double DOUBLE_0_10 = 0.10D;
-    /**
      * The magic number one quarter.
      */
     private static final double ONE_QUARTER = 0.25D;
+    /**
+     * The magic number 0.32.
+     */
+    private static final double DOUBLE_0_32 = 0.32D;
     /**
      * The magic number one third.
      */
     private static final double ONE_THIRD = 0.333333333D;
     /**
+     * The magic number 0.34.
+     */
+    private static final double DOUBLE_0_34 = 0.34D;
+    /**
      * The magic number 0.36.
      */
     private static final double DOUBLE_0_36 = 0.36D;
-    /**
-     * The magic number 0.45.
-     */
-    private static final double DOUBLE_0_45 = 0.45D;
     /**
      * The magic number one half.
      */
@@ -181,7 +181,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void twoCandidatesWithSupportOfAlmostFiftyPercentShouldHaveSlightlyLessThanOneHalfToWin() {
-        assertSingleWinnerProbabilityEquals(DOUBLE_0_45, LARGE_DELTA, 0, FOUR_HUNDRED_NINETY_NINE,
+        assertSingleWinnerProbabilityEquals(DOUBLE_0_34, LARGE_DELTA, 0, FOUR_HUNDRED_NINETY_NINE,
                 FOUR_HUNDRED_NINETY_NINE);
     }
 
@@ -191,7 +191,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      */
     @Test
     public void twoCandidatesWithSupportOfAlmostFiftyPercentShouldHaveALowProbabilityNotToWin() {
-        assertPairProbabilityEquals(DOUBLE_0_10, LARGE_DELTA, 0, 1, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
+        assertPairProbabilityEquals(DOUBLE_0_32, LARGE_DELTA, 0, 1, FOUR_HUNDRED_NINETY_NINE, FOUR_HUNDRED_NINETY_NINE);
     }
 
     /**
