@@ -16,6 +16,94 @@ import java.util.Set;
  */
 class SampledMultivariateHypergeometricDistribution {
     /**
+     * Class functioning as a register to track the largest and the second largest range.
+     */
+    static class WinnersRegister {
+        /**
+         * The largest range.
+         */
+        private Range largestRange;
+        /**
+         * The second largest range.
+         */
+        private Range secondLargestRange;
+        /**
+         * The index of the largest range.
+         */
+        private Integer indexOfLargestRange;
+        /**
+         * The index of the second largest range.
+         */
+        private Integer indexOfSecondLargestRange;
+
+        /**
+         * Returns the index of the largest range.
+         *
+         * @return The index of the largest range.
+         */
+        int getIndexOfLargestRange() {
+            return indexOfLargestRange;
+        }
+
+        /**
+         * Returns the index of the second largest range.
+         *
+         * @return The index of the second largest range.
+         */
+        int getIndexOfSecondLargestRange() {
+            return indexOfSecondLargestRange;
+        }
+
+        /**
+         * Returns the largest range.
+         *
+         * @return The largest range.
+         */
+        Range getLargestRange() {
+            return largestRange;
+        }
+
+        /**
+         * Initializes the register to start a new round.
+         */
+        void initialize() {
+            indexOfLargestRange = null;
+            indexOfSecondLargestRange = null;
+        }
+
+        /**
+         * Updates the register with a new range and index.
+         *
+         * @param range A new range.
+         * @param index The index of the new range.
+         */
+        void update(final Range range, final int index) {
+            if (indexOfLargestRange == null) {
+                largestRange = range;
+                indexOfLargestRange = index;
+            } else if (indexOfSecondLargestRange == null) {
+                if (range.compareTo(largestRange) <= 0) {
+                    secondLargestRange = range;
+                    indexOfSecondLargestRange = index;
+                } else {
+                    secondLargestRange = largestRange;
+                    indexOfSecondLargestRange = indexOfLargestRange;
+                    largestRange = range;
+                    indexOfLargestRange = index;
+                }
+            } else if (largestRange.compareTo(range) < 0) {
+                secondLargestRange = largestRange;
+                indexOfSecondLargestRange = indexOfLargestRange;
+                largestRange = range;
+                indexOfLargestRange = index;
+            } else if (secondLargestRange.compareTo(range) < 0) {
+                secondLargestRange = range;
+                indexOfSecondLargestRange = index;
+            }
+        }
+    }
+
+    /**
      * The magic number 0.999999 (six nines).
      */
     private static final double SIX_NINES = 0.999999;
@@ -266,8 +354,7 @@ class SampledMultivariateHypergeometricDistribution {
      */
     private void filterRelevantProbabilityMassFunctions(
             final List<SampledHypergeometricDistribution> probabilityMassFunctions) {
-        // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
-        if (probabilityMassFunctions.size() <= 2) {
+        if (probabilityMassFunctions.size() <= 1) {
             relevantProbabilityMassFunctions.addAll(probabilityMassFunctions);
         } else {
             List<Long> lowerBounds = new ArrayList<Long>();
@@ -375,13 +462,11 @@ class SampledMultivariateHypergeometricDistribution {
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
             rangesList.add(rangesMap.get(probabilityMassFunction));
         }
+        WinnersRegister winnersRegister = new WinnersRegister();
         while (numberOfIterations < requestedNumberOfIterations) {
             BigDecimal probabilityMass = BigDecimal.ONE;
             long sumOfMidpoints = 0;
-            Range largestRange = null;
-            Range secondLargestRange = null;
-            Integer indexOfLargestRange = null;
-            Integer indexOfSecondLargestRange = null;
+            winnersRegister.initialize();
             for (int i = 0; i < numberOfRelevantProbabilityMassFunctions; i++) {
                 SampledHypergeometricDistribution probabilityMassFunction = relevantProbabilityMassFunctions.get(i);
                 List<Range> ranges = rangesList.get(i);
@@ -389,33 +474,7 @@ class SampledMultivariateHypergeometricDistribution {
                 sumOfMidpoints += range.getMidpoint();
                 probabilityMass = probabilityMass.multiply(probabilityMassFunction.getProbabilityMass(range),
                         MathContext.DECIMAL128);
-                if (largestRange == null) {
-                    largestRange = range;
-                    indexOfLargestRange = i;
-                } else if (secondLargestRange == null) {
-                    // EQMU: Changing the conditional boundary below produces a mutant that is equivalent.
-                    if (largestRange.compareTo(range) > 0) {
-                        secondLargestRange = range;
-                        indexOfSecondLargestRange = i;
-                    } else {
-                        secondLargestRange = largestRange;
-                        indexOfSecondLargestRange = indexOfLargestRange;
-                        largestRange = range;
-                        indexOfLargestRange = i;
-                    }
-                } else
-                // EQMU: Changing the conditional boundary below produces a mutant that is equivalent.
-                if (largestRange.compareTo(range) < 0) {
-                    secondLargestRange = largestRange;
-                    indexOfSecondLargestRange = indexOfLargestRange;
-                    largestRange = range;
-                    indexOfLargestRange = i;
-                } else
-                // EQMU: Changing the conditional boundary below produces a mutant that is equivalent.
-                if (secondLargestRange.compareTo(range) < 0) {
-                    secondLargestRange = range;
-                    indexOfSecondLargestRange = i;
-                }
+                winnersRegister.update(range, i);
             }
             // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
             if (sumOfMidpoints < populationSize) {
@@ -433,8 +492,9 @@ class SampledMultivariateHypergeometricDistribution {
                     }
                     probabilityMass = probabilityMass.multiply(
                             probabilityMassFunctionForOthers.getProbabilityMass(otherRange), MathContext.DECIMAL128);
+                    int indexOfLargestRange = winnersRegister.getIndexOfLargestRange();
                     // EQMU: Changing the conditional boundary below produces a mutant that is practically equivalent.
-                    if (largestRange.getMidpoint() > halfPopulationSize) {
+                    if (winnersRegister.getLargestRange().getMidpoint() > halfPopulationSize) {
                         if (accumulatedSingleWinnerProbabilityMasses.containsKey(indexOfLargestRange)) {
                             accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange,
                                     probabilityMass.add(
@@ -444,7 +504,8 @@ class SampledMultivariateHypergeometricDistribution {
                             accumulatedSingleWinnerProbabilityMasses.put(indexOfLargestRange, probabilityMass);
                         }
                     } else {
-                        Set<Integer> runoffPair = Set.of(indexOfLargestRange, indexOfSecondLargestRange);
+                        Set<Integer> runoffPair = Set.of(indexOfLargestRange,
+                                winnersRegister.getIndexOfSecondLargestRange());
                         if (accumulatedPairProbabilityMasses.containsKey(runoffPair)) {
                             accumulatedPairProbabilityMasses.put(runoffPair, probabilityMass
                                     .add(accumulatedPairProbabilityMasses.get(runoffPair), MathContext.DECIMAL128));

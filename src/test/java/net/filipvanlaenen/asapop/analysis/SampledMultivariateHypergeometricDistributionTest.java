@@ -9,12 +9,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.analysis.SampledMultivariateHypergeometricDistribution.WinnersRegister;
+
 /**
  * Unit tests on the <code>SampledMultivariateHypergeometricDistribution</code> class.
  */
 public class SampledMultivariateHypergeometricDistributionTest {
     /**
-     * The number of iterations in the multivariate hypergoemetric distribution.
+     * The number of iterations in the multivariate hypergeometric distribution.
      */
     private static final long NUMBER_OF_ITERATIONS = 20_000L;
     /**
@@ -65,6 +67,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * The magic number one half.
      */
     private static final double ONE_HALF = 0.5D;
+    /**
+     * The magic number one three.
+     */
+    private static final long THREE = 3L;
     /**
      * The magic number one hundred.
      */
@@ -337,5 +343,93 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void confidenceIntervalShouldNotBeBelowSevenHundred() {
         assertFalse(SampledMultivariateHypergeometricDistribution.isConfidenceIntervalBelow(CONFIDENCE_INTERVAL,
                 FIVE_HUNDRED));
+    }
+
+    /**
+     * Verifies that a range is set to be the largest right after initialization.
+     */
+    @Test
+    public void firstRangeAfterInitializationShouldBeSetAsLargest() {
+        WinnersRegister winnersRegister = new WinnersRegister();
+        winnersRegister.initialize();
+        winnersRegister.update(Range.get(0L, 1L), 0);
+        assertEquals(0, winnersRegister.getIndexOfLargestRange());
+        assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
+    }
+
+    /**
+     * Verifies that when the second range is larger than the first, the second range is set as the largest, and the
+     * first one as the second largest range.
+     */
+    @Test
+    public void largerSecondRangeShouldBeSetAsLargest() {
+        WinnersRegister winnersRegister = new WinnersRegister();
+        winnersRegister.initialize();
+        winnersRegister.update(Range.get(0L, 1L), 0);
+        winnersRegister.update(Range.get(2L, THREE), 1);
+        assertEquals(1, winnersRegister.getIndexOfLargestRange());
+        assertEquals(Range.get(2L, THREE), winnersRegister.getLargestRange());
+        assertEquals(0, winnersRegister.getIndexOfSecondLargestRange());
+    }
+
+    /**
+     * Verifies that when the second range is equal to the first, it is set as the second largest range.
+     */
+    @Test
+    public void equalSecondRangeShouldBeSetAsSecondLargest() {
+        WinnersRegister winnersRegister = new WinnersRegister();
+        winnersRegister.initialize();
+        winnersRegister.update(Range.get(0L, 1L), 0);
+        winnersRegister.update(Range.get(0L, 1L), 1);
+        assertEquals(0, winnersRegister.getIndexOfLargestRange());
+        assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
+        assertEquals(1, winnersRegister.getIndexOfSecondLargestRange());
+    }
+
+    /**
+     * Verifies that when the third range is largest, it is set as the largest, and the formerly largest is set as the
+     * second largest.
+     */
+    @Test
+    public void largerThirdRangeShouldBeSetAsLargest() {
+        WinnersRegister winnersRegister = new WinnersRegister();
+        winnersRegister.initialize();
+        winnersRegister.update(Range.get(0L, 1L), 0);
+        winnersRegister.update(Range.get(0L, 1L), 1);
+        winnersRegister.update(Range.get(2L, THREE), 2);
+        assertEquals(2, winnersRegister.getIndexOfLargestRange());
+        assertEquals(Range.get(2L, THREE), winnersRegister.getLargestRange());
+        assertEquals(0, winnersRegister.getIndexOfSecondLargestRange());
+    }
+
+    /**
+     * Verifies that when the third range is equal to the largest, but larger to the second largest, it is set as the
+     * second largest range.
+     */
+    @Test
+    public void equalThirdRangeLargestThanSecondShouldBeSetAsSecond() {
+        WinnersRegister winnersRegister = new WinnersRegister();
+        winnersRegister.initialize();
+        winnersRegister.update(Range.get(2L, THREE), 0);
+        winnersRegister.update(Range.get(0L, 1L), 1);
+        winnersRegister.update(Range.get(2L, THREE), 2);
+        assertEquals(0, winnersRegister.getIndexOfLargestRange());
+        assertEquals(Range.get(2L, THREE), winnersRegister.getLargestRange());
+        assertEquals(2, winnersRegister.getIndexOfSecondLargestRange());
+    }
+
+    /**
+     * Verifies that when the third range is equal to the two first, it isn't retained.
+     */
+    @Test
+    public void equalThirdRangeShouldNotBeRetained() {
+        WinnersRegister winnersRegister = new WinnersRegister();
+        winnersRegister.initialize();
+        winnersRegister.update(Range.get(0L, 1L), 0);
+        winnersRegister.update(Range.get(0L, 1L), 1);
+        winnersRegister.update(Range.get(0L, 1L), 2);
+        assertEquals(0, winnersRegister.getIndexOfLargestRange());
+        assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
+        assertEquals(1, winnersRegister.getIndexOfSecondLargestRange());
     }
 }
