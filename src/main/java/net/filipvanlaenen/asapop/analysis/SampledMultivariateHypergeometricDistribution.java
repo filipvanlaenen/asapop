@@ -220,12 +220,10 @@ class SampledMultivariateHypergeometricDistribution {
     private SampledHypergeometricDistribution calculateProbabilityMassFunctionForOthers(final long populationSize,
             final long effectiveSampleSize) {
         long others = populationSize;
-        // TODO: Should be calculated based on the numbers registered in the poll, not the medians from the PMFs
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
             others -= probabilityMassFunction.getMedian().getMidpoint();
         }
         Long sampled = Math.round(((double) others * effectiveSampleSize) / populationSize);
-        // TODO: Should be according to the precision (1, 0.5 or 0.1).
         long numberOfSamples = relevantProbabilityMassFunctions.iterator().next().getNumberOfSamples();
         return SampledHypergeometricDistributions.get(sampled, (long) effectiveSampleSize, numberOfSamples,
                 populationSize);
@@ -242,7 +240,8 @@ class SampledMultivariateHypergeometricDistribution {
      */
     private Map<SampledHypergeometricDistribution, List<Range>> calculateRanges(
             final SampledHypergeometricDistribution probabilityMassFunctionForOthers) {
-        Map<SampledHypergeometricDistribution, List<Range>> ranges = new HashMap<SampledHypergeometricDistribution, List<Range>>();
+        Map<SampledHypergeometricDistribution, List<Range>> ranges;
+        ranges = new HashMap<SampledHypergeometricDistribution, List<Range>>();
         ranges.put(probabilityMassFunctionForOthers,
                 probabilityMassFunctionForOthers.getConfidenceIntervalKeyList(SIX_NINES));
         for (SampledHypergeometricDistribution probabilityMassFunction : relevantProbabilityMassFunctions) {
