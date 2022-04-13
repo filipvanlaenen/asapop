@@ -108,6 +108,9 @@ class SampledMultivariateHypergeometricDistribution {
      * The magic number 0.999999 (six nines).
      */
     private static final double SIX_NINES = 0.999999;
+    /**
+     * The probability mass functions.
+     */
     private final List<SampledHypergeometricDistribution> probabilityMassFunctions;
     /**
      * A map with the cardinalities for each of the unique probability mass functions.
