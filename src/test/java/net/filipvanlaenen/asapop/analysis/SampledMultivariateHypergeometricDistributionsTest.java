@@ -29,10 +29,26 @@ public class SampledMultivariateHypergeometricDistributionsTest {
      */
     private static final long POPULATION_SIZE = 1_000_000L;
     /**
+     * The magic number fifty.
+     */
+    private static final long FIFTY = 50L;
+    /**
+     * The magic number one hundred.
+     */
+    private static final long ONE_HUNDRED = 100L;
+    /**
+     * The magic number two hundred.
+     */
+    private static final long TWO_HUNDRED = 200L;
+    /**
+     * The magic number three hundred.
+     */
+    private static final long THREE_HUNDRED = 300L;
+    /**
      * A set of probability mass functions to test on.
      */
-    private static final List<SampledHypergeometricDistribution> TEST_PMFS = createProbabilityMassFunctions(300L, 200L,
-            100L);
+    private static final List<SampledHypergeometricDistribution> TEST_PMFS = createProbabilityMassFunctions(
+            THREE_HUNDRED, TWO_HUNDRED, ONE_HUNDRED);
 
     /**
      * Verifies that it retrieves a sampled multivariate hypergeometric distribution that is equal to the correct
@@ -61,12 +77,26 @@ public class SampledMultivariateHypergeometricDistributionsTest {
     }
 
     /**
+     * Verifies that it retrieves the same instance even if the probability mass functions have another order.
+     */
+    @Test
+    public void shouldRetrieveTheSameObjectWhenTheProbabilityMassFunctionsAreInAnotherOrder() {
+        assertSame(
+                SampledMultivariateHypergeometricDistributions.get(TEST_PMFS, POPULATION_SIZE, SAMPLE_SIZE,
+                        NUMBER_OF_ITERATIONS),
+                SampledMultivariateHypergeometricDistributions.get(
+                        createProbabilityMassFunctions(ONE_HUNDRED, TWO_HUNDRED, THREE_HUNDRED), POPULATION_SIZE,
+                        SAMPLE_SIZE, NUMBER_OF_ITERATIONS));
+    }
+
+    /**
      * Verifies that it retrieves a sampled multivariate hypergeometric distribution with more samples than what was
      * cached when requested.
      */
     @Test
     public void shouldRetrieveASampledMultivariateHypergeometricDistributionWithMoreSamplesWhenRequested() {
-        List<SampledHypergeometricDistribution> pmfs = createProbabilityMassFunctions(300L, 200L, 100L, 50L);
+        List<SampledHypergeometricDistribution> pmfs = createProbabilityMassFunctions(THREE_HUNDRED, TWO_HUNDRED,
+                ONE_HUNDRED, FIFTY);
         SampledMultivariateHypergeometricDistributions.get(pmfs, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         assertEquals(NUMBER_OF_ITERATIONS + 1L, SampledMultivariateHypergeometricDistributions
                 .get(pmfs, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS + 1L).getNumberOfIterations());
@@ -78,7 +108,8 @@ public class SampledMultivariateHypergeometricDistributionsTest {
      */
     @Test
     public void shouldRetrieveASampledMultivariateHypergeometricDistributionWithMoreSamplesWhenAvailable() {
-        List<SampledHypergeometricDistribution> pmfs = createProbabilityMassFunctions(300L, 200L, 100L, 50L, 50L);
+        List<SampledHypergeometricDistribution> pmfs = createProbabilityMassFunctions(THREE_HUNDRED, TWO_HUNDRED,
+                ONE_HUNDRED, FIFTY, FIFTY);
         SampledMultivariateHypergeometricDistributions.get(pmfs, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS);
         assertEquals(NUMBER_OF_ITERATIONS, SampledMultivariateHypergeometricDistributions
                 .get(pmfs, POPULATION_SIZE, SAMPLE_SIZE, NUMBER_OF_ITERATIONS - 1L).getNumberOfIterations());
