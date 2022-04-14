@@ -137,7 +137,15 @@ public class AnalysisBuilderTest {
     }
 
     /**
-     * Verifies that a opinion poll analysis object is built by the builder.
+     * Verifies that the set with opinion poll analyses objects is built by the builder.
+     */
+    @Test
+    public void opinionPollAnalysesShouldBeNotNull() {
+        assertNotNull(analysis.getOpinionPollAnalyses());
+    }
+
+    /**
+     * Verifies that an opinion poll analysis object is built by the builder.
      */
     @Test
     public void opinionPollAnalysisShouldBeNotNull() {

@@ -103,11 +103,12 @@ public class AnalysisBuilder {
             responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         }
         if (poll.getScope() == Scope.PresidentialFirstRound) {
-            FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
-                    .getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
+            FirstRoundWinnersAnalysis firstRoundWinnersAnalysis =
+                    engine.getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
             if (firstRoundWinnersAnalysis != null) {
                 FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
-                Set<FirstRoundResultProbabilityMass> firstRoundProbabilityMassFunction  = new HashSet<FirstRoundResultProbabilityMass>();
+                Set<FirstRoundResultProbabilityMass> firstRoundProbabilityMassFunction =
+                        new HashSet<FirstRoundResultProbabilityMass>();
                 for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
                     FirstRoundResultProbabilityMass firstRoundResultAnalysis = new FirstRoundResultProbabilityMass();
                     Set<String> electoralListKeySet = new HashSet<String>();
@@ -115,7 +116,8 @@ public class AnalysisBuilder {
                         electoralListKeySet.add(electoralList.getKey());
                     }
                     firstRoundResultAnalysis.setElectoralLists(electoralListKeySet);
-                    firstRoundResultAnalysis.setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+                    firstRoundResultAnalysis
+                            .setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
                     firstRoundProbabilityMassFunction.add(firstRoundResultAnalysis);
                 }
                 firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
@@ -154,16 +156,18 @@ public class AnalysisBuilder {
     private ResultAnalysis buildResultAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
             final ElectoralList electoralList) {
         ResultAnalysis resultAnalysis = new ResultAnalysis();
-        SortableProbabilityMassFunction<Range> probabilityMassFunction = voteSharesAnalysis
-                .getProbabilityMassFunction(electoralList);
+        SortableProbabilityMassFunction<Range> probabilityMassFunction =
+                voteSharesAnalysis.getProbabilityMassFunction(electoralList);
         resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / POPULATION_SIZE);
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
             Float[] confidenceInterval = new Float[2];
-            confidenceInterval[0] = probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getLowerBound()
-                    .getLowerBound() * HUNDRED / POPULATION_SIZE;
-            confidenceInterval[1] = probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getUpperBound()
-                    .getUpperBound() * HUNDRED / POPULATION_SIZE;
+            confidenceInterval[0] =
+                    probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getLowerBound().getLowerBound()
+                            * HUNDRED / POPULATION_SIZE;
+            confidenceInterval[1] =
+                    probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getUpperBound().getUpperBound()
+                            * HUNDRED / POPULATION_SIZE;
             confidenceIntervals.put(level, confidenceInterval);
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
