@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -26,21 +27,21 @@ public class AnalysisBuilderTest {
      */
     private static final int EIGHTY = 80;
     /**
-     * The magic number one hundredth.
+     * Precision for floating point assertions.
      */
-    private static final double ONE_HUNDREDTH = 0.01;
+    private static final double DELTA = 0.01;
     /**
-     * The magic number 0.69.
+     * The magic number 0.60.
      */
-    private static final double FLOAT_0_69 = 0.69;
+    private static final double FLOAT_0_60 = 0.60;
     /**
-     * The magic number 1.06.
+     * The magic number 1.05.
      */
-    private static final double FLOAT_1_06 = 1.06;
+    private static final double FLOAT_1_05 = 1.05;
     /**
-     * The magic number 1.55.
+     * The magic number 1.70.
      */
-    private static final double FLOAT_1_55 = 1.55;
+    private static final double FLOAT_1_70 = 1.70;
     /**
      * The area.
      */
@@ -54,7 +55,7 @@ public class AnalysisBuilderTest {
      */
     private static final String COMMISSIONER_NAME = "The Times";
     /**
-     * The fieldwork end date.
+     * The first fieldwork end date.
      */
     private static final String FIELDWORK_END = "2022-01-19";
     /**
@@ -62,9 +63,13 @@ public class AnalysisBuilderTest {
      */
     private static final String FIELDWORK_START = "2022-01-18";
     /**
-     * The name of the polling firm.
+     * The name of the polling firm for an opinion poll about a parliamentary election.
      */
-    private static final String POLLING_FIRM_NAME = "ACME";
+    private static final String POLLING_FIRM_NAME_PARLIAMENT = "ACME-N";
+    /**
+     * The name of the polling firm for an opinion poll about a presidential election.
+     */
+    private static final String POLLING_FIRM_NAME_PRESIDENTIAL = "ACME-P";
     /**
      * The name of the polling firm partner.
      */
@@ -93,37 +98,56 @@ public class AnalysisBuilderTest {
      * A ResultAnalysis object for an electoral list to run the tests on.
      */
     private static ResultAnalysis resultAnalysis;
+    private static FirstRoundAnalysis firstRoundAnalysis;
 
     /**
      * Initializes the test objects.
      */
     @BeforeAll
     public static void createAnalysisObject() {
-        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME)
+        Set<OpinionPoll> opinionPollSet = new HashSet<OpinionPoll>();
+        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME_PARLIAMENT)
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
                 .setArea(AREA).setScope(Scope.National).setSampleSize("1000").addResult("A", new ResultValue("1"))
                 .setOther(new ResultValue("2")).build();
         opinionPoll.addAlternativeResponseScenario(
                 new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
-        OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
+        opinionPollSet.add(opinionPoll);
+        opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME_PRESIDENTIAL)
+                .setFieldworkEnd(FIELDWORK_END).setScope(Scope.PresidentialFirstRound).setSampleSize("1000")
+                .addResult("A", new ResultValue("50")).addResult("B", new ResultValue("30")).build();
+        opinionPollSet.add(opinionPoll);
+        OpinionPolls opinionPolls = new OpinionPolls(opinionPollSet);
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, new ElectionData());
-        engine.run();
+        engine.run(1000L, 1000L);
         AnalysisBuilder builder = new AnalysisBuilder(engine);
         analysis = builder.build();
         if (analysis != null && analysis.getOpinionPollAnalyses() != null) {
-            opinionPollAnalysis = analysis.getOpinionPollAnalyses().iterator().next();
-            if (opinionPollAnalysis != null && opinionPollAnalysis.getResponseScenarioAnalyses() != null) {
-                Iterator<ResponseScenarioAnalysis> rsai = opinionPollAnalysis.getResponseScenarioAnalyses().iterator();
-                ResponseScenarioAnalysis rsa = rsai.next();
-                if (Scope.National.toString().equals(rsa.getScope())) {
-                    mainResponseScenarioAnalysis = rsa;
-                    alternativeResponseScenarioAnalysis = rsai.next();
-                } else {
-                    alternativeResponseScenarioAnalysis = rsa;
-                    mainResponseScenarioAnalysis = rsai.next();
+            for (OpinionPollAnalysis opa : analysis.getOpinionPollAnalyses()) {
+                if (opa.getPollingFirm() != null) {
+                    if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PARLIAMENT)) {
+                        opinionPollAnalysis = opa;
+                        if (opinionPollAnalysis != null && opinionPollAnalysis.getResponseScenarioAnalyses() != null) {
+                            Iterator<ResponseScenarioAnalysis> rsai =
+                                    opinionPollAnalysis.getResponseScenarioAnalyses().iterator();
+                            ResponseScenarioAnalysis rsa = rsai.next();
+                            if (Scope.National.toString().equals(rsa.getScope())) {
+                                mainResponseScenarioAnalysis = rsa;
+                                alternativeResponseScenarioAnalysis = rsai.next();
+                            } else {
+                                alternativeResponseScenarioAnalysis = rsa;
+                                mainResponseScenarioAnalysis = rsai.next();
+                            }
+                            resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get("A");
+                        }
+                    } else if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PRESIDENTIAL)) {
+                        if (opa != null && opa.getResponseScenarioAnalyses() != null) {
+                            firstRoundAnalysis =
+                                    opa.getResponseScenarioAnalyses().iterator().next().getFirstRoundAnalysis();
+                        }
+                    }
                 }
-                resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get("A");
             }
         }
     }
@@ -169,11 +193,19 @@ public class AnalysisBuilderTest {
     }
 
     /**
+     * Verifies that a first round analysis object is built by the builder.
+     */
+    @Test
+    public void firstRoundAnalysisShouldBeNotNull() {
+        assertNotNull(firstRoundAnalysis);
+    }
+
+    /**
      * Verifies that the median for an electoral list is set.
      */
     @Test
     public void resultAnalysisShouldContainTheMedianForTheElectoralList() {
-        assertEquals(FLOAT_1_06, resultAnalysis.getMedian(), ONE_HUNDREDTH);
+        assertEquals(FLOAT_1_05, resultAnalysis.getMedian(), DELTA);
     }
 
     /**
@@ -181,8 +213,8 @@ public class AnalysisBuilderTest {
      */
     @Test
     public void resultAnalysisShouldContainThe80PercentConfidenceIntervalForTheElectoralList() {
-        assertEquals(FLOAT_0_69, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[0], ONE_HUNDREDTH);
-        assertEquals(FLOAT_1_55, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], ONE_HUNDREDTH);
+        assertEquals(FLOAT_0_60, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[0], DELTA);
+        assertEquals(FLOAT_1_70, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], DELTA);
     }
 
     /**
@@ -236,7 +268,7 @@ public class AnalysisBuilderTest {
     @Test
     public void buildingAnAnalysisShouldSetThePollingFirmOfAnOpinionPoll() {
         assertNotNull(opinionPollAnalysis);
-        assertEquals(POLLING_FIRM_NAME, opinionPollAnalysis.getPollingFirm());
+        assertEquals(POLLING_FIRM_NAME_PARLIAMENT, opinionPollAnalysis.getPollingFirm());
     }
 
     /**
