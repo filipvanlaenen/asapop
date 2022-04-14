@@ -56,7 +56,7 @@ public class VoteSharesAnalysisTest {
      *
      * @return A vote shares analysis object.
      */
-    public static VoteSharesAnalysis createVoteSharesAnalysisObject() {
+    private static VoteSharesAnalysis createVoteSharesAnalysisObject() {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
         voteSharesAnalysisObject.add(ElectoralList.get("A"), probabilityMassFunction1);
         voteSharesAnalysisObject.add(ElectoralList.get("B"), probabilityMassFunction2);
