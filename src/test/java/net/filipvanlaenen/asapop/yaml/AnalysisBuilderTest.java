@@ -29,19 +29,23 @@ public class AnalysisBuilderTest {
     /**
      * Precision for floating point assertions.
      */
-    private static final double DELTA = 0.01;
+    private static final double DELTA = 0.01D;
+    /**
+     * The magic number 0.50.
+     */
+    private static final double FLOAT_0_50 = 0.50D;
     /**
      * The magic number 0.60.
      */
-    private static final double FLOAT_0_60 = 0.60;
+    private static final double FLOAT_0_60 = 0.60D;
     /**
      * The magic number 1.05.
      */
-    private static final double FLOAT_1_05 = 1.05;
+    private static final double FLOAT_1_05 = 1.05D;
     /**
      * The magic number 1.70.
      */
-    private static final double FLOAT_1_70 = 1.70;
+    private static final double FLOAT_1_70 = 1.70D;
     /**
      * The area.
      */
@@ -98,6 +102,9 @@ public class AnalysisBuilderTest {
      * A ResultAnalysis object for an electoral list to run the tests on.
      */
     private static ResultAnalysis resultAnalysis;
+    /**
+     * A FirstRoundAnalysis object to run the tests on.
+     */
     private static FirstRoundAnalysis firstRoundAnalysis;
 
     /**
@@ -115,7 +122,9 @@ public class AnalysisBuilderTest {
                 new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
         opinionPollSet.add(opinionPoll);
         opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME_PRESIDENTIAL)
-                .setFieldworkEnd(FIELDWORK_END).setScope(Scope.PresidentialFirstRound).setSampleSize("1000")
+                .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
+                .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
+                .setScope(Scope.PresidentialFirstRound).setArea(AREA).setSampleSize("1000")
                 .addResult("A", new ResultValue("50")).addResult("B", new ResultValue("30")).build();
         opinionPollSet.add(opinionPoll);
         OpinionPolls opinionPolls = new OpinionPolls(opinionPollSet);
@@ -125,7 +134,7 @@ public class AnalysisBuilderTest {
         analysis = builder.build();
         if (analysis != null && analysis.getOpinionPollAnalyses() != null) {
             for (OpinionPollAnalysis opa : analysis.getOpinionPollAnalyses()) {
-                if (opa.getPollingFirm() != null) {
+                if (opa != null && opa.getPollingFirm() != null) {
                     if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PARLIAMENT)) {
                         opinionPollAnalysis = opa;
                         if (opinionPollAnalysis != null && opinionPollAnalysis.getResponseScenarioAnalyses() != null) {
@@ -305,6 +314,21 @@ public class AnalysisBuilderTest {
     public void buildingAnAnalysisShouldSetTheScopeOfAnAlternativeResponseScenario() {
         assertNotNull(alternativeResponseScenarioAnalysis);
         assertEquals(Scope.European.toString(), alternativeResponseScenarioAnalysis.getScope());
+    }
+
+    /**
+     * Verifies that the analysis builder sets the probability mass for a direct winner of the first round.
+     */
+    @Test
+    public void buildingAnAnalysisSetsTheProbabilityMassForADirectWinnerOfAFirstRound() {
+        FirstRoundResultProbabilityMass directWinner = null;
+        for (FirstRoundResultProbabilityMass pm : firstRoundAnalysis.getProbabilityMassFunction()) {
+            if (pm.getElectoralLists().equals(Set.of("A"))) {
+                directWinner = pm;
+            }
+        }
+        assertNotNull(directWinner);
+        assertEquals(FLOAT_0_50, directWinner.getProbabilityMass(), DELTA);
     }
 
     /**
