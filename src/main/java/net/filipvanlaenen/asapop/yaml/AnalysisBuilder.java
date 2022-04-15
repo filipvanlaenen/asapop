@@ -79,7 +79,8 @@ public class AnalysisBuilder {
                 electoralListKeySet.add(electoralList.getKey());
             }
             firstRoundResultAnalysis.setElectoralLists(electoralListKeySet);
-            firstRoundResultAnalysis.setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet));
+            firstRoundResultAnalysis
+                    .setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet) * HUNDRED);
             firstRoundProbabilityMassFunction.add(firstRoundResultAnalysis);
         }
         firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);

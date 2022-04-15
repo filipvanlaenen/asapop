@@ -35,9 +35,9 @@ public class AnalysisBuilderTest {
      */
     private static final double DELTA = 0.01D;
     /**
-     * The magic number 0.50.
+     * The magic number 50.
      */
-    private static final double FLOAT_0_50 = 0.50D;
+    private static final double FLOAT_50 = 50D;
     /**
      * The magic number 0.60.
      */
@@ -335,7 +335,7 @@ public class AnalysisBuilderTest {
             }
         }
         assertNotNull(directWinner);
-        assertEquals(FLOAT_0_50, directWinner.getProbabilityMass(), DELTA);
+        assertEquals(FLOAT_50, directWinner.getProbabilityMass(), DELTA);
     }
 
     /**
@@ -350,7 +350,7 @@ public class AnalysisBuilderTest {
             }
         }
         assertNotNull(winnerPair);
-        assertEquals(FLOAT_0_50, winnerPair.getProbabilityMass(), DELTA);
+        assertEquals(FLOAT_50, winnerPair.getProbabilityMass(), DELTA);
     }
 
     /**
