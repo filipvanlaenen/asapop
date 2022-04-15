@@ -23,6 +23,10 @@ import net.filipvanlaenen.asapop.model.Scope;
  */
 public class AnalysisBuilderTest {
     /**
+     * The magic number two thousand.
+     */
+    private static final long ONE_THOUSAND = 1000L;
+    /**
      * The magic number eighty.
      */
     private static final int EIGHTY = 80;
@@ -43,7 +47,7 @@ public class AnalysisBuilderTest {
      */
     private static final double FLOAT_1_05 = 1.05D;
     /**
-     * The magic number 1.70.
+     * The magic number 1.60.
      */
     private static final double FLOAT_1_70 = 1.70D;
     /**
@@ -129,7 +133,7 @@ public class AnalysisBuilderTest {
         opinionPollSet.add(opinionPoll);
         OpinionPolls opinionPolls = new OpinionPolls(opinionPollSet);
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, new ElectionData());
-        engine.run(1000L, 1000L);
+        engine.run(ONE_THOUSAND, ONE_THOUSAND);
         AnalysisBuilder builder = new AnalysisBuilder(engine);
         analysis = builder.build();
         if (analysis != null && analysis.getOpinionPollAnalyses() != null) {
@@ -141,19 +145,22 @@ public class AnalysisBuilderTest {
                             Iterator<ResponseScenarioAnalysis> rsai =
                                     opinionPollAnalysis.getResponseScenarioAnalyses().iterator();
                             ResponseScenarioAnalysis rsa = rsai.next();
-                            if (Scope.National.toString().equals(rsa.getScope())) {
-                                mainResponseScenarioAnalysis = rsa;
-                                alternativeResponseScenarioAnalysis = rsai.next();
-                            } else {
-                                alternativeResponseScenarioAnalysis = rsa;
-                                mainResponseScenarioAnalysis = rsai.next();
+                            if (rsa != null) {
+                                if (Scope.National.toString().equals(rsa.getScope())) {
+                                    mainResponseScenarioAnalysis = rsa;
+                                    alternativeResponseScenarioAnalysis = rsai.next();
+                                } else {
+                                    alternativeResponseScenarioAnalysis = rsa;
+                                    mainResponseScenarioAnalysis = rsai.next();
+                                }
+                                resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get("A");
                             }
-                            resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get("A");
                         }
-                    } else if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PRESIDENTIAL)) {
-                        if (opa != null && opa.getResponseScenarioAnalyses() != null) {
-                            firstRoundAnalysis =
-                                    opa.getResponseScenarioAnalyses().iterator().next().getFirstRoundAnalysis();
+                    } else if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PRESIDENTIAL)
+                            && opa.getResponseScenarioAnalyses() != null) {
+                        ResponseScenarioAnalysis rsa = opa.getResponseScenarioAnalyses().iterator().next();
+                        if (rsa != null) {
+                            firstRoundAnalysis = rsa.getFirstRoundAnalysis();
                         }
                     }
                 }
@@ -329,6 +336,21 @@ public class AnalysisBuilderTest {
         }
         assertNotNull(directWinner);
         assertEquals(FLOAT_0_50, directWinner.getProbabilityMass(), DELTA);
+    }
+
+    /**
+     * Verifies that the analysis builder sets the probability mass for a winner pair of the first round.
+     */
+    @Test
+    public void buildingAnAnalysisSetsTheProbabilityMassForAWinnerPairOfAFirstRound() {
+        FirstRoundResultProbabilityMass winnerPair = null;
+        for (FirstRoundResultProbabilityMass pm : firstRoundAnalysis.getProbabilityMassFunction()) {
+            if (pm.getElectoralLists().equals(Set.of("A", "B"))) {
+                winnerPair = pm;
+            }
+        }
+        assertNotNull(winnerPair);
+        assertEquals(FLOAT_0_50, winnerPair.getProbabilityMass(), DELTA);
     }
 
     /**

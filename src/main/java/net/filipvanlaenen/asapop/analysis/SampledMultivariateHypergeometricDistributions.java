@@ -43,7 +43,7 @@ final class SampledMultivariateHypergeometricDistributions {
             @Override
             public int compare(final SampledHypergeometricDistribution spmf0,
                     final SampledHypergeometricDistribution spmf1) {
-                return spmf0.getMedian().compareTo(spmf1.getMedian());
+                return spmf1.getMedian().compareTo(spmf0.getMedian());
             }
         });
         if (!CACHE.containsKey(key)) {

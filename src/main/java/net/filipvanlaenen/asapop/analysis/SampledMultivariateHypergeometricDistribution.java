@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -399,6 +400,13 @@ class SampledMultivariateHypergeometricDistribution {
                     relevantProbabilityMassFunctions.add(probabilityMassFunction);
                 }
             }
+            relevantProbabilityMassFunctions.sort(new Comparator<SampledHypergeometricDistribution>() {
+                @Override
+                public int compare(final SampledHypergeometricDistribution spmf0,
+                        final SampledHypergeometricDistribution spmf1) {
+                    return spmf1.getMedian().compareTo(spmf0.getMedian());
+                }
+            });
         }
     }
 

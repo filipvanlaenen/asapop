@@ -113,7 +113,8 @@ public class AnalysisEngine {
     /**
      * Calculates the vote shares analysis for an opinion poll.
      *
-     * @param opinionPoll The opinion poll.
+     * @param opinionPoll     The opinion poll.
+     * @param numberOfSamples The number of samples.
      * @return The vote shares analysis.
      */
     private VoteSharesAnalysis calculateVoteSharesAnalysis(final OpinionPoll opinionPoll, final long numberOfSamples) {
@@ -164,6 +165,11 @@ public class AnalysisEngine {
         run(TWO_MILLION);
     }
 
+    /**
+     * Runs the statistical analyses with a specified number of iterations for the multivariate analysis.
+     *
+     * @param numberOfMultivariateIterations Number of iterations for the multivariate analysis.
+     */
     public void run(final long numberOfMultivariateIterations) {
         run(TEN_THOUSAND, numberOfMultivariateIterations);
     }
@@ -171,6 +177,7 @@ public class AnalysisEngine {
     /**
      * Runs the statistical analyses with a specified number of iterations for the multivariate analysis.
      *
+     * @param numberOfSamples                Number of samples for the analysis.
      * @param numberOfMultivariateIterations Number of iterations for the multivariate analysis.
      */
     public void run(final long numberOfSamples, final long numberOfMultivariateIterations) {
