@@ -176,6 +176,15 @@ public class SampledMultivariateHypergeometricDistributionTest {
     }
 
     /**
+     * Verifies that the probability mass functions are sorted before the first one is picked to test whether it has a
+     * support of around fifty percent.
+     */
+    @Test
+    public void probabilityMassFunctionsShouldBeSortedToPickTheLargestOne() {
+        assertPairProbabilityEquals(ONE_HALF, MODERATE_DELTA, 0, 1, THREE_HUNDRED, FIVE_HUNDRED);
+    }
+
+    /**
      * Verifies that when there are two candidates both with almost fifty percent support, each has a slightly less than
      * fifty percent probability to win the first round.
      */
