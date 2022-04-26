@@ -168,6 +168,17 @@ public final class ResponseScenario {
 		}
 
 		/**
+		 * Sets the result for no responses.
+		 *
+		 * @param noResponsesString The result for no responses, assumed to be
+		 *                          well-formed.
+		 * @return This builder instance.
+		 */
+		public Builder setWellformedNoResponses(final String noResponsesString) {
+			return setNoResponses(new ResultValue(noResponsesString));
+		}
+
+		/**
 		 * Sets the result for other.
 		 *
 		 * @param otherString The result for other, assumed to be well-formed.
