@@ -134,6 +134,11 @@ final class ResponseScenarioLine extends Line {
         case "A":
             builder.setArea(value);
             break;
+        case "N":
+            ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
+            warnings.addAll(noResponse.getWarnings());
+            builder.setNoResponses(noResponse.getValue());
+            break;
         case "O":
             ResultValueText other = ResultValueText.parse(value, lineNumber);
             warnings.addAll(other.getWarnings());
