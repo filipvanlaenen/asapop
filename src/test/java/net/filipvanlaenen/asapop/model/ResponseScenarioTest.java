@@ -16,8 +16,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void getElectoralListsReturnsTheElectoralLists() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
-                .addWellformedResult("B", "45").build();
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), responseScenario.getElectoralLists());
     }
 
@@ -37,6 +37,15 @@ public class ResponseScenarioTest {
     public void setOtherInBuilderShouldBeWiredCorrectlyToGetOther() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().setWellformedOther("5").build();
         assertEquals("5", responseScenario.getOther().getText());
+    }
+
+    /**
+     * Verifies that the setNoResponses method in the builder class is wired correctly to the getNoResponses method.
+     */
+    @Test
+    public void setNoResponsesInBuilderShouldBeWiredCorrectlyToGetNoResponses() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        assertEquals("5", responseScenario.getNoResponses().getText());
     }
 
     /**
@@ -151,12 +160,33 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that a response scenario is not equal to another response scenario with a different result for no
+     * responses.
+     */
+    @Test
+    public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentNoResponsesResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("6").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+    }
+
+    /**
      * Verifies that response scenarios have different hash codes if they have different results for other.
      */
     @Test
     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentOtherResult() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("6").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
+    }
+
+    /**
+     * Verifies that response scenarios have different hash codes if they have different results for no responses.
+     */
+    @Test
+    public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentNoResponsesResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("6").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
 
@@ -171,13 +201,34 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that a response scenario is not equal to another response scenario missing the result for no responses.
+     */
+    @Test
+    public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheNoResponsesResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+    }
+
+    /**
      * Verifies that a response scenario without a result for others is not equal to another response scenario with a
      * result for others.
      */
     @Test
-    public void aResponseScenarioMissingOtherResutShouldNotBeEqualToAnotherResponseScenarioWithOtherResult() {
+    public void aResponseScenarioMissingOtherResultShouldNotBeEqualToAnotherResponseScenarioWithOtherResult() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("5").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+    }
+
+    /**
+     * Verifies that a response scenario without a result for no responses is not equal to another response scenario
+     * with a result for no responses.
+     */
+    @Test
+    public void aResponseScenarioMissingNoResponsesResultShouldNotBeEqualToAnotherResponseScenarioWithNoResponsesResult() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 

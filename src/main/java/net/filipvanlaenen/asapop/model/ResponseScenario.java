@@ -231,6 +231,15 @@ public final class ResponseScenario {
     }
 
     /**
+     * Returns the result for no responses.
+     *
+     * @return The result for no responses.
+     */
+    public ResultValue getNoResponses() {
+        return noResponses;
+    }
+
+    /**
      * Returns the result for other.
      *
      * @return The result for other.
