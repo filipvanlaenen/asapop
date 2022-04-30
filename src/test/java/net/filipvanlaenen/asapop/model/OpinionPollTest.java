@@ -70,6 +70,15 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that the setNoResponses method in the builder class is wired correctly to the getNoResponses method.
+     */
+    @Test
+    public void setNoResponsesInBuilderShouldBeWiredCorrectlyToGetNoResponses() {
+        OpinionPoll poll = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
+        assertEquals("2", poll.getNoResponses().getText());
+    }
+
+    /**
      * Verifies that the setPollingFirm method in the builder class is wired correctly to the getPollingFirm method.
      */
     @Test
@@ -148,8 +157,8 @@ public class OpinionPollTest {
      */
     @Test
     public void getEffectiveSampleSizeShouldReturnTheSampleSizeMinusTheExcludedResponses() {
-        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1250").setExcluded(DecimalNumber.parse("20"))
-                .build();
+        OpinionPoll poll =
+                new OpinionPoll.Builder().setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
         assertEquals(ONE_THOUSAND, poll.getEffectiveSampleSize());
     }
 
@@ -221,8 +230,8 @@ public class OpinionPollTest {
      */
     @Test
     public void getElectoralListsReturnsTheElectoralListsOfTheMainResponseScenario() {
-        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45")
-                .build();
+        OpinionPoll poll =
+                new OpinionPoll.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), poll.getElectoralLists());
     }
 
@@ -381,6 +390,16 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that an opinion poll is not equal to another opinion poll with a different result for no responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentResultForNoResponses() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setWellformedNoResponses("3").build();
+        assertFalse(poll1.equals(poll2));
+    }
+
+    /**
      * Verifies that opinion polls have different hash codes if they have different result for other.
      */
     @Test
@@ -391,11 +410,31 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that opinion polls have different hash codes if they have different result for no responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResultForNoResponses() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setWellformedNoResponses("3").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+    }
+
+    /**
      * Verifies that an opinion poll is not equal to another opinion poll missing the result for other.
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForOther() {
         OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedOther("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+    }
+
+    /**
+     * Verifies that an opinion poll is not equal to another opinion poll missing the result for no responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForNoResponses() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }

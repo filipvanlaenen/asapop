@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.filipvanlaenen.asapop.model.ResponseScenario.Builder;
-
 /**
  * Class representing an opinion poll.
  */
@@ -483,6 +481,15 @@ public final class OpinionPoll {
      */
     public ResponseScenario getMainResponseScenario() {
         return mainResponseScenario;
+    }
+
+    /**
+     * Returns the result for no responses.
+     *
+     * @return The result for no responses.
+     */
+    public ResultValue getNoResponses() {
+        return noResponses;
     }
 
     /**
