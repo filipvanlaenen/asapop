@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.ResponseScenario.Builder;
+
 /**
  * Class representing an opinion poll.
  */
@@ -336,6 +338,16 @@ public final class OpinionPoll {
         public Builder setScope(final Scope theScope) {
             this.scope = theScope;
             return this;
+        }
+
+        /**
+         * Sets the result for no responses.
+         *
+         * @param noResponsesString The result for no responses, assumed to be well-formed.
+         * @return This builder instance.
+         */
+        public Builder setWellformedNoResponses(final String noResponsesString) {
+            return setNoResponses(new ResultValue(noResponsesString));
         }
 
         /**

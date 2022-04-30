@@ -151,6 +151,17 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that an opinion poll with a result for no reponse can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAResultForNoResponse() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •N:2", 1);
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedNoResponses("2").build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
      * Verifies that an opinion poll with a fieldwork start can be parsed.
      */
     @Test
@@ -229,8 +240,19 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForAMalformedOtherValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error",
-                1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", 1);
+        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line with a malformed no responses value produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedNoResponsesValue() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error", 1);
         Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
