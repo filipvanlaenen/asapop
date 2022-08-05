@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +19,8 @@ import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.parser.Warning;
+import net.filipvanlaenen.asapop.website.Website;
+import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
@@ -107,7 +111,8 @@ public final class CommandLineInterface {
             @Override
             void execute(final String[] args) throws IOException {
                 String siteDirName = args[1];
-                writeFile(Paths.get(siteDirName, "index.html"), "");
+                Website website = new WebsiteBuilder().build();
+                writeFiles(siteDirName, website.asMap());
             }
         },
         /**
@@ -184,6 +189,13 @@ public final class CommandLineInterface {
          */
         private static void writeFile(final String fileName, final String content) throws IOException {
             writeFile(Paths.get(fileName), content);
+        }
+
+        private static void writeFiles(final String baseDir, final Map<String, String> fileNamesAndContents)
+                throws IOException {
+            for (Entry<String, String> entry : fileNamesAndContents.entrySet()) {
+                writeFile(Paths.get(baseDir, entry.getKey()), entry.getValue());
+            }
         }
     }
 }
