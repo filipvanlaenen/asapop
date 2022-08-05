@@ -3,6 +3,7 @@
 - [Getting Started](#getting-started)
 - [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
 - [Analysis](#analysis)
+- [Build a Website](#build-a-website)
 - [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
 - [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
 
@@ -165,6 +166,21 @@ shown below:
 
 ```
 ---
+```
+
+## Build a Website
+
+A website can be build using the following command:
+
+```
+build <site-dir-name>
+```
+
+Assume ``~/public/asapop`` is a valid and existing directory on your computer, then you can use the following command to
+produce a website:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar build ~/public/asapop
 ```
 
 ## Conversion from ROPF to CSV
