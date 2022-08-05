@@ -63,6 +63,7 @@ public final class CommandLineInterface {
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.println("  analyze <ropf-file-name> <election-yaml-file-name> <analysis-result-yaml-file-name>");
+        System.out.println("  build <site-dir-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
     }
@@ -96,6 +97,16 @@ public final class CommandLineInterface {
                 engine.run();
                 Analysis analysis = new AnalysisBuilder(engine).build();
                 objectMapper.writeValue(new File(outputFileName), analysis);
+            }
+        },
+        /**
+         * Command to build the website.
+         */
+        Build {
+            @Override
+            void execute(final String[] args) throws IOException {
+                String siteDirName = args[1];
+                writeFile(Paths.get(siteDirName, "index.html").toString(), "");
             }
         },
         /**
