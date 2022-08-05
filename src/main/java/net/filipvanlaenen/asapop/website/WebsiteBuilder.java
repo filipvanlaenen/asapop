@@ -9,7 +9,7 @@ import net.filipvanlaenen.txhtmlj.Title;
 public class WebsiteBuilder {
     public Website build() {
         Website website = new Website();
-        website.add("index.html", buildIndexPage());
+        website.put("index.html", buildIndexPage());
         return website;
     }
 

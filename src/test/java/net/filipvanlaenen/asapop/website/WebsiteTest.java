@@ -29,7 +29,7 @@ public class WebsiteTest {
     @Test
     public void aWebsiteWithASinglePageShouldReturnAMapWithTheContentOfThatPage() {
         Website website = new Website();
-        website.add("foo", new Html());
+        website.put("foo", new Html());
         Map<String, String> expected = new HashMap<String, String>();
         expected.put("foo", new Html().asString());
         assertEquals(expected, website.asMap());
