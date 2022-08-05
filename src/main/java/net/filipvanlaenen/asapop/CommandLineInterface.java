@@ -191,6 +191,13 @@ public final class CommandLineInterface {
             writeFile(Paths.get(fileName), content);
         }
 
+        /**
+         * Utility method to write a map with names and contents to files.
+         *
+         * @param baseDir              The base directory for the files.
+         * @param fileNamesAndContents The file names and contents.
+         * @throws IOException Thrown if an exception occurs related to IO.
+         */
         private static void writeFiles(final String baseDir, final Map<String, String> fileNamesAndContents)
                 throws IOException {
             for (Entry<String, String> entry : fileNamesAndContents.entrySet()) {

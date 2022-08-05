@@ -6,14 +6,27 @@ import net.filipvanlaenen.txhtmlj.Html;
 import net.filipvanlaenen.txhtmlj.P;
 import net.filipvanlaenen.txhtmlj.Title;
 
+/**
+ * Class building the website.
+ */
 public class WebsiteBuilder {
+    /**
+     * Builds the website.
+     *
+     * @return The website
+     */
     public Website build() {
         Website website = new Website();
-        website.put("index.html", buildIndexPage());
+        website.put("index.html", buildIndexPageContent());
         return website;
     }
 
-    private Html buildIndexPage() {
+    /**
+     * Builds the content of the index page.
+     *
+     * @return The content of the index page
+     */
+    Html buildIndexPageContent() {
         Html html = new Html();
         Head head = new Head();
         html.addElement(head);
