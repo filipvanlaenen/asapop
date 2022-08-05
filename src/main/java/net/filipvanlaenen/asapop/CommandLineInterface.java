@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -106,7 +107,7 @@ public final class CommandLineInterface {
             @Override
             void execute(final String[] args) throws IOException {
                 String siteDirName = args[1];
-                writeFile(Paths.get(siteDirName, "index.html").toString(), "");
+                writeFile(Paths.get(siteDirName, "index.html"), "");
             }
         },
         /**
@@ -166,12 +167,23 @@ public final class CommandLineInterface {
         /**
          * Utility method to write a string to a file.
          *
+         * @param path    The path for the file.
+         * @param content The string to be written to the file.
+         * @throws IOException Thrown if an exception occurs related to IO.
+         */
+        private static void writeFile(final Path path, final String content) throws IOException {
+            Files.writeString(path, content, StandardCharsets.UTF_8);
+        }
+
+        /**
+         * Utility method to write a string to a file.
+         *
          * @param fileName The name for the file.
          * @param content  The string to be written to the file.
          * @throws IOException Thrown if an exception occurs related to IO.
          */
         private static void writeFile(final String fileName, final String content) throws IOException {
-            Files.writeString(Paths.get(fileName), content, StandardCharsets.UTF_8);
+            writeFile(Paths.get(fileName), content);
         }
     }
 }
