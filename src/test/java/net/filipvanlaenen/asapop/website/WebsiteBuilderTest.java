@@ -8,9 +8,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.txhtmlj.Body;
+import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Html;
-import net.filipvanlaenen.txhtmlj.P;
+import net.filipvanlaenen.txhtmlj.Style;
 import net.filipvanlaenen.txhtmlj.Title;
 
 /**
@@ -46,9 +47,12 @@ public class WebsiteBuilderTest {
         Head head = new Head();
         html.addElement(head);
         head.addElement(new Title("ASAPOP Website"));
+        StringBuffer style = new StringBuffer();
+        style.append(".privacy-note { text-align: center; }");
+        head.addElement(new Style(style.toString()));
         Body body = new Body();
         html.addElement(body);
-        body.addElement(new P("Privacy note: this website is hosted on Google Cloud."));
+        body.addElement(new Div("Privacy note: this website is hosted on Google Cloud.").clazz("privacy-note"));
         return html.asString();
     }
 }
