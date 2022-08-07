@@ -1,10 +1,13 @@
 package net.filipvanlaenen.asapop.website;
 
+import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
+import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Html;
 import net.filipvanlaenen.txhtmlj.Style;
+import net.filipvanlaenen.txhtmlj.Svg;
 import net.filipvanlaenen.txhtmlj.Title;
 
 /**
@@ -52,8 +55,18 @@ public class WebsiteBuilder {
         Body body = new Body();
         html.addElement(body);
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
-        twoSvgChartsContainer.addElement(new Div().clazz("svg-chart-container-left"));
-        twoSvgChartsContainer.addElement(new Div().clazz("svg-chart-container-right"));
+        Div svgChartContainerLeft = new Div().clazz("svg-chart-container-left");
+        Svg svgLeft = new Svg();
+        svgLeft.getSvg().viewBox(0, 0, 500, 250).preserveAspectRatio(PreserveAspectRatioAlignValue.X_MIN_Y_MIN,
+                PreserveAspectRatioMeetOrSliceValue.MEET);
+        svgChartContainerLeft.addElement(svgLeft);
+        twoSvgChartsContainer.addElement(svgChartContainerLeft);
+        Div svgChartContainerRight = new Div().clazz("svg-chart-container-right");
+        Svg svgRight = new Svg();
+        svgRight.getSvg().viewBox(0, 0, 500, 250).preserveAspectRatio(PreserveAspectRatioAlignValue.X_MIN_Y_MIN,
+                PreserveAspectRatioMeetOrSliceValue.MEET);
+        svgChartContainerRight.addElement(svgRight);
+        twoSvgChartsContainer.addElement(svgChartContainerRight);
         body.addElement(twoSvgChartsContainer);
         Div privacyNote = new Div().clazz("privacy-note");
         privacyNote.addContent("Privacy note: this website is hosted on Google Cloud.");
