@@ -52,7 +52,9 @@ public class WebsiteBuilderTest {
         head.addElement(new Style(style.toString()));
         Body body = new Body();
         html.addElement(body);
-        body.addElement(new Div("Privacy note: this website is hosted on Google Cloud.").clazz("privacy-note"));
+        Div privacyNote = new Div().clazz("privacy-note");
+        privacyNote.addContent("Privacy note: this website is hosted on Google Cloud.");
+        body.addElement(privacyNote);
         return html.asString();
     }
 }
