@@ -16,6 +16,15 @@ import net.filipvanlaenen.txhtmlj.Title;
  */
 public class WebsiteBuilder {
     /**
+     * The height of the SVG container.
+     */
+    private static final int SVG_CONTAINER_HEIGHT = 250;
+    /**
+     * The width of the SVG container.
+     */
+    private static final int SVG_CONTAINER_WIDTH = 500;
+
+    /**
      * Builds the website.
      *
      * @return The website
@@ -67,12 +76,19 @@ public class WebsiteBuilder {
         return html;
     }
 
+    /**
+     * Creates a div element with the image in an svg element.
+     *
+     * @param clazz The class for the div element.
+     * @param href  The hyperreference for the image.
+     * @return A div element with the image in an svg element.
+     */
     private Div createDivWithImage(final String clazz, final String href) {
         Div svgChartContainer = new Div().clazz(clazz);
         Svg svg = new Svg();
-        svg.getSvg().viewBox(0, 0, 500, 250).preserveAspectRatio(PreserveAspectRatioAlignValue.X_MIN_Y_MIN,
-                PreserveAspectRatioMeetOrSliceValue.MEET);
-        svg.getSvg().addElement(new Image().href(href).height(250).width(500));
+        svg.getSvg().viewBox(0, 0, SVG_CONTAINER_WIDTH, SVG_CONTAINER_HEIGHT).preserveAspectRatio(
+                PreserveAspectRatioAlignValue.X_MIN_Y_MIN, PreserveAspectRatioMeetOrSliceValue.MEET);
+        svg.getSvg().addElement(new Image().href(href).height(SVG_CONTAINER_HEIGHT).width(SVG_CONTAINER_WIDTH));
         svgChartContainer.addElement(svg);
         return svgChartContainer;
     }
