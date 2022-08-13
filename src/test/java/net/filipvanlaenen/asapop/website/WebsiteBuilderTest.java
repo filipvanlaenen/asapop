@@ -14,6 +14,7 @@ import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.Footer;
+import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Header;
 import net.filipvanlaenen.txhtmlj.Html;
@@ -86,6 +87,7 @@ public class WebsiteBuilderTest {
         body.addElement(new Header());
         Section section = new Section();
         body.addElement(section);
+        section.addElement(new H1("Upcoming Elections"));
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         section.addElement(twoSvgChartsContainer);
         twoSvgChartsContainer.addElement(
