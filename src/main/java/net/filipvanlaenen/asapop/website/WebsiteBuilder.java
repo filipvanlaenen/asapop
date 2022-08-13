@@ -6,8 +6,11 @@ import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
+import net.filipvanlaenen.txhtmlj.Footer;
 import net.filipvanlaenen.txhtmlj.Head;
+import net.filipvanlaenen.txhtmlj.Header;
 import net.filipvanlaenen.txhtmlj.Html;
+import net.filipvanlaenen.txhtmlj.Section;
 import net.filipvanlaenen.txhtmlj.Style;
 import net.filipvanlaenen.txhtmlj.Svg;
 import net.filipvanlaenen.txhtmlj.Title;
@@ -65,15 +68,20 @@ public class WebsiteBuilder {
         head.addElement(new Style(style.toString()));
         Body body = new Body();
         html.addElement(body);
+        body.addElement(new Header());
+        Section section = new Section();
+        body.addElement(section);
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
+        section.addElement(twoSvgChartsContainer);
         twoSvgChartsContainer.addElement(
                 createDivWithImage("svg-chart-container-left", "https://filipvanlaenen.github.io/swedish_polls"));
         twoSvgChartsContainer.addElement(
                 createDivWithImage("svg-chart-container-right", "https://filipvanlaenen.github.io/latvian_polls"));
-        body.addElement(twoSvgChartsContainer);
+        Footer footer = new Footer();
+        body.addElement(footer);
         Div privacyNote = new Div().clazz("privacy-note");
+        footer.addElement(privacyNote);
         privacyNote.addContent("Privacy note: this website is hosted on Google Cloud.");
-        body.addElement(privacyNote);
         return html;
     }
 
