@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
@@ -80,10 +81,10 @@ public class WebsiteBuilderTest {
         Body body = new Body();
         html.addElement(body);
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
-        twoSvgChartsContainer.addElement(createDivWithImage("svg-chart-container-left",
-                "https://filipvanlaenen.github.io/swedish_polls/average.png"));
-        twoSvgChartsContainer.addElement(createDivWithImage("svg-chart-container-right",
-                "https://filipvanlaenen.github.io/latvian_polls/average.png"));
+        twoSvgChartsContainer.addElement(
+                createDivWithImage("svg-chart-container-left", "https://filipvanlaenen.github.io/swedish_polls"));
+        twoSvgChartsContainer.addElement(
+                createDivWithImage("svg-chart-container-right", "https://filipvanlaenen.github.io/latvian_polls"));
         body.addElement(twoSvgChartsContainer);
         Div privacyNote = new Div().clazz("privacy-note");
         privacyNote.addContent("Privacy note: this website is hosted on Google Cloud.");
@@ -92,18 +93,20 @@ public class WebsiteBuilderTest {
     }
 
     /**
-     * Creates a div element with the image in an svg element.
+     * Creates a div element with the linked image in an svg element.
      *
      * @param clazz The class for the div element.
-     * @param href  The hyperreference for the image.
-     * @return A div element with the image in an svg element.
+     * @param href  The hyperreference for the GitHub website.
+     * @return A div element with the linked image in an svg element.
      */
     private Div createDivWithImage(final String clazz, final String href) {
         Div svgChartContainer = new Div().clazz(clazz);
         Svg svg = new Svg();
         svg.getSvg().viewBox(0, 0, FIVE_HUNDRED, TWO_HUNDRED_FIFTY).preserveAspectRatio(
                 PreserveAspectRatioAlignValue.X_MIN_Y_MIN, PreserveAspectRatioMeetOrSliceValue.MEET);
-        svg.getSvg().addElement(new Image().href(href).height(TWO_HUNDRED_FIFTY).width(FIVE_HUNDRED));
+        A a = new A().href(href);
+        a.addElement(new Image().href(href + "/average.png").height(TWO_HUNDRED_FIFTY).width(FIVE_HUNDRED));
+        svg.getSvg().addElement(a);
         svgChartContainer.addElement(svg);
         return svgChartContainer;
     }
