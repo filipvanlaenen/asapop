@@ -10,5 +10,5 @@
 | Seat projections                       | [Ms](https://github.com/filipvanlaenen/asapop/milestone/7) |
 | ROPF formatting                        | Mf |
 | Scraping                               | Mu |
-| Static website generation              | [M7](https://github.com/filipvanlaenen/asapop/milestone/20), [Mw](https://github.com/filipvanlaenen/asapop/milestone/14), [Mw](https://github.com/filipvanlaenen/asapop/milestone/15), [Mw](https://github.com/filipvanlaenen/asapop/milestone/16) |
+| Static website generation              | [M7](https://github.com/filipvanlaenen/asapop/milestone/20), [Mw](https://github.com/filipvanlaenen/asapop/milestone/14), [Mw](https://github.com/filipvanlaenen/asapop/milestone/15), [Mw](https://github.com/filipvanlaenen/asapop/milestone/16), [Mw](https://github.com/filipvanlaenen/asapop/milestone/21), [Mw](https://github.com/filipvanlaenen/asapop/milestone/22) |
 | Brownian motion                        | Mm |
