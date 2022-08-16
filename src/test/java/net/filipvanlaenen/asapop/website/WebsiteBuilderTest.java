@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
@@ -38,12 +40,29 @@ public class WebsiteBuilderTest {
     private static final int FIVE_HUNDRED = 500;
 
     /**
+     * Creates a website builder for testing purposes.
+     *
+     * @return A website builder for testing purposes.
+     */
+    private WebsiteBuilder createWebsiteBuilder() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        AreaConfiguration sweden = new AreaConfiguration();
+        sweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
+        sweden.setNextElectionDate("2022-09-11");
+        AreaConfiguration latvia = new AreaConfiguration();
+        latvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
+        latvia.setNextElectionDate("2022-10-01");
+        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia));
+        return new WebsiteBuilder(websiteConfiguration);
+    }
+
+    /**
      * Verifies that the index page is built correctly.
      */
     @Test
     public void indexPageContentShouldBeBuiltCorrectly() {
         String expected = createIndexPageContent();
-        assertEquals(expected, new WebsiteBuilder(new WebsiteConfiguration()).buildIndexPageContent().asString());
+        assertEquals(expected, createWebsiteBuilder().buildIndexPageContent().asString());
     }
 
     /**
@@ -53,7 +72,7 @@ public class WebsiteBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("index.html", createIndexPageContent());
-        assertEquals(map, new WebsiteBuilder(new WebsiteConfiguration()).build().asMap());
+        assertEquals(map, createWebsiteBuilder().build().asMap());
     }
 
     /**
