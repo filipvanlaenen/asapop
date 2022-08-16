@@ -24,6 +24,7 @@ import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
  * Class implementing a command line interface.
@@ -68,7 +69,7 @@ public final class CommandLineInterface {
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.println("  analyze <ropf-file-name> <election-yaml-file-name> <analysis-result-yaml-file-name>");
-        System.out.println("  build <site-dir-name>");
+        System.out.println("  build <site-dir-name> <site-configuration-yaml-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
     }
@@ -111,7 +112,12 @@ public final class CommandLineInterface {
             @Override
             void execute(final String[] args) throws IOException {
                 String siteDirName = args[1];
-                Website website = new WebsiteBuilder().build();
+                String siteConfigurationFileName = args[2];
+                ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+                objectMapper.setSerializationInclusion(Include.NON_NULL);
+                WebsiteConfiguration websiteConfiguration =
+                        objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
+                Website website = new WebsiteBuilder(websiteConfiguration).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },

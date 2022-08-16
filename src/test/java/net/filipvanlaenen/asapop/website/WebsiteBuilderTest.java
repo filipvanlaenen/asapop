@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
@@ -42,7 +43,7 @@ public class WebsiteBuilderTest {
     @Test
     public void indexPageContentShouldBeBuiltCorrectly() {
         String expected = createIndexPageContent();
-        assertEquals(expected, new WebsiteBuilder().buildIndexPageContent().asString());
+        assertEquals(expected, new WebsiteBuilder(new WebsiteConfiguration()).buildIndexPageContent().asString());
     }
 
     /**
@@ -52,7 +53,7 @@ public class WebsiteBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("index.html", createIndexPageContent());
-        assertEquals(map, new WebsiteBuilder().build().asMap());
+        assertEquals(map, new WebsiteBuilder(new WebsiteConfiguration()).build().asMap());
     }
 
     /**

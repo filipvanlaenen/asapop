@@ -1,5 +1,12 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
@@ -28,6 +35,23 @@ public class WebsiteBuilder {
      * The width of the SVG container.
      */
     private static final int SVG_CONTAINER_WIDTH = 500;
+    /**
+     * The list with GitHub website URLs, sorted by next election date.
+     */
+    private List<String> gitHubWebsiteUrlsByNextElectionDate;
+    /**
+     * The configuration for the website.
+     */
+    private final WebsiteConfiguration websiteConfiguration;
+
+    /**
+     * Constructor taking a website configuration as its parameter.
+     *
+     * @param websiteConfiguration The website configuration.
+     */
+    public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration) {
+        this.websiteConfiguration = websiteConfiguration;
+    }
 
     /**
      * Builds the website.
@@ -75,16 +99,24 @@ public class WebsiteBuilder {
         section.addElement(new H1("Upcoming Elections"));
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         section.addElement(twoSvgChartsContainer);
-        twoSvgChartsContainer.addElement(
-                createDivWithImage("svg-chart-container-left", "https://filipvanlaenen.github.io/swedish_polls"));
-        twoSvgChartsContainer.addElement(
-                createDivWithImage("svg-chart-container-right", "https://filipvanlaenen.github.io/latvian_polls"));
+        twoSvgChartsContainer
+                .addElement(createDivWithImage("svg-chart-container-left", getGitHubWebsiteUrlByNextElectionDate(0)));
+        twoSvgChartsContainer
+                .addElement(createDivWithImage("svg-chart-container-right", getGitHubWebsiteUrlByNextElectionDate(1)));
         Footer footer = new Footer();
         body.addElement(footer);
         Div privacyNote = new Div().clazz("privacy-note");
         footer.addElement(privacyNote);
         privacyNote.addContent("Privacy note: this website is hosted on Google Cloud.");
         return html;
+    }
+
+    private void calculateGitHubWebsiteUrlsByNextElectionDate() {
+        List<AreaConfiguration> areaConfigurations =
+                new ArrayList<AreaConfiguration>(websiteConfiguration.getAreaConfigurations());
+        areaConfigurations.sort(Comparator.comparing(AreaConfiguration::getNextElectionDate));
+        gitHubWebsiteUrlsByNextElectionDate = areaConfigurations.stream()
+                .map(areaConfigutation -> areaConfigutation.getGitHubWebsiteUrl()).collect(Collectors.toList());
     }
 
     /**
@@ -104,5 +136,12 @@ public class WebsiteBuilder {
         svg.getSvg().addElement(a);
         svgChartContainer.addElement(svg);
         return svgChartContainer;
+    }
+
+    private String getGitHubWebsiteUrlByNextElectionDate(final int index) {
+        if (gitHubWebsiteUrlsByNextElectionDate == null) {
+            calculateGitHubWebsiteUrlsByNextElectionDate();
+        }
+        return gitHubWebsiteUrlsByNextElectionDate.get(index);
     }
 }
