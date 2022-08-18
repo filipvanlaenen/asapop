@@ -29,7 +29,7 @@ public class WebsiteConfiguration {
     /**
      * Sets the set with the area configurations.
      *
-     * @param opinionPollAnalyses The set with the area configurations.
+     * @param areaConfigurations The set with the area configurations.
      */
     public void setAreaConfigurations(final Set<AreaConfiguration> areaConfigurations) {
         this.areaConfigurations = areaConfigurations;

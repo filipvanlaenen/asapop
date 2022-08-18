@@ -111,6 +111,9 @@ public class WebsiteBuilder {
         return html;
     }
 
+    /**
+     * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
+     */
     private void calculateGitHubWebsiteUrlsByNextElectionDate() {
         List<AreaConfiguration> areaConfigurations =
                 new ArrayList<AreaConfiguration>(websiteConfiguration.getAreaConfigurations());
@@ -138,6 +141,14 @@ public class WebsiteBuilder {
         return svgChartContainer;
     }
 
+    /**
+     * Returns the GitHub website URL at a given index, with the websites being sorted by the next election date for the
+     * area.
+     *
+     * @param index The index for which the GitHub website URL should be returned.
+     * @return The GitHub website URL at a given index, with the websites being sorted by the next election date for the
+     *         area.
+     */
     private String getGitHubWebsiteUrlByNextElectionDate(final int index) {
         if (gitHubWebsiteUrlsByNextElectionDate == null) {
             calculateGitHubWebsiteUrlsByNextElectionDate();
