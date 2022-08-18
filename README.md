@@ -183,7 +183,7 @@ in a local file ``website-configuration.yaml``, then you can use the following c
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar build ~/public/asapop website-configuration.yaml
 ```
 
-Below is an example for a valid website configuration file:
+Below is an example of a valid website configuration file:
 ```
 ---
 areaConfigurations:
