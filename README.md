@@ -173,14 +173,26 @@ shown below:
 A website can be build using the following command:
 
 ```
-build <site-dir-name>
+build <site-dir-name> <website-configuration-yaml-file-name>
 ```
 
-Assume ``~/public/asapop`` is a valid and existing directory on your computer, then you can use the following command to
-produce a website:
+Assume ``~/public/asapop`` is a valid and existing directory on your computer, and the website configuration is stored
+in a local file ``website-configuration.yaml``, then you can use the following command to produce a website:
 
 ```
-java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar build ~/public/asapop
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar build ~/public/asapop website-configuration.yaml
+```
+
+Below is an example for a valid website configuration file:
+```
+---
+areaConfigurations:
+- gitHubWebsiteUrl: "https://filipvanlaenen.github.io/estonian_polls"
+  nextElectionDate: "2023-03-05"
+- gitHubWebsiteUrl: "https://filipvanlaenen.github.io/latvian_polls"
+  nextElectionDate: "2022-10-01"
+- gitHubWebsiteUrl: "https://filipvanlaenen.github.io/swedish_polls"
+  nextElectionDate: "2022-09-11"
 ```
 
 ## Conversion from ROPF to CSV
