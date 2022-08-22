@@ -161,11 +161,10 @@ use the following command to run the analysis:
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar analyze nn.ropf nn-data.yaml nn-result.yaml
 ```
 
-For now, no election specific data has been specified yet, so the file `nn-data.yaml` should be an empty YAML file as
-shown below:
-
+Below is an example of a valid election specific data file:
 ```
 ---
+populationSize: 36_054_394
 ```
 
 ## Build a Website
