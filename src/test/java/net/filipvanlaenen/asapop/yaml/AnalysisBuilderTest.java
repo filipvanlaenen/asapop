@@ -87,6 +87,11 @@ public class AnalysisBuilderTest {
      */
     private static final String PUBLICATION_DATE = "2022-01-20";
     /**
+     * The size of the population (the number of voters for the first round of the French presidential election of
+     * 2017).
+     */
+    private static final long POPULATION_SIZE = 36_054_394L;
+    /**
      * An Analysis object to run the tests on.
      */
     private static Analysis analysis;
@@ -132,7 +137,9 @@ public class AnalysisBuilderTest {
                 .addResult("A", new ResultValue("50")).addResult("B", new ResultValue("30")).build();
         opinionPollSet.add(opinionPoll);
         OpinionPolls opinionPolls = new OpinionPolls(opinionPollSet);
-        AnalysisEngine engine = new AnalysisEngine(opinionPolls, new ElectionData());
+        ElectionData electionData = new ElectionData();
+        electionData.setPopulationSize(POPULATION_SIZE);
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run(ONE_THOUSAND, ONE_THOUSAND);
         AnalysisBuilder builder = new AnalysisBuilder(engine);
         analysis = builder.build();

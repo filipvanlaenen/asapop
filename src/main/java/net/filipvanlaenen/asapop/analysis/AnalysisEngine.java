@@ -32,14 +32,13 @@ public class AnalysisEngine {
      */
     private static final long TWO_MILLION = 2_000_000L;
     /**
-     * The size of the population (the number of voters for the first round of the French presidential election of
-     * 2017).
-     */
-    private static final long POPULATION_SIZE = 36_054_394L;
-    /**
      * The opinion polls to run the statistical analyses on.
      */
     private OpinionPolls opinionPolls;
+    /**
+     * The election specific data to be used during the statistical analyses.
+     */
+    private ElectionData electionData;
     /**
      * A map containing the vote shares analysis per response scenario.
      */
@@ -57,6 +56,7 @@ public class AnalysisEngine {
      */
     public AnalysisEngine(final OpinionPolls opinionPolls, final ElectionData electionData) {
         this.opinionPolls = opinionPolls;
+        this.electionData = electionData;
         voteSharesAnalyses = new HashMap<ResponseScenario, VoteSharesAnalysis>();
         firstRoundWinnersAnalyses = new HashMap<ResponseScenario, FirstRoundWinnersAnalysis>();
     }
@@ -73,8 +73,9 @@ public class AnalysisEngine {
             final Integer effectiveSampleSize, final long numberOfMultivariateIterations) {
         List<SampledHypergeometricDistribution> probabilityMassFunctions =
                 voteSharesAnalysis.getProbabilityMassFunctions();
-        return new FirstRoundWinnersAnalysis(voteSharesAnalysis, SampledMultivariateHypergeometricDistributions
-                .get(probabilityMassFunctions, POPULATION_SIZE, effectiveSampleSize, numberOfMultivariateIterations));
+        return new FirstRoundWinnersAnalysis(voteSharesAnalysis,
+                SampledMultivariateHypergeometricDistributions.get(probabilityMassFunctions,
+                        electionData.getPopulationSize(), effectiveSampleSize, numberOfMultivariateIterations));
     }
 
     /**
@@ -124,7 +125,7 @@ public class AnalysisEngine {
             double result = Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText());
             Long sampled = Math.round(result * effectiveSampleSize / HUNDRED);
             voteShareAnalysis.add(electoralList, SampledHypergeometricDistributions.get(sampled,
-                    (long) effectiveSampleSize, numberOfSamples, POPULATION_SIZE));
+                    (long) effectiveSampleSize, numberOfSamples, electionData.getPopulationSize()));
         }
         return voteShareAnalysis;
     }

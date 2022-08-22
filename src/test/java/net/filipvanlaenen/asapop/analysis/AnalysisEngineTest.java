@@ -87,6 +87,7 @@ public class AnalysisEngineTest {
             final SampledHypergeometricDistribution probabilityMassFunction) {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
+        electionData.setPopulationSize(POPULATION_SIZE);
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run();
         VoteSharesAnalysis expected = new VoteSharesAnalysis();
@@ -174,6 +175,7 @@ public class AnalysisEngineTest {
                 .addResult("C", new ResultValue("30")).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
+        electionData.setPopulationSize(POPULATION_SIZE);
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run(1);
         FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
