@@ -131,6 +131,15 @@ public class AnalysisEngine {
     }
 
     /**
+     * Returns the election data used for the statistical analyses.
+     * 
+     * @return The election data used for the statistical analyses.
+     */
+    public ElectionData getElectionDate() {
+        return electionData;
+    }
+
+    /**
      * Returns the first round winners analysis for a response scenario.
      *
      * @param responseScenario The response scenario for which to return the vote shares analysis.

@@ -24,11 +24,6 @@ public class AnalysisBuilder {
      */
     private static final float HUNDRED = 100F;
     /**
-     * The size of the population (the number of voters for the first round of the French presidential election of
-     * 2017).
-     */
-    private static final long POPULATION_SIZE = 36_054_394L;
-    /**
      * The levels for the confidence intervals.
      */
     private static final Integer[] CONFIDENCE_INTERVAL_LEVELS = new Integer[] {80, 90, 95, 99};
@@ -167,19 +162,20 @@ public class AnalysisBuilder {
      */
     private ResultAnalysis buildResultAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
             final ElectoralList electoralList) {
+        long populationSize = engine.getElectionDate().getPopulationSize();
         ResultAnalysis resultAnalysis = new ResultAnalysis();
         SortableProbabilityMassFunction<Range> probabilityMassFunction =
                 voteSharesAnalysis.getProbabilityMassFunction(electoralList);
-        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / POPULATION_SIZE);
+        resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / populationSize);
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
             Float[] confidenceInterval = new Float[2];
             confidenceInterval[0] =
                     probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getLowerBound().getLowerBound()
-                            * HUNDRED / POPULATION_SIZE;
+                            * HUNDRED / populationSize;
             confidenceInterval[1] =
                     probabilityMassFunction.getConfidenceInterval(level / HUNDRED).getUpperBound().getUpperBound()
-                            * HUNDRED / POPULATION_SIZE;
+                            * HUNDRED / populationSize;
             confidenceIntervals.put(level, confidenceInterval);
         }
         resultAnalysis.setConfidenceIntervals(confidenceIntervals);
