@@ -162,7 +162,7 @@ public class AnalysisBuilder {
      */
     private ResultAnalysis buildResultAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
             final ElectoralList electoralList) {
-        long populationSize = engine.getElectionDate().getPopulationSize();
+        long populationSize = engine.getElectionData().getPopulationSize();
         ResultAnalysis resultAnalysis = new ResultAnalysis();
         SortableProbabilityMassFunction<Range> probabilityMassFunction =
                 voteSharesAnalysis.getProbabilityMassFunction(electoralList);

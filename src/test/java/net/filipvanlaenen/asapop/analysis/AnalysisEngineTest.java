@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,13 +55,24 @@ public class AnalysisEngineTest {
     }
 
     /**
+     * Verifies that the getter method <code>getElectionData</code> is wired correctly to the constructor.
+     */
+    @Test
+    public void getElectionDataShouldBeWiredCorrectlyToTheConstructor() {
+        OpinionPolls opinionPolls = new OpinionPolls(Collections.emptySet());
+        ElectionData electionData = new ElectionData();
+        AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
+        assertEquals(electionData, engine.getElectionData());
+    }
+
+    /**
      * Verifies that the analysis engine calculates the probability mass functions for the vote shares of the opinion
      * polls based on a sample size with no responses excluded.
      */
     @Test
     public void runShouldCalculateTheVoteShareProbabilityMassFunctionForASampleSizeWithoutExcludedResponses() {
-        OpinionPoll opinionPoll = new OpinionPoll.Builder().setSampleSize("4").addResult("A", new ResultValue("25"))
-                .build();
+        OpinionPoll opinionPoll =
+                new OpinionPoll.Builder().setSampleSize("4").addResult("A", new ResultValue("25")).build();
         verifyProbabilityMassFunctionCalculationForElectoralListA(opinionPoll,
                 SampledHypergeometricDistributions.get(1L, FOUR, TEN_THOUSAND, POPULATION_SIZE));
     }
@@ -100,9 +112,9 @@ public class AnalysisEngineTest {
      */
     @Test
     public void shouldReturnSinglePollAsMostRecentPoll() {
-        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
-                .build();
+        OpinionPoll opinionPoll =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25")).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
@@ -115,12 +127,12 @@ public class AnalysisEngineTest {
      */
     @Test
     public void shouldReturnMostRecentOfTwoOpinionPolls() {
-        OpinionPoll opinionPoll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
-                .build();
-        OpinionPoll opinionPoll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-28")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
-                .build();
+        OpinionPoll opinionPoll1 =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25")).build();
+        OpinionPoll opinionPoll2 =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-28").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25")).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
@@ -133,12 +145,12 @@ public class AnalysisEngineTest {
      */
     @Test
     public void shouldReturnMostRecentOpinionPollsOfBothPollingFirms() {
-        OpinionPoll opinionPoll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
-                .build();
-        OpinionPoll opinionPoll2 = new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkEnd("2022-03-28")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
-                .build();
+        OpinionPoll opinionPoll1 =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25")).build();
+        OpinionPoll opinionPoll2 =
+                new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkEnd("2022-03-28").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25")).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
@@ -151,12 +163,12 @@ public class AnalysisEngineTest {
      */
     @Test
     public void shouldReturnBothRecentOpinionPollsOfPollingFirm() {
-        OpinionPoll opinionPoll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25"))
-                .build();
-        OpinionPoll opinionPoll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29")
-                .setSampleSize("5").setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("26"))
-                .build();
+        OpinionPoll opinionPoll1 =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("25")).build();
+        OpinionPoll opinionPoll2 =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2022-03-29").setSampleSize("5")
+                        .setExcluded(DecimalNumber.parse("20")).addResult("A", new ResultValue("26")).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
@@ -169,17 +181,17 @@ public class AnalysisEngineTest {
      */
     @Test
     public void shouldCalculateFirstRoundWinnersAnalysisForFirstRoundOpinionPoll() {
-        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm("ACME")
-                .setScope(Scope.PresidentialFirstRound).setFieldworkEnd("2022-03-29").setSampleSize("500")
-                .addResult("A", new ResultValue("30")).addResult("B", new ResultValue("30"))
-                .addResult("C", new ResultValue("30")).build();
+        OpinionPoll opinionPoll =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setScope(Scope.PresidentialFirstRound)
+                        .setFieldworkEnd("2022-03-29").setSampleSize("500").addResult("A", new ResultValue("30"))
+                        .addResult("B", new ResultValue("30")).addResult("C", new ResultValue("30")).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         electionData.setPopulationSize(POPULATION_SIZE);
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
         engine.run(1);
-        FirstRoundWinnersAnalysis firstRoundWinnersAnalysis = engine
-                .getFirstRoundWinnersAnalysis(opinionPoll.getMainResponseScenario());
+        FirstRoundWinnersAnalysis firstRoundWinnersAnalysis =
+                engine.getFirstRoundWinnersAnalysis(opinionPoll.getMainResponseScenario());
         assertEquals(ONE_THIRD,
                 firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("A"), ElectoralList.get("B"))),
                 DELTA);

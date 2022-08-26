@@ -135,7 +135,7 @@ public class AnalysisEngine {
      * 
      * @return The election data used for the statistical analyses.
      */
-    public ElectionData getElectionDate() {
+    public ElectionData getElectionData() {
         return electionData;
     }
 
