@@ -12,3 +12,9 @@
 | Scraping                               | Mu |
 | Static website generation              | [M7](https://github.com/filipvanlaenen/asapop/milestone/20), [Mw](https://github.com/filipvanlaenen/asapop/milestone/14), [Mw](https://github.com/filipvanlaenen/asapop/milestone/15), [Mw](https://github.com/filipvanlaenen/asapop/milestone/16), [Mw](https://github.com/filipvanlaenen/asapop/milestone/21), [Mw](https://github.com/filipvanlaenen/asapop/milestone/22), [Mw](https://github.com/filipvanlaenen/asapop/milestone/23), [Mw](https://github.com/filipvanlaenen/asapop/milestone/24), [Mw](https://github.com/filipvanlaenen/asapop/milestone/25), [Mw](https://github.com/filipvanlaenen/asapop/milestone/26), [Mw](https://github.com/filipvanlaenen/asapop/milestone/27) |
 | Brownian motion                        | Mm |
+
+# Milestones Completed
+
+See [Milestones Closed](https://github.com/filipvanlaenen/asapop/milestones?direction=desc&sort=title&state=closed) for an up-to-date list of completed milestones.
+
+* [M1 – Support Austria through a ROPF file](https://github.com/filipvanlaenen/asapop/milestone/1)
