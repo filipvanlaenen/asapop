@@ -17,4 +17,11 @@
 
 See [Milestones Closed](https://github.com/filipvanlaenen/asapop/milestones?direction=desc&sort=title&state=closed) for an up-to-date list of completed milestones.
 
+* [M8 – Calculate the vote share confidence intervals for other countries than France](https://github.com/filipvanlaenen/asapop/milestone/9)
+* [M7 – Create an index.html file displaying the averages and linking to GitHub sites for the two nearest upcoming elections](https://github.com/filipvanlaenen/asapop/milestone/20)
+* [M6 – Calculate the pair probability to win the first round of the French presidential elections of 2022](https://github.com/filipvanlaenen/asapop/milestone/3)
+* [M5 – Calculate the confidence intervals for the French presidential elections of 2022](https://github.com/filipvanlaenen/asapop/milestone/5)
+* [M4 – Support the French presidential elections of 2022 through a ROPF file](https://github.com/filipvanlaenen/asapop/milestone/6)
+* [M3 – Support Belgium through a ROPF file](https://github.com/filipvanlaenen/asapop/milestone/2)
+* [M2 – Provide EOPAOD CSV file for Austria](https://github.com/filipvanlaenen/asapop/milestone/4)
 * [M1 – Support Austria through a ROPF file](https://github.com/filipvanlaenen/asapop/milestone/1)
