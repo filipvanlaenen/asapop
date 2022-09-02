@@ -111,6 +111,15 @@ public final class ResponseScenario {
         }
 
         /**
+         * Returns whether any results have been registered in this builder instance.
+         *
+         * @return True if at least one result has been registered in this builder instance.
+         */
+        public boolean hasResults() {
+            return !results.isEmpty();
+        }
+
+        /**
          * Sets the area.
          *
          * @param areaCode The area.

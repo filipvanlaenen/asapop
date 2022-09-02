@@ -278,12 +278,22 @@ public final class OpinionPollLineTest {
     }
 
     /**
-     * Verifies that a line with a malformd decimal number for excluded produces a warning.
+     * Verifies that a line with a malformed decimal number for excluded produces a warning.
      */
     @Test
     public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43", 1);
         Set<Warning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line missing results produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForMissingResults() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N", 1);
+        Set<Warning> expected = Set.of(new ResultsMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 }

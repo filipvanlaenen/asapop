@@ -90,6 +90,9 @@ final class OpinionPollLine extends Line {
         while (!remainder.isEmpty()) {
             remainder = parseKeyValue(builder, warnings, remainder, lineNumber);
         }
+        if (!builder.hasResults()) {
+            warnings.add(new ResultsMissingWarning(lineNumber));
+        }
         return new OpinionPollLine(builder.build(), warnings);
     }
 

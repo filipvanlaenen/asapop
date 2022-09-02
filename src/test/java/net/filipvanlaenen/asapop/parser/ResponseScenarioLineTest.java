@@ -180,4 +180,15 @@ public final class ResponseScenarioLineTest {
         Set<Warning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line missing results produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForMissingResults() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •SC: N", 1);
+        Set<Warning> expected = Set.of(new ResultsMissingWarning(1));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
 }
