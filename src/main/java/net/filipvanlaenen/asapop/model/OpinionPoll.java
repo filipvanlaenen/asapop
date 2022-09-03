@@ -218,6 +218,15 @@ public final class OpinionPoll {
         }
 
         /**
+         * Returns whether any date has been registered in this builder instance.
+         *
+         * @return True if at least one date has been registered in this builder instance.
+         */
+        public boolean hasDates() {
+            return fieldworkEnd != null || fieldworkStart != null || publicationDate != null;
+        }
+
+        /**
          * Returns whether any results have been registered in this builder instance.
          *
          * @return True if at least one result has been registered in this builder instance.

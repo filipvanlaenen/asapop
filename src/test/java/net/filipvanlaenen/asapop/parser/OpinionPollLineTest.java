@@ -296,4 +296,14 @@ public final class OpinionPollLineTest {
         Set<Warning> expected = Set.of(new ResultsMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line missing dates produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForMissingDates() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", 1);
+        Set<Warning> expected = Set.of(new DatesMissingWarning(1));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
 }
