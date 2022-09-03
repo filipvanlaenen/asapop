@@ -26,21 +26,21 @@ public class FirstRoundResultProbabilityMass {
     }
 
     /**
-     * Sets the set of keys for the electoral lists that make it to the second round.
-     *
-     * @param electoralLists The set of keys for the electoral lists that make it to the second round.
-     */
-    public void setElectoralLists(final Set<String> electoralLists) {
-        this.electoralLists = electoralLists;
-    }
-
-    /**
      * Returns the probability mass.
      *
      * @return The probability mass.
      */
     public Double getProbabilityMass() {
         return probabilityMass;
+    }
+
+    /**
+     * Sets the set of keys for the electoral lists that make it to the second round.
+     *
+     * @param electoralLists The set of keys for the electoral lists that make it to the second round.
+     */
+    public void setElectoralLists(final Set<String> electoralLists) {
+        this.electoralLists = electoralLists;
     }
 
     /**
