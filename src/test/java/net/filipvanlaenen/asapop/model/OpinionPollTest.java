@@ -42,12 +42,28 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before a date has been added, the builder responds that the dates are missing.
+     */
+    @Test
+    public void hasDatesInBuilderShouldReturnFalseBeforeDatesAreAdded() {
+        assertFalse(new OpinionPoll.Builder().hasDates());
+    }
+
+    /**
      * Verifies that the setFieldworkEnd method in the builder class is wired correctly to the getFieldworkEnd method.
      */
     @Test
     public void setFieldworkEndInBuilderShouldBeWiredCorrectlyToGetFieldworkEnd() {
         OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
         assertEquals("2021-07-27", poll.getFieldworkEnd().toString());
+    }
+
+    /**
+     * Verifies that after a fieldwork end date has been added, the builder responds that there are dates present.
+     */
+    @Test
+    public void hasDatesInBuilderShouldReturnTrueAfterFieldworkEndIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").hasDates());
     }
 
     /**
@@ -58,6 +74,14 @@ public class OpinionPollTest {
     public void setFieldworkStartInBuilderShouldBeWiredCorrectlyToGetFieldworkStart() {
         OpinionPoll poll = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
         assertEquals("2021-07-27", poll.getFieldworkStart().toString());
+    }
+
+    /**
+     * Verifies that after a fieldwork start date has been added, the builder responds that there are dates present.
+     */
+    @Test
+    public void hasDatesInBuilderShouldReturnTrueAfterFieldworkStartIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setFieldworkStart("2021-07-27").hasDates());
     }
 
     /**
@@ -105,6 +129,14 @@ public class OpinionPollTest {
     public void setPublicationDateInBuilderShouldBeWiredCorrectlyToGetPublicationDate() {
         OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
         assertEquals("2021-07-27", poll.getPublicationDate().toString());
+    }
+
+    /**
+     * Verifies that after a publication date has been added, the builder responds that there are dates present.
+     */
+    @Test
+    public void hasDatesInBuilderShouldReturnTrueAfterPublicationDateIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setPublicationDate("2021-07-27").hasDates());
     }
 
     /**
@@ -300,7 +332,7 @@ public class OpinionPollTest {
      * Verifies that calling hashCode on opinion polls built from the same builder returns the same result.
      */
     @Test
-    void hashCodeShouldBeEqualForOpinionPollsBuiltFromSameBuilder() {
+    public void hashCodeShouldBeEqualForOpinionPollsBuiltFromSameBuilder() {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         assertEquals(builder.build().hashCode(), builder.build().hashCode());
     }
