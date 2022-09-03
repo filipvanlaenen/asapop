@@ -96,6 +96,9 @@ public final class CommandLineInterface {
                 String outputFileName = args[THREE];
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                    System.out.println(warning);
+                }
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
