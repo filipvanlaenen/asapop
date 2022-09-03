@@ -117,6 +117,22 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before a result has been added, the builder responds that the results are missing.
+     */
+    @Test
+    public void hasResultsInBuilderShouldReturnFalseBeforeResultsAreAdded() {
+        assertFalse(new OpinionPoll.Builder().hasResults());
+    }
+
+    /**
+     * Verifies that after a result has been added, the builder responds that there are results present.
+     */
+    @Test
+    public void hasResultsInBuilderShouldReturnTrueAfterResultsAreAdded() {
+        assertTrue(new OpinionPoll.Builder().addWellformedResult("A", "55").hasResults());
+    }
+
+    /**
      * Verifies that the setSampleSize method in the builder class is wired correctly to the getSampleSize method.
      */
     @Test

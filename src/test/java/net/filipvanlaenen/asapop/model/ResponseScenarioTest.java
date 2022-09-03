@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -28,6 +29,22 @@ public class ResponseScenarioTest {
     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
         assertEquals("55", responseScenario.getResult("A").getText());
+    }
+
+    /**
+     * Verifies that before a result has been added, the builder responds that the results are missing.
+     */
+    @Test
+    public void hasResultsInBuilderShouldReturnFalseBeforeResultsAreAdded() {
+        assertFalse(new ResponseScenario.Builder().hasResults());
+    }
+
+    /**
+     * Verifies that after a result has been added, the builder responds that there are results present.
+     */
+    @Test
+    public void hasResultsInBuilderShouldReturnTrueAfterResultsAreAdded() {
+        assertTrue(new ResponseScenario.Builder().addWellformedResult("A", "55").hasResults());
     }
 
     /**
@@ -226,7 +243,7 @@ public class ResponseScenarioTest {
      * with a result for no responses.
      */
     @Test
-    public void aResponseScenarioMissingNoResponsesResultShouldNotBeEqualToAnotherResponseScenarioWithNoResponsesResult() {
+    public void aResponseScenarioMissingNoResponsesShouldNotBeEqualToAnotherResponseScenarioWithNoResponses() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
