@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
+import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.parser.Warning;
@@ -46,6 +47,7 @@ public final class CommandLineInterface {
             printUsage();
             return;
         }
+        SampledHypergeometricDistributionsFileCache.toggle = true;
         try {
             Command.valueOf(capitalizeWord(args[0])).execute(args);
         } catch (IllegalArgumentException iae) {

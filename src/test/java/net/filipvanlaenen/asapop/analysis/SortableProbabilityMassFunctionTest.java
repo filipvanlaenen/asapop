@@ -73,8 +73,8 @@ public class SortableProbabilityMassFunctionTest {
     /**
      * Test object to run the tests on.
      */
-    private static final SortableProbabilityMassFunction<Integer> TEST_OBJECT = new TestSubclass(
-            Map.of(1, BigDecimal.ONE));
+    private static final SortableProbabilityMassFunction<Integer> TEST_OBJECT =
+            new TestSubclass(Map.of(1, BigDecimal.ONE));
 
     /**
      * Local subclass for <code>SortableProbabilityMassFunction</code> for testing purposes.
@@ -95,7 +95,7 @@ public class SortableProbabilityMassFunctionTest {
         }
 
         @Override
-        BigDecimal getProbabilityMass(final Integer key) {
+        public BigDecimal getProbabilityMass(final Integer key) {
             return null;
         }
     }

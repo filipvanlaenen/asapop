@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
+
 /**
  * Class providing methods to calculate and handle sampled hypergeometric distributions.
  */
@@ -34,15 +36,21 @@ final class SampledHypergeometricDistributions {
             final Long minimalNumberOfSamples, final Long populationSize) {
         List<Long> key = List.of(value, sampleSize, populationSize);
         if (!CACHE.containsKey(key)) {
-            CACHE.put(key,
-                    new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples, populationSize));
+            calculatePmfAndSave(value, sampleSize, minimalNumberOfSamples, populationSize, key);
         } else {
             SampledHypergeometricDistribution currentSampledBinomialDistribution = CACHE.get(key);
             if (currentSampledBinomialDistribution.getNumberOfSamples() < minimalNumberOfSamples) {
-                CACHE.put(key, new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples,
-                        populationSize));
+                calculatePmfAndSave(value, sampleSize, minimalNumberOfSamples, populationSize, key);
             }
         }
         return CACHE.get(key);
+    }
+
+    private static void calculatePmfAndSave(final Long value, final Long sampleSize, final Long minimalNumberOfSamples,
+            final Long populationSize, List<Long> key) {
+        SampledHypergeometricDistribution pmf =
+                new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples, populationSize);
+        CACHE.put(key, pmf);
+        SampledHypergeometricDistributionsFileCache.write(value, sampleSize, populationSize, pmf);
     }
 }
