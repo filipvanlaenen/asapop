@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class representing a probability mass function with sortable keys. When the keys are sortable, medians and confidence
@@ -165,6 +166,11 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return sortedKeys.subList(fromIndex, toIndex + 1);
     }
 
+    @Override
+    public Set<SK> getKeys() {
+        return Collections.unmodifiableSet(pmf.keySet());
+    }
+
     /**
      * Returns the weight of the key in the calculations of the median, the confidence intervals, the probability mass
      * sum, etc.
@@ -201,7 +207,7 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      * @param key The key for which to return the probability mass.
      * @return The probability mass for the key.
      */
-    BigDecimal getProbabilityMass(final SK key) {
+    public BigDecimal getProbabilityMass(final SK key) {
         return pmf.get(key);
     }
 
