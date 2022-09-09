@@ -47,7 +47,7 @@ public final class CommandLineInterface {
             printUsage();
             return;
         }
-        SampledHypergeometricDistributionsFileCache.toggle = true;
+        SampledHypergeometricDistributionsFileCache.toggleOn();
         try {
             Command.valueOf(capitalizeWord(args[0])).execute(args);
         } catch (IllegalArgumentException iae) {
