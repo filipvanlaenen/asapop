@@ -23,6 +23,23 @@ final class SampledHypergeometricDistributions {
     }
 
     /**
+     * Calculates a new sampled hypergeometric distribution and saves it to the file cache.
+     *
+     * @param value                  The measured value.
+     * @param sampleSize             The sample size.
+     * @param minimalNumberOfSamples The number of samples.
+     * @param populationSize         The population size.
+     * @param key                    The key for the sampled hypergeometric distribution in the cache.
+     */
+    private static void calculatePmfAndSave(final Long value, final Long sampleSize, final Long minimalNumberOfSamples,
+            final Long populationSize, final List<Long> key) {
+        SampledHypergeometricDistribution pmf =
+                new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples, populationSize);
+        CACHE.put(key, pmf);
+        SampledHypergeometricDistributionsFileCache.write(value, sampleSize, populationSize, pmf);
+    }
+
+    /**
      * Returns a sampled hypergeometric distribution for a given value measured in a sample size for a population size,
      * with at least a given number of samples.
      *
@@ -44,13 +61,5 @@ final class SampledHypergeometricDistributions {
             }
         }
         return CACHE.get(key);
-    }
-
-    private static void calculatePmfAndSave(final Long value, final Long sampleSize, final Long minimalNumberOfSamples,
-            final Long populationSize, List<Long> key) {
-        SampledHypergeometricDistribution pmf =
-                new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples, populationSize);
-        CACHE.put(key, pmf);
-        SampledHypergeometricDistributionsFileCache.write(value, sampleSize, populationSize, pmf);
     }
 }
