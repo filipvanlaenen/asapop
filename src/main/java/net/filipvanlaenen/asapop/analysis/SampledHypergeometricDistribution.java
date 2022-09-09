@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Class representing a hypergeometric distribution, but sampled.
  */
-public class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<Range> {
+public final class SampledHypergeometricDistribution extends SortableProbabilityMassFunction<Range> {
     /**
      * Creates a sampled hypergeometric distribution for a given value measured in a population size for a number of
      * ranges in a sample size.
