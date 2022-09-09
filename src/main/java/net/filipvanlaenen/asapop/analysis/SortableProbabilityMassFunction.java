@@ -166,6 +166,11 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
         return sortedKeys.subList(fromIndex, toIndex + 1);
     }
 
+    /**
+     * Returns all the keys as a set.
+     *
+     * @return An unmodifiable set with all the keys.
+     */
     @Override
     public Set<SK> getKeys() {
         return Collections.unmodifiableSet(pmf.keySet());

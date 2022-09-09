@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -101,10 +102,18 @@ public class SortableProbabilityMassFunctionTest {
     }
 
     /**
+     * Verifies that all keys are returned when requested.
+     */
+    @Test
+    public void getKeysShouldReturnAllKeys() {
+        assertEquals(Set.of(0L, 1L, 2L, THREE, FOUR, FIVE), new HypergeometricDistribution(1L, FOUR, FIVE).getKeys());
+    }
+
+    /**
      * Verifies that all keys are returned and in sorted order when requested.
      */
     @Test
-    public void sortedKeysShouldReturnAllKeysInSortedOrder() {
+    public void getSortedKeysShouldReturnAllKeysInSortedOrder() {
         assertEquals(List.of(0L, 1L, 2L, THREE, FOUR, FIVE),
                 new HypergeometricDistribution(1L, FOUR, FIVE).getSortedKeys());
     }
