@@ -27,7 +27,7 @@ public class SampledMultivariateHypergeometricDistributionsTest {
     /**
      * The population size of the polls.
      */
-    private static final long POPULATION_SIZE = 1_000_000L;
+    private static final long POPULATION_SIZE = 10_001L;
     /**
      * The magic number fifty.
      */

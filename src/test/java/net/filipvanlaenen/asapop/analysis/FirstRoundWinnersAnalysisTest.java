@@ -29,7 +29,7 @@ public class FirstRoundWinnersAnalysisTest {
     /**
      * The population size of the polls.
      */
-    private static final long POPULATION_SIZE = 1_000_000L;
+    private static final long POPULATION_SIZE = 10_001L;
     /**
      * Precision for floating point assertions where moderate precision can be expected.
      */

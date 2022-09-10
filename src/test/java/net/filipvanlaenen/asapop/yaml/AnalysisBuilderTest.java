@@ -35,13 +35,13 @@ public class AnalysisBuilderTest {
      */
     private static final double DELTA = 0.01D;
     /**
-     * The magic number 49.87.
+     * Precision for floating point assertions.
      */
-    private static final double FLOAT_49_87 = 49.87D;
+    private static final double LARGE_DELTA = 1D;
     /**
-     * The magic number 50.13.
+     * The magic number 50.
      */
-    private static final double FLOAT_50_13 = 50.13D;
+    private static final double FLOAT_50 = 50D;
     /**
      * The magic number 0.60.
      */
@@ -346,7 +346,7 @@ public class AnalysisBuilderTest {
             }
         }
         assertNotNull(directWinner);
-        assertEquals(FLOAT_50_13, directWinner.getProbabilityMass(), DELTA);
+        assertEquals(FLOAT_50, directWinner.getProbabilityMass(), LARGE_DELTA);
     }
 
     /**
@@ -361,7 +361,7 @@ public class AnalysisBuilderTest {
             }
         }
         assertNotNull(winnerPair);
-        assertEquals(FLOAT_49_87, winnerPair.getProbabilityMass(), DELTA);
+        assertEquals(FLOAT_50, winnerPair.getProbabilityMass(), LARGE_DELTA);
     }
 
     /**
