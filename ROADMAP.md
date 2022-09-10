@@ -17,6 +17,7 @@
 
 See [Milestones Closed](https://github.com/filipvanlaenen/asapop/milestones?direction=desc&sort=title&state=closed) for an up-to-date list of completed milestones.
 
+* [M9 – Cache the sampled hypergeometric distributions](https://github.com/filipvanlaenen/asapop/milestone/11)
 * [M8 – Calculate the vote share confidence intervals for other countries than France](https://github.com/filipvanlaenen/asapop/milestone/9)
 * [M7 – Create an index.html file displaying the averages and linking to GitHub sites for the two nearest upcoming elections](https://github.com/filipvanlaenen/asapop/milestone/20)
 * [M6 – Calculate the pair probability to win the first round of the French presidential elections of 2022](https://github.com/filipvanlaenen/asapop/milestone/3)
