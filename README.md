@@ -2,6 +2,7 @@
 
 - [Getting Started](#getting-started)
 - [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
+- [File Cache](#file-cache)
 - [Analysis](#analysis)
 - [Build a Website](#build-a-website)
 - [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
@@ -143,6 +144,25 @@ Below is an example of an electoral list using the key "A" in the opinion poll l
 
 ```
 A: •A: AP •EN: Apple Party •EO: Pomo Partio
+```
+
+## File Cache
+
+Sampled hypergeometric distributions will be stored to a file cache. Make sure that it is possible to create a
+directory named `~/.asapop`, and create and write directories and files below that directory, with `~` being the user's
+home directory as it can be retrieved using `System.getProperty("user.home")` in Java.
+
+The structure of the cache is as follows:
+
+```
+~/.asapop/sampled-hypergeometric-distributions/<population-size>/<sample-size>/<number-of-responses>.yaml
+```
+
+This means that a hypergeometric distribution based on 120 responses in a sample size of 800 for a population size of
+11,222,333 will be stored to the following location:
+
+```
+~/.asapop/sampled-hypergeometric-distributions/11222333/800/120.yaml
 ```
 
 ## Analysis
