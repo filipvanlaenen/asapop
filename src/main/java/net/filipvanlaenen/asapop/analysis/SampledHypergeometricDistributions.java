@@ -39,6 +39,11 @@ public final class SampledHypergeometricDistributions {
         if (pmf != null && pmf.getNumberOfSamples() >= minimalNumberOfSamples) {
             return pmf;
         }
+        pmf = SampledHypergeometricDistributionsFileCache.read(value, sampleSize, populationSize);
+        if (pmf != null && pmf.getNumberOfSamples() >= minimalNumberOfSamples) {
+            CACHE.put(key, pmf);
+            return pmf;
+        }
         pmf = new SampledHypergeometricDistribution(value, sampleSize, minimalNumberOfSamples, populationSize);
         CACHE.put(key, pmf);
         SampledHypergeometricDistributionsFileCache.write(value, sampleSize, populationSize, pmf);
