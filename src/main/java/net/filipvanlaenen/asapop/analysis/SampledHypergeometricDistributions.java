@@ -9,7 +9,7 @@ import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFil
 /**
  * Class providing methods to calculate and handle sampled hypergeometric distributions.
  */
-final class SampledHypergeometricDistributions {
+public final class SampledHypergeometricDistributions {
     /**
      * A map caching all the sampled hypergeometric distributions created in the <code>get</code> method.
      */
@@ -32,7 +32,7 @@ final class SampledHypergeometricDistributions {
      * @param populationSize         The population size.
      * @return A sampled hypergeometric distribution.
      */
-    static SampledHypergeometricDistribution get(final Long value, final Long sampleSize,
+    public static SampledHypergeometricDistribution get(final Long value, final Long sampleSize,
             final Long minimalNumberOfSamples, final Long populationSize) {
         List<Long> key = List.of(value, sampleSize, populationSize);
         SampledHypergeometricDistribution pmf = CACHE.get(key);
