@@ -146,6 +146,12 @@ Below is an example of an electoral list using the key "A" in the opinion poll l
 A: •A: AP •EN: Apple Party •EO: Pomo Partio
 ```
 
+### Comments and Empty Lines
+
+Note that in addition to opinion poll and electoral list data, richt opinion poll files can also contain empty lines
+and comment lines. Empty lines consist entirely of white space, whereas comment line are marked by a leading double 
+dagger symbol (`‡`).
+
 ## File Cache
 
 Sampled hypergeometric distributions will be stored to a file cache. Make sure that it is possible to create a

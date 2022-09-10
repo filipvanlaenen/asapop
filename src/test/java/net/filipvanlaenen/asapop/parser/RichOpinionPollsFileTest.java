@@ -70,6 +70,18 @@ public final class RichOpinionPollsFileTest {
     }
 
     /**
+     * Verifies that two lines containing simple opinion polls with a comment line in between can be parsed.
+     */
+    @Test
+    public void shouldParseTwoLinesWithSimpleOpinionPollsWithCommentLineInBetween() {
+        String[] content = new String[] {SAMPLE_POLL_LINE, "‡", OTHER_SAMPLE_POLL_LINE};
+        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
+        polls.add(SAMPLE_POLL);
+        polls.add(OTHER_SAMPLE_POLL);
+        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
+    }
+
+    /**
      * Verifies that two lines containing a simple opinion with an alternative response scenario can be parsed.
      */
     @Test
