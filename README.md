@@ -149,8 +149,8 @@ A: •A: AP •EN: Apple Party •EO: Pomo Partio
 ## File Cache
 
 Sampled hypergeometric distributions will be stored to a file cache. Make sure that it is possible to create a
-directory named `~/.asapop`, and create and write directories and files below that directory, with `~` being the user's
-home directory as it can be retrieved using `System.getProperty("user.home")` in Java.
+directory named `~/.asapop`, and read, create and write directories and files below that directory, with `~` being the
+user's home directory as it can be retrieved using `System.getProperty("user.home")` in Java.
 
 The structure of the cache is as follows:
 
