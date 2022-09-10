@@ -20,7 +20,7 @@ public class SampledHypergeometricDistributionDataBuilder {
      * @param data A <code>SampledHypergeometricDistributionData</code> instance.
      * @return The resulting <code>SampledHypergeometricDistribution</code> instance.
      */
-    SampledHypergeometricDistribution fromData(final SampledHypergeometricDistributionData data) {
+    public SampledHypergeometricDistribution fromData(final SampledHypergeometricDistributionData data) {
         Map<Range, BigDecimal> pmf = new HashMap<Range, BigDecimal>();
         for (RangeProbabilityMass rpm : data.getProbabilityMassFunction()) {
             Range range = Range.get(rpm.getLowerBound(), rpm.getUpperBound());
