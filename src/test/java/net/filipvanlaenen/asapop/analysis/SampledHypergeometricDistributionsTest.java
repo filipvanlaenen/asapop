@@ -10,6 +10,10 @@ import org.junit.jupiter.api.Test;
  */
 public class SampledHypergeometricDistributionsTest {
     /**
+     * The magic number three.
+     */
+    private static final long THREE = 3L;
+    /**
      * The magic number four.
      */
     private static final long FOUR = 4L;
@@ -17,6 +21,10 @@ public class SampledHypergeometricDistributionsTest {
      * The magic number five.
      */
     private static final long FIVE = 5L;
+    /**
+     * The magic number six.
+     */
+    private static final long SIX = 6L;
     /**
      * The magic number 10.
      */
@@ -28,8 +36,8 @@ public class SampledHypergeometricDistributionsTest {
      */
     @Test
     public void shouldRetrieveTheCorrectSampledHypergeometricDistribution() {
-        assertEquals(new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN),
-                SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN));
+        assertEquals(new SampledHypergeometricDistribution(1L, THREE, FIVE, TEN),
+                SampledHypergeometricDistributions.get(1L, THREE, FIVE, TEN));
     }
 
     /**
@@ -48,7 +56,7 @@ public class SampledHypergeometricDistributionsTest {
     @Test
     public void shouldRetrieveAHypergeometricDistributionWithMoreSamplesWhenRequested() {
         SampledHypergeometricDistributions.get(1L, FOUR, FOUR, TEN);
-        assertEquals(FIVE, SampledHypergeometricDistributions.get(1L, FOUR, FIVE, TEN).getNumberOfSamples());
+        assertEquals(SIX, SampledHypergeometricDistributions.get(1L, FOUR, SIX, TEN).getNumberOfSamples());
     }
 
     /**
