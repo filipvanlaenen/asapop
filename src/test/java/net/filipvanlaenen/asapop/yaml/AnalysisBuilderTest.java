@@ -35,21 +35,25 @@ public class AnalysisBuilderTest {
      */
     private static final double DELTA = 0.01D;
     /**
-     * The magic number 50.
+     * The magic number 49.87.
      */
-    private static final double FLOAT_50 = 50D;
+    private static final double FLOAT_49_87 = 49.87D;
+    /**
+     * The magic number 50.13.
+     */
+    private static final double FLOAT_50_13 = 50.13D;
     /**
      * The magic number 0.60.
      */
     private static final double FLOAT_0_60 = 0.60D;
     /**
-     * The magic number 1.05.
+     * The magic number 1.04.
      */
-    private static final double FLOAT_1_05 = 1.05D;
+    private static final double FLOAT_1_04 = 1.04D;
     /**
-     * The magic number 1.60.
+     * The magic number 1.69.
      */
-    private static final double FLOAT_1_70 = 1.70D;
+    private static final double FLOAT_1_69 = 1.69D;
     /**
      * The area.
      */
@@ -90,7 +94,7 @@ public class AnalysisBuilderTest {
      * The size of the population (the number of voters for the first round of the French presidential election of
      * 2017).
      */
-    private static final long POPULATION_SIZE = 36_054_394L;
+    private static final long POPULATION_SIZE = 10_001L;
     /**
      * An Analysis object to run the tests on.
      */
@@ -228,7 +232,7 @@ public class AnalysisBuilderTest {
      */
     @Test
     public void resultAnalysisShouldContainTheMedianForTheElectoralList() {
-        assertEquals(FLOAT_1_05, resultAnalysis.getMedian(), DELTA);
+        assertEquals(FLOAT_1_04, resultAnalysis.getMedian(), DELTA);
     }
 
     /**
@@ -237,7 +241,7 @@ public class AnalysisBuilderTest {
     @Test
     public void resultAnalysisShouldContainThe80PercentConfidenceIntervalForTheElectoralList() {
         assertEquals(FLOAT_0_60, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[0], DELTA);
-        assertEquals(FLOAT_1_70, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], DELTA);
+        assertEquals(FLOAT_1_69, resultAnalysis.getConfidenceIntervals().get(EIGHTY)[1], DELTA);
     }
 
     /**
@@ -342,7 +346,7 @@ public class AnalysisBuilderTest {
             }
         }
         assertNotNull(directWinner);
-        assertEquals(FLOAT_50, directWinner.getProbabilityMass(), DELTA);
+        assertEquals(FLOAT_50_13, directWinner.getProbabilityMass(), DELTA);
     }
 
     /**
@@ -357,7 +361,7 @@ public class AnalysisBuilderTest {
             }
         }
         assertNotNull(winnerPair);
-        assertEquals(FLOAT_50, winnerPair.getProbabilityMass(), DELTA);
+        assertEquals(FLOAT_49_87, winnerPair.getProbabilityMass(), DELTA);
     }
 
     /**
