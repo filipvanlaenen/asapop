@@ -20,7 +20,17 @@ public final class SampledHypergeometricDistribution extends SortableProbability
      */
     SampledHypergeometricDistribution(final Long value, final Long sampleSize, final Long numberOfSamples,
             final Long populationSize) {
-        super(createPmf(value, sampleSize, numberOfSamples, populationSize));
+        this(createPmf(value, sampleSize, numberOfSamples, populationSize));
+    }
+
+    /**
+     * Creates a sampled hypergeometric distribution using a map with ranges and probability masses. The mapped is
+     * assumed to be a correct representation of the sampled hypergeometric distribution.
+     *
+     * @param pmf A map with the ranges and their probability masses.
+     */
+    public SampledHypergeometricDistribution(final Map<Range, BigDecimal> pmf) {
+        super(pmf);
     }
 
     /**
@@ -73,8 +83,9 @@ public final class SampledHypergeometricDistribution extends SortableProbability
             // EQMU: Changing the conditional boundary below produces a mutant that is equivalent because the
             // calculation in the clause will add zero if the upper bound is equal to the threshold.
             if (r.getUpperBound() > threshold) {
-                accumulated = accumulated.add(getProbabilityMass(r).multiply(
-                        new BigDecimal(r.getUpperBound() - threshold), MathContext.DECIMAL128), MathContext.DECIMAL128);
+                accumulated =
+                        accumulated.add(getProbabilityMass(r).multiply(new BigDecimal(r.getUpperBound() - threshold),
+                                MathContext.DECIMAL128), MathContext.DECIMAL128);
             }
         }
         return accumulated.divide(getProbabilityMassSum(), MathContext.DECIMAL128);

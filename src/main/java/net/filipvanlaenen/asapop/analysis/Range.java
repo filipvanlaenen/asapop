@@ -46,7 +46,7 @@ public final class Range implements Comparable<Range> {
      * @param upperBound The upper bound of the requested range.
      * @return A range with the provided lower and upper bound.
      */
-    static Range get(final long lowerBound, final long upperBound) {
+    public static Range get(final long lowerBound, final long upperBound) {
         List<Long> key = List.of(lowerBound, upperBound);
         if (!CACHE.containsKey(key)) {
             CACHE.put(key, new Range(lowerBound, upperBound));
