@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.filecache;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import net.filipvanlaenen.asapop.analysis.SampledHypergeometricDistribution;
+import net.filipvanlaenen.asapop.yaml.SampledHypergeometricDistributionData;
 import net.filipvanlaenen.asapop.yaml.SampledHypergeometricDistributionDataBuilder;
 
 /**
@@ -73,6 +75,35 @@ public final class SampledHypergeometricDistributionsFileCache {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Reads a sampled hypergeometric distribution from the file system.
+     *
+     * @param value          The number of responses in the opinion poll.
+     * @param sampleSize     The sample size of the opinion poll.
+     * @param populationSize The population size.
+     * @return The sampled hypergeometric distribution.
+     */
+    public static SampledHypergeometricDistribution read(final Long value, final Long sampleSize,
+            final Long populationSize) {
+        if (!toggle) {
+            return null;
+        }
+        File file = calculatePath(value, sampleSize, populationSize).toFile();
+        if (!file.exists()) {
+            return null;
+        }
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
+        try {
+            SampledHypergeometricDistributionData data =
+                    objectMapper.readValue(file, SampledHypergeometricDistributionData.class);
+            return DATA_BUILDER.fromData(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
