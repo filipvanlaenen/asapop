@@ -77,10 +77,8 @@ public final class RichOpinionPollsFile {
             } else if (ElectoralListLine.isElectoralListLine(line)) {
                 ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
                 electoralListLine.updateElectoralList();
-            } else if (EmptyLine.isEmptyLine(line) || CommentLine.isCommentLine(line)) {
-                // EQMU: Negating the conditional above produces an equivalent mutant.
-                // EQMU: Negating the conditional above produces an equivalent mutant.
-                // Ignore empty lines.
+            } else if (!EmptyLine.isEmptyLine(line) && !CommentLine.isCommentLine(line)) {
+                warnings.add(new UnrecognizedLineFormatWarning(lineNumber));
             }
         }
         return new RichOpinionPollsFile(opinionPolls, warnings);
