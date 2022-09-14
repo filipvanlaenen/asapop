@@ -131,4 +131,12 @@ public final class RichOpinionPollsFileTest {
         assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
                 RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x").getWarnings());
     }
+
+    /**
+     * Verifies that a line with an unrecognized line format produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForALineWithAnRecognizedFormat() {
+        assertEquals(Set.of(new UnrecognizedLineFormatWarning(1)), RichOpinionPollsFile.parse("Foo").getWarnings());
+    }
 }
