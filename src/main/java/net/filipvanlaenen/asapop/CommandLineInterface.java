@@ -20,6 +20,7 @@ import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFil
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.parser.Warning;
+import net.filipvanlaenen.asapop.website.InternationalizationScriptBuilder;
 import net.filipvanlaenen.asapop.website.Website;
 import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
@@ -124,6 +125,9 @@ public final class CommandLineInterface {
                         objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
                 Website website = new WebsiteBuilder(websiteConfiguration).build();
                 writeFiles(siteDirName, website.asMap());
+                Path internationalizationScriptPath = Paths.get(siteDirName, "_js", "internationalization.js");
+                Files.createDirectories(internationalizationScriptPath.getParent());
+                writeFile(internationalizationScriptPath, new InternationalizationScriptBuilder().build());
             }
         },
         /**
