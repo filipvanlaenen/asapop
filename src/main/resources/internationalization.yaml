@@ -2,8 +2,18 @@
 - key: "language"
   translations:
     en: "Language"
+    eo: "Lingvo"
+    fr: "Langue"
     nl: "Taal"
+    no: "Språk"
+- key: "privacy-statement"
+  translations:
+    en: "Privacy statement: This website uses your browser's local store, a technology similar to cookies, to store your language preference between sessions."
+    nl: "Verklaring over de bescherming van persoonsgegevens: Deze website gebruikt de local store van je browser, een technologie vergelijkbaar met cookies, om tussen twee sessies in je taalkeuze te kunnen bewaren."
 - key: "upcoming-elections"
   translations:
     en: "Upcoming Election"
+    eo: "Venontaj balotoj"
+    fr: "Prochaines élections"
     nl: "Komende verkiezingen"
+    no: "Kommende valg"
