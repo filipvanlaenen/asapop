@@ -1,0 +1,9 @@
+---
+- key: "language"
+  translations:
+    en: "Language"
+    nl: "Taal"
+- key: "upcoming-elections"
+  translations:
+    en: "Upcoming Election"
+    nl: "Komende verkiezingen"
