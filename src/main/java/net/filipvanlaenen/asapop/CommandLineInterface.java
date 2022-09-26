@@ -1,7 +1,10 @@
 package net.filipvanlaenen.asapop;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,6 +29,7 @@ import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -127,7 +131,9 @@ public final class CommandLineInterface {
                 writeFiles(siteDirName, website.asMap());
                 Path internationalizationScriptPath = Paths.get(siteDirName, "_js", "internationalization.js");
                 Files.createDirectories(internationalizationScriptPath.getParent());
-                writeFile(internationalizationScriptPath, new InternationalizationScriptBuilder().build());
+                Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
+                String internationalizationScript = new InternationalizationScriptBuilder().setTerms(terms).build();
+                writeFile(internationalizationScriptPath, internationalizationScript);
             }
         },
         /**
@@ -182,6 +188,17 @@ public final class CommandLineInterface {
          */
         private static String[] readFile(final String fileName) throws IOException {
             return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8).toArray(new String[] {});
+        }
+
+        private static String readResource(final String resourceName) throws IOException {
+            InputStream in = CommandLineInterface.class.getResourceAsStream(resourceName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder resultStringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+            return resultStringBuilder.toString();
         }
 
         /**
