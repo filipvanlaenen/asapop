@@ -1,7 +1,5 @@
 package net.filipvanlaenen.asapop.website;
 
-import java.util.Map;
-
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 
