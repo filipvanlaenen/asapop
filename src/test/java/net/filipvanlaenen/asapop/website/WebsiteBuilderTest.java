@@ -21,6 +21,8 @@ import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Header;
 import net.filipvanlaenen.txhtmlj.Html;
+import net.filipvanlaenen.txhtmlj.JavaScriptMimeTypeValue;
+import net.filipvanlaenen.txhtmlj.Script;
 import net.filipvanlaenen.txhtmlj.Section;
 import net.filipvanlaenen.txhtmlj.Style;
 import net.filipvanlaenen.txhtmlj.Svg;
@@ -105,6 +107,10 @@ public class WebsiteBuilderTest {
         style.append("  .svg-chart-container-right { float: none; width: 100%; }\n");
         style.append("}\n");
         head.addElement(new Style(style.toString()));
+        head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
+                .src("https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"));
+        head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
+                .src("_js/internationalization.js"));
         Body body = new Body();
         html.addElement(body);
         body.addElement(new Header());
