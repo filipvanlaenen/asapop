@@ -52,7 +52,10 @@ public class WebsiteBuilderTest {
         AreaConfiguration latvia = new AreaConfiguration();
         latvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
         latvia.setNextElectionDate("2022-10-01");
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia));
+        AreaConfiguration bulgaria = new AreaConfiguration();
+        bulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
+        bulgaria.setNextElectionDate("2022-10-02");
+        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria));
         return new WebsiteBuilder(websiteConfiguration);
     }
 
