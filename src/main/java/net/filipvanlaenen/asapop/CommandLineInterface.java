@@ -132,7 +132,7 @@ public final class CommandLineInterface {
                 Path internationalizationScriptPath = Paths.get(siteDirName, "_js", "internationalization.js");
                 Files.createDirectories(internationalizationScriptPath.getParent());
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
-                String internationalizationScript = new InternationalizationScriptBuilder().setTerms(terms).build();
+                String internationalizationScript = new InternationalizationScriptBuilder(terms).build();
                 writeFile(internationalizationScriptPath, internationalizationScript);
             }
         },
@@ -190,6 +190,13 @@ public final class CommandLineInterface {
             return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8).toArray(new String[] {});
         }
 
+        /**
+         * Utility method to read a resource into a string.
+         *
+         * @param resourceName The name of the resource to read from.
+         * @return The content of the resource, as a string.
+         * @throws IOException Thrown if an exception occurs related to IO.
+         */
         private static String readResource(final String resourceName) throws IOException {
             InputStream in = CommandLineInterface.class.getResourceAsStream(resourceName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));

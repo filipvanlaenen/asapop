@@ -75,7 +75,7 @@ public class WebsiteBuilder {
         html.addElement(head);
         head.addElement(new Title("ASAPOP Website"));
         StringBuffer style = new StringBuffer();
-        style.append(".privacy-note { text-align: center; }\n");
+        style.append(".privacy-statement { text-align: center; }\n");
         style.append(".two-svg-charts-container { display: block; }\n");
         style.append(".svg-chart-container-left {\n");
         style.append("  display:inline-block; position: relative; width: 49%; vertical-align: middle;\n");
@@ -105,9 +105,9 @@ public class WebsiteBuilder {
                 .addElement(createDivWithImage("svg-chart-container-right", getGitHubWebsiteUrlByNextElectionDate(1)));
         Footer footer = new Footer();
         body.addElement(footer);
-        Div privacyNote = new Div().clazz("privacy-note");
+        Div privacyNote = new Div().clazz("privacy-statement");
         footer.addElement(privacyNote);
-        privacyNote.addContent("Privacy note: this website is hosted on Google Cloud.");
+        privacyNote.addContent("Privacy statement: this website is hosted on Google Cloud.");
         return html;
     }
 
