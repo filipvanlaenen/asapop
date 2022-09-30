@@ -119,6 +119,7 @@ public class WebsiteBuilderTest {
         html.addElement(body);
         Header header = new Header();
         header.addElement(new Span(" ").clazz("language"));
+        header.addContent(": ");
         Select languageSelector = new Select().id("language-selector").onchange("loadLanguage();");
         languageSelector.addElement(new Option("English").value("en"));
         languageSelector.addElement(new Option("Esperanto").value("eo"));
