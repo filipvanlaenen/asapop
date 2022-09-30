@@ -116,7 +116,7 @@ public class WebsiteBuilder {
         body.addElement(header);
         Section section = new Section();
         body.addElement(section);
-        section.addElement(new H1("Upcoming Elections"));
+        section.addElement(new H1(" ").clazz("upcoming-elections"));
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         section.addElement(twoSvgChartsContainer);
         twoSvgChartsContainer
@@ -125,9 +125,7 @@ public class WebsiteBuilder {
                 .addElement(createDivWithImage("svg-chart-container-right", getGitHubWebsiteUrlByNextElectionDate(1)));
         Footer footer = new Footer();
         body.addElement(footer);
-        Div privacyNote = new Div().clazz("privacy-statement");
-        footer.addElement(privacyNote);
-        privacyNote.addContent("Privacy statement: this website is hosted on Google Cloud.");
+        footer.addElement(new Div(" ").clazz("privacy-statement"));
         return html;
     }
 
