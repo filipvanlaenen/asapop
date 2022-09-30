@@ -10,13 +10,14 @@
 | Seat projections                       | [Ms](https://github.com/filipvanlaenen/asapop/milestone/7) |
 | ROPF formatting                        | Mf |
 | Scraping                               | Mu |
-| Static website generation              | [M7](https://github.com/filipvanlaenen/asapop/milestone/20), [Mw](https://github.com/filipvanlaenen/asapop/milestone/14), [Mw](https://github.com/filipvanlaenen/asapop/milestone/15), [Mw](https://github.com/filipvanlaenen/asapop/milestone/16), [Mw](https://github.com/filipvanlaenen/asapop/milestone/21), [Mw](https://github.com/filipvanlaenen/asapop/milestone/22), [Mw](https://github.com/filipvanlaenen/asapop/milestone/23), [Mw](https://github.com/filipvanlaenen/asapop/milestone/24), [Mw](https://github.com/filipvanlaenen/asapop/milestone/25), [Mw](https://github.com/filipvanlaenen/asapop/milestone/26), [Mw](https://github.com/filipvanlaenen/asapop/milestone/27) |
+| Static website generation              | [M7](https://github.com/filipvanlaenen/asapop/milestone/20), [Mw](https://github.com/filipvanlaenen/asapop/milestone/14), [M10](https://github.com/filipvanlaenen/asapop/milestone/15), [Mw](https://github.com/filipvanlaenen/asapop/milestone/16), [Mw](https://github.com/filipvanlaenen/asapop/milestone/21), [Mw](https://github.com/filipvanlaenen/asapop/milestone/22), [Mw](https://github.com/filipvanlaenen/asapop/milestone/23), [Mw](https://github.com/filipvanlaenen/asapop/milestone/24), [Mw](https://github.com/filipvanlaenen/asapop/milestone/25), [Mw](https://github.com/filipvanlaenen/asapop/milestone/26), [Mw](https://github.com/filipvanlaenen/asapop/milestone/27) |
 | Brownian motion                        | Mm |
 
 # Milestones Completed
 
 See [Milestones Closed](https://github.com/filipvanlaenen/asapop/milestones?direction=desc&sort=title&state=closed) for an up-to-date list of completed milestones.
 
+* [M10 – Internationalization](https://github.com/filipvanlaenen/asapop/milestone/15)
 * [M9 – Cache the sampled hypergeometric distributions](https://github.com/filipvanlaenen/asapop/milestone/11)
 * [M8 – Calculate the vote share confidence intervals for other countries than France](https://github.com/filipvanlaenen/asapop/milestone/9)
 * [M7 – Create an index.html file displaying the averages and linking to GitHub sites for the two nearest upcoming elections](https://github.com/filipvanlaenen/asapop/milestone/20)
