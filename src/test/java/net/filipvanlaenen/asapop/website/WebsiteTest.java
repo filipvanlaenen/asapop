@@ -3,6 +3,8 @@ package net.filipvanlaenen.asapop.website;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,11 @@ import net.filipvanlaenen.txhtmlj.Html;
  * Unit tests on the <code>Website</code> class.
  */
 public class WebsiteTest {
+    /**
+     * Path <code>foo</code>.
+     */
+    private static final Path FOO_PATH = Paths.get("foo");
+
     /**
      * An empty website returns an empty map.
      */
@@ -30,8 +37,8 @@ public class WebsiteTest {
     public void aWebsiteWithASinglePageShouldReturnAMapWithTheContentOfThatPage() {
         Website website = new Website();
         website.put("foo", new Html());
-        Map<String, String> expected = new HashMap<String, String>();
-        expected.put("foo", new Html().asString());
+        Map<Path, String> expected = new HashMap<Path, String>();
+        expected.put(FOO_PATH, new Html().asString());
         assertEquals(expected, website.asMap());
     }
 
@@ -41,7 +48,7 @@ public class WebsiteTest {
     @Test
     public void asMapReturnsAnUnmodifiableMap() {
         assertThrows(UnsupportedOperationException.class, () -> {
-            new Website().asMap().put("foo", new Html().asString());
+            new Website().asMap().put(FOO_PATH, new Html().asString());
         });
     }
 }

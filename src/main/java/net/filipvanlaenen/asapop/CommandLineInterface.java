@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -23,7 +24,6 @@ import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFil
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.parser.Warning;
-import net.filipvanlaenen.asapop.website.InternationalizationScriptBuilder;
 import net.filipvanlaenen.asapop.website.Website;
 import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
@@ -123,17 +123,15 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException {
                 String siteDirName = args[1];
                 String siteConfigurationFileName = args[2];
+                String ropfDirName = args[3];
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
-                Website website = new WebsiteBuilder(websiteConfiguration).build();
-                writeFiles(siteDirName, website.asMap());
-                Path internationalizationScriptPath = Paths.get(siteDirName, "_js", "internationalization.js");
-                Files.createDirectories(internationalizationScriptPath.getParent());
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
-                String internationalizationScript = new InternationalizationScriptBuilder(terms).build();
-                writeFile(internationalizationScriptPath, internationalizationScript);
+                Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName);
+                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap).build();
+                writeFiles(siteDirName, website.asMap());
             }
         },
         /**
@@ -179,6 +177,21 @@ public final class CommandLineInterface {
          */
         abstract void execute(String[] args) throws IOException;
 
+        private static Map<String, OpinionPolls> readAllOpinionPolls(String ropfDirName) throws IOException {
+            Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
+            String[] areas = new String[] {"mk"}; // TODO: Read from website configuration
+            for (String area : areas) {
+                System.out.println("Going to parse " + area + "...");
+                String[] ropfContent = readFile(Paths.get(ropfDirName, area + ".ropf"));
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                    System.out.println(warning);
+                }
+                opinionPollsMap.put(area, richOpinionPollsFile.getOpinionPolls());
+            }
+            return opinionPollsMap;
+        }
+
         /**
          * Utility method to read a file into an array of strings.
          *
@@ -187,7 +200,18 @@ public final class CommandLineInterface {
          * @throws IOException Thrown if an exception occurs related to IO.
          */
         private static String[] readFile(final String fileName) throws IOException {
-            return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8).toArray(new String[] {});
+            return readFile(Paths.get(fileName));
+        }
+
+        /**
+         * Utility method to read a file into an array of strings.
+         *
+         * @param path The path to the file to read from.
+         * @return The content of the file, as an array of strings.
+         * @throws IOException Thrown if an exception occurs related to IO.
+         */
+        private static String[] readFile(final Path path) throws IOException {
+            return Files.readAllLines(path, StandardCharsets.UTF_8).toArray(new String[] {});
         }
 
         /**
@@ -237,10 +261,12 @@ public final class CommandLineInterface {
          * @param fileNamesAndContents The file names and contents.
          * @throws IOException Thrown if an exception occurs related to IO.
          */
-        private static void writeFiles(final String baseDir, final Map<String, String> fileNamesAndContents)
+        private static void writeFiles(final String baseDir, final Map<Path, String> fileNamesAndContents)
                 throws IOException {
-            for (Entry<String, String> entry : fileNamesAndContents.entrySet()) {
-                writeFile(Paths.get(baseDir, entry.getKey()), entry.getValue());
+            for (Entry<Path, String> entry : fileNamesAndContents.entrySet()) {
+                Path path = Paths.get(baseDir, entry.getKey().toString());
+                Files.createDirectories(path.getParent());
+                writeFile(path, entry.getValue());
             }
         }
     }

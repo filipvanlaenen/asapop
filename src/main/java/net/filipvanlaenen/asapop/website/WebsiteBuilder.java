@@ -3,9 +3,12 @@ package net.filipvanlaenen.asapop.website;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
@@ -44,6 +47,8 @@ public class WebsiteBuilder {
      * The list with GitHub website URLs, sorted by next election date.
      */
     private List<String> gitHubWebsiteUrlsByNextElectionDate;
+    private final Map<String, OpinionPolls> opinionPollsMap;
+    private final Terms terms;
     /**
      * The configuration for the website.
      */
@@ -54,8 +59,11 @@ public class WebsiteBuilder {
      *
      * @param websiteConfiguration The website configuration.
      */
-    public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration) {
+    public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
+            final Map<String, OpinionPolls> opinionPollsMap) {
         this.websiteConfiguration = websiteConfiguration;
+        this.terms = terms;
+        this.opinionPollsMap = opinionPollsMap;
     }
 
     /**
@@ -66,6 +74,10 @@ public class WebsiteBuilder {
     public Website build() {
         Website website = new Website();
         website.put("index.html", buildIndexPageContent());
+        CsvFilesBuilder csvFilesBuilder = new CsvFilesBuilder(opinionPollsMap);
+        website.putAll(csvFilesBuilder.build());
+        JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(terms);
+        website.putAll(javaScriptsBuilder.build());
         return website;
     }
 
