@@ -123,7 +123,7 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException {
                 String siteDirName = args[1];
                 String siteConfigurationFileName = args[2];
-                String ropfDirName = args[3];
+                String ropfDirName = args[THREE];
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 WebsiteConfiguration websiteConfiguration =
@@ -177,7 +177,14 @@ public final class CommandLineInterface {
          */
         abstract void execute(String[] args) throws IOException;
 
-        private static Map<String, OpinionPolls> readAllOpinionPolls(String ropfDirName) throws IOException {
+        /**
+         * Reads all the opinion polls.
+         *
+         * @param ropfDirName The directory where the ROPF files reside.
+         * @return A map with all opinion polls.
+         * @throws IOException Thrown if something related to IO goes wrong.
+         */
+        private static Map<String, OpinionPolls> readAllOpinionPolls(final String ropfDirName) throws IOException {
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
             String[] areas = new String[] {"mk"}; // TODO: Read from website configuration
             for (String area : areas) {
