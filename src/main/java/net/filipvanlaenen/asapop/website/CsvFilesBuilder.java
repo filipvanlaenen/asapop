@@ -9,13 +9,29 @@ import java.util.Map.Entry;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 
+/**
+ * Class building the CSV files.
+ */
 public class CsvFilesBuilder {
+    /**
+     * A map with the opinion polls.
+     */
     private final Map<String, OpinionPolls> opinionPollsMap;
 
+    /**
+     * Constructor taking the map with the opinion polls as its parameter.
+     *
+     * @param opinionPollsMap The map with the opinion polls.
+     */
     public CsvFilesBuilder(final Map<String, OpinionPolls> opinionPollsMap) {
         this.opinionPollsMap = opinionPollsMap;
     }
 
+    /**
+     * Builds all the CSV files for the website.
+     *
+     * @return A map with the CSV files and their paths.
+     */
     public Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
         for (Entry<String, OpinionPolls> entry : opinionPollsMap.entrySet()) {
