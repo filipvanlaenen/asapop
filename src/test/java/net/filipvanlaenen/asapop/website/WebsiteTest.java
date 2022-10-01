@@ -43,6 +43,18 @@ public class WebsiteTest {
     }
 
     /**
+     * A website with a single page added as a map should return a map with the content of that page.
+     */
+    @Test
+    public void aWebsiteWithASinglePageAddedAsAMapShouldReturnAMapWithTheContentOfThatPage() {
+        Website website = new Website();
+        website.putAll(Map.of(FOO_PATH, new Html().asString()));
+        Map<Path, String> expected = new HashMap<Path, String>();
+        expected.put(FOO_PATH, new Html().asString());
+        assertEquals(expected, website.asMap());
+    }
+
+    /**
      * Verifies that <code>asMap</code> returns an UnmodifiableMap.
      */
     @Test

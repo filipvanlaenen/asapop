@@ -13,14 +13,14 @@ import net.filipvanlaenen.txhtmlj.Html;
  */
 public class Website {
     /**
-     * The map holding the page names and their content.
+     * The map holding the page paths and their content.
      */
     private final Map<Path, String> map = new HashMap<Path, String>();
 
     /**
-     * Returns the content of the website as a map with the names and the contents of the website pages.
+     * Returns the content of the website as a map with the paths and the contents of the website pages.
      *
-     * @return A map containing the names and the contents of the website pages.
+     * @return A map containing the paths and the contents of the website pages.
      */
     public Map<Path, String> asMap() {
         return Collections.unmodifiableMap(map);
@@ -36,7 +36,12 @@ public class Website {
         map.put(Paths.get(path), content.asString());
     }
 
-    void putAll(final Map<Path, String> build) {
-        map.putAll(build);
+    /**
+     * Sets the content of a number of pages.
+     *
+     * @param pages The pages to be added with their paths.
+     */
+    void putAll(final Map<Path, String> pages) {
+        map.putAll(pages);
     }
 }
