@@ -4,10 +4,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
+import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
  * Class building the CSV files.
@@ -17,13 +19,20 @@ public class CsvFilesBuilder {
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
+    /**
+     * The configuration for the website.
+     */
+    private final WebsiteConfiguration websiteConfiguration;
 
     /**
      * Constructor taking the map with the opinion polls as its parameter.
      *
-     * @param opinionPollsMap The map with the opinion polls.
+     * @param websiteConfiguration The website configuration.
+     * @param opinionPollsMap      The map with the opinion polls.
      */
-    public CsvFilesBuilder(final Map<String, OpinionPolls> opinionPollsMap) {
+    public CsvFilesBuilder(final WebsiteConfiguration websiteConfiguration,
+            final Map<String, OpinionPolls> opinionPollsMap) {
+        this.websiteConfiguration = websiteConfiguration;
         this.opinionPollsMap = opinionPollsMap;
     }
 
@@ -34,11 +43,15 @@ public class CsvFilesBuilder {
      */
     public Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
-        for (Entry<String, OpinionPolls> entry : opinionPollsMap.entrySet()) {
-            // TODO: Read from website configuration
-            String[] electoralListKeys = new String[] {"СДСМ", "ВМРО", "ДУИ", "ASH", "ЛЕВ", "PDSH", "BESA"};
-            String outputContent = EopaodCsvExporter.export(entry.getValue(), "--", electoralListKeys);
-            result.put(Paths.get("_csv", entry.getKey() + ".csv"), outputContent);
+        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+            String areaCode = areaConfiguration.getAreaCode();
+            CsvConfiguration csvConfiguration = areaConfiguration.getCsvConfiguration();
+            if (csvConfiguration != null) {
+                OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
+                String[] electoralListKeys = csvConfiguration.getElectoralListKeys().toArray(String[]::new);
+                String outputContent = EopaodCsvExporter.export(opinionPolls, "--", electoralListKeys);
+                result.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
+            }
         }
         return result;
     }

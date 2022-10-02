@@ -124,8 +124,10 @@ public class IndexPageBuilder {
     private void calculateGitHubWebsiteUrlsByNextElectionDate() {
         List<AreaConfiguration> areaConfigurations =
                 new ArrayList<AreaConfiguration>(websiteConfiguration.getAreaConfigurations());
-        areaConfigurations.sort(Comparator.comparing(AreaConfiguration::getNextElectionDate));
-        gitHubWebsiteUrlsByNextElectionDate = areaConfigurations.stream()
+        List<AreaConfiguration> areaConfigurationsWithGitHubWebsiteUrls =
+                areaConfigurations.stream().filter(ac -> ac.getGitHubWebsiteUrl() != null).collect(Collectors.toList());
+        areaConfigurationsWithGitHubWebsiteUrls.sort(Comparator.comparing(AreaConfiguration::getNextElectionDate));
+        gitHubWebsiteUrlsByNextElectionDate = areaConfigurationsWithGitHubWebsiteUrls.stream()
                 .map(areaConfigutation -> areaConfigutation.getGitHubWebsiteUrl()).collect(Collectors.toList());
     }
 

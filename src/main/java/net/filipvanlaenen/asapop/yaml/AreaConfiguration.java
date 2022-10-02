@@ -5,6 +5,14 @@ package net.filipvanlaenen.asapop.yaml;
  */
 public class AreaConfiguration {
     /**
+     * The area code.
+     */
+    private String areaCode;
+    /**
+     * The configuration for the CSV file.
+     */
+    private CsvConfiguration csvConfiguration;
+    /**
      * The URL for the GitHub website.
      */
     private String gitHubWebsiteUrl;
@@ -12,6 +20,24 @@ public class AreaConfiguration {
      * The date for the next election.
      */
     private String nextElectionDate;
+
+    /**
+     * Returns the area code.
+     *
+     * @return The area code.
+     */
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    /**
+     * Returns the configuration for the CSV file.
+     *
+     * @return The configuration for the CSV file.
+     */
+    public CsvConfiguration getCsvConfiguration() {
+        return csvConfiguration;
+    }
 
     /**
      * Returns the URL for the GitHub website.
@@ -29,6 +55,24 @@ public class AreaConfiguration {
      */
     public String getNextElectionDate() {
         return nextElectionDate;
+    }
+
+    /**
+     * Sets the area code.
+     *
+     * @param areaCode The area code.
+     */
+    public void setAreaCode(final String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    /**
+     * Sets the configuration for the CSV file.
+     *
+     * @param csvConfiguration The configuration for the CSV file.
+     */
+    public void setCsvConfiguration(final CsvConfiguration csvConfiguration) {
+        this.csvConfiguration = csvConfiguration;
     }
 
     /**

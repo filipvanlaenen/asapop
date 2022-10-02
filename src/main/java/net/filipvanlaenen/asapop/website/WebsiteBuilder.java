@@ -46,7 +46,7 @@ public class WebsiteBuilder {
     public Website build() {
         Website website = new Website();
         website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());
-        CsvFilesBuilder csvFilesBuilder = new CsvFilesBuilder(opinionPollsMap);
+        CsvFilesBuilder csvFilesBuilder = new CsvFilesBuilder(websiteConfiguration, opinionPollsMap);
         website.putAll(csvFilesBuilder.build());
         JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(terms);
         website.putAll(javaScriptsBuilder.build());
