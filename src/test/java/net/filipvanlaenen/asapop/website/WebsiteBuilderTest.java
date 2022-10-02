@@ -64,7 +64,7 @@ public class WebsiteBuilderTest {
     }
 
     /**
-     * Verifies that the website is build correctly.
+     * Verifies that the website is built correctly.
      */
     @Test
     public void websiteShouldBeBuiltCorrectly() {
@@ -81,5 +81,4 @@ public class WebsiteBuilderTest {
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap);
         assertEquals(map, builder.build().asMap());
     }
-
 }
