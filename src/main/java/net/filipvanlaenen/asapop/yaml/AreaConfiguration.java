@@ -1,5 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
+import java.util.Map;
+
 /**
  * Class representing the area configuration element for the YAML file containing the website configuration.
  */
@@ -20,6 +22,10 @@ public class AreaConfiguration {
      * The date for the next election.
      */
     private String nextElectionDate;
+    /**
+     * A map with the translation of the term in a number of languages.
+     */
+    private Map<String, String> translations;
 
     /**
      * Returns the area code.
@@ -58,6 +64,15 @@ public class AreaConfiguration {
     }
 
     /**
+     * Returns a map with the translation of the term in a number of languages.
+     *
+     * @return A map with the translation of the term in a number of languages.
+     */
+    public Map<String, String> getTranslations() {
+        return translations;
+    }
+
+    /**
      * Sets the area code.
      *
      * @param areaCode The area code.
@@ -91,5 +106,14 @@ public class AreaConfiguration {
      */
     public void setNextElectionDate(final String nextElectionDate) {
         this.nextElectionDate = nextElectionDate;
+    }
+
+    /**
+     * Sets the map with the translations of the term in a number of languages.
+     *
+     * @param translations The map with the translations of the term in a number of languages.
+     */
+    public void setTranslations(final Map<String, String> translations) {
+        this.translations = translations;
     }
 }

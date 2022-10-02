@@ -30,7 +30,9 @@ import net.filipvanlaenen.asapop.website.Website;
 import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
+import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
@@ -131,6 +133,14 @@ public final class CommandLineInterface {
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
+                for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+                    if (areaConfiguration.getTranslations()!=null) {
+                        Term term = new Term();
+                        term.setKey("_area_" + areaConfiguration.getAreaCode());
+                        term.setTranslations(areaConfiguration.getTranslations());;
+                        terms.getTerms().add(term);
+                    }
+                }
                 Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap).build();
                 writeFiles(siteDirName, website.asMap());

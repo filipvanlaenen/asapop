@@ -1,5 +1,19 @@
 ---
 terms:
+  - key: "country"
+    translations:
+      en: "Country"
+      eo: "Lando"
+      fr: "Pays"
+      nl: "Land"
+      no: "Land"
+  - key: "csv-file"
+    translations:
+      en: "CSV File"
+      eo: "CSV-dosiero"
+      fr: "Fichier CSV"
+      nl: "CSV-bestand"
+      no: "CSV-fil"
   - key: "csv-files"
     translations:
       en: "CSV Files"
