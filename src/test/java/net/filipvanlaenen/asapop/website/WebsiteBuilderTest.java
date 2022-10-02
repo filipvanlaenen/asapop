@@ -6,12 +6,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
+import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
@@ -50,7 +54,12 @@ public class WebsiteBuilderTest {
         AreaConfiguration bulgaria = new AreaConfiguration();
         bulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         bulgaria.setNextElectionDate("2022-10-02");
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria));
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        CsvConfiguration csvConfiguration = new CsvConfiguration();
+        csvConfiguration.setElectoralListKeys(List.of("A", "B"));
+        northMacedonia.setCsvConfiguration(csvConfiguration);
+        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria, northMacedonia));
         return websiteConfiguration;
     }
 
@@ -63,7 +72,13 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("index.html"), new IndexPageBuilder(createWebsiteConfiguration()).build().asString());
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
-        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), Collections.EMPTY_MAP);
+        map.put(Paths.get("_csv", "mk.csv"),
+                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
+                        + "Sample Size Qualification,Participation,Precision,A,B,Other");
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
+        ElectoralList.get("A").setAbbreviation("A");
+        ElectoralList.get("B").setAbbreviation("B");
+        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap);
         assertEquals(map, builder.build().asMap());
     }
 
