@@ -9,6 +9,29 @@ import org.junit.jupiter.api.Test;
  */
 public class AreaConfigurationTest {
     /**
+     * Verifies that the getter method <code>getAreaCode</code> is wired correctly to the setter method
+     * <code>setAreaCode</code>.
+     */
+    @Test
+    public void getAreaCodeShouldBeWiredCorrectlyToSetAreaCode() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        areaConfiguration.setAreaCode("ab");
+        assertEquals("ab", areaConfiguration.getAreaCode());
+    }
+
+    /**
+     * Verifies that the getter method <code>getCsvConfiguration</code> is wired correctly to the setter method
+     * <code>setCsvConfiguration</code>.
+     */
+    @Test
+    public void getCsvConfigurationShouldBeWiredCorrectlyToSetCsvConfiguration() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        CsvConfiguration csvConfiguration = new CsvConfiguration();
+        areaConfiguration.setCsvConfiguration(csvConfiguration);
+        assertEquals(csvConfiguration, areaConfiguration.getCsvConfiguration());
+    }
+
+    /**
      * Verifies that the getter method <code>getGitHubWebsiteUrl</code> is wired correctly to the setter method
      * <code>setGitHubWebsiteUrl</code>.
      */
