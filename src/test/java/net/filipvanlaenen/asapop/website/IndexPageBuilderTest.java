@@ -137,7 +137,9 @@ public class IndexPageBuilderTest {
         AreaConfiguration bulgaria = new AreaConfiguration();
         bulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         bulgaria.setNextElectionDate("2022-10-02");
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria));
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria, northMacedonia));
         return websiteConfiguration;
     }
 
