@@ -219,6 +219,16 @@ areaConfigurations:
   nextElectionDate: "2022-10-01"
 - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/swedish_polls"
   nextElectionDate: "2022-09-11"
+- areaCode: "mk"
+  csvConfiguration:
+    electoralListKeys:
+    - "СДСМ"
+    - "ВМРО"
+    - "ДУИ"
+    - "ASH"
+    - "ЛЕВ"
+    - "PDSH"
+    - "BESA"
 ```
 
 ## Conversion from ROPF to CSV
