@@ -1,5 +1,12 @@
 ---
 terms:
+  - key: "csv-files"
+    translations:
+      en: "CSV Files"
+      eo: "CSV-dosieroj"
+      fr: "Fichiers CSV"
+      nl: "CSV-bestanden"
+      no: "CSV-filer"
   - key: "language"
     translations:
       en: "Language"

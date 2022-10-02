@@ -12,25 +12,15 @@ import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
-import net.filipvanlaenen.txhtmlj.Footer;
 import net.filipvanlaenen.txhtmlj.H1;
-import net.filipvanlaenen.txhtmlj.Head;
-import net.filipvanlaenen.txhtmlj.Header;
 import net.filipvanlaenen.txhtmlj.Html;
-import net.filipvanlaenen.txhtmlj.JavaScriptMimeTypeValue;
-import net.filipvanlaenen.txhtmlj.Option;
-import net.filipvanlaenen.txhtmlj.Script;
 import net.filipvanlaenen.txhtmlj.Section;
-import net.filipvanlaenen.txhtmlj.Select;
-import net.filipvanlaenen.txhtmlj.Span;
-import net.filipvanlaenen.txhtmlj.Style;
 import net.filipvanlaenen.txhtmlj.Svg;
-import net.filipvanlaenen.txhtmlj.Title;
 
 /**
  * Class building the index page.
  */
-public class IndexPageBuilder {
+class IndexPageBuilder extends PageBuilder {
     /**
      * The height of the SVG container.
      */
@@ -53,7 +43,7 @@ public class IndexPageBuilder {
      *
      * @param websiteConfiguration The website configuration.
      */
-    public IndexPageBuilder(final WebsiteConfiguration websiteConfiguration) {
+    IndexPageBuilder(final WebsiteConfiguration websiteConfiguration) {
         this.websiteConfiguration = websiteConfiguration;
     }
 
@@ -64,44 +54,10 @@ public class IndexPageBuilder {
      */
     Html build() {
         Html html = new Html();
-        Head head = new Head();
-        html.addElement(head);
-        head.addElement(new Title("ASAPOP Website"));
-        StringBuffer style = new StringBuffer();
-        style.append("header { text-align: right; }\n");
-        style.append(".privacy-statement { text-align: center; }\n");
-        style.append(".svg-chart-container-left {\n");
-        style.append("  display:inline-block; position: relative; width: 49%; vertical-align: middle;\n");
-        style.append("  overflow: hidden; float: left;\n");
-        style.append("}\n");
-        style.append(".svg-chart-container-right {\n");
-        style.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
-        style.append("  overflow: hidden; float: right;\n");
-        style.append("}\n");
-        style.append(".two-svg-charts-container { display: block; }\n");
-        style.append("@media screen and (max-width: 700px) {\n");
-        style.append("  .svg-chart-container-left { width: 100%; }\n");
-        style.append("  .svg-chart-container-right { float: none; width: 100%; }\n");
-        style.append("  .two-svg-charts-container { }\n");
-        style.append("}\n");
-        head.addElement(new Style(style.toString()));
-        head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
-                .src("https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"));
-        head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
-                .src("_js/internationalization.js"));
+        html.addElement(createHead());
         Body body = new Body().onload("initializeLanguage();");
         html.addElement(body);
-        Header header = new Header();
-        header.addElement(new Span(" ").clazz("language"));
-        header.addContent(": ");
-        Select languageSelector = new Select().id("language-selector").onchange("loadLanguage();");
-        languageSelector.addElement(new Option("English").value("en"));
-        languageSelector.addElement(new Option("Esperanto").value("eo"));
-        languageSelector.addElement(new Option("français").value("fr"));
-        languageSelector.addElement(new Option("Nederlands").value("nl"));
-        languageSelector.addElement(new Option("norsk").value("no"));
-        header.addElement(languageSelector);
-        body.addElement(header);
+        body.addElement(createHeader());
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("upcoming-elections"));
@@ -111,9 +67,7 @@ public class IndexPageBuilder {
                 .addElement(createDivWithImage("svg-chart-container-left", getGitHubWebsiteUrlByNextElectionDate(0)));
         twoSvgChartsContainer
                 .addElement(createDivWithImage("svg-chart-container-right", getGitHubWebsiteUrlByNextElectionDate(1)));
-        Footer footer = new Footer();
-        body.addElement(footer);
-        footer.addElement(new Div(" ").clazz("privacy-statement"));
+        body.addElement(createFooter());
         return html;
     }
 

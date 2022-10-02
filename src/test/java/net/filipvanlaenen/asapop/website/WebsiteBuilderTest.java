@@ -69,7 +69,9 @@ public class WebsiteBuilderTest {
     @Test
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
-        map.put(Paths.get("index.html"), new IndexPageBuilder(createWebsiteConfiguration()).build().asString());
+        WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
+        map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_csv", "mk.csv"),
