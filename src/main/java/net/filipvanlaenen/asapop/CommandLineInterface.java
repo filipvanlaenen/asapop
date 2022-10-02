@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -129,7 +131,7 @@ public final class CommandLineInterface {
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
-                Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName);
+                Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap).build();
                 writeFiles(siteDirName, website.asMap());
             }
@@ -180,21 +182,25 @@ public final class CommandLineInterface {
         /**
          * Reads all the opinion polls.
          *
-         * @param ropfDirName The directory where the ROPF files reside.
+         * @param ropfDirName          The directory where the ROPF files reside.
+         * @param websiteConfiguration The configuration for the website.
          * @return A map with all opinion polls.
          * @throws IOException Thrown if something related to IO goes wrong.
          */
-        private static Map<String, OpinionPolls> readAllOpinionPolls(final String ropfDirName) throws IOException {
+        private static Map<String, OpinionPolls> readAllOpinionPolls(final String ropfDirName,
+                final WebsiteConfiguration websiteConfiguration) throws IOException {
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
-            String[] areas = new String[] {"mk"}; // TODO: Read from website configuration
-            for (String area : areas) {
-                System.out.println("Going to parse " + area + "...");
-                String[] ropfContent = readFile(Paths.get(ropfDirName, area + ".ropf"));
+            Set<String> areaCodes =
+                    websiteConfiguration.getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null)
+                            .map(areaConfigutation -> areaConfigutation.getAreaCode()).collect(Collectors.toSet());
+            for (String areaCode : areaCodes) {
+                System.out.println("Going to parse " + areaCode + "...");
+                String[] ropfContent = readFile(Paths.get(ropfDirName, areaCode + ".ropf"));
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
                 for (Warning warning : richOpinionPollsFile.getWarnings()) {
                     System.out.println(warning);
                 }
-                opinionPollsMap.put(area, richOpinionPollsFile.getOpinionPolls());
+                opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
             }
             return opinionPollsMap;
         }

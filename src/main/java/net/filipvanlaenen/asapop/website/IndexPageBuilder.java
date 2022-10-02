@@ -1,6 +1,5 @@
 package net.filipvanlaenen.asapop.website;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -122,10 +121,8 @@ public class IndexPageBuilder {
      * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
      */
     private void calculateGitHubWebsiteUrlsByNextElectionDate() {
-        List<AreaConfiguration> areaConfigurations =
-                new ArrayList<AreaConfiguration>(websiteConfiguration.getAreaConfigurations());
-        List<AreaConfiguration> areaConfigurationsWithGitHubWebsiteUrls =
-                areaConfigurations.stream().filter(ac -> ac.getGitHubWebsiteUrl() != null).collect(Collectors.toList());
+        List<AreaConfiguration> areaConfigurationsWithGitHubWebsiteUrls = websiteConfiguration.getAreaConfigurations()
+                .stream().filter(ac -> ac.getGitHubWebsiteUrl() != null).collect(Collectors.toList());
         areaConfigurationsWithGitHubWebsiteUrls.sort(Comparator.comparing(AreaConfiguration::getNextElectionDate));
         gitHubWebsiteUrlsByNextElectionDate = areaConfigurationsWithGitHubWebsiteUrls.stream()
                 .map(areaConfigutation -> areaConfigutation.getGitHubWebsiteUrl()).collect(Collectors.toList());
