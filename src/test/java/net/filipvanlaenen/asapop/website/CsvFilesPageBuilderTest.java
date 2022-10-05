@@ -2,17 +2,19 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
- * Unit tests on the <code>IndexPageBuilder</code> class.
+ * Unit tests on the <code>CsvFilesPageBuilder</code> class.
  */
-public class IndexPageBuilderTest {
+public class CsvFilesPageBuilderTest {
     /**
      * Creates a website configuration.
      *
@@ -23,23 +25,20 @@ public class IndexPageBuilderTest {
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
         sweden.setNextElectionDate("2022-09-11");
-        AreaConfiguration latvia = new AreaConfiguration();
-        latvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
-        latvia.setNextElectionDate("2022-10-01");
-        AreaConfiguration bulgaria = new AreaConfiguration();
-        bulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
-        bulgaria.setNextElectionDate("2022-10-02");
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria, northMacedonia));
+        CsvConfiguration csvConfiguration = new CsvConfiguration();
+        csvConfiguration.setElectoralListKeys(List.of("A", "B"));
+        northMacedonia.setCsvConfiguration(csvConfiguration);
+        websiteConfiguration.setAreaConfigurations(Set.of(sweden, northMacedonia));
         return websiteConfiguration;
     }
 
     /**
-     * Verifies that the index page is built correctly.
+     * Verifies that the CSV files page is built correctly.
      */
     @Test
-    public void indexPageContentShouldBeBuiltCorrectly() {
+    public void csvFilesPageIsBuiltCorrectly() {
         StringBuilder expected = new StringBuilder();
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
@@ -76,31 +75,29 @@ public class IndexPageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></header>\n");
         expected.append("    <section>\n");
-        expected.append("      <h1 class=\"upcoming-elections\"> </h1>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <a href=\"https://filipvanlaenen.github.io/swedish_polls\">\n");
-        expected.append("              <image height=\"250\""
-                + " href=\"https://filipvanlaenen.github.io/swedish_polls/average.png\" width=\"500\"/>\n");
-        expected.append("            </a>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <a href=\"https://filipvanlaenen.github.io/latvian_polls\">\n");
-        expected.append("              <image height=\"250\""
-                + " href=\"https://filipvanlaenen.github.io/latvian_polls/average.png\" width=\"500\"/>\n");
-        expected.append("            </a>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
+        expected.append("      <h1 class=\"csv-files\"> </h1>\n");
+        expected.append("      <table>\n");
+        expected.append("        <thead>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <th class=\"country\"> </th>\n");
+        expected.append("            <th class=\"csv-file\"> </th>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </thead>\n");
+        expected.append("        <tbody>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td class=\"_area_mk\"> </td>\n");
+        expected.append("            <td>\n");
+        expected.append("              <a href=\"_csv/mk.csv\">mk.csv</a>\n");
+        expected.append("            </td>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </tbody>\n");
+        expected.append("      </table>\n");
         expected.append("    </section>\n");
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
-        assertEquals(expected.toString(), new IndexPageBuilder(createWebsiteConfiguration()).build().asString());
+        assertEquals(expected.toString(), new CsvFilesPageBuilder(createWebsiteConfiguration()).build().asString());
     }
 }
