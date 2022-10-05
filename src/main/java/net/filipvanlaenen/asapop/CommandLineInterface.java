@@ -134,10 +134,10 @@ public final class CommandLineInterface {
                         objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
                 for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
-                    if (areaConfiguration.getTranslations()!=null) {
+                    if (areaConfiguration.getTranslations() != null) {
                         Term term = new Term();
                         term.setKey("_area_" + areaConfiguration.getAreaCode());
-                        term.setTranslations(areaConfiguration.getTranslations());;
+                        term.setTranslations(areaConfiguration.getTranslations());
                         terms.getTerms().add(term);
                     }
                 }
