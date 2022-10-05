@@ -61,6 +61,12 @@ abstract class PageBuilder {
         header.addElement(left);
         Div right = new Div().clazz("header-right");
         header.addElement(right);
+        if (linkToMainPage) {
+            right.addElement(new Span(" ").clazz("csv-files"));
+        } else {
+            right.addElement(new A(" ").clazz("csv-files").href("csv.html"));
+        }
+        right.addContent(" · ");
         right.addElement(new Span(" ").clazz("language"));
         right.addContent(": ");
         Select languageSelector = new Select().id("language-selector").onchange("loadLanguage();");
