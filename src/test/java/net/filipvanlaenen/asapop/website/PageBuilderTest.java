@@ -34,10 +34,18 @@ public class PageBuilderTest {
         StringBuilder expected = new StringBuilder();
         expected.append("<head>\n");
         expected.append("  <title>ASAPOP Website</title>\n");
-        expected.append("  <style>header { text-align: right; }\n");
+        expected.append("  <style>header { display: block; width: 100%; }\n");
+        expected.append(".header-left {\n");
+        expected.append("  display: inline-block; float: left; overflow: hidden; position: relative; text-align: left;\n");
+        expected.append("  width: 49%;\n");
+        expected.append("}\n");
+        expected.append(".header-right {\n");
+        expected.append("  display: inline-block; float: right; overflow: hidden; position: relative;\n");
+        expected.append("  text-align: right; width: 49%;\n");
+        expected.append("}\n");
         expected.append(".privacy-statement { text-align: center; }\n");
         expected.append(".svg-chart-container-left {\n");
-        expected.append("  display:inline-block; position: relative; width: 49%; vertical-align: middle;\n");
+        expected.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
         expected.append("  overflow: hidden; float: left;\n");
         expected.append("}\n");
         expected.append(".svg-chart-container-right {\n");
@@ -58,20 +66,27 @@ public class PageBuilderTest {
         expected.append("</head>");
         assertEquals(expected.toString(), new LocalPageBuilder().createHead().asString());
     }
+
     /**
      * Verifies that the header is built correctly.
      */
     @Test
     public void headerShouldBeBuiltCorrectly() {
         StringBuilder expected = new StringBuilder();
-        expected.append("<header><span class=\"language\"> </span>: <select id=\"language-selector\""
-                + " onchange=\"loadLanguage();\">\n");
+        expected.append("<header>\n");
+        expected.append("  <div class=\"header-left\">\n");
+        expected.append("    <span class=\"main-page\"> </span>\n");
+        expected.append("  </div>\n");
+        expected.append("  <div class=\"header-right\"><span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");
         expected.append("  <option value=\"fr\">français</option>\n");
         expected.append("  <option value=\"nl\">Nederlands</option>\n");
         expected.append("  <option value=\"no\">norsk</option>\n");
-        expected.append("</select></header>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHeader().asString());
+        expected.append("</select></div>\n");
+        expected.append("</header>");
+        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(false).asString());
     }
 }

@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.website;
 
+import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.Footer;
 import net.filipvanlaenen.txhtmlj.Head;
@@ -48,17 +49,27 @@ abstract class PageBuilder {
      *
      * @return A header element for a page.
      */
-    protected Header createHeader() {
+    protected Header createHeader(final boolean linkToMainPage) {
         Header header = new Header();
-        header.addElement(new Span(" ").clazz("language"));
-        header.addContent(": ");
+        Div left = new Div().clazz("header-left");
+        if (linkToMainPage) {
+            left.addElement(new A(" ").clazz("main-page").href("index.html"));
+        } else {
+            left.addElement(new Span(" ").clazz("main-page"));
+        }
+        header.addElement(left);
+        Div right = new Div().clazz("header-right");
+        header.addElement(right);
+        right.addElement(new Span(" ").clazz("language"));
+        right.addContent(": ");
         Select languageSelector = new Select().id("language-selector").onchange("loadLanguage();");
+        languageSelector.addElement(new Option("Deutsch").value("de"));
         languageSelector.addElement(new Option("English").value("en"));
         languageSelector.addElement(new Option("Esperanto").value("eo"));
         languageSelector.addElement(new Option("français").value("fr"));
         languageSelector.addElement(new Option("Nederlands").value("nl"));
         languageSelector.addElement(new Option("norsk").value("no"));
-        header.addElement(languageSelector);
+        right.addElement(languageSelector);
         return header;
     }
 
@@ -69,10 +80,18 @@ abstract class PageBuilder {
      */
     private Style createStyle() {
         StringBuffer style = new StringBuffer();
-        style.append("header { text-align: right; }\n");
+        style.append("header { display: block; width: 100%; }\n");
+        style.append(".header-left {\n");
+        style.append("  display: inline-block; float: left; overflow: hidden; position: relative; text-align: left;\n");
+        style.append("  width: 49%;\n");
+        style.append("}\n");
+        style.append(".header-right {\n");
+        style.append("  display: inline-block; float: right; overflow: hidden; position: relative;\n");
+        style.append("  text-align: right; width: 49%;\n");
+        style.append("}\n");
         style.append(".privacy-statement { text-align: center; }\n");
         style.append(".svg-chart-container-left {\n");
-        style.append("  display:inline-block; position: relative; width: 49%; vertical-align: middle;\n");
+        style.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
         style.append("  overflow: hidden; float: left;\n");
         style.append("}\n");
         style.append(".svg-chart-container-right {\n");

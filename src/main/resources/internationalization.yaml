@@ -2,6 +2,7 @@
 terms:
   - key: "country"
     translations:
+      de: "Land"
       en: "Country"
       eo: "Lando"
       fr: "Pays"
@@ -9,6 +10,7 @@ terms:
       no: "Land"
   - key: "csv-file"
     translations:
+      de: "CSV-Datei"
       en: "CSV File"
       eo: "CSV-dosiero"
       fr: "Fichier CSV"
@@ -16,6 +18,7 @@ terms:
       no: "CSV-fil"
   - key: "csv-files"
     translations:
+      de: "CSV-Dateien"
       en: "CSV Files"
       eo: "CSV-dosieroj"
       fr: "Fichiers CSV"
@@ -23,18 +26,28 @@ terms:
       no: "CSV-filer"
   - key: "language"
     translations:
+      de: "Sprache"
       en: "Language"
       eo: "Lingvo"
       fr: "Langue"
       nl: "Taal"
       no: "Språk"
+  - key: "main-page"
+    translations:
+      de: "Hauptseite"
+      en: "Main Page"
+      eo: "Ĉefpaĝo"
+      fr: "Accueil principal"
+      nl: "Hoofdpagina"
+      no: "Forside"
   - key: "privacy-statement"
     translations:
       en: "Privacy statement: This website uses your browser's local store, a technology similar to cookies, to store your language preference between sessions."
       nl: "Verklaring over de bescherming van persoonsgegevens: Deze website gebruikt de local store van je browser, een technologie vergelijkbaar met cookies, om tussen twee sessies in je taalkeuze te kunnen bewaren."
   - key: "upcoming-elections"
     translations:
-      en: "Upcoming Election"
+      de: "Künftige Wahlen"
+      en: "Upcoming Elections"
       eo: "Venontaj balotoj"
       fr: "Prochaines élections"
       nl: "Komende verkiezingen"

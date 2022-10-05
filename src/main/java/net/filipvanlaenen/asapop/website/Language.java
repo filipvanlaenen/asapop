@@ -21,6 +21,10 @@ public enum Language {
      */
     French("fr"),
     /**
+     * The language German.
+     */
+    German("de"),
+    /**
      * The language Norwegian.
      */
     Norwegian("no");

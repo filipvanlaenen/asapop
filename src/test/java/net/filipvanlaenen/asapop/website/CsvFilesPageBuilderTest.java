@@ -43,10 +43,18 @@ public class CsvFilesPageBuilderTest {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <title>ASAPOP Website</title>\n");
-        expected.append("    <style>header { text-align: right; }\n");
+        expected.append("    <style>header { display: block; width: 100%; }\n");
+        expected.append(".header-left {\n");
+        expected.append("  display: inline-block; float: left; overflow: hidden; position: relative; text-align: left;\n");
+        expected.append("  width: 49%;\n");
+        expected.append("}\n");
+        expected.append(".header-right {\n");
+        expected.append("  display: inline-block; float: right; overflow: hidden; position: relative;\n");
+        expected.append("  text-align: right; width: 49%;\n");
+        expected.append("}\n");
         expected.append(".privacy-statement { text-align: center; }\n");
         expected.append(".svg-chart-container-left {\n");
-        expected.append("  display:inline-block; position: relative; width: 49%; vertical-align: middle;\n");
+        expected.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
         expected.append("  overflow: hidden; float: left;\n");
         expected.append("}\n");
         expected.append(".svg-chart-container-right {\n");
@@ -66,14 +74,20 @@ public class CsvFilesPageBuilderTest {
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
         expected.append("  <body onload=\"initializeLanguage();\">\n");
-        expected.append("    <header><span class=\"language\"> </span>: <select id=\"language-selector\""
-                + " onchange=\"loadLanguage();\">\n");
+        expected.append("    <header>\n");
+        expected.append("      <div class=\"header-left\">\n");
+        expected.append("        <a class=\"main-page\" href=\"index.html\"> </a>\n");
+        expected.append("      </div>\n");
+        expected.append("      <div class=\"header-right\"><span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");
         expected.append("  <option value=\"fr\">français</option>\n");
         expected.append("  <option value=\"nl\">Nederlands</option>\n");
         expected.append("  <option value=\"no\">norsk</option>\n");
-        expected.append("</select></header>\n");
+        expected.append("</select></div>\n");
+        expected.append("    </header>\n");
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"csv-files\"> </h1>\n");
         expected.append("      <table>\n");

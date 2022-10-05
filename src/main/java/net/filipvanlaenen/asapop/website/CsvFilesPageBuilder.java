@@ -43,7 +43,7 @@ final class CsvFilesPageBuilder extends PageBuilder {
         html.addElement(createHead());
         Body body = new Body().onload("initializeLanguage();");
         html.addElement(body);
-        body.addElement(createHeader());
+        body.addElement(createHeader(true));
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("csv-files"));
