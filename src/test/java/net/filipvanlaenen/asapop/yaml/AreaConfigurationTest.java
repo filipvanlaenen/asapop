@@ -2,6 +2,9 @@ package net.filipvanlaenen.asapop.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -51,5 +54,17 @@ public class AreaConfigurationTest {
         AreaConfiguration areaConfiguration = new AreaConfiguration();
         areaConfiguration.setNextElectionDate("2022-09-11");
         assertEquals("2022-09-11", areaConfiguration.getNextElectionDate());
+    }
+
+    /**
+     * Verifies that the getter method <code>getTranslations</code> is wired correctly to the setter method
+     * <code>setTranslations</code>.
+     */
+    @Test
+    public void getTranslationsShouldBeWiredCorrectlyToSetTranslations() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        Map<String, String> translations = new HashMap<String, String>();
+        areaConfiguration.setTranslations(translations);
+        assertEquals(translations, areaConfiguration.getTranslations());
     }
 }
