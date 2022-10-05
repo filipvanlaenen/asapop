@@ -47,6 +47,7 @@ abstract class PageBuilder {
     /**
      * Creates a header element for a page.
      *
+     * @param linkToMainPage True if a link to the main page should be added.
      * @return A header element for a page.
      */
     protected Header createHeader(final boolean linkToMainPage) {

@@ -45,7 +45,8 @@ public class CsvFilesPageBuilderTest {
         expected.append("    <title>ASAPOP Website</title>\n");
         expected.append("    <style>header { display: block; width: 100%; }\n");
         expected.append(".header-left {\n");
-        expected.append("  display: inline-block; float: left; overflow: hidden; position: relative; text-align: left;\n");
+        expected.append(
+                "  display: inline-block; float: left; overflow: hidden; position: relative; text-align:" + " left;\n");
         expected.append("  width: 49%;\n");
         expected.append("}\n");
         expected.append(".header-right {\n");
