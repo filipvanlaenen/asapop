@@ -20,7 +20,7 @@ import net.filipvanlaenen.txhtmlj.Svg;
 /**
  * Class building the index page.
  */
-class IndexPageBuilder extends PageBuilder {
+final class IndexPageBuilder extends PageBuilder {
     /**
      * The height of the SVG container.
      */

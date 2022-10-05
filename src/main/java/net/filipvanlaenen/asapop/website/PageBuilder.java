@@ -12,13 +12,26 @@ import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.Style;
 import net.filipvanlaenen.txhtmlj.Title;
 
-class PageBuilder {
+/**
+ * Abstract super class for classes building pages, providing some utility methods to them.
+ */
+abstract class PageBuilder {
+    /**
+     * Creates a footer element for a page.
+     *
+     * @return A footer element for a page.
+     */
     protected Footer createFooter() {
         Footer footer = new Footer();
         footer.addElement(new Div(" ").clazz("privacy-statement"));
         return footer;
     }
 
+    /**
+     * Creates a head element for a page.
+     *
+     * @return A head element for a page.
+     */
     protected Head createHead() {
         Head head = new Head();
         head.addElement(new Title("ASAPOP Website"));
@@ -30,6 +43,11 @@ class PageBuilder {
         return head;
     }
 
+    /**
+     * Creates a header element for a page.
+     *
+     * @return A header element for a page.
+     */
     protected Header createHeader() {
         Header header = new Header();
         header.addElement(new Span(" ").clazz("language"));
@@ -44,6 +62,11 @@ class PageBuilder {
         return header;
     }
 
+    /**
+     * Creates a style element for a page.
+     *
+     * @return A style element for a page.
+     */
     private Style createStyle() {
         StringBuffer style = new StringBuffer();
         style.append("header { text-align: right; }\n");

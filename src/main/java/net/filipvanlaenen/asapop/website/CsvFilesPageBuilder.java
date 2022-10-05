@@ -18,7 +18,7 @@ import net.filipvanlaenen.txhtmlj.Table;
 /**
  * Class building the page with an overview and links to the CSV files.
  */
-class CsvFilesPageBuilder extends PageBuilder {
+final class CsvFilesPageBuilder extends PageBuilder {
     /**
      * The configuration for the website.
      */
