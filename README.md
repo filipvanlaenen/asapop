@@ -136,14 +136,21 @@ The second part of a rich opinion poll file contains the lines with electoral li
 the opinion polls should be on a line, and a line should always contain one electoral list. The line should start with
 the electoral list key, as used in the opinion poll results, followed by a colon (":"). The rest of the line contains
 fields with information about the electoral list, using a bullet ("•") to mark the start of a new field key, followed
-by a key, which is either "A" for the official abbreviation of the electoral list, or a two-letter language code for
-the name of the electoral list, followed by a colon (":") and the content of the field.
+by a key, which is either "A" for the official abbreviation of the electoral list, "R" for the romanized version of the
+official abbreviation, or a two-letter language code for the name of the electoral list, followed by a colon (":") and
+the content of the field.
 
 Below is an example of an electoral list using the key "A" in the opinion poll lines, having an official abbreviation
 "AP", the English name "Apple Party" and a traduction into Esperanto "Pomo Partio":
 
 ```
 A: •A: AP •EN: Apple Party •EO: Pomo Partio
+```
+
+The example below shows how to include a romanized abbreviation:
+
+```
+A: •A: ΑΠ •R: AP •EN: Apple Party •EO: Pomo Partio
 ```
 
 ### Comments and Empty Lines
