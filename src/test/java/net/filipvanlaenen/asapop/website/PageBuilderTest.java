@@ -33,6 +33,7 @@ public class PageBuilderTest {
     public void headShouldBeBuiltCorrectly() {
         StringBuilder expected = new StringBuilder();
         expected.append("<head>\n");
+        expected.append("  <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
         expected.append("  <title>ASAPOP Website</title>\n");
         expected.append("  <style>header { display: block; width: 100%; }\n");
         expected.append(".header-left {\n");

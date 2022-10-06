@@ -5,7 +5,9 @@ import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.Footer;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Header;
+import net.filipvanlaenen.txhtmlj.HttpEquivValue;
 import net.filipvanlaenen.txhtmlj.JavaScriptMimeTypeValue;
+import net.filipvanlaenen.txhtmlj.Meta;
 import net.filipvanlaenen.txhtmlj.Option;
 import net.filipvanlaenen.txhtmlj.Script;
 import net.filipvanlaenen.txhtmlj.Select;
@@ -35,6 +37,7 @@ abstract class PageBuilder {
      */
     protected Head createHead() {
         Head head = new Head();
+        head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
         head.addElement(new Title("ASAPOP Website"));
         head.addElement(createStyle());
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)

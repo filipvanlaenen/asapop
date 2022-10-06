@@ -43,6 +43,7 @@ public class IndexPageBuilderTest {
         StringBuilder expected = new StringBuilder();
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
+        expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
         expected.append("    <title>ASAPOP Website</title>\n");
         expected.append("    <style>header { display: block; width: 100%; }\n");
         expected.append(".header-left {\n");
