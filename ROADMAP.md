@@ -17,6 +17,7 @@
 
 See [Milestones Closed](https://github.com/filipvanlaenen/asapop/milestones?direction=desc&sort=title&state=closed) for an up-to-date list of completed milestones.
 
+* [M11 – Host the CSV file for North Macedonia](https://github.com/filipvanlaenen/asapop/milestone/28)
 * [M10 – Internationalization](https://github.com/filipvanlaenen/asapop/milestone/15)
 * [M9 – Cache the sampled hypergeometric distributions](https://github.com/filipvanlaenen/asapop/milestone/11)
 * [M8 – Calculate the vote share confidence intervals for other countries than France](https://github.com/filipvanlaenen/asapop/milestone/9)
