@@ -19,24 +19,15 @@ final class ElectoralListLine extends Line {
     /**
      * The pattern to match an electoral list line.
      */
-    private static final Pattern ELECTORAL_LIST_PATTERN = Pattern.compile("^\\s*" + ELECTORAL_LIST_KEY_PATTERN
-                                                                                  + KEY_VALUE_SEPARATOR_PATTERN
-                                                                                  + "(\\s+"
-                                                                                  + METADATA_MARKER_PATTERN
-                                                                                  + METADATA_KEY_PATTERN
-                                                                                  + KEY_VALUE_SEPARATOR_PATTERN
-                                                                                  + ".+?)+$");
+    private static final Pattern ELECTORAL_LIST_PATTERN =
+            Pattern.compile("^\\s*" + ELECTORAL_LIST_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + "(\\s+"
+                    + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?)+$");
     /**
      * The pattern to extract the key for the electoral list.
      */
-    private static final Pattern KEY_EXTRACTION_PATTERN = Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN
-                                                                                   + ")"
-                                                                                   + KEY_VALUE_SEPARATOR_PATTERN
-                                                                                   + "((\\s+"
-                                                                                   + METADATA_MARKER_PATTERN
-                                                                                   + METADATA_KEY_PATTERN
-                                                                                   + KEY_VALUE_SEPARATOR_PATTERN
-                                                                                   + ".+?)+)$");
+    private static final Pattern KEY_EXTRACTION_PATTERN =
+            Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN + ")" + KEY_VALUE_SEPARATOR_PATTERN + "((\\s+"
+                    + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?)+)$");
 
     /**
      * The abbreviation for the electoral list.
@@ -50,6 +41,10 @@ final class ElectoralListLine extends Line {
      * The map with the names for the electoral list.
      */
     private Map<String, String> names = new HashMap<String, String>();
+    /**
+     * The romanized abbreviation for the electoral list.
+     */
+    private String romanizedAbbreviation;
 
     /**
      * Private constructor taking the key for the electoral list as the parameter.
@@ -113,10 +108,15 @@ final class ElectoralListLine extends Line {
         String blockKey = keyValueMatcher.group(1);
         String value = keyValueMatcher.group(2);
         switch (blockKey) {
-            case "A": abbreviation = value;
-                break;
-            default: names.put(blockKey, value);
-                break;
+        case "A":
+            abbreviation = value;
+            break;
+        case "R":
+            romanizedAbbreviation = value;
+            break;
+        default:
+            names.put(blockKey, value);
+            break;
         }
     }
 
@@ -126,6 +126,7 @@ final class ElectoralListLine extends Line {
     void updateElectoralList() {
         ElectoralList electoralList = ElectoralList.get(key);
         electoralList.setAbbreviation(abbreviation);
+        electoralList.setRomanizedAbbreviation(romanizedAbbreviation);
         electoralList.setNames(names);
     }
 }

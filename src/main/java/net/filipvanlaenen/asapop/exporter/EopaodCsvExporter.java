@@ -65,7 +65,12 @@ public final class EopaodCsvExporter extends Exporter {
         sb.append(",Sample Size Qualification,Participation,Precision");
         for (String key : electoralListKeys) {
             sb.append(",");
-            sb.append(ElectoralList.get(key).getAbbreviation());
+            ElectoralList electoralList = ElectoralList.get(key);
+            if (electoralList.getRomanizedAbbreviation() == null) {
+                sb.append(ElectoralList.get(key).getAbbreviation());
+            } else {
+                sb.append(ElectoralList.get(key).getRomanizedAbbreviation());
+            }
         }
         sb.append(",Other\n");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {

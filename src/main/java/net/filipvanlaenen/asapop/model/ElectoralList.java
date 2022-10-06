@@ -23,10 +23,13 @@ public final class ElectoralList {
      * The map with the names for the electoral list.
      */
     private Map<String, String> names = new HashMap<String, String>();
+    /**
+     * The romanized abbreviation for the electoral list.
+     */
+    private String romanizedAbbreviation;
 
     /**
-     * Returns the electoral list with the given key if it already exists, or
-     * creates a new one otherwise.
+     * Returns the electoral list with the given key if it already exists, or creates a new one otherwise.
      *
      * @param key Key of the electoral list.
      * @return The electoral list with that key, or a new instance.
@@ -51,6 +54,7 @@ public final class ElectoralList {
 
     /**
      * Returns the abbreviation for the electoral list.
+     *
      * @return The abbreviation for the electoral list.
      */
     public String getAbbreviation() {
@@ -77,6 +81,15 @@ public final class ElectoralList {
     }
 
     /**
+     * Returns the romanized abbreviation for the electoral list.
+     *
+     * @return The romanized abbreviation for the electoral list.
+     */
+    public String getRomanizedAbbreviation() {
+        return romanizedAbbreviation;
+    }
+
+    /**
      * Sets the abbreviation for the electoral list.
      *
      * @param abbreviation The abbreviation for the electoral list.
@@ -92,5 +105,14 @@ public final class ElectoralList {
      */
     public void setNames(final Map<String, String> names) {
         this.names = new HashMap<String, String>(names);
+    }
+
+    /**
+     * Sets the romanized abbreviation for the electoral list.
+     *
+     * @param romanizedAbbreviation The romanized abbreviation for the electoral list.
+     */
+    public void setRomanizedAbbreviation(final String romanizedAbbreviation) {
+        this.romanizedAbbreviation = romanizedAbbreviation;
     }
 }

@@ -49,6 +49,16 @@ public final class ElectoralListLineTest {
     }
 
     /**
+     * Verifies that the romanized abbreviation of an electoral list is updated.
+     */
+    @Test
+    public void shouldUpdateTheRomanizedAbbreviationOfAnElectoralList() {
+        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: •A: ΑΠ •R:AP •EN: Apple Party");
+        electoralListLine.updateElectoralList();
+        assertEquals("AP", ElectoralList.get("A").getRomanizedAbbreviation());
+    }
+
+    /**
      * Verifies that the names of an electoral list are updated.
      */
     @Test
