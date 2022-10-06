@@ -236,6 +236,13 @@ areaConfigurations:
     - "ЛЕВ"
     - "PDSH"
     - "BESA"
+  translations:
+    de: "Nordmazedonien"
+    en: "North Macedonia"
+    eo: "Nord-Makedonio"
+    fr: "Macédoine du Nord"
+    nl: "Noord-Macedonië"
+    no: "Nord-Makedonia"
 ```
 
 ## Conversion from ROPF to CSV
