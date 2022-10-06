@@ -76,7 +76,7 @@ public class WebsiteBuilderTest {
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
-                        + "Sample Size Qualification,Participation,Precision,A,B,Other");
+                        + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");

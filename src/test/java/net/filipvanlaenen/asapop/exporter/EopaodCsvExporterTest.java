@@ -27,7 +27,7 @@ public class EopaodCsvExporterTest {
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
-        expected.append(",Not Available,1%,55%,45%,Not Available");
+        expected.append(",Not Available,1%,55%,45%,Not Available\n");
         assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B"));
     }
 
@@ -47,7 +47,7 @@ public class EopaodCsvExporterTest {
         expected.append("ACME,,2021-07-28,2021-07-28,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,55%,45%,Not Available\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
-        expected.append(",Not Available,1%,55%,45%,Not Available");
+        expected.append(",Not Available,1%,55%,45%,Not Available\n");
         assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B"));
     }
 
@@ -65,7 +65,7 @@ public class EopaodCsvExporterTest {
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,55%,45%,Not Available,Not Available\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
-        expected.append(",Not Available,1%,50%,40%,10%,Not Available");
+        expected.append(",Not Available,1%,50%,40%,10%,Not Available\n");
         assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B", "C"));
     }
 
