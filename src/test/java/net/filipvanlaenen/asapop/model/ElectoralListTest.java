@@ -44,6 +44,17 @@ public class ElectoralListTest {
     }
 
     /**
+     * Verifies that the getter method <code>getRomanizedAbbreviation</code> is wired correctly to the setter method
+     * <code>setRomanizedAbbreviation</code>.
+     */
+    @Test
+    public void getRomanizedAbbreviationShouldReturnValueFromSetRomanizedAbbreviation() {
+        ElectoralList electoralList = ElectoralList.get("ElectoralListTestGetRomanizedAbbreviation");
+        electoralList.setRomanizedAbbreviation("ABBR");
+        assertEquals("ABBR", electoralList.getRomanizedAbbreviation());
+    }
+
+    /**
      * Verifies that the getter method <code>getName</code> is wired correctly to the setter method
      * <code>setNames</code>.
      */
