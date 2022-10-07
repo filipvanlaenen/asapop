@@ -9,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -154,16 +156,16 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException {
                 String inputFileName = args[1];
                 String outputFileName = args[2];
-                int noOfElectoralListKeys = args.length - THREE;
+                int noOfElectoralListKeySets = args.length - THREE;
                 String area = null;
                 if (args[args.length - 1].startsWith("-a=")) {
                     String areaOption = args[args.length - 1];
                     area = areaOption.substring(THREE, areaOption.length());
-                    noOfElectoralListKeys--;
+                    noOfElectoralListKeySets--;
                 }
-                String[] electoralListKeys = new String[noOfElectoralListKeys];
-                for (int i = 0; i < noOfElectoralListKeys; i++) {
-                    electoralListKeys[i] = args[i + THREE];
+                List<Set<String>> electoralListKeySets = new ArrayList<Set<String>>(noOfElectoralListKeySets);
+                for (int i = 0; i < noOfElectoralListKeySets; i++) {
+                    electoralListKeySets.add(Set.of(args[i + THREE])); // TODO: Should splits into set.
                 }
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
@@ -173,9 +175,9 @@ public final class CommandLineInterface {
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
-                    outputContent = EopaodCsvExporter.export(opinionPolls, area, electoralListKeys);
+                    outputContent = EopaodCsvExporter.export(opinionPolls, area, electoralListKeySets);
                 } else if (outputFileName.endsWith(".psv")) {
-                    outputContent = EopaodPsvExporter.export(opinionPolls, area, electoralListKeys);
+                    outputContent = EopaodPsvExporter.export(opinionPolls, area, electoralListKeySets);
                 }
                 writeFile(outputFileName, outputContent);
             }
