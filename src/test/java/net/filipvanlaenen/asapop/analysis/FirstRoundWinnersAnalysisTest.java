@@ -58,11 +58,12 @@ public class FirstRoundWinnersAnalysisTest {
     public void shouldMapTheCalculationResultsCorrectlyForAClearWinner() {
         FirstRoundWinnersAnalysis firstRoundWinnersAnalysis =
                 createFirstRoundWinnersAnalysis(SEVEN_HUNDRED, ONE_HUNDRED);
-        assertEquals(Set.of(Set.of(ElectoralList.get("L1"))), firstRoundWinnersAnalysis.getElectoralListSets());
-        assertEquals(1D, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("L1"))));
-        assertEquals(0D, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("L2"))));
-        assertEquals(0D,
-                firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("L1"), ElectoralList.get("L2"))));
+        assertEquals(Set.of(Set.of(ElectoralList.get(Set.of("L1")))),
+                firstRoundWinnersAnalysis.getElectoralListSetSets());
+        assertEquals(1D, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get(Set.of("L1")))));
+        assertEquals(0D, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get(Set.of("L2")))));
+        assertEquals(0D, firstRoundWinnersAnalysis
+                .getProbabilityMass(Set.of(ElectoralList.get(Set.of("L1")), ElectoralList.get(Set.of("L2")))));
     }
 
     /**
@@ -72,14 +73,15 @@ public class FirstRoundWinnersAnalysisTest {
     public void shouldMapTheCalculationResultsCorrectlyForTwoListsWithOneHavingFiftyPercentSupport() {
         FirstRoundWinnersAnalysis firstRoundWinnersAnalysis =
                 createFirstRoundWinnersAnalysis(FIVE_HUNDRED, ONE_HUNDRED);
-        assertEquals(Set.of(Set.of(ElectoralList.get("L1")), Set.of(ElectoralList.get("L1"), ElectoralList.get("L2"))),
-                firstRoundWinnersAnalysis.getElectoralListSets());
-        assertEquals(ONE_HALF, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("L1"))),
+        assertEquals(
+                Set.of(Set.of(ElectoralList.get(Set.of("L1"))),
+                        Set.of(ElectoralList.get(Set.of("L1")), ElectoralList.get(Set.of("L2")))),
+                firstRoundWinnersAnalysis.getElectoralListSetSets());
+        assertEquals(ONE_HALF, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get(Set.of("L1")))),
                 MODERATE_DELTA);
-        assertEquals(0D, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("L2"))));
-        assertEquals(ONE_HALF,
-                firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get("L1"), ElectoralList.get("L2"))),
-                MODERATE_DELTA);
+        assertEquals(0D, firstRoundWinnersAnalysis.getProbabilityMass(Set.of(ElectoralList.get(Set.of("L2")))));
+        assertEquals(ONE_HALF, firstRoundWinnersAnalysis.getProbabilityMass(
+                Set.of(ElectoralList.get(Set.of("L1")), ElectoralList.get(Set.of("L2")))), MODERATE_DELTA);
     }
 
     /**
@@ -109,7 +111,7 @@ public class FirstRoundWinnersAnalysisTest {
             final List<SampledHypergeometricDistribution> pmfs) {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
         for (int i = 0; i < pmfs.size(); i++) {
-            voteSharesAnalysisObject.add(ElectoralList.get("L" + (i + 1)), pmfs.get(i));
+            voteSharesAnalysisObject.add(ElectoralList.get(Set.of("L" + (i + 1))), pmfs.get(i));
         }
         return voteSharesAnalysisObject;
     }

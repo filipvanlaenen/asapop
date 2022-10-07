@@ -1,7 +1,9 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +17,8 @@ public class FirstRoundWinnersAnalysis {
     /**
      * A map containing the probability mass of winning the first round per set of electoral lists.
      */
-    private final Map<Set<ElectoralList>, Double> probabilityMassFunction = new HashMap<Set<ElectoralList>, Double>();
+    private final Map<Set<Set<ElectoralList>>, Double> probabilityMassFunction =
+            new HashMap<Set<Set<ElectoralList>>, Double>();
 
     /**
      * Constructor using a vote share analysis in combination with a sample multivariate hypergeometric distribution as
@@ -27,28 +30,31 @@ public class FirstRoundWinnersAnalysis {
      */
     FirstRoundWinnersAnalysis(final VoteSharesAnalysis voteShareAnalysis,
             final SampledMultivariateHypergeometricDistribution sampledMultivariateHypergeometricDistribution) {
-        ElectoralList[] electoralLists = voteShareAnalysis.getElectoralLists().toArray(new ElectoralList[0]);
-        for (ElectoralList electoralList : electoralLists) {
-            SampledHypergeometricDistribution pmf = voteShareAnalysis.getProbabilityMassFunction(electoralList);
+        List<Set<ElectoralList>> electoralListSets =
+                new ArrayList<Set<ElectoralList>>(voteShareAnalysis.getElectoralListSets());
+        for (Set<ElectoralList> electoralListSet : electoralListSets) {
+            SampledHypergeometricDistribution pmf = voteShareAnalysis.getProbabilityMassFunction(electoralListSet);
             double probabilityMass = sampledMultivariateHypergeometricDistribution.getProbabilityMass(pmf);
             if (probabilityMass > 0) {
-                probabilityMassFunction.put(Set.of(electoralList), probabilityMass);
+                probabilityMassFunction.put(Set.of(electoralListSet), probabilityMass);
             }
         }
-        for (int i = 0; i <= electoralLists.length - 2; i++) {
-            SampledHypergeometricDistribution pmf1 = voteShareAnalysis.getProbabilityMassFunction(electoralLists[i]);
-            for (int j = i + 1; j < electoralLists.length; j++) {
+        for (int i = 0; i <= electoralListSets.size() - 2; i++) {
+            SampledHypergeometricDistribution pmf1 =
+                    voteShareAnalysis.getProbabilityMassFunction(electoralListSets.get(i));
+            for (int j = i + 1; j < electoralListSets.size(); j++) {
                 SampledHypergeometricDistribution pmf2 =
-                        voteShareAnalysis.getProbabilityMassFunction(electoralLists[j]);
+                        voteShareAnalysis.getProbabilityMassFunction(electoralListSets.get(j));
                 double probabilityMass = sampledMultivariateHypergeometricDistribution.getProbabilityMass(pmf1, pmf2);
                 if (probabilityMass > 0) {
-                    probabilityMassFunction.put(Set.of(electoralLists[i], electoralLists[j]), probabilityMass);
+                    probabilityMassFunction.put(Set.of(electoralListSets.get(i), electoralListSets.get(j)),
+                            probabilityMass);
                 }
             }
             double probabilityMass = sampledMultivariateHypergeometricDistribution.getProbabilityMass(pmf1, null);
             if (probabilityMass > 0) {
-                Set<ElectoralList> key = new HashSet<ElectoralList>();
-                key.add(electoralLists[i]);
+                Set<Set<ElectoralList>> key = new HashSet<Set<ElectoralList>>();
+                key.add(electoralListSets.get(i));
                 key.add(null);
                 probabilityMassFunction.put(key, probabilityMass);
             }
@@ -60,19 +66,19 @@ public class FirstRoundWinnersAnalysis {
      *
      * @return A set with the sets of electoral lists that have a non-zero probability of winning the first round.
      */
-    public Set<Set<ElectoralList>> getElectoralListSets() {
+    public Set<Set<Set<ElectoralList>>> getElectoralListSetSets() {
         return probabilityMassFunction.keySet();
     }
 
     /**
-     * Returns the probability mass for a set of electoral lists to win the first round.
+     * Returns the probability mass for a set of sets of electoral lists to win the first round.
      *
-     * @param electoralListSet A set of electoral lists.
+     * @param electoralListSetSet A set of sets of electoral lists.
      * @return The probability mass to win the first round.
      */
-    public Double getProbabilityMass(final Set<ElectoralList> electoralListSet) {
-        if (probabilityMassFunction.containsKey(electoralListSet)) {
-            return probabilityMassFunction.get(electoralListSet);
+    public Double getProbabilityMass(final Set<Set<ElectoralList>> electoralListSetSet) {
+        if (probabilityMassFunction.containsKey(electoralListSetSet)) {
+            return probabilityMassFunction.get(electoralListSetSet);
         } else {
             return 0D;
         }
