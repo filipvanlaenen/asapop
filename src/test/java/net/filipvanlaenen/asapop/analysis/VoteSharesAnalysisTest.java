@@ -58,8 +58,8 @@ public class VoteSharesAnalysisTest {
      */
     private static VoteSharesAnalysis createVoteSharesAnalysisObject() {
         VoteSharesAnalysis voteSharesAnalysisObject = new VoteSharesAnalysis();
-        voteSharesAnalysisObject.add(ElectoralList.get("A"), probabilityMassFunction1);
-        voteSharesAnalysisObject.add(ElectoralList.get("B"), probabilityMassFunction2);
+        voteSharesAnalysisObject.add(ElectoralList.get(Set.of("A")), probabilityMassFunction1);
+        voteSharesAnalysisObject.add(ElectoralList.get(Set.of("B")), probabilityMassFunction2);
         return voteSharesAnalysisObject;
     }
 
@@ -68,7 +68,8 @@ public class VoteSharesAnalysisTest {
      */
     @Test
     public void shouldReturnTheCorrectProbabilityMassFunctionForAnElectoralList() {
-        assertEquals(probabilityMassFunction1, voteSharesAnalysis.getProbabilityMassFunction(ElectoralList.get("A")));
+        assertEquals(probabilityMassFunction1,
+                voteSharesAnalysis.getProbabilityMassFunction(ElectoralList.get(Set.of("A"))));
     }
 
     /**
@@ -76,7 +77,8 @@ public class VoteSharesAnalysisTest {
      */
     @Test
     public void shouldReturnTheElectoralLists() {
-        assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), voteSharesAnalysis.getElectoralLists());
+        assertEquals(Set.of(ElectoralList.get(Set.of("A")), ElectoralList.get(Set.of("B"))),
+                voteSharesAnalysis.getElectoralListSets());
     }
 
     /**

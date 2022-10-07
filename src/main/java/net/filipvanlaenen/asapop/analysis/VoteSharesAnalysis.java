@@ -14,25 +14,26 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
  */
 public final class VoteSharesAnalysis {
     /**
-     * A map containing a probability mass function per electoral list.
+     * A map containing a probability mass function per set of electoral lists.
      */
-    private final Map<ElectoralList, SampledHypergeometricDistribution> probabilityMassFunctions;
+    private final Map<Set<ElectoralList>, SampledHypergeometricDistribution> probabilityMassFunctions;
 
     /**
      * Default constructor.
      */
     public VoteSharesAnalysis() {
-        probabilityMassFunctions = new HashMap<ElectoralList, SampledHypergeometricDistribution>();
+        probabilityMassFunctions = new HashMap<Set<ElectoralList>, SampledHypergeometricDistribution>();
     }
 
     /**
-     * Adds an electoral list with its probability mass function.
+     * Adds a set of electoral lists with its probability mass function.
      *
-     * @param electoralList           The electoral list for which to add a probability mass function.
-     * @param probabilityMassFunction The probability mass function for the electoral list.
+     * @param electoralListSet        The set of electoral lists for which to add a probability mass function.
+     * @param probabilityMassFunction The probability mass function for the set of electoral lists.
      */
-    void add(final ElectoralList electoralList, final SampledHypergeometricDistribution probabilityMassFunction) {
-        probabilityMassFunctions.put(electoralList, probabilityMassFunction);
+    void add(final Set<ElectoralList> electoralListSet,
+            final SampledHypergeometricDistribution probabilityMassFunction) {
+        probabilityMassFunctions.put(electoralListSet, probabilityMassFunction);
     }
 
     @Override
@@ -46,22 +47,22 @@ public final class VoteSharesAnalysis {
     }
 
     /**
-     * Returns the electoral lists.
+     * Returns the sets of electoral lists.
      *
-     * @return The electoral lists.
+     * @return The sets of electoral lists.
      */
-    Set<ElectoralList> getElectoralLists() {
+    Set<Set<ElectoralList>> getElectoralListSets() {
         return probabilityMassFunctions.keySet();
     }
 
     /**
-     * Returns the probability mass function for an electoral list.
+     * Returns the probability mass function for a set of electoral lists.
      *
-     * @param electoralList The electoral list for which to return the probability mass function.
-     * @return The probability mass function for the electoral list.
+     * @param electoralListSet The set of electoral lists for which to return the probability mass function.
+     * @return The probability mass function for the set of electoral lists.
      */
-    public SampledHypergeometricDistribution getProbabilityMassFunction(final ElectoralList electoralList) {
-        return probabilityMassFunctions.get(electoralList);
+    public SampledHypergeometricDistribution getProbabilityMassFunction(final Set<ElectoralList> electoralListSet) {
+        return probabilityMassFunctions.get(electoralListSet);
     }
 
     /**
