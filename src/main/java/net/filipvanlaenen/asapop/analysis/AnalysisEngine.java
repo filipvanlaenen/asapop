@@ -121,10 +121,11 @@ public class AnalysisEngine {
     private VoteSharesAnalysis calculateVoteSharesAnalysis(final OpinionPoll opinionPoll, final long numberOfSamples) {
         Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
         VoteSharesAnalysis voteShareAnalysis = new VoteSharesAnalysis();
-        for (ElectoralList electoralList : opinionPoll.getElectoralLists()) {
-            double result = Double.parseDouble(opinionPoll.getResult(electoralList.getKey()).getPrimitiveText());
+        for (Set<ElectoralList> electoralListSet : opinionPoll.getElectoralListSets()) {
+            double result = Double
+                    .parseDouble(opinionPoll.getResult(ElectoralList.getKeys(electoralListSet)).getPrimitiveText());
             Long sampled = Math.round(result * effectiveSampleSize / HUNDRED);
-            voteShareAnalysis.add(electoralList, SampledHypergeometricDistributions.get(sampled,
+            voteShareAnalysis.add(electoralListSet, SampledHypergeometricDistributions.get(sampled,
                     (long) effectiveSampleSize, numberOfSamples, electionData.getPopulationSize()));
         }
         return voteShareAnalysis;
