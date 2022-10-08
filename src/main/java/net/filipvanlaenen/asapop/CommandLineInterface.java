@@ -10,7 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -165,7 +167,7 @@ public final class CommandLineInterface {
                 }
                 List<Set<String>> electoralListKeySets = new ArrayList<Set<String>>(noOfElectoralListKeySets);
                 for (int i = 0; i < noOfElectoralListKeySets; i++) {
-                    electoralListKeySets.add(Set.of(args[i + THREE]));
+                    electoralListKeySets.add(new HashSet<String>(Arrays.asList(args[i + THREE].split("\\+"))));
                 }
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
