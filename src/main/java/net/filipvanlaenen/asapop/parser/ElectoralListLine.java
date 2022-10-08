@@ -13,9 +13,9 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
  */
 final class ElectoralListLine extends Line {
     /**
-     * The integer number three.
+     * The integer number four.
      */
-    private static final int THREE = 3;
+    private static final int FOUR = 4;
     /**
      * The pattern to match an electoral list line.
      */
@@ -94,7 +94,7 @@ final class ElectoralListLine extends Line {
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         processKeyValue(keyValueBlock);
-        return keyValuesMatcher.group(THREE);
+        return keyValuesMatcher.group(FOUR);
     }
 
     /**

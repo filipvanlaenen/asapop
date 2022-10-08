@@ -22,10 +22,19 @@ abstract class Line {
      */
     static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
     /**
+     * The string for the pattern to match the separator between electoral list keys.
+     */
+    static final String ELECTORAL_LIST_KEY_SEPARATOR = "\\+";
+    /**
+     * The string for the pattern to match the keys of a set of electoral lists.
+     */
+    static final String ELECTORAL_LIST_KEY_SET_PATTERN =
+            ELECTORAL_LIST_KEY_PATTERN + "(" + ELECTORAL_LIST_KEY_SEPARATOR + ELECTORAL_LIST_KEY_PATTERN + ")*";
+    /**
      * The string for the pattern to match either a metadata key or a key of an electoral list.
      */
-    private static final String KEY_PATTERN = "(" + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + "|"
-            + ELECTORAL_LIST_KEY_PATTERN + ")";
+    private static final String KEY_PATTERN =
+            "(" + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + "|" + ELECTORAL_LIST_KEY_SET_PATTERN + ")";
     /**
      * The string for the pattern to match the separator between the key and the value.
      */
@@ -37,8 +46,8 @@ abstract class Line {
     /**
      * The pattern to match key and value blocks.
      */
-    static final Pattern KEY_VALUES_PATTERN = Pattern
-            .compile("^\\s*(" + KEY_VALUE_PATTERN + ")((\\s+" + KEY_VALUE_PATTERN + ")*)$");
+    static final Pattern KEY_VALUES_PATTERN =
+            Pattern.compile("^\\s*(" + KEY_VALUE_PATTERN + ")((\\s+" + KEY_VALUE_PATTERN + ")*)$");
     /**
      * The pattern to match the key and value of a metadata block.
      */
@@ -48,12 +57,12 @@ abstract class Line {
      * The pattern to match the key and value of a result block.
      */
     static final Pattern RESULT_KEY_VALUE_PATTERN = Pattern
-            .compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN + ")" + KEY_VALUE_SEPARATOR_PATTERN + "\\s*(.+?)\\s*$");
+            .compile("^\\s*(" + ELECTORAL_LIST_KEY_SET_PATTERN + ")" + KEY_VALUE_SEPARATOR_PATTERN + "\\s*(.+?)\\s*$");
     /**
      * A map mapping string values as they can appear in the ROPF file to the scopes.
      */
-    static final Map<String, Scope> STRING_VALUE_TO_SCOPE = Map.of("E", Scope.European, "N", Scope.National, "P1",
-            Scope.PresidentialFirstRound);
+    static final Map<String, Scope> STRING_VALUE_TO_SCOPE =
+            Map.of("E", Scope.European, "N", Scope.National, "P1", Scope.PresidentialFirstRound);
 
     /**
      * Parses the code for a scope into a scope.

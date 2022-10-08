@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,10 @@ final class OpinionPollLine extends Line {
      * The integer number three.
      */
     private static final int THREE = 3;
+    /**
+     * The integer number four.
+     */
+    private static final int FOUR = 4;
     /**
      * The pattern to match a decimal number.
      */
@@ -118,7 +123,7 @@ final class OpinionPollLine extends Line {
         } else {
             processResultData(builder, warnings, keyValueBlock, lineNumber);
         }
-        return keyValuesMatcher.group(THREE);
+        return keyValuesMatcher.group(FOUR);
     }
 
     /**
@@ -203,9 +208,10 @@ final class OpinionPollLine extends Line {
             final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
-        String key = keyValueMatcher.group(1);
-        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2), lineNumber);
+        String keysValue = keyValueMatcher.group(1);
+        Set<String> keys = new HashSet<String>(Arrays.asList(keysValue.split(ELECTORAL_LIST_KEY_SEPARATOR)));
+        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), lineNumber);
         warnings.addAll(value.getWarnings());
-        builder.addResult(Set.of(key), value.getValue());
+        builder.addResult(keys, value.getValue());
     }
 }

@@ -20,6 +20,11 @@ public final class OpinionPollLineTest {
      * Simple opinion poll line.
      */
     private static final String SIMPLE_OPINION_POLL_LINE = "•PF: ACME •PD: 2021-07-27 A:55 B:45";
+    /**
+     * Opinion poll line with a combination of electoral lists.
+     */
+    private static final String OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS =
+            "•PF: ACME •PD: 2021-07-27 A+C:55 B:45";
 
     /**
      * Verifies that the <code>isOpinionPollLine</code> method can detect an opinion poll line.
@@ -27,6 +32,15 @@ public final class OpinionPollLineTest {
     @Test
     public void isOpinionPollLineShouldDetectOpinionPollLine() {
         assertTrue(OpinionPollLine.isOpinionPollLine(SIMPLE_OPINION_POLL_LINE));
+    }
+
+    /**
+     * Verifies that the <code>isOpinionPollLine</code> method can detect an opinion poll line with combined electoral
+     * lists.
+     */
+    @Test
+    public void isOpinionPollLineShouldDetectOpinionPollLineWithCombinedElectoralLists() {
+        assertTrue(OpinionPollLine.isOpinionPollLine(OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS));
     }
 
     /**
@@ -45,6 +59,17 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, 1);
         OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that String with a single line containing an opinion poll with combined electoral lists can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAnOpinionPollWithCombinedElectoralLists() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse(OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS, 1);
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+                .addWellformedResult(Set.of("A", "C"), "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 

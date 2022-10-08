@@ -4,9 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.Scope;
 
@@ -26,6 +27,10 @@ public final class ResponseScenarioLineTest {
      * Simple response scenario line, including a result for other.
      */
     private static final String RESPONSE_SCENARIO_LINE_WITH_OTHER = "& A:55 B:43 •O:2";
+    /**
+     * Simple response scenario line with a combined list.
+     */
+    private static final String RESPONSE_SCENARIO_LINE_WITH_COMBINED_ELECTORAL_LISTS = "& A+C:55 B:43";
 
     /**
      * Verifies that the <code>isResponseScenarioLine</code> method can detect a response scenario line.
@@ -33,6 +38,15 @@ public final class ResponseScenarioLineTest {
     @Test
     public void isResponseScenarioLineShouldDetectResponseScenarioLine() {
         assertTrue(ResponseScenarioLine.isResponseScenarioLine(SIMPLE_RESPONSE_SCENARIO_LINE));
+    }
+
+    /**
+     * Verifies that the <code>isResponseScenarioLine</code> method can detect a response scenario line with combined
+     * electoral lists.
+     */
+    @Test
+    public void isResponseScenarioLineShouldDetectResponseScenarioLineWithCombinedElectoralLists() {
+        assertTrue(ResponseScenarioLine.isResponseScenarioLine(RESPONSE_SCENARIO_LINE_WITH_COMBINED_ELECTORAL_LISTS));
     }
 
     /**
@@ -61,6 +75,19 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, 1);
         ResponseScenario expected =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
+     * Verifies that String with a single line containing a response scenario with combined electoral lists can be
+     * parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithCombinedElectoralLists() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_COMBINED_ELECTORAL_LISTS, 1);
+        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult(Set.of("A", "C"), "55")
+                .addWellformedResult("B", "43").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
