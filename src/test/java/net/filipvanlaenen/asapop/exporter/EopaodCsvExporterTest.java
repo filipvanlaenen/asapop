@@ -3,6 +3,9 @@ package net.filipvanlaenen.asapop.exporter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.DecimalNumber;
@@ -16,6 +19,9 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  * Unit tests on the class <code>EopaodCsvExporter</code>.
  */
 public class EopaodCsvExporterTest {
+    private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
+    private static final List<Set<String>> A_AND_B_AND_C = List.of(Set.of("A"), Set.of("B"), Set.of("C"));
+
     /**
      * Verifies the correct export of a minimal opinion poll.
      */
@@ -28,7 +34,7 @@ public class EopaodCsvExporterTest {
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,55%,45%,Not Available\n");
-        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B"));
+        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, A_AND_B));
     }
 
     /**
@@ -43,7 +49,7 @@ public class EopaodCsvExporterTest {
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,55%,45%,Not Available\n");
-        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B"));
+        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, A_AND_B));
     }
 
     /**
@@ -63,7 +69,7 @@ public class EopaodCsvExporterTest {
         expected.append(",Not Available,1%,55%,45%,Not Available\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,55%,45%,Not Available\n");
-        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B"));
+        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, A_AND_B));
     }
 
     /**
@@ -81,7 +87,7 @@ public class EopaodCsvExporterTest {
         expected.append(",Not Available,1%,55%,45%,Not Available,Not Available\n");
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,50%,40%,10%,Not Available\n");
-        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, "A", "B", "C"));
+        assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, A_AND_B_AND_C));
     }
 
     /**
@@ -93,7 +99,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -105,7 +111,7 @@ public class EopaodCsvExporterTest {
                 .setFieldworkEnd("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME,,2021-08-01,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -119,7 +125,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME,,2021-08-02,2021-08-02,National,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -133,7 +139,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("B", "43").setScope(Scope.European).build();
         String expected = "ACME,,2021-08-02,2021-08-02,European,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -145,7 +151,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setSampleSize("1000").build();
         String expected =
                 "ACME,,2021-08-02,2021-08-02,Not Available,1000,Provided" + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -158,7 +164,7 @@ public class EopaodCsvExporterTest {
                 .build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available,90%,1%,55%,43%"
                 + ",Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -170,7 +176,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedOther("2").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,2%";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -182,7 +188,7 @@ public class EopaodCsvExporterTest {
                 .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME,The Times,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -195,7 +201,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("B", "43").build();
         String expected = "ACME,The Post and The Times,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -207,7 +213,7 @@ public class EopaodCsvExporterTest {
                 .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME and EMCA,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -219,7 +225,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("A", "55.5").addWellformedResult("B", "43").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,0.5%,55.5%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -231,7 +237,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").addWellformedResult("C", "<1").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,0%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B", "C"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
     }
 
     /**
@@ -241,7 +247,7 @@ public class EopaodCsvExporterTest {
     public void shouldNotExportAnOpinionPollWhenTheAreaDoesNotMatch() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55.5").addWellformedResult("B", "43").build();
-        assertNull(EopaodCsvExporter.export(poll, "N", "A", "B"));
+        assertNull(EopaodCsvExporter.export(poll, "N", A_AND_B));
     }
 
     /**
@@ -254,7 +260,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -268,7 +274,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME,,2021-08-01,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -281,7 +287,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("B", "43").setWellformedOther("2").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,2%";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -295,7 +301,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",90%,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -307,7 +313,7 @@ public class EopaodCsvExporterTest {
                 .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "\"AC,ME\",\"Times, The\",2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -321,7 +327,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "\"AC,ME\",\"Times, The\",2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -333,7 +339,7 @@ public class EopaodCsvExporterTest {
                 .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "\"AC\"\"ME\",\"Times\"\" The\",2021-08-02,2021-08-02,Not Available,Not Available"
                 + ",Not Available,Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
     /**
@@ -347,7 +353,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "\"AC\"\"ME\",\"Times\"\" The\",2021-08-02,2021-08-02,Not Available,Not Available"
                 + ",Not Available,Not Available,1%,55%,43%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -361,7 +367,7 @@ public class EopaodCsvExporterTest {
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected =
                 "ACME,,2021-08-02,2021-08-02,Not Available,999,Provided,Not Available,1%,55%,43%" + ",Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
     }
 
     /**
@@ -376,7 +382,7 @@ public class EopaodCsvExporterTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,45%,Not Available";
-        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "N", "A", "B"));
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, "N", A_AND_B));
     }
 
     /**
@@ -389,6 +395,6 @@ public class EopaodCsvExporterTest {
                 new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setArea("N").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "45").setArea("S").build();
-        assertNull(EopaodCsvExporter.export(responseScenario, poll, "N", "A", "B"));
+        assertNull(EopaodCsvExporter.export(responseScenario, poll, "N", A_AND_B));
     }
 }
