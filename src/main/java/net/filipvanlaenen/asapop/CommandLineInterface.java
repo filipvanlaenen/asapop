@@ -165,7 +165,7 @@ public final class CommandLineInterface {
                 }
                 List<Set<String>> electoralListKeySets = new ArrayList<Set<String>>(noOfElectoralListKeySets);
                 for (int i = 0; i < noOfElectoralListKeySets; i++) {
-                    electoralListKeySets.add(Set.of(args[i + THREE])); // TODO: Should splits into set.
+                    electoralListKeySets.add(Set.of(args[i + THREE]));
                 }
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);

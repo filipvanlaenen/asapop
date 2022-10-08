@@ -18,6 +18,9 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  * Unit tests on the class <code>Exporter</code>.
  */
 public class ExporterTest {
+    /**
+     * A list with the electoral lists A and B.
+     */
     private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
 
     /**

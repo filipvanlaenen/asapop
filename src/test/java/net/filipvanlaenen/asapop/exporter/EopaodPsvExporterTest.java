@@ -19,7 +19,13 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  * Unit tests on the class <code>EopaodPsvExporter</code>.
  */
 public class EopaodPsvExporterTest {
+    /**
+     * A list with the electoral lists A and B.
+     */
     private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
+    /**
+     * A list with the electoral lists A, B and C.
+     */
     private static final List<Set<String>> A_AND_B_AND_C = List.of(Set.of("A"), Set.of("B"), Set.of("C"));
 
     /**
