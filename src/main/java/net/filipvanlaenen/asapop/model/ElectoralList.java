@@ -2,6 +2,8 @@ package net.filipvanlaenen.asapop.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class representing an electoral list.
@@ -41,6 +43,27 @@ public final class ElectoralList {
         ElectoralList newInstance = new ElectoralList(key);
         instances.put(key, newInstance);
         return newInstance;
+    }
+
+    /**
+     * Returns the set of electoral lists with the given keys. New electoral lists will be created for the keys for
+     * which an electoral list didn't already exist.
+     *
+     * @param keys Keys of the electoral lists.
+     * @return A set with the electoral list with the keys.
+     */
+    public static Set<ElectoralList> get(final Set<String> keys) {
+        return keys.stream().map(key -> get(key)).collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns the keys for a set of electoral lists.
+     *
+     * @param electoralListSet The set of electoral lists.
+     * @return The keys for a set of the electoral lists.
+     */
+    public static Set<String> getKeys(final Set<ElectoralList> electoralListSet) {
+        return electoralListSet.stream().map(electoralList -> electoralList.getKey()).collect(Collectors.toSet());
     }
 
     /**
