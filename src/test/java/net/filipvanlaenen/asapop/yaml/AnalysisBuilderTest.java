@@ -129,8 +129,8 @@ public class AnalysisBuilderTest {
         OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME_PARLIAMENT)
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
-                .setArea(AREA).setScope(Scope.National).setSampleSize("1000").addResult("A", new ResultValue("1"))
-                .setOther(new ResultValue("2")).build();
+                .setArea(AREA).setScope(Scope.National).setSampleSize("1000")
+                .addResult(Set.of("A"), new ResultValue("1")).setOther(new ResultValue("2")).build();
         opinionPoll.addAlternativeResponseScenario(
                 new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
         opinionPollSet.add(opinionPoll);
@@ -138,7 +138,7 @@ public class AnalysisBuilderTest {
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
                 .setScope(Scope.PresidentialFirstRound).setArea(AREA).setSampleSize("1000")
-                .addResult("A", new ResultValue("50")).addResult("B", new ResultValue("30")).build();
+                .addResult(Set.of("A"), new ResultValue("50")).addResult(Set.of("B"), new ResultValue("30")).build();
         opinionPollSet.add(opinionPoll);
         OpinionPolls opinionPolls = new OpinionPolls(opinionPollSet);
         ElectionData electionData = new ElectionData();
@@ -164,7 +164,7 @@ public class AnalysisBuilderTest {
                                     alternativeResponseScenarioAnalysis = rsa;
                                     mainResponseScenarioAnalysis = rsai.next();
                                 }
-                                resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get("A");
+                                resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get(Set.of("A"));
                             }
                         }
                     } else if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PRESIDENTIAL)
@@ -341,7 +341,7 @@ public class AnalysisBuilderTest {
     public void buildingAnAnalysisSetsTheProbabilityMassForADirectWinnerOfAFirstRound() {
         FirstRoundResultProbabilityMass directWinner = null;
         for (FirstRoundResultProbabilityMass pm : firstRoundAnalysis.getProbabilityMassFunction()) {
-            if (pm.getElectoralLists().equals(Set.of("A"))) {
+            if (pm.getElectoralLists().equals(Set.of(Set.of("A")))) {
                 directWinner = pm;
             }
         }
@@ -356,7 +356,7 @@ public class AnalysisBuilderTest {
     public void buildingAnAnalysisSetsTheProbabilityMassForAWinnerPairOfAFirstRound() {
         FirstRoundResultProbabilityMass winnerPair = null;
         for (FirstRoundResultProbabilityMass pm : firstRoundAnalysis.getProbabilityMassFunction()) {
-            if (pm.getElectoralLists().equals(Set.of("A", "B"))) {
+            if (pm.getElectoralLists().equals(Set.of(Set.of("A"), Set.of("B")))) {
                 winnerPair = pm;
             }
         }

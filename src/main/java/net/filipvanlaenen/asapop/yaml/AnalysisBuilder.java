@@ -67,15 +67,15 @@ public class AnalysisBuilder {
         FirstRoundAnalysis firstRoundAnalysis = new FirstRoundAnalysis();
         Set<FirstRoundResultProbabilityMass> firstRoundProbabilityMassFunction =
                 new HashSet<FirstRoundResultProbabilityMass>();
-        for (Set<ElectoralList> electoralListSet : firstRoundWinnersAnalysis.getElectoralListSets()) {
+        for (Set<Set<ElectoralList>> electoralListSetSet : firstRoundWinnersAnalysis.getElectoralListSetSets()) {
             FirstRoundResultProbabilityMass firstRoundResultAnalysis = new FirstRoundResultProbabilityMass();
-            Set<String> electoralListKeySet = new HashSet<String>();
-            for (ElectoralList electoralList : electoralListSet) {
-                electoralListKeySet.add(electoralList.getKey());
+            Set<Set<String>> electoralListKeySet = new HashSet<Set<String>>();
+            for (Set<ElectoralList> electoralListSet : electoralListSetSet) {
+                electoralListKeySet.add(ElectoralList.getKeys(electoralListSet));
             }
-            firstRoundResultAnalysis.setElectoralLists(electoralListKeySet);
+            firstRoundResultAnalysis.setElectoralListSets(electoralListKeySet);
             firstRoundResultAnalysis
-                    .setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSet) * HUNDRED);
+                    .setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSetSet) * HUNDRED);
             firstRoundProbabilityMassFunction.add(firstRoundResultAnalysis);
         }
         firstRoundAnalysis.setProbabilityMassFunction(firstRoundProbabilityMassFunction);
@@ -117,9 +117,10 @@ public class AnalysisBuilder {
         responseScenarioAnalysis.setScope(nullOrToString(poll.getScope()));
         VoteSharesAnalysis voteSharesAnalysis = engine.getVoteSharesAnalysis(poll.getMainResponseScenario());
         if (voteSharesAnalysis != null) {
-            Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
-            for (ElectoralList electoralList : poll.getElectoralLists()) {
-                resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
+            Map<Set<String>, ResultAnalysis> resultAnalyses = new HashMap<Set<String>, ResultAnalysis>();
+            for (Set<ElectoralList> electoralListSet : poll.getElectoralListSets()) {
+                resultAnalyses.put(ElectoralList.getKeys(electoralListSet),
+                        buildResultAnalysis(voteSharesAnalysis, electoralListSet));
             }
             responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         }
@@ -144,28 +145,29 @@ public class AnalysisBuilder {
         ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
         responseScenarioAnalysis.setArea(responseScenario.getArea());
         responseScenarioAnalysis.setScope(nullOrToString(responseScenario.getScope()));
-        Map<String, ResultAnalysis> resultAnalyses = new HashMap<String, ResultAnalysis>();
+        Map<Set<String>, ResultAnalysis> resultAnalyses = new HashMap<Set<String>, ResultAnalysis>();
         VoteSharesAnalysis voteSharesAnalysis = engine.getVoteSharesAnalysis(responseScenario);
-        for (ElectoralList electoralList : responseScenario.getElectoralLists()) {
-            resultAnalyses.put(electoralList.getKey(), buildResultAnalysis(voteSharesAnalysis, electoralList));
+        for (Set<ElectoralList> electoralListSet : responseScenario.getElectoralListSets()) {
+            resultAnalyses.put(ElectoralList.getKeys(electoralListSet),
+                    buildResultAnalysis(voteSharesAnalysis, electoralListSet));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         return responseScenarioAnalysis;
     }
 
     /**
-     * Builds a result analysis for an electoral list in a response scenario.
+     * Builds a result analysis for a set of electoral lists in a response scenario.
      *
      * @param voteSharesAnalysis The vote shares analysis for a response scenario.
-     * @param electoralList      The electoral list.
+     * @param electoralListSet   The set of electoral lists.
      * @return A result analysis for an electoral list in a response scenario.
      */
     private ResultAnalysis buildResultAnalysis(final VoteSharesAnalysis voteSharesAnalysis,
-            final ElectoralList electoralList) {
+            final Set<ElectoralList> electoralListSet) {
         long populationSize = engine.getElectionData().getPopulationSize();
         ResultAnalysis resultAnalysis = new ResultAnalysis();
         SortableProbabilityMassFunction<Range> probabilityMassFunction =
-                voteSharesAnalysis.getProbabilityMassFunction(electoralList);
+                voteSharesAnalysis.getProbabilityMassFunction(electoralListSet);
         resultAnalysis.setMedian(probabilityMassFunction.getMedian().getMidpoint() * HUNDRED / populationSize);
         Map<Integer, Float[]> confidenceIntervals = new HashMap<Integer, Float[]>();
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
