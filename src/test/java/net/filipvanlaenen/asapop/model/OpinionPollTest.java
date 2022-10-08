@@ -145,7 +145,7 @@ public class OpinionPollTest {
     @Test
     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
         OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
-        assertEquals("55", poll.getResult("A").getText());
+        assertEquals("55", poll.getResult(Set.of("A")).getText());
     }
 
     /**
@@ -280,7 +280,8 @@ public class OpinionPollTest {
     public void getElectoralListsReturnsTheElectoralListsOfTheMainResponseScenario() {
         OpinionPoll poll =
                 new OpinionPoll.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
-        assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), poll.getElectoralLists());
+        assertEquals(Set.of(ElectoralList.get(Set.of("A")), ElectoralList.get(Set.of("B"))),
+                poll.getElectoralListSets());
     }
 
     /**
