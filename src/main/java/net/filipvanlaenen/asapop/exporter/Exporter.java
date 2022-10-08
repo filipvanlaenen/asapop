@@ -51,23 +51,24 @@ public abstract class Exporter {
     /**
      * Calculates the precision of an opinion poll.
      *
-     * @param opinionPoll       The opinion poll.
-     * @param electoralListKeys The keys of the electoral lists to export.
+     * @param opinionPoll          The opinion poll.
+     * @param electoralListKeySets The sets of keys of the electoral lists to export.
      * @return The precision as a string.
      */
-    static String calculatePrecision(final OpinionPoll opinionPoll, final String... electoralListKeys) {
-        return calculatePrecision(extractResults(opinionPoll, electoralListKeys));
+    static String calculatePrecision(final OpinionPoll opinionPoll, final List<Set<String>> electoralListKeySets) {
+        return calculatePrecision(extractResults(opinionPoll, electoralListKeySets));
     }
 
     /**
      * Calculates the precision of a response scenario.
      *
-     * @param responseScenario  The response scenario.
-     * @param electoralListKeys The keys of the electoral lists to export.
+     * @param responseScenario     The response scenario.
+     * @param electoralListKeySets The sets of keys of the electoral lists to export.
      * @return The precision as a string.
      */
-    static String calculatePrecision(final ResponseScenario responseScenario, final String... electoralListKeys) {
-        return calculatePrecision(extractResults(responseScenario, electoralListKeys));
+    static String calculatePrecision(final ResponseScenario responseScenario,
+            final List<Set<String>> electoralListKeySets) {
+        return calculatePrecision(extractResults(responseScenario, electoralListKeySets));
     }
 
     /**
@@ -194,14 +195,15 @@ public abstract class Exporter {
     /**
      * Extracts all the results from an opinion poll.
      *
-     * @param opinionPoll       The opinion poll to extract the results from.
-     * @param electoralListKeys The keys of the electoral lists for which to extract the results.
+     * @param opinionPoll          The opinion poll to extract the results from.
+     * @param electoralListKeySets The sets of keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
-    private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll, final String... electoralListKeys) {
+    private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll,
+            final List<Set<String>> electoralListKeySets) {
         Set<ResultValue> result = new HashSet<ResultValue>();
-        for (String electoralListKey : electoralListKeys) {
-            addToSetUnlessNull(result, opinionPoll.getResult(electoralListKey));
+        for (Set<String> electoralListKeySet : electoralListKeySets) {
+            addToSetUnlessNull(result, opinionPoll.getResult(electoralListKeySet));
         }
         addToSetUnlessNull(result, opinionPoll.getOther());
         return result;
@@ -210,15 +212,15 @@ public abstract class Exporter {
     /**
      * Extracts all the results from a response scenario.
      *
-     * @param responseScenario  The response scenario to extract the results from.
-     * @param electoralListKeys The keys of the electoral lists for which to extract the results.
+     * @param responseScenario     The response scenario to extract the results from.
+     * @param electoralListKeySets The sets of keys of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
-            final String... electoralListKeys) {
+            final List<Set<String>> electoralListKeySets) {
         Set<ResultValue> result = new HashSet<ResultValue>();
-        for (String electoralListKey : electoralListKeys) {
-            addToSetUnlessNull(result, responseScenario.getResult(electoralListKey));
+        for (Set<String> electoralListKeySet : electoralListKeySets) {
+            addToSetUnlessNull(result, responseScenario.getResult(electoralListKeySet));
         }
         addToSetUnlessNull(result, responseScenario.getOther());
         return result;

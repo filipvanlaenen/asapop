@@ -18,6 +18,8 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  * Unit tests on the class <code>Exporter</code>.
  */
 public class ExporterTest {
+    private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
+
     /**
      * Verifies that when only a publication date is provided, it is used as the fieldwork period.
      */
@@ -131,7 +133,7 @@ public class ExporterTest {
     public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55.0").addWellformedResult("B", "43").setWellformedOther("0.5").build();
-        assertEquals("0.5", Exporter.calculatePrecision(poll, "A", "B"));
+        assertEquals("0.5", Exporter.calculatePrecision(poll, A_AND_B));
     }
 
     /**
@@ -141,7 +143,7 @@ public class ExporterTest {
     public void shouldExportSimpleOpinionPollWithAResultWithTenthOfAPercent() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        assertEquals("0.1", Exporter.calculatePrecision(poll, "A", "B"));
+        assertEquals("0.1", Exporter.calculatePrecision(poll, A_AND_B));
     }
 
     /**
@@ -151,7 +153,7 @@ public class ExporterTest {
     public void shouldExportSimpleResponseScenarioWithAResultWithHalfAPercentOther() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55.0")
                 .addWellformedResult("B", "45").setWellformedOther("0.5").build();
-        assertEquals("0.5", Exporter.calculatePrecision(responseScenario, "A", "B"));
+        assertEquals("0.5", Exporter.calculatePrecision(responseScenario, A_AND_B));
     }
 
     /**
@@ -159,9 +161,9 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithAResultWithTenthOfAPercent() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55.4")
-                .addWellformedResult("B", "43").build();
-        assertEquals("0.1", Exporter.calculatePrecision(responseScenario, "A", "B"));
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        assertEquals("0.1", Exporter.calculatePrecision(responseScenario, A_AND_B));
     }
 
     /**
