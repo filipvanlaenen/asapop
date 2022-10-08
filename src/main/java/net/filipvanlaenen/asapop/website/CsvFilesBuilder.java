@@ -3,7 +3,10 @@ package net.filipvanlaenen.asapop.website;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -48,8 +51,9 @@ public class CsvFilesBuilder {
             CsvConfiguration csvConfiguration = areaConfiguration.getCsvConfiguration();
             if (csvConfiguration != null) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
-                String[] electoralListKeys = csvConfiguration.getElectoralListKeys().toArray(String[]::new);
-                String outputContent = EopaodCsvExporter.export(opinionPolls, "--", electoralListKeys);
+                List<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListKeys().stream()
+                        .map(key -> Set.of(key)).collect(Collectors.toList());
+                String outputContent = EopaodCsvExporter.export(opinionPolls, "--", electoralListKeySets);
                 result.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
             }
         }
