@@ -240,6 +240,9 @@ areaConfigurations:
     - "ЛЕВ"
     - "PDSH"
     - "BESA"
+    - "A"
+    - "A+ASH"
+    - "ДОМ+ЛДП"
   translations:
     de: "Nordmazedonien"
     en: "North Macedonia"
@@ -265,6 +268,13 @@ conversion:
 
 ```
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI
+```
+
+In case the electoral lists `ABC` and `GHI` were polled together in one of the opinion polls, a column with that
+combination can be exported using `ABC+GHI` as an argument:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI ABC+GHI
 ```
 
 The option `-a` can be used to filter the opinion polls and response scenarios by a certain area. The following command
@@ -296,6 +306,13 @@ conversion:
 
 ```
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI
+```
+
+In case the electoral lists `ABC` and `GHI` were polled together in one of the opinion polls, a column with that
+combination can be exported using `ABC+GHI` as an argument:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI ABC+GHI
 ```
 
 The option `-a` can be used to filter the opinion polls and response scenarios by a certain area. The following command
