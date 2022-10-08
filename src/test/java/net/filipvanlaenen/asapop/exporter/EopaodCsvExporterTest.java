@@ -44,6 +44,23 @@ public class EopaodCsvExporterTest {
     }
 
     /**
+     * Verifies that the correct export of combined electoral lists.
+     */
+    @Test
+    public void shouldExportWithCombinedElectoralListsAbbreviation() {
+        OpinionPolls opinionPolls = RichOpinionPollsFile
+                .parse("•PF: ACME •PD: 2021-07-27 A+C:55 B+D:45", "A: •A:AP", "B: •A:BL", "C: •A:CC", "D: •A:DE")
+                .getOpinionPolls();
+        StringBuffer expected = new StringBuffer();
+        expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
+        expected.append(",Sample Size Qualification,Participation,Precision,AP+CC,BL+DE,Other\n");
+        expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
+        expected.append(",Not Available,1%,55%,45%,Not Available\n");
+        assertEquals(expected.toString(),
+                EopaodCsvExporter.export(opinionPolls, null, List.of(Set.of("A", "C"), Set.of("B", "D"))));
+    }
+
+    /**
      * Verifies that the romanized abbreviation is used when available.
      */
     @Test
