@@ -1,8 +1,10 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -17,8 +19,8 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * A map mapping scopes to PSV values.
      */
-    static final Map<Scope, String> SCOPE_TO_PSV_STRING = Map.of(Scope.European, "E", Scope.National, "N",
-            Scope.PresidentialFirstRound, "P");
+    static final Map<Scope, String> SCOPE_TO_PSV_STRING =
+            Map.of(Scope.European, "E", Scope.National, "N", Scope.PresidentialFirstRound, "P");
 
     /**
      * Private constructor.
@@ -29,19 +31,25 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the opinion polls.
      *
-     * @param opinionPolls      The opinion polls to export.
-     * @param area              The area to filter opinion polls and response scenarios on.
-     * @param electoralListKeys An array with the keys for the electoral lists to be exported.
+     * @param opinionPolls         The opinion polls to export.
+     * @param area                 The area to filter opinion polls and response scenarios on.
+     * @param electoralListKeySets A list with the sets of keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
-    public static String export(final OpinionPolls opinionPolls, final String area, final String... electoralListKeys) {
+    public static String export(final OpinionPolls opinionPolls, final String area,
+            final List<Set<String>> electoralListKeySets) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
-        sb.append(" | Participation | Precision | ");
-        sb.append(String.join(" | ", electoralListKeys));
+        sb.append(" | Participation | Precision");
+        for (Set<String> electoralListKeySet : electoralListKeySets) {
+            sb.append(" | ");
+            List<String> sortedKeys = new ArrayList<String>(electoralListKeySet);
+            Collections.sort(sortedKeys);
+            sb.append(String.join("+", sortedKeys));
+        }
         sb.append(" | Other");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
-            String lines = export(opinionPoll, area, electoralListKeys);
+            String lines = export(opinionPoll, area, electoralListKeySets);
             if (lines != null) {
                 sb.append("\n");
                 sb.append(lines);
@@ -53,12 +61,13 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the opinion poll.
      *
-     * @param opinionPoll       The opinion poll to export.
-     * @param area              The area to filter opinion polls on.
-     * @param electoralListKeys An array with the keys of the electoral lists to be exported.
+     * @param opinionPoll          The opinion poll to export.
+     * @param area                 The area to filter opinion polls on.
+     * @param electoralListKeySets A list with the sets of keys of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
-    static String export(final OpinionPoll opinionPoll, final String area, final String... electoralListKeys) {
+    static String export(final OpinionPoll opinionPoll, final String area,
+            final List<Set<String>> electoralListKeySets) {
         List<String> lines = new ArrayList<String>();
         if (areaMatches(area, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
@@ -68,15 +77,15 @@ public final class EopaodPsvExporter extends Exporter {
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
             elements.add(naIfNull(exportParticipationRate(opinionPoll)));
-            elements.add(calculatePrecision(opinionPoll, electoralListKeys));
-            for (String electoralListKey : electoralListKeys) {
-                elements.add(naIfNull(opinionPoll.getResult(electoralListKey)));
+            elements.add(calculatePrecision(opinionPoll, electoralListKeySets));
+            for (Set<String> electoralListKeySet : electoralListKeySets) {
+                elements.add(naIfNull(opinionPoll.getResult(electoralListKeySet)));
             }
             elements.add(naIfNull(opinionPoll.getOther()));
             lines.add(String.join(" | ", elements));
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListKeys);
+            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListKeySets);
             if (responseScenarioLine != null) {
                 lines.add(responseScenarioLine);
             }
@@ -91,14 +100,14 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the response scenario.
      *
-     * @param responseScenario  The response scenario to export.
-     * @param opinionPoll       The opinion poll this response scenario relates to.
-     * @param area              The area to filter response scenarios on.
-     * @param electoralListKeys An array with the keys of the electoral lists to be exported.
+     * @param responseScenario     The response scenario to export.
+     * @param opinionPoll          The opinion poll this response scenario relates to.
+     * @param area                 The area to filter response scenarios on.
+     * @param electoralListKeySets A list with the sets of keys of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
-            final String... electoralListKeys) {
+            final List<Set<String>> electoralListKeySets) {
         if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
@@ -109,9 +118,9 @@ public final class EopaodPsvExporter extends Exporter {
         elements.add(naIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
         elements.add(naIfNull(exportParticipationRate(opinionPoll)));
-        elements.add(calculatePrecision(responseScenario, electoralListKeys));
-        for (String electoralListKey : electoralListKeys) {
-            elements.add(naIfNull(responseScenario.getResult(electoralListKey)));
+        elements.add(calculatePrecision(responseScenario, electoralListKeySets));
+        for (Set<String> electoralListKeySet : electoralListKeySets) {
+            elements.add(naIfNull(responseScenario.getResult(electoralListKeySet)));
         }
         elements.add(naIfNull(responseScenario.getOther()));
         return String.join(" | ", elements);
