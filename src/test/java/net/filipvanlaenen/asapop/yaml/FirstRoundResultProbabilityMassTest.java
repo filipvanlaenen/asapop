@@ -17,8 +17,8 @@ public class FirstRoundResultProbabilityMassTest {
     @Test
     public void getElectoralListsShouldBeWiredCorrectlyToSetElectoralLists() {
         FirstRoundResultProbabilityMass firstRoundResultProbabilityMass = new FirstRoundResultProbabilityMass();
-        Set<String> electoralLists = Set.of("ABC", "DEF");
-        firstRoundResultProbabilityMass.setElectoralLists(electoralLists);
+        Set<Set<String>> electoralLists = Set.of(Set.of("ABC"), Set.of("DEF"));
+        firstRoundResultProbabilityMass.setElectoralListSets(electoralLists);
         assertEquals(electoralLists, firstRoundResultProbabilityMass.getElectoralLists());
     }
 
