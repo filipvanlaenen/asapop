@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Class representing the response scenario analysis element for the YAML file containing the analysis of the opinion
@@ -23,7 +24,7 @@ public class ResponseScenarioAnalysis {
     /**
      * The map with the analyses for the results, with the keys of the electoral lists as their keys.
      */
-    private Map<String, ResultAnalysis> resultAnalyses;
+    private Map<Set<String>, ResultAnalysis> resultAnalyses;
     /**
      * The scope.
      */
@@ -61,7 +62,7 @@ public class ResponseScenarioAnalysis {
      *
      * @return The map with the analyses of the result.
      */
-    public Map<String, ResultAnalysis> getResultAnalyses() {
+    public Map<Set<String>, ResultAnalysis> getResultAnalyses() {
         return resultAnalyses;
     }
 
@@ -106,7 +107,7 @@ public class ResponseScenarioAnalysis {
      *
      * @param resultAnalyses The map with the analyses of the results.
      */
-    public void setResultAnalyses(final Map<String, ResultAnalysis> resultAnalyses) {
+    public void setResultAnalyses(final Map<Set<String>, ResultAnalysis> resultAnalyses) {
         this.resultAnalyses = resultAnalyses;
     }
 

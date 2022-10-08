@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.yaml;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ public class ResponseScenarioAnalysisTest {
     @Test
     public void getResultAnalysesShouldBeWiredCorrectlyToSetResultAnalyses() {
         ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
-        Map<String, ResultAnalysis> resultAnalyses = Map.of("A", new ResultAnalysis());
+        Map<Set<String>, ResultAnalysis> resultAnalyses = Map.of(Set.of("A"), new ResultAnalysis());
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         assertEquals(resultAnalyses, responseScenarioAnalysis.getResultAnalyses());
     }
