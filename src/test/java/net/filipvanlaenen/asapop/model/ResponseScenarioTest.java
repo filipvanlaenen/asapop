@@ -19,7 +19,8 @@ public class ResponseScenarioTest {
     public void getElectoralListsReturnsTheElectoralLists() {
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
-        assertEquals(Set.of(ElectoralList.get("A"), ElectoralList.get("B")), responseScenario.getElectoralLists());
+        assertEquals(Set.of(ElectoralList.get(Set.of("A")), ElectoralList.get(Set.of("B"))),
+                responseScenario.getElectoralListSets());
     }
 
     /**
@@ -28,7 +29,7 @@ public class ResponseScenarioTest {
     @Test
     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
-        assertEquals("55", responseScenario.getResult("A").getText());
+        assertEquals("55", responseScenario.getResult(Set.of("A")).getText());
     }
 
     /**

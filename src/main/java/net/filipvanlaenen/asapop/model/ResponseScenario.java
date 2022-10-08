@@ -25,7 +25,7 @@ public final class ResponseScenario {
     /**
      * The results.
      */
-    private final Map<ElectoralList, ResultValue> results;
+    private final Map<Set<ElectoralList>, ResultValue> results;
     /**
      * The sample size.
      */
@@ -68,7 +68,7 @@ public final class ResponseScenario {
         /**
          * The results.
          */
-        private final Map<ElectoralList, ResultValue> results = new HashMap<ElectoralList, ResultValue>();
+        private final Map<Set<ElectoralList>, ResultValue> results = new HashMap<Set<ElectoralList>, ResultValue>();
         /**
          * The sample size.
          */
@@ -81,12 +81,12 @@ public final class ResponseScenario {
         /**
          * Adds a result.
          *
-         * @param electoralListKey The key of an electoral list.
-         * @param resultValue      The result value.
+         * @param electoralListKeys The keys of a set of electoral lists.
+         * @param resultValue       The result value.
          * @return This builder instance.
          */
-        public Builder addResult(final String electoralListKey, final ResultValue resultValue) {
-            results.put(ElectoralList.get(electoralListKey), resultValue);
+        public Builder addResult(final Set<String> electoralListKeys, final ResultValue resultValue) {
+            results.put(ElectoralList.get(electoralListKeys), resultValue);
             return this;
         }
 
@@ -98,7 +98,18 @@ public final class ResponseScenario {
          * @return This builder instance.
          */
         public Builder addWellformedResult(final String electoralListKey, final String wellformedResult) {
-            return addResult(electoralListKey, new ResultValue(wellformedResult));
+            return addWellformedResult(Set.of(electoralListKey), wellformedResult);
+        }
+
+        /**
+         * Adds a result to the response scenario builder.
+         *
+         * @param electoralListKeys The keys of a set of electoral lists.
+         * @param wellformedResult  The result value as a text, assumed to be well-formed.
+         * @return This builder instance.
+         */
+        public Builder addWellformedResult(final Set<String> electoralListKeys, final String wellformedResult) {
+            return addResult(electoralListKeys, new ResultValue(wellformedResult));
         }
 
         /**
@@ -231,11 +242,11 @@ public final class ResponseScenario {
     }
 
     /**
-     * Returns the electoral lists.
+     * Returns the sets of electoral lists.
      *
-     * @return The electoral lists.
+     * @return The sets of electoral lists.
      */
-    public Set<ElectoralList> getElectoralLists() {
+    public Set<Set<ElectoralList>> getElectoralListSets() {
         return results.keySet();
     }
 
@@ -258,13 +269,13 @@ public final class ResponseScenario {
     }
 
     /**
-     * Returns the result for an electoral list.
+     * Returns the result for a set of electoral lists.
      *
-     * @param electoralListKey The key of an electoral list.
-     * @return The result for the electoral list.
+     * @param electoralListKeys The keys of a set of electoral lists.
+     * @return The result for the set of electoral lists.
      */
-    public ResultValue getResult(final String electoralListKey) {
-        return results.get(ElectoralList.get(electoralListKey));
+    public ResultValue getResult(final Set<String> electoralListKeys) {
+        return results.get(ElectoralList.get(electoralListKeys));
     }
 
     /**
