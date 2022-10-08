@@ -65,10 +65,14 @@ The following example shows how the all the metadata fields can be used:
 •PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:40 •O:2 •N:3
 ```
 
-Result fields consist of an electoral list key, a colon (":"), and a value. The
-electoral list key can only contain uppercase letters, but diacritics (e.g.
-"Ä"), letters from other languages (e.g. "Æ") and other alphabets (e.g. Greek
-"Ω" or Cyrillic "Б") are allowed.
+Result fields consist of an electoral list key, a colon (":"), and a value. The electoral list key can only contain
+uppercase letters, but diacritics (e.g. "Ä"), letters from other languages (e.g. "Æ") and other alphabets (e.g. Greek
+"Ω" or Cyrillic "Б") are allowed. Electoral list key can also be combined using the plus sign ("+") in cases where
+electoral lists where polled together, as illustrated in the following example:
+
+```
+•PF: ACME •C: The Times •FS: 2021-07-14 •FE: 2021-07-20 •SC: N •SS: 1000 A:55 B+C:40 •O:2
+```
 
 Some opinion polls have multiple scenarios, e.g. national versus EP voting
 intentions, scenarios with hypothetical parties or alliances, etc... Scenarios
