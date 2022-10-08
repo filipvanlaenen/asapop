@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,23 @@ public class ElectoralListTest {
     public void getShouldReturnTheSameElectoralListForTheSameKey() {
         ElectoralList expected = ElectoralList.get("ElectoralListTestGetSame");
         assertSame(expected, ElectoralList.get("ElectoralListTestGetSame"));
+    }
+
+    /**
+     * Verifies that a set with the electoral lists can be retrieved by providing a set of keys.
+     */
+    @Test
+    public void getShouldReturnSetOfElectoralLists() {
+        Set<ElectoralList> expected = Set.of(ElectoralList.get("A"), ElectoralList.get("B"));
+        assertEquals(expected, ElectoralList.get(Set.of("A", "B")));
+    }
+
+    /**
+     * Verifies the conversion from a set of electoral lists to a set of their keys.
+     */
+    @Test
+    public void shouldConvertSetOfElectoraListToASetOfKeys() {
+        assertEquals(Set.of("A", "B"), ElectoralList.getKeys(Set.of(ElectoralList.get("A"), ElectoralList.get("B"))));
     }
 
     /**
