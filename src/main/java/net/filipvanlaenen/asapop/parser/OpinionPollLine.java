@@ -206,6 +206,6 @@ final class OpinionPollLine extends Line {
         String key = keyValueMatcher.group(1);
         ResultValueText value = ResultValueText.parse(keyValueMatcher.group(2), lineNumber);
         warnings.addAll(value.getWarnings());
-        builder.addResult(key, value.getValue());
+        builder.addResult(Set.of(key), value.getValue());
     }
 }
