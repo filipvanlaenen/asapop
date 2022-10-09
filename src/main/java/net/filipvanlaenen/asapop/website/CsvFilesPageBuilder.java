@@ -1,7 +1,10 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
@@ -53,21 +56,27 @@ final class CsvFilesPageBuilder extends PageBuilder {
         table.addElement(tHead);
         TR tr = new TR();
         tHead.addElement(tr);
-        tr.addElement(new TH(" ").clazz("country"));
         tr.addElement(new TH(" ").clazz("csv-file"));
+        tr.addElement(new TH(" ").clazz("country"));
         TBody tBody = new TBody();
         table.addElement(tBody);
-        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
-            String areaCode = areaConfiguration.getAreaCode();
-            CsvConfiguration csvConfiguration = areaConfiguration.getCsvConfiguration();
-            if (csvConfiguration != null) {
-                TR areaTr = new TR();
-                tBody.addElement(areaTr);
-                areaTr.addElement(new TD(" ").clazz("_area_" + areaCode));
-                TD td = new TD();
-                areaTr.addElement(td);
-                td.addElement(new A(areaCode + ".csv").href("_csv/" + areaCode + ".csv"));
+        List<AreaConfiguration> sortedAreaConfigurations = websiteConfiguration.getAreaConfigurations().stream()
+                .filter(ac -> ac.getAreaCode() != null && ac.getCsvConfiguration() != null)
+                .collect(Collectors.toList());
+        sortedAreaConfigurations.sort(new Comparator<AreaConfiguration>() {
+            @Override
+            public int compare(AreaConfiguration ac0, AreaConfiguration ac1) {
+                return ac0.getAreaCode().compareTo(ac1.getAreaCode());
             }
+        });
+        for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
+            String areaCode = areaConfiguration.getAreaCode();
+            TR areaTr = new TR();
+            tBody.addElement(areaTr);
+            TD td = new TD();
+            areaTr.addElement(td);
+            td.addElement(new A(areaCode + ".csv").href("_csv/" + areaCode + ".csv"));
+            areaTr.addElement(new TD(" ").clazz("_area_" + areaCode));
         }
         body.addElement(createFooter());
         return html;
