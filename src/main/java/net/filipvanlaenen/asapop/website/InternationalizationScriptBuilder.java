@@ -94,7 +94,7 @@ public class InternationalizationScriptBuilder {
         sortedLanguages.sort(new Comparator<Language>() {
             @Override
             public int compare(final Language l1, final Language l2) {
-                return l1.toString().compareTo(l2.toString());
+                return l1.getId().compareTo(l2.getId());
             }
         });
         for (Language language : sortedLanguages) {

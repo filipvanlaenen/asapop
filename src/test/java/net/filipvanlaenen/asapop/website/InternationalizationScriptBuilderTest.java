@@ -21,10 +21,16 @@ public class InternationalizationScriptBuilderTest {
      */
     private Terms createTerms() {
         Terms terms = new Terms();
-        Term term = new Term();
-        term.setKey("language");
-        term.setTranslations(Map.of("en", "Language"));
-        terms.setTerms(Set.of(term));
+        Term termCountry = new Term();
+        termCountry.setKey("country");
+        termCountry.setTranslations(Map.of("en", "Country"));
+        Term termLanguage = new Term();
+        termLanguage.setKey("language");
+        termLanguage.setTranslations(Map.of("en", "Language"));
+        Term termMainPage = new Term();
+        termMainPage.setKey("main-page");
+        termMainPage.setTranslations(Map.of("en", "Main Page"));
+        terms.setTerms(Set.of(termCountry, termLanguage, termMainPage));
         return terms;
     }
 
@@ -35,6 +41,16 @@ public class InternationalizationScriptBuilderTest {
     public void scriptShouldContainSwitchForEnglishLanguage() {
         InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
         assertTrue(builder.build().contains("case \"en\":"));
+    }
+
+    /**
+     * Verifies that the switch statement for German comes before the switch statement for English.
+     */
+    @Test
+    public void switchStatementForGermanShouldComeBeforeSwitchStatementForEnglish() {
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        String pageContent = builder.build();
+        assertTrue(pageContent.indexOf("case \"de\":") < pageContent.indexOf("case \"en\":"));
     }
 
     /**
@@ -53,6 +69,19 @@ public class InternationalizationScriptBuilderTest {
     public void scriptShouldContainSubstituteDutchTermForLanguage() {
         InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
         assertTrue(builder.build().contains("$('.language').text(\"[Language]\");"));
+    }
+
+    /**
+     * Verifies that the load statement for country comes before the load statement for language.
+     */
+    @Test
+    public void englishTermForCountryShouldComeBeforeEnglishTermForLanguage() {
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        String pageContent = builder.build();
+        assertTrue(pageContent.indexOf("$('.country').text(\"Country\");") < pageContent
+                .indexOf("$('.language').text(\"Language\");"));
+        assertTrue(pageContent.indexOf("$('.language').text(\"Language\");") < pageContent
+                .indexOf("$('.main-page').text(\"Main Page\");"));
     }
 
     /**
