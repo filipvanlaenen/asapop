@@ -24,6 +24,14 @@ terms:
       fr: "Fichiers CSV"
       nl: "CSV-bestanden"
       no: "CSV-filer"
+  - key: "date"
+    translations:
+      en: "Date"
+      nl: "Datum"
+      no: "Dato"
+  - key: "electoral-calendar"
+    translations:
+      en: "Electoral Calendar"
   - key: "language"
     translations:
       de: "Sprache"

@@ -71,6 +71,7 @@ public class WebsiteBuilderTest {
         Map<Path, String> map = new HashMap<Path, String>();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
+        map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());

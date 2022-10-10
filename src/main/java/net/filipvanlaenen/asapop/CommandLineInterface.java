@@ -208,13 +208,16 @@ public final class CommandLineInterface {
                     websiteConfiguration.getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null)
                             .map(areaConfigutation -> areaConfigutation.getAreaCode()).collect(Collectors.toSet());
             for (String areaCode : areaCodes) {
-                System.out.println("Going to parse " + areaCode + "...");
-                String[] ropfContent = readFile(Paths.get(ropfDirName, areaCode + ".ropf"));
-                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
-                for (Warning warning : richOpinionPollsFile.getWarnings()) {
-                    System.out.println(warning);
+                Path ropfPath = Paths.get(ropfDirName, areaCode + ".ropf");
+                if (Files.exists(ropfPath)) {
+                    System.out.println("Going to parse " + areaCode + "...");
+                    String[] ropfContent = readFile(ropfPath);
+                    RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                    for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                        System.out.println(warning);
+                    }
+                    opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
                 }
-                opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
             }
             return opinionPollsMap;
         }
