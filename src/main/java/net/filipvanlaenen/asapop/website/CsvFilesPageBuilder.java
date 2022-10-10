@@ -65,7 +65,7 @@ final class CsvFilesPageBuilder extends PageBuilder {
                 .collect(Collectors.toList());
         sortedAreaConfigurations.sort(new Comparator<AreaConfiguration>() {
             @Override
-            public int compare(AreaConfiguration ac0, AreaConfiguration ac1) {
+            public int compare(final AreaConfiguration ac0, final AreaConfiguration ac1) {
                 return ac0.getAreaCode().compareTo(ac1.getAreaCode());
             }
         });
