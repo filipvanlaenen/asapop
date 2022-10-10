@@ -1,5 +1,10 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 
@@ -8,9 +13,9 @@ import net.filipvanlaenen.asapop.yaml.Terms;
  */
 public class InternationalizationScriptBuilder {
     /**
-     * The internationalization terms.
+     * The internationalization terms, sorted.
      */
-    private final Terms terms;
+    private final List<Term> sortedTerms;
 
     /**
      * Constructor using the terms as its parameter.
@@ -18,7 +23,13 @@ public class InternationalizationScriptBuilder {
      * @param terms The terms.
      */
     public InternationalizationScriptBuilder(final Terms terms) {
-        this.terms = terms;
+        this.sortedTerms = new ArrayList<Term>(terms.getTerms());
+        sortedTerms.sort(new Comparator<Term>() {
+            @Override
+            public int compare(final Term t1, final Term t2) {
+                return t1.getKey().compareTo(t2.getKey());
+            }
+        });
     }
 
     /**
@@ -79,9 +90,16 @@ public class InternationalizationScriptBuilder {
         StringBuilder sb = new StringBuilder();
         sb.append("function updateLanguage(language) {\n");
         sb.append("  switch (language) {\n");
-        for (Language language : Language.values()) {
+        List<Language> sortedLanguages = Arrays.asList(Language.values());
+        sortedLanguages.sort(new Comparator<Language>() {
+            @Override
+            public int compare(final Language l1, final Language l2) {
+                return l1.toString().compareTo(l2.toString());
+            }
+        });
+        for (Language language : sortedLanguages) {
             sb.append("    case \"" + language.getId() + "\":\n");
-            for (Term term : terms.getTerms()) {
+            for (Term term : sortedTerms) {
                 sb.append("      $('.");
                 sb.append(term.getKey());
                 sb.append("').text(\"");
