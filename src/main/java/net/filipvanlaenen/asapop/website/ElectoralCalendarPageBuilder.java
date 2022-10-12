@@ -57,6 +57,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         tHead.addElement(tr);
         tr.addElement(new TH(" ").clazz("date"));
         tr.addElement(new TH(" ").clazz("country"));
+        tr.addElement(new TH(" ").clazz("election-type"));
         TBody tBody = new TBody();
         table.addElement(tBody);
         List<AreaConfiguration> sortedAreaConfigurations = websiteConfiguration.getAreaConfigurations().stream()
@@ -73,6 +74,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
             tBody.addElement(areaTr);
             areaTr.addElement(new TD(areaConfiguration.getNextElectionDate()));
             areaTr.addElement(new TD(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
+            areaTr.addElement(new TD(" ").clazz("parliament"));
         }
         body.addElement(createFooter());
         return html;

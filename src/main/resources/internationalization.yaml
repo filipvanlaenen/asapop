@@ -32,6 +32,14 @@ terms:
       fr: "Date"
       nl: "Datum"
       no: "Dato"
+  - key: "election-type"
+    translations:
+      de: "Wahltyp"
+      en: "Election Type"
+      eo: "Balota tipo"
+      fr: "Genre d’élection"
+      nl: "Soort verkiezing"
+      no: "Valgtype"
   - key: "electoral-calendar"
     translations:
       de: "Wahlkalender"
@@ -56,6 +64,14 @@ terms:
       fr: "Accueil principal"
       nl: "Hoofdpagina"
       no: "Forside"
+  - key: "parliament"
+    translations:
+      de: "Parlament"
+      en: "Parliament"
+      eo: "Parlamento"
+      fr: "Parlement"
+      nl: "Parlement"
+      no: "Parlament"
   - key: "privacy-statement"
     translations:
       en: "Privacy statement: This website uses your browser's local store, a technology similar to cookies, to store your language preference between sessions."
