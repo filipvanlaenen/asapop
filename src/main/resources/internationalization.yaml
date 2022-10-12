@@ -26,12 +26,20 @@ terms:
       no: "CSV-filer"
   - key: "date"
     translations:
+      de: "Termin"
       en: "Date"
+      eo: "Dato"
+      fr: "Date"
       nl: "Datum"
       no: "Dato"
   - key: "electoral-calendar"
     translations:
+      de: "Wahlkalender"
       en: "Electoral Calendar"
+      eo: "Balota kalendaro"
+      fr: "Calandrier électoral"
+      nl: "Verkiezingskalender"
+      no: "Valgkalender"
   - key: "language"
     translations:
       de: "Sprache"
