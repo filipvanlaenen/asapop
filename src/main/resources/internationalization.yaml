@@ -72,6 +72,14 @@ terms:
       fr: "Parlement"
       nl: "Parlement"
       no: "Parlament"
+  - key: "president"
+    translations:
+      de: "Präsident"
+      en: "President"
+      eo: "Prezidento"
+      fr: "Président"
+      nl: "President"
+      no: "President"
   - key: "privacy-statement"
     translations:
       en: "Privacy statement: This website uses your browser's local store, a technology similar to cookies, to store your language preference between sessions."
