@@ -22,9 +22,6 @@ public class CsvFilesPageBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
-        AreaConfiguration sweden = new AreaConfiguration();
-        sweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
-        sweden.setNextElectionDate("2022-09-11");
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfigurationNorthMacedonia = new CsvConfiguration();
@@ -40,7 +37,7 @@ public class CsvFilesPageBuilderTest {
         CsvConfiguration csvConfigurationSerbia = new CsvConfiguration();
         csvConfigurationSerbia.setElectoralListKeys(List.of("A", "B"));
         serbia.setCsvConfiguration(csvConfigurationSerbia);
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, northMacedonia, greenland, serbia));
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, greenland, serbia, new AreaConfiguration()));
         return websiteConfiguration;
     }
 

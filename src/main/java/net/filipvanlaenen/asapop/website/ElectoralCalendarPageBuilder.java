@@ -1,10 +1,11 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -21,6 +22,28 @@ import net.filipvanlaenen.txhtmlj.Table;
  * Class building the page with the electoral calendar.
  */
 final class ElectoralCalendarPageBuilder extends PageBuilder {
+    private class Entry {
+        private final AreaConfiguration areaConfiguration;
+        private final ElectionConfiguration electionConfiguration;
+
+        public Entry(ElectionConfiguration electionConfiguration, AreaConfiguration areaConfiguration) {
+            this.electionConfiguration = electionConfiguration;
+            this.areaConfiguration = areaConfiguration;
+        }
+
+        public String getAreaCode() {
+            return areaConfiguration.getAreaCode();
+        }
+
+        public String getNextElectionDate() {
+            return electionConfiguration.getNextElectionDate();
+        }
+
+        public String getTypeAsClass() {
+            return electionConfiguration.getType().toLowerCase();
+        }
+    }
+
     /**
      * The configuration for the website.
      */
@@ -60,21 +83,28 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         tr.addElement(new TH(" ").clazz("election-type"));
         TBody tBody = new TBody();
         table.addElement(tBody);
-        List<AreaConfiguration> sortedAreaConfigurations = websiteConfiguration.getAreaConfigurations().stream()
-                .filter(ac -> ac.getAreaCode() != null && ac.getNextElectionDate() != null)
-                .collect(Collectors.toList());
-        sortedAreaConfigurations.sort(new Comparator<AreaConfiguration>() {
+        List<Entry> entries = new ArrayList<Entry>();
+        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+            if (areaConfiguration.getAreaCode() != null && areaConfiguration.getElectionConfigurations() != null) {
+                for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
+                    if (electionConfiguration.getNextElectionDate() != null) {
+                        entries.add(new Entry(electionConfiguration, areaConfiguration));
+                    }
+                }
+            }
+        }
+        entries.sort(new Comparator<Entry>() {
             @Override
-            public int compare(final AreaConfiguration ac0, final AreaConfiguration ac1) {
-                return ac0.getNextElectionDate().compareTo(ac1.getNextElectionDate());
+            public int compare(final Entry e1, final Entry e2) {
+                return e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
             }
         });
-        for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
+        for (Entry entry : entries) {
             TR areaTr = new TR();
             tBody.addElement(areaTr);
-            areaTr.addElement(new TD(areaConfiguration.getNextElectionDate()));
-            areaTr.addElement(new TD(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
-            areaTr.addElement(new TD(" ").clazz("parliament"));
+            areaTr.addElement(new TD(entry.getNextElectionDate()));
+            areaTr.addElement(new TD(" ").clazz("_area_" + entry.getAreaCode()));
+            areaTr.addElement(new TD(" ").clazz(entry.getTypeAsClass()));
         }
         body.addElement(createFooter());
         return html;

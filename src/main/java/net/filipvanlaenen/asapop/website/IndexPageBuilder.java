@@ -1,10 +1,12 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
@@ -75,11 +77,20 @@ final class IndexPageBuilder extends PageBuilder {
      * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
      */
     private void calculateGitHubWebsiteUrlsByNextElectionDate() {
-        List<AreaConfiguration> areaConfigurationsWithGitHubWebsiteUrls = websiteConfiguration.getAreaConfigurations()
-                .stream().filter(ac -> ac.getGitHubWebsiteUrl() != null).collect(Collectors.toList());
-        areaConfigurationsWithGitHubWebsiteUrls.sort(Comparator.comparing(AreaConfiguration::getNextElectionDate));
-        gitHubWebsiteUrlsByNextElectionDate = areaConfigurationsWithGitHubWebsiteUrls.stream()
-                .map(areaConfigutation -> areaConfigutation.getGitHubWebsiteUrl()).collect(Collectors.toList());
+        List<ElectionConfiguration> electionConfigurations = new ArrayList<ElectionConfiguration>();
+        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+            if (areaConfiguration.getElectionConfigurations() != null) {
+                for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
+                    if (electionConfiguration.getNextElectionDate() != null
+                            && electionConfiguration.getGitHubWebsiteUrl() != null) {
+                        electionConfigurations.add(electionConfiguration);
+                    }
+                }
+            }
+        }
+        electionConfigurations.sort(Comparator.comparing(ElectionConfiguration::getNextElectionDate));
+        gitHubWebsiteUrlsByNextElectionDate = electionConfigurations.stream()
+                .map(electionConfiguration -> electionConfiguration.getGitHubWebsiteUrl()).collect(Collectors.toList());
     }
 
     /**

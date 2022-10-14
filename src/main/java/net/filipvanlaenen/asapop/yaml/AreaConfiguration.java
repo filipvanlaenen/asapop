@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Class representing the area configuration element for the YAML file containing the website configuration.
@@ -14,14 +15,7 @@ public class AreaConfiguration {
      * The configuration for the CSV file.
      */
     private CsvConfiguration csvConfiguration;
-    /**
-     * The URL for the GitHub website.
-     */
-    private String gitHubWebsiteUrl;
-    /**
-     * The date for the next election.
-     */
-    private String nextElectionDate;
+    private Set<ElectionConfiguration> electionConfigurations;
     /**
      * A map with the translation of the term in a number of languages.
      */
@@ -45,22 +39,8 @@ public class AreaConfiguration {
         return csvConfiguration;
     }
 
-    /**
-     * Returns the URL for the GitHub website.
-     *
-     * @return The URL for the GitHub website.
-     */
-    public String getGitHubWebsiteUrl() {
-        return gitHubWebsiteUrl;
-    }
-
-    /**
-     * Returns the date for the next election.
-     *
-     * @return The date for the next election.
-     */
-    public String getNextElectionDate() {
-        return nextElectionDate;
+    public Set<ElectionConfiguration> getElectionConfigurations() {
+        return electionConfigurations;
     }
 
     /**
@@ -90,22 +70,8 @@ public class AreaConfiguration {
         this.csvConfiguration = csvConfiguration;
     }
 
-    /**
-     * Sets the URL for the GitHub website.
-     *
-     * @param gitHubWebsiteUrl The URL for the GitHub website.
-     */
-    public void setGitHubWebsiteUrl(final String gitHubWebsiteUrl) {
-        this.gitHubWebsiteUrl = gitHubWebsiteUrl;
-    }
-
-    /**
-     * Sets the date for the next election.
-     *
-     * @param nextElectionDate The date for the next election.
-     */
-    public void setNextElectionDate(final String nextElectionDate) {
-        this.nextElectionDate = nextElectionDate;
+    public void setElectionConfigurations(final Set<ElectionConfiguration> electionConfigurations) {
+        this.electionConfigurations = electionConfigurations;
     }
 
     /**

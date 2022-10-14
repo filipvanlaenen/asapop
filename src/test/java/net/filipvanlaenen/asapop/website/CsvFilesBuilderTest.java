@@ -29,15 +29,12 @@ public class CsvFilesBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
-        AreaConfiguration sweden = new AreaConfiguration();
-        sweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
-        sweden.setNextElectionDate("2022-09-11");
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfiguration = new CsvConfiguration();
         csvConfiguration.setElectoralListKeys(List.of("A", "B"));
         northMacedonia.setCsvConfiguration(csvConfiguration);
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, northMacedonia));
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, new AreaConfiguration()));
         return websiteConfiguration;
     }
 
