@@ -1,5 +1,8 @@
 package net.filipvanlaenen.asapop.yaml;
 
+/**
+ * Class representing the election configuration element for the YAML file containing the website configuration.
+ */
 public class ElectionConfiguration {
     /**
      * The URL for the GitHub website.
@@ -9,6 +12,9 @@ public class ElectionConfiguration {
      * The date for the next election.
      */
     private String nextElectionDate;
+    /**
+     * The type of the election.
+     */
     private String type;
 
     /**
@@ -29,6 +35,11 @@ public class ElectionConfiguration {
         return nextElectionDate;
     }
 
+    /**
+     * Returns the type of the election.
+     *
+     * @return The type of the election.
+     */
     public String getType() {
         return type;
     }
@@ -51,6 +62,11 @@ public class ElectionConfiguration {
         this.nextElectionDate = nextElectionDate;
     }
 
+    /**
+     * Sets the type of the election.
+     *
+     * @param type The type of the election.
+     */
     public void setType(final String type) {
         this.type = type;
     }
