@@ -224,12 +224,25 @@ Below is an example of a valid website configuration file:
 ```
 ---
 areaConfigurations:
-- gitHubWebsiteUrl: "https://filipvanlaenen.github.io/estonian_polls"
-  nextElectionDate: "2023-03-05"
-- gitHubWebsiteUrl: "https://filipvanlaenen.github.io/latvian_polls"
-  nextElectionDate: "2022-10-01"
-- gitHubWebsiteUrl: "https://filipvanlaenen.github.io/swedish_polls"
-  nextElectionDate: "2022-09-11"
+- areaCode: "ee"
+  electionConfigurations:
+  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/estonian_polls"
+    nextElectionDate: "2023-03-05"
+    type: Parliament
+  translations:
+    en: "Estonia"
+- areaCode: "lv"
+  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/latvian_polls"
+    nextElectionDate: "2022-10-01"
+    type: Parliament
+  translations:
+    en: "Latvia"
+- areaCode: "se"
+  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/swedish_polls"
+    nextElectionDate: "2022-09-11"
+    type: Parliament
+  translations:
+    en: "Sweden"
 - areaCode: "mk"
   csvConfiguration:
     electoralListKeys:
