@@ -15,6 +15,9 @@ public class AreaConfiguration {
      * The configuration for the CSV file.
      */
     private CsvConfiguration csvConfiguration;
+    /**
+     * The set with the election configurations.
+     */
     private Set<ElectionConfiguration> electionConfigurations;
     /**
      * A map with the translation of the term in a number of languages.
@@ -39,6 +42,11 @@ public class AreaConfiguration {
         return csvConfiguration;
     }
 
+    /**
+     * Returns the election configurations.
+     *
+     * @return The election configurations.
+     */
     public Set<ElectionConfiguration> getElectionConfigurations() {
         return electionConfigurations;
     }
@@ -70,6 +78,11 @@ public class AreaConfiguration {
         this.csvConfiguration = csvConfiguration;
     }
 
+    /**
+     * Sets the election configurations.
+     *
+     * @param electionConfigurations The election configurations.
+     */
     public void setElectionConfigurations(final Set<ElectionConfiguration> electionConfigurations) {
         this.electionConfigurations = electionConfigurations;
     }
