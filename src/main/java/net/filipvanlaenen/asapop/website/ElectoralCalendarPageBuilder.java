@@ -22,24 +22,54 @@ import net.filipvanlaenen.txhtmlj.Table;
  * Class building the page with the electoral calendar.
  */
 final class ElectoralCalendarPageBuilder extends PageBuilder {
-    private class Entry {
+    /**
+     * Class representing an entry in the electoral calendar.
+     */
+    private final class Entry {
+        /**
+         * The area configuration for the entry.
+         */
         private final AreaConfiguration areaConfiguration;
+        /**
+         * The election configuration for the entry.
+         */
         private final ElectionConfiguration electionConfiguration;
 
-        public Entry(ElectionConfiguration electionConfiguration, AreaConfiguration areaConfiguration) {
+        /**
+         * Constructs an entry based on the election and area configuration.
+         *
+         * @param electionConfiguration The election configuration.
+         * @param areaConfiguration     The area configuration.
+         */
+        private Entry(final ElectionConfiguration electionConfiguration, final AreaConfiguration areaConfiguration) {
             this.electionConfiguration = electionConfiguration;
             this.areaConfiguration = areaConfiguration;
         }
 
-        public String getAreaCode() {
+        /**
+         * Returns the area code for the entry.
+         *
+         * @return The area code.
+         */
+        private String getAreaCode() {
             return areaConfiguration.getAreaCode();
         }
 
-        public String getNextElectionDate() {
+        /**
+         * Returns the next election date.
+         *
+         * @return The next election date.
+         */
+        private String getNextElectionDate() {
             return electionConfiguration.getNextElectionDate();
         }
 
-        public String getTypeAsClass() {
+        /**
+         * Returns the type of the election as a class attribute value.
+         *
+         * @return The type of the election as a class attribute value.
+         */
+        private String getTypeAsClass() {
             return electionConfiguration.getType().toLowerCase();
         }
     }
