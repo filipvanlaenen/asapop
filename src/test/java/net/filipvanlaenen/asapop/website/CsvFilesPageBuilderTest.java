@@ -22,6 +22,8 @@ public class CsvFilesPageBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        AreaConfiguration sweden = new AreaConfiguration();
+        sweden.setAreaCode("se");
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfigurationNorthMacedonia = new CsvConfiguration();
@@ -37,7 +39,8 @@ public class CsvFilesPageBuilderTest {
         CsvConfiguration csvConfigurationSerbia = new CsvConfiguration();
         csvConfigurationSerbia.setElectoralListKeys(List.of("A", "B"));
         serbia.setCsvConfiguration(csvConfigurationSerbia);
-        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, greenland, serbia, new AreaConfiguration()));
+        websiteConfiguration
+                .setAreaConfigurations(Set.of(northMacedonia, greenland, serbia, sweden, new AreaConfiguration()));
         return websiteConfiguration;
     }
 
