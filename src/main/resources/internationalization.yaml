@@ -56,6 +56,14 @@ terms:
       fr: "Calandrier électoral"
       nl: "Verkiezingskalender"
       no: "Valgkalender"
+  - key: "european-parliament"
+    translations:
+      de: "Europäisches Parlament"
+      en: "European Parliament"
+      eo: "Eŭropa Parlamento"
+      fr: "Parlement européen"
+      nl: "Europees Parlement"
+      no: "Europaparlamentet"
   - key: "language"
     translations:
       de: "Sprache"

@@ -76,7 +76,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
          * @return The type of the election as a class attribute value.
          */
         private String getTypeAsClass() {
-            return electionConfiguration.getType().toLowerCase();
+            return electionConfiguration.getType().toLowerCase().replaceAll(" ", "-");
         }
     }
 
@@ -132,7 +132,16 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         entries.sort(new Comparator<Entry>() {
             @Override
             public int compare(final Entry e1, final Entry e2) {
-                return e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
+                int dateResult = e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
+                if (dateResult != 0) {
+                    return dateResult;
+                }
+                int areaResult = e1.getAreaCode().compareTo(e2.getAreaCode());
+                if (areaResult != 0) {
+                    return areaResult;
+                } else {
+                    return e1.getTypeAsClass().compareTo(e2.getTypeAsClass());
+                }
             }
         });
         for (Entry entry : entries) {
