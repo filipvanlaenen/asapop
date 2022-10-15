@@ -38,7 +38,7 @@ public class ElectoralCalendarPageBuilderTest {
         AreaConfiguration greenland = new AreaConfiguration();
         greenland.setAreaCode("gl");
         ElectionConfiguration greenlandElection = new ElectionConfiguration();
-        greenlandElection.setNextElectionDate("2025-04-06");
+        greenlandElection.setNextElectionDate("≤2025-04-06");
         greenlandElection.setType("Parliament");
         greenland.setElectionConfigurations(Set.of(greenlandElection));
         websiteConfiguration
@@ -124,7 +124,7 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("            <td class=\"parliament\"> </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
-        expected.append("            <td>2025-04-06</td>\n");
+        expected.append("            <td><span class=\"no-later-than\"> </span> 2025-04-06</td>\n");
         expected.append("            <td class=\"_area_gl\"> </td>\n");
         expected.append("            <td class=\"parliament\"> </td>\n");
         expected.append("          </tr>\n");

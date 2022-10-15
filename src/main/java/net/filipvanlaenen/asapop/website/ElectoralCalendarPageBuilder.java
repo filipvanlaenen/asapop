@@ -11,6 +11,7 @@ import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Html;
 import net.filipvanlaenen.txhtmlj.Section;
+import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.TBody;
 import net.filipvanlaenen.txhtmlj.TD;
 import net.filipvanlaenen.txhtmlj.TH;
@@ -34,6 +35,10 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
          * The election configuration for the entry.
          */
         private final ElectionConfiguration electionConfiguration;
+        /**
+         * The expected date.
+         */
+        private final ExpectedDate expectedDate;
 
         /**
          * Constructs an entry based on the election and area configuration.
@@ -44,6 +49,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         private Entry(final ElectionConfiguration electionConfiguration, final AreaConfiguration areaConfiguration) {
             this.electionConfiguration = electionConfiguration;
             this.areaConfiguration = areaConfiguration;
+            this.expectedDate = ExpectedDate.parse(electionConfiguration.getNextElectionDate());
         }
 
         /**
@@ -60,8 +66,8 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
          *
          * @return The next election date.
          */
-        private String getNextElectionDate() {
-            return electionConfiguration.getNextElectionDate();
+        private ExpectedDate getNextElectionDate() {
+            return expectedDate;
         }
 
         /**
@@ -132,7 +138,20 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         for (Entry entry : entries) {
             TR areaTr = new TR();
             tBody.addElement(areaTr);
-            areaTr.addElement(new TD(entry.getNextElectionDate()));
+            ExpectedDate nextElectionDate = entry.getNextElectionDate();
+            if (nextElectionDate.isApproximate()) {
+                TD cell = new TD();
+                cell.addElement(new Span(" ").clazz("around"));
+                cell.addContent(" " + entry.getNextElectionDate().toString());
+                areaTr.addElement(cell);
+            } else if (nextElectionDate.isDeadline()) {
+                TD cell = new TD();
+                cell.addElement(new Span(" ").clazz("no-later-than"));
+                cell.addContent(" " + entry.getNextElectionDate().toString());
+                areaTr.addElement(cell);
+            } else {
+                areaTr.addElement(new TD(entry.getNextElectionDate().toString()));
+            }
             areaTr.addElement(new TD(" ").clazz("_area_" + entry.getAreaCode()));
             areaTr.addElement(new TD(" ").clazz(entry.getTypeAsClass()));
         }

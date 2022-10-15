@@ -1,5 +1,13 @@
 ---
 terms:
+  - key: "around"
+    translations:
+      de: "Etwa"
+      en: "Around"
+      eo: "Ĉirkaŭ"
+      fr: "Environ"
+      nl: "Omtrent"
+      no: "Omtrent"
   - key: "country"
     translations:
       de: "Land"
@@ -64,6 +72,14 @@ terms:
       fr: "Accueil principal"
       nl: "Hoofdpagina"
       no: "Forside"
+  - key: "no-later-than"
+    translations:
+      de: "Spätestens"
+      en: "No later than"
+      eo: "Ne pli malfrue ol"
+      fr: "Au plus tard"
+      nl: "Niet later dan"
+      no: "Senest"
   - key: "parliament"
     translations:
       de: "Parlament"
