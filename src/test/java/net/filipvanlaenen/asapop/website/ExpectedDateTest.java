@@ -108,4 +108,60 @@ public class ExpectedDateTest {
     public void deadlineShouldBeDeadline() {
         assertTrue(ExpectedDate.parse("≤2022-10-16").isDeadline());
     }
+
+    /**
+     * Verifies that an earlier date is less.
+     */
+    @Test
+    public void earlierDateShouldBeLess() {
+        assertTrue(ExpectedDate.parse("2022-10-15").compareTo(ExpectedDate.parse("2022-10-16")) < 0);
+    }
+
+    /**
+     * Verifies that an equal date is equal.
+     */
+    @Test
+    public void equalDateShouldBeEqual() {
+        assertTrue(ExpectedDate.parse("2022-10-16").compareTo(ExpectedDate.parse("2022-10-16")) == 0);
+    }
+
+    /**
+     * Verifies that a later date is greater.
+     */
+    @Test
+    public void laterDateShouldBeGreater() {
+        assertTrue(ExpectedDate.parse("2022-10-17").compareTo(ExpectedDate.parse("2022-10-16")) > 0);
+    }
+
+    /**
+     * Verifies that an earlier date is less than a month.
+     */
+    @Test
+    public void earlierDateShouldBeLessThanMonth() {
+        assertTrue(ExpectedDate.parse("2022-10-15").compareTo(ExpectedDate.parse("2022-10")) < 0);
+    }
+
+    /**
+     * Verifies that last day of month is less than a month.
+     */
+    @Test
+    public void lastDayOfMonthShouldBeLessThanMonth() {
+        assertTrue(ExpectedDate.parse("2022-10-31").compareTo(ExpectedDate.parse("2022-10")) < 0);
+    }
+
+    /**
+     * Verifies that a month is greater than last day of month.
+     */
+    @Test
+    public void monthShouldBeGreaterThanLastDayOfMonth() {
+        assertTrue(ExpectedDate.parse("2022-10").compareTo(ExpectedDate.parse("2022-10-31")) > 0);
+    }
+
+    /**
+     * Verifies that a later date is greater than a month.
+     */
+    @Test
+    public void laterDateShouldBeGreaterThanMonth() {
+        assertTrue(ExpectedDate.parse("2022-11-01").compareTo(ExpectedDate.parse("2022-10")) > 0);
+    }
 }

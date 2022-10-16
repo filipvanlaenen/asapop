@@ -111,6 +111,12 @@ abstract class ExpectedDate {
         if (endDateResult != 0) {
             return endDateResult;
         }
+        if (this instanceof ExpectedDay && !(other instanceof ExpectedDay)) {
+            return -1;
+        }
+        if (!(this instanceof ExpectedDay) && other instanceof ExpectedDay) {
+            return 1;
+        }
         return 0;
     }
 
