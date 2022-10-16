@@ -25,7 +25,7 @@ abstract class ExpectedDate {
         }
 
         @Override
-        public String toString() {
+        public String getDateString() {
             return date.toString();
         }
     }
@@ -47,7 +47,7 @@ abstract class ExpectedDate {
         }
 
         @Override
-        public String toString() {
+        public String getDateString() {
             return month.toString();
         }
     }
@@ -69,7 +69,7 @@ abstract class ExpectedDate {
         }
 
         @Override
-        public String toString() {
+        public String getDateString() {
             return year.toString();
         }
     }
@@ -103,6 +103,8 @@ abstract class ExpectedDate {
             }
         }
     }
+
+    abstract String getDateString();
 
     int compareTo(ExpectedDate other) {
         int endDateResult = getEndDate().compareTo(other.getEndDate());
