@@ -14,11 +14,25 @@ import org.junit.jupiter.api.Test;
  */
 public class ExpectedDateTest {
     /**
+     * The magic number sixteen.
+     */
+    private static final int SIXTEEN = 16;
+    /**
+     * The magic number thirty-one.
+     */
+    private static final int THIRTY_ONE = 31;
+    /**
+     * The magic number 2022.
+     */
+    private static final int TWENTY_TWENTY_TWO = 2022;
+
+    /**
      * Verifies that the end date of an expected date is equal to the date if a full date is given.
      */
     @Test
     public void endDateShouldBeEqualToDateForFullDate() {
-        assertEquals(LocalDate.of(2022, Month.OCTOBER, 16), ExpectedDate.parse("2022-10-16").getEndDate());
+        assertEquals(LocalDate.of(TWENTY_TWENTY_TWO, Month.OCTOBER, SIXTEEN),
+                ExpectedDate.parse("2022-10-16").getEndDate());
     }
 
     /**
@@ -26,7 +40,8 @@ public class ExpectedDateTest {
      */
     @Test
     public void endDateShouldBeLastDayOfMonth() {
-        assertEquals(LocalDate.of(2022, Month.OCTOBER, 31), ExpectedDate.parse("2022-10").getEndDate());
+        assertEquals(LocalDate.of(TWENTY_TWENTY_TWO, Month.OCTOBER, THIRTY_ONE),
+                ExpectedDate.parse("2022-10").getEndDate());
     }
 
     /**
@@ -34,7 +49,8 @@ public class ExpectedDateTest {
      */
     @Test
     public void endDateShouldBeLastDayOfYear() {
-        assertEquals(LocalDate.of(2022, Month.DECEMBER, 31), ExpectedDate.parse("2022").getEndDate());
+        assertEquals(LocalDate.of(TWENTY_TWENTY_TWO, Month.DECEMBER, THIRTY_ONE),
+                ExpectedDate.parse("2022").getEndDate());
     }
 
     /**
@@ -163,5 +179,69 @@ public class ExpectedDateTest {
     @Test
     public void laterDateShouldBeGreaterThanMonth() {
         assertTrue(ExpectedDate.parse("2022-11-01").compareTo(ExpectedDate.parse("2022-10")) > 0);
+    }
+
+    /**
+     * Verifies that an earlier month is less than a year.
+     */
+    @Test
+    public void earlierMonthShouldBeLessThanYear() {
+        assertTrue(ExpectedDate.parse("2022-10").compareTo(ExpectedDate.parse("2022")) < 0);
+    }
+
+    /**
+     * Verifies that last month of year is less than a year.
+     */
+    @Test
+    public void lastMonthOfYearShouldBeLessThanYear() {
+        assertTrue(ExpectedDate.parse("2022-12").compareTo(ExpectedDate.parse("2022")) < 0);
+    }
+
+    /**
+     * Verifies that a year is greater than last month of year.
+     */
+    @Test
+    public void yearShouldBeGreaterThanLastMonthOfYear() {
+        assertTrue(ExpectedDate.parse("2022").compareTo(ExpectedDate.parse("2022-12")) > 0);
+    }
+
+    /**
+     * Verifies that a later month is greater than a year.
+     */
+    @Test
+    public void laterMonthShouldBeGreaterThanYear() {
+        assertTrue(ExpectedDate.parse("2023-01").compareTo(ExpectedDate.parse("2022")) > 0);
+    }
+
+    /**
+     * Verifies that an exact date is less than a deadline.
+     */
+    @Test
+    public void exactDateShouldBeLessThanADeadline() {
+        assertTrue(ExpectedDate.parse("2022-10-16").compareTo(ExpectedDate.parse("≤2022-10-16")) < 0);
+    }
+
+    /**
+     * Verifies that a deadline is greater than an exact date.
+     */
+    @Test
+    public void deadlineShouldBeGreaterThanExactDate() {
+        assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("2022-10-16")) > 0);
+    }
+
+    /**
+     * Verifies that an approximate date is greater than a deadline.
+     */
+    @Test
+    public void approximateDateShouldBeGreaterThanADeadline() {
+        assertTrue(ExpectedDate.parse("≈2022-10-16").compareTo(ExpectedDate.parse("≤2022-10-16")) > 0);
+    }
+
+    /**
+     * Verifies that a deadline is less than an approximate date.
+     */
+    @Test
+    public void deadlineShouldBeLessThanApproximateDate() {
+        assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("≈2022-10-16")) < 0);
     }
 }

@@ -11,9 +11,22 @@ import java.time.format.DateTimeParseException;
  * year (<code>Year</code>), possibly with the modifier that it's approximate or a deadline.
  */
 abstract class ExpectedDate {
-    private static class ExpectedDay extends ExpectedDate {
+    /**
+     * Class modeling a day as an expected date.
+     */
+    private static final class ExpectedDay extends ExpectedDate {
+        /**
+         * The date.
+         */
         private final LocalDate date;
 
+        /**
+         * Constructor taking the date as its parameter in addition to whether it's an approximate date or a deadline.
+         *
+         * @param date        The date.
+         * @param approximate True if the date is approximate.
+         * @param deadline    True if the date is a deadline.
+         */
         private ExpectedDay(final LocalDate date, final boolean approximate, final boolean deadline) {
             super(approximate, deadline);
             this.date = date;
@@ -30,12 +43,22 @@ abstract class ExpectedDate {
         }
     }
 
-    private static class ExpectedMonth extends ExpectedDate {
+    /**
+     * Class modeling a month as an expected date.
+     */
+    private static final class ExpectedMonth extends ExpectedDate {
         /**
          * The month.
          */
         private final YearMonth month;
 
+        /**
+         * Constructor taking the month as its parameter in addition to whether it's an approximate date or a deadline.
+         *
+         * @param month       The month.
+         * @param approximate True if the month is approximate.
+         * @param deadline    True if the month is a deadline.
+         */
         private ExpectedMonth(final YearMonth month, final boolean approximate, final boolean deadline) {
             super(approximate, deadline);
             this.month = month;
@@ -52,12 +75,22 @@ abstract class ExpectedDate {
         }
     }
 
-    private static class ExpectedYear extends ExpectedDate {
+    /**
+     * Class modeling a year as an expected date.
+     */
+    private static final class ExpectedYear extends ExpectedDate {
         /**
          * The year.
          */
         private final Year year;
 
+        /**
+         * Constructor taking the year as its parameter in addition to whether it's an approximate date or a deadline.
+         *
+         * @param year        The year.
+         * @param approximate True if the year is approximate.
+         * @param deadline    True if the year is a deadline.
+         */
         private ExpectedYear(final Year year, final boolean approximate, final boolean deadline) {
             super(approximate, deadline);
             this.year = year;
@@ -74,21 +107,39 @@ abstract class ExpectedDate {
         }
     }
 
+    /**
+     * True if the date is approximate.
+     */
     private final boolean approximate;
+    /**
+     * True if the date is a deadline.
+     */
     private final boolean deadline;
 
+    /**
+     * Constructor taking whether the expected date is an approximate date or a deadline as its parameters.
+     *
+     * @param approximate True if the year is approximate.
+     * @param deadline    True if the year is a deadline.
+     */
     private ExpectedDate(final boolean approximate, final boolean deadline) {
         this.approximate = approximate;
         this.deadline = deadline;
     }
 
-    static ExpectedDate parse(final String aString) {
-        if (aString.startsWith("≈")) {
-            return parseDate(aString.substring(1), true, false);
-        } else if (aString.startsWith("≤")) {
-            return parseDate(aString.substring(1), false, true);
+    /**
+     * Parses a text into an expected date.
+     *
+     * @param text The text to be parse.
+     * @return An expected date parsed from the text.
+     */
+    static ExpectedDate parse(final String text) {
+        if (text.startsWith("≈")) {
+            return parseDate(text.substring(1), true, false);
+        } else if (text.startsWith("≤")) {
+            return parseDate(text.substring(1), false, true);
         } else {
-            return parseDate(aString, false, false);
+            return parseDate(text, false, false);
         }
     }
 
@@ -104,9 +155,7 @@ abstract class ExpectedDate {
         }
     }
 
-    abstract String getDateString();
-
-    int compareTo(ExpectedDate other) {
+    int compareTo(final ExpectedDate other) {
         int endDateResult = getEndDate().compareTo(other.getEndDate());
         if (endDateResult != 0) {
             return endDateResult;
@@ -117,8 +166,28 @@ abstract class ExpectedDate {
         if (!(this instanceof ExpectedDay) && other instanceof ExpectedDay) {
             return 1;
         }
+        if (this instanceof ExpectedYear && !(other instanceof ExpectedYear)) {
+            return 1;
+        }
+        if (!(this instanceof ExpectedYear) && other instanceof ExpectedYear) {
+            return -1;
+        }
+        if (isApproximate() && !other.isApproximate()) {
+            return 1;
+        }
+        if (!isApproximate() && other.isApproximate()) {
+            return -1;
+        }
+        if (isDeadline() && !other.isDeadline()) {
+            return 1;
+        }
+        if (!isDeadline() && other.isDeadline()) {
+            return -1;
+        }
         return 0;
     }
+
+    protected abstract String getDateString();
 
     protected abstract LocalDate getEndDate();
 
