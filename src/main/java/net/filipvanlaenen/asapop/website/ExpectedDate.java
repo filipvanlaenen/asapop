@@ -143,6 +143,15 @@ abstract class ExpectedDate {
         }
     }
 
+    /**
+     * Creates an instance of the appropriate subclass based on the provided text, also passing on whether the date is
+     * approximate or a deadline.
+     *
+     * @param text        The text to be parsed for a date.
+     * @param approximate True if the date is approximate.
+     * @param deadline    True if the date is a deadline.
+     * @return An instance of the appropriate subclass.
+     */
     private static ExpectedDate parseDate(final String text, final boolean approximate, final boolean deadline) {
         try {
             return new ExpectedDay(LocalDate.parse(text), approximate, deadline);
@@ -155,6 +164,15 @@ abstract class ExpectedDate {
         }
     }
 
+    /**
+     * Compares this expected date to another expected date. In principle, the end date decides which date is greater
+     * than the other. If the end dates are equal, days are less than months, and months less than years. Within the
+     * same subclass, exact dates are less than deadlines, and deadlines are less than approximate dates.
+     *
+     * @param other The expected date to compare this expected date to.
+     * @return A negative number if this instance is less than the other instance, a positive number if it is greater,
+     *         and zero if both instances are equal.
+     */
     int compareTo(final ExpectedDate other) {
         int endDateResult = getEndDate().compareTo(other.getEndDate());
         if (endDateResult != 0) {
@@ -187,14 +205,35 @@ abstract class ExpectedDate {
         return 0;
     }
 
+    /**
+     * Returns the date as a string.
+     *
+     * @return A string representing the date.
+     */
     protected abstract String getDateString();
 
+    /**
+     * Returns the end date. For days, this is the same as the day; for months, it is the last day of the month; for
+     * years, it's the last day of the year.
+     *
+     * @return The end date.
+     */
     protected abstract LocalDate getEndDate();
 
+    /**
+     * Returns true if the expected date is approximate.
+     *
+     * @return True if the expected date is approximate.
+     */
     boolean isApproximate() {
         return approximate;
     }
 
+    /**
+     * Returns true if the expected date is a deadline.
+     *
+     * @return True if the expected date is a deadline.
+     */
     boolean isDeadline() {
         return deadline;
     }
