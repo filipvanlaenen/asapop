@@ -273,8 +273,9 @@ areaConfigurations:
     no: "Grønland"
 ```
 
-Notice that the field ``nextElectionDate`` doesn't need to contain a complete date: a month or a year already suffice.
-In addition, the date can be preceded by ``≤`` or ``≈`` to indicate further uncertainty about the date.
+Notice that the field ``nextElectionDate`` doesn't need to contain a complete date (``YYYY-MM-DD``): a month
+(``YYYY-MM``) or a year (``YYYY``) already suffice. In addition, the date can be preceded by ``≤`` (no later than) or
+``≈`` (approximate date) to indicate further uncertainty about when the next election will take place.
 
 ## Conversion from ROPF to CSV
 
