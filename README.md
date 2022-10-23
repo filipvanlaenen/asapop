@@ -224,46 +224,57 @@ Below is an example of a valid website configuration file:
 ```
 ---
 areaConfigurations:
-- areaCode: "ee"
+- areaCode: "ad"
   electionConfigurations:
-  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/estonian_polls"
-    nextElectionDate: "2023-03-05"
+  - nextElectionDate: "≤2023-04"
     type: Parliament
   translations:
-    en: "Estonia"
-- areaCode: "lv"
-  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/latvian_polls"
-    nextElectionDate: "2022-10-01"
+    de: "Andorra"
+    en: "Andorra"
+    eo: "Andoro"
+    fr: "Andorre"
+    nl: "Andorra"
+    no: "Andorra"
+- areaCode: "at"
+  electionConfigurations:
+  - nextElectionDate: "≈2024-05"
+    type: European Parliament
+  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/austrian_polls"
+    nextElectionDate: "≤2024-10-27"
     type: Parliament
+  - nextElectionDate: "≈2028-10"
+    type: President
   translations:
-    en: "Latvia"
-- areaCode: "se"
-  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/swedish_polls"
-    nextElectionDate: "2022-09-11"
-    type: Parliament
-  translations:
-    en: "Sweden"
-- areaCode: "mk"
+    de: "Österreich"
+    en: "Austria"
+    eo: "Aŭstrio"
+    fr: "Autriche"
+    nl: "Oostenrijk"
+    no: "Østerrike"
+- areaCode: "gl"
   csvConfiguration:
     electoralListKeys:
-    - "СДСМ"
-    - "ВМРО"
-    - "ДУИ"
-    - "ASH"
-    - "ЛЕВ"
-    - "PDSH"
-    - "BESA"
+    - "S"
+    - "IA"
+    - "D"
+    - "N"
     - "A"
-    - "A+ASH"
-    - "ДОМ+ЛДП"
+    - "NQ"
+    - "SA"
+  electionConfigurations:
+  - nextElectionDate: "≤2025-04-06"
+    type: Parliament
   translations:
-    de: "Nordmazedonien"
-    en: "North Macedonia"
-    eo: "Nord-Makedonio"
-    fr: "Macédoine du Nord"
-    nl: "Noord-Macedonië"
-    no: "Nord-Makedonia"
+    de: "Grönland"
+    en: "Greenland"
+    eo: "Gronlando"
+    fr: "Groenland"
+    nl: "Groenland"
+    no: "Grønland"
 ```
+
+Notice that the field ``nextElectionDate`` doesn't need to contain a complete date: a month or a year already suffice.
+In addition, the date can be preceded by ``≤`` or ``≈`` to indicate further uncertainty about the date.
 
 ## Conversion from ROPF to CSV
 
