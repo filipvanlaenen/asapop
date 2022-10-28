@@ -90,7 +90,7 @@ public class PageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></div>\n");
         expected.append("</header>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(PageBuilder.Page.INDEX).asString());
+        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(PageBuilder.HeaderLink.INDEX).asString());
     }
 
     /**
@@ -114,6 +114,7 @@ public class PageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></div>\n");
         expected.append("</header>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(PageBuilder.Page.CSV_FILES).asString());
+        assertEquals(expected.toString(),
+                new LocalPageBuilder().createHeader(PageBuilder.HeaderLink.CSV_FILES).asString());
     }
 }

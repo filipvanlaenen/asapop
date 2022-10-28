@@ -20,19 +20,51 @@ import net.filipvanlaenen.txhtmlj.Title;
  * Abstract super class for classes building pages, providing some utility methods to them.
  */
 abstract class PageBuilder {
-    enum Page {
-        CSV_FILES("csv-files", "csv.html"), ELECTORAL_CALENDAR("electoral-calendar", "calendar.html"),
+    /**
+     * Enumeration with the links in the headers.
+     */
+    enum HeaderLink {
+        /**
+         * Link to the CSV Files page.
+         */
+        CSV_FILES("csv-files", "csv.html"),
+        /**
+         * Link to the electoral calendar.
+         */
+        ELECTORAL_CALENDAR("electoral-calendar", "calendar.html"),
+        /**
+         * Link to the main page.
+         */
         INDEX("main-page", "index.html");
 
+        /**
+         * The string value for the class attribute.
+         */
         private final String clazz;
+        /**
+         * The href.
+         */
         private final String href;
 
-        private Page(String clazz, String href) {
+        /**
+         * Constructor taking the class attribute and the href as its parameters.
+         *
+         * @param clazz The class attribute.
+         * @param href  The href.
+         */
+        HeaderLink(final String clazz, final String href) {
             this.clazz = clazz;
             this.href = href;
         }
 
-        private FlowContent createHeaderElement(Page currentPage) {
+        /**
+         * Creates the header element, either a span element if the current page is the same as the header link, or an a
+         * element otherwise.
+         *
+         * @param currentPage The page for which to create a header link.
+         * @return Either a span or an a element.
+         */
+        private FlowContent createHeaderElement(final HeaderLink currentPage) {
             if (currentPage.equals(this)) {
                 return new Span(" ").clazz(clazz);
             } else {
@@ -72,19 +104,19 @@ abstract class PageBuilder {
     /**
      * Creates a header element for a page.
      *
-     * @param linkToMainPage True if a link to the main page should be added.
+     * @param currentPage A header link representing the page for which the header element should be created.
      * @return A header element for a page.
      */
-    protected Header createHeader(final Page currentPage) {
+    protected Header createHeader(final HeaderLink currentPage) {
         Header header = new Header();
         Div left = new Div().clazz("header-left");
-        left.addElement(Page.INDEX.createHeaderElement(currentPage));
+        left.addElement(HeaderLink.INDEX.createHeaderElement(currentPage));
         header.addElement(left);
         Div right = new Div().clazz("header-right");
         header.addElement(right);
-        right.addElement(Page.ELECTORAL_CALENDAR.createHeaderElement(currentPage));
+        right.addElement(HeaderLink.ELECTORAL_CALENDAR.createHeaderElement(currentPage));
         right.addContent(" · ");
-        right.addElement(Page.CSV_FILES.createHeaderElement(currentPage));
+        right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage));
         right.addContent(" · ");
         right.addElement(new Span(" ").clazz("language"));
         right.addContent(": ");
