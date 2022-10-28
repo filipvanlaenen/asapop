@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.website;
 
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Div;
+import net.filipvanlaenen.txhtmlj.FlowContent;
 import net.filipvanlaenen.txhtmlj.Footer;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Header;
@@ -19,6 +20,27 @@ import net.filipvanlaenen.txhtmlj.Title;
  * Abstract super class for classes building pages, providing some utility methods to them.
  */
 abstract class PageBuilder {
+    enum Page {
+        CSV_FILES("csv-files", "csv.html"), ELECTORAL_CALENDAR("electoral-calendar", "calendar.html"),
+        INDEX("main-page", "index.html");
+
+        private final String clazz;
+        private final String href;
+
+        private Page(String clazz, String href) {
+            this.clazz = clazz;
+            this.href = href;
+        }
+
+        private FlowContent createHeaderElement(Page currentPage) {
+            if (currentPage.equals(this)) {
+                return new Span(" ").clazz(clazz);
+            } else {
+                return new A(" ").clazz(clazz).href(href);
+            }
+        }
+    }
+
     /**
      * Creates a footer element for a page.
      *
@@ -53,22 +75,16 @@ abstract class PageBuilder {
      * @param linkToMainPage True if a link to the main page should be added.
      * @return A header element for a page.
      */
-    protected Header createHeader(final boolean linkToMainPage) {
+    protected Header createHeader(final Page currentPage) {
         Header header = new Header();
         Div left = new Div().clazz("header-left");
-        if (linkToMainPage) {
-            left.addElement(new A(" ").clazz("main-page").href("index.html"));
-        } else {
-            left.addElement(new Span(" ").clazz("main-page"));
-        }
+        left.addElement(Page.INDEX.createHeaderElement(currentPage));
         header.addElement(left);
         Div right = new Div().clazz("header-right");
         header.addElement(right);
-        if (linkToMainPage) {
-            right.addElement(new Span(" ").clazz("csv-files"));
-        } else {
-            right.addElement(new A(" ").clazz("csv-files").href("csv.html"));
-        }
+        right.addElement(Page.ELECTORAL_CALENDAR.createHeaderElement(currentPage));
+        right.addContent(" · ");
+        right.addElement(Page.CSV_FILES.createHeaderElement(currentPage));
         right.addContent(" · ");
         right.addElement(new Span(" ").clazz("language"));
         right.addContent(": ");

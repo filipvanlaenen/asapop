@@ -108,8 +108,9 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <a class=\"main-page\" href=\"index.html\"> </a>\n");
         expected.append("      </div>\n");
-        expected.append("      <div class=\"header-right\"><span class=\"csv-files\"> </span> · <span"
-                + " class=\"language\"> </span>: <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("      <div class=\"header-right\"><span class=\"electoral-calendar\"> </span> · <a"
+                + " class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>: <select"
+                + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");

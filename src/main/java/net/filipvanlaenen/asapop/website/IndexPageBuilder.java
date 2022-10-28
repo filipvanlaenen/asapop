@@ -59,7 +59,7 @@ final class IndexPageBuilder extends PageBuilder {
         html.addElement(createHead());
         Body body = new Body().onload("initializeLanguage();");
         html.addElement(body);
-        body.addElement(createHeader(false));
+        body.addElement(createHeader(PageBuilder.Page.INDEX));
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("upcoming-elections"));

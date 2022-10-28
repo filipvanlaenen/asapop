@@ -104,7 +104,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         html.addElement(createHead());
         Body body = new Body().onload("initializeLanguage();");
         html.addElement(body);
-        body.addElement(createHeader(true));
+        body.addElement(createHeader(PageBuilder.Page.ELECTORAL_CALENDAR));
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("electoral-calendar"));

@@ -88,8 +88,9 @@ public class IndexPageBuilderTest {
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <span class=\"main-page\"> </span>\n");
         expected.append("      </div>\n");
-        expected.append("      <div class=\"header-right\"><a class=\"csv-files\" href=\"csv.html\"> </a> · <span"
-                + " class=\"language\"> </span>: <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("      <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"calendar.html\">"
+                + " </a> · <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");
