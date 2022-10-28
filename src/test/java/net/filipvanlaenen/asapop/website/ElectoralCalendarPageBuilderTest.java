@@ -31,10 +31,26 @@ public class ElectoralCalendarPageBuilderTest {
         denmark.setElectionConfigurations(Set.of(danishElection));
         AreaConfiguration estonia = new AreaConfiguration();
         estonia.setAreaCode("ee");
-        ElectionConfiguration estonianElection = new ElectionConfiguration();
-        estonianElection.setNextElectionDate("2023-03-05");
-        estonianElection.setType("Parliament");
-        estonia.setElectionConfigurations(Set.of(estonianElection));
+        ElectionConfiguration estonianElectionParliament = new ElectionConfiguration();
+        estonianElectionParliament.setNextElectionDate("2023-03-05");
+        estonianElectionParliament.setType("Parliament");
+        ElectionConfiguration estonianElectionPresident = new ElectionConfiguration();
+        estonianElectionPresident.setNextElectionDate("≈2024-03");
+        estonianElectionPresident.setType("President");
+        estonia.setElectionConfigurations(Set.of(estonianElectionParliament, estonianElectionPresident));
+        AreaConfiguration france = new AreaConfiguration();
+        france.setAreaCode("fr");
+        ElectionConfiguration frenchElectionParliament = new ElectionConfiguration();
+        frenchElectionParliament.setNextElectionDate("2023-03-05");
+        frenchElectionParliament.setType("Parliament");
+        ElectionConfiguration frenchElectionPresident = new ElectionConfiguration();
+        frenchElectionPresident.setNextElectionDate("2023-03-05");
+        frenchElectionPresident.setType("President");
+        ElectionConfiguration frenchElectionLocal = new ElectionConfiguration();
+        frenchElectionLocal.setNextElectionDate("2023-03-05");
+        frenchElectionLocal.setType("Local");
+        france.setElectionConfigurations(
+                Set.of(frenchElectionParliament, frenchElectionPresident, frenchElectionLocal));
         AreaConfiguration greenland = new AreaConfiguration();
         greenland.setAreaCode("gl");
         ElectionConfiguration greenlandElection = new ElectionConfiguration();
@@ -42,7 +58,7 @@ public class ElectoralCalendarPageBuilderTest {
         greenlandElection.setType("Parliament");
         greenland.setElectionConfigurations(Set.of(greenlandElection));
         websiteConfiguration
-                .setAreaConfigurations(Set.of(denmark, estonia, greenland, sweden, new AreaConfiguration()));
+                .setAreaConfigurations(Set.of(denmark, estonia, france, greenland, sweden, new AreaConfiguration()));
         return websiteConfiguration;
     }
 
@@ -122,6 +138,26 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("            <td>2023-03-05</td>\n");
         expected.append("            <td class=\"_area_ee\"> </td>\n");
         expected.append("            <td class=\"parliament\"> </td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2023-03-05</td>\n");
+        expected.append("            <td class=\"_area_fr\"> </td>\n");
+        expected.append("            <td class=\"local\"> </td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2023-03-05</td>\n");
+        expected.append("            <td class=\"_area_fr\"> </td>\n");
+        expected.append("            <td class=\"parliament\"> </td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2023-03-05</td>\n");
+        expected.append("            <td class=\"_area_fr\"> </td>\n");
+        expected.append("            <td class=\"president\"> </td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td><span class=\"around\"> </span> 2024-03</td>\n");
+        expected.append("            <td class=\"_area_ee\"> </td>\n");
+        expected.append("            <td class=\"president\"> </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td><span class=\"no-later-than\"> </span> 2025-04-06</td>\n");
