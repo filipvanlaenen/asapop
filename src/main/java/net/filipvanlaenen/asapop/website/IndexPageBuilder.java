@@ -2,7 +2,9 @@ package net.filipvanlaenen.asapop.website;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
@@ -76,19 +78,27 @@ final class IndexPageBuilder extends PageBuilder {
     /**
      * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
      */
-    private void calculateGitHubWebsiteUrlsByNextElectionDate() {
+    private void calculateGitHubWebsiteUrlsSortedByNextElectionDate() {
         List<ElectionConfiguration> electionConfigurations = new ArrayList<ElectionConfiguration>();
+        Map<ElectionConfiguration, ExpectedDate> expectedDates = new HashMap<ElectionConfiguration, ExpectedDate>();
         for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
             if (areaConfiguration.getElectionConfigurations() != null) {
                 for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
                     if (electionConfiguration.getNextElectionDate() != null
                             && electionConfiguration.getGitHubWebsiteUrl() != null) {
                         electionConfigurations.add(electionConfiguration);
+                        expectedDates.put(electionConfiguration,
+                                ExpectedDate.parse(electionConfiguration.getNextElectionDate()));
                     }
                 }
             }
         }
-        electionConfigurations.sort(Comparator.comparing(ElectionConfiguration::getNextElectionDate));
+        electionConfigurations.sort(new Comparator<ElectionConfiguration>() {
+            @Override
+            public int compare(final ElectionConfiguration ec1, final ElectionConfiguration ec2) {
+                return expectedDates.get(ec1).compareTo(expectedDates.get(ec2));
+            }
+        });
         gitHubWebsiteUrlsByNextElectionDate = electionConfigurations.stream()
                 .map(electionConfiguration -> electionConfiguration.getGitHubWebsiteUrl()).collect(Collectors.toList());
     }
@@ -122,7 +132,7 @@ final class IndexPageBuilder extends PageBuilder {
      */
     private String getGitHubWebsiteUrlByNextElectionDate(final int index) {
         if (gitHubWebsiteUrlsByNextElectionDate == null) {
-            calculateGitHubWebsiteUrlsByNextElectionDate();
+            calculateGitHubWebsiteUrlsSortedByNextElectionDate();
         }
         return gitHubWebsiteUrlsByNextElectionDate.get(index);
     }
