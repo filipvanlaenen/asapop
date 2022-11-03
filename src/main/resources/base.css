@@ -1,0 +1,60 @@
+header {
+  display: block;
+  width: 100%;
+}
+
+.header-left {
+  display: inline-block;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  width: 49%;
+}
+
+.header-right {
+  display: inline-block;
+  float: right;
+  overflow: hidden;
+  position: relative;
+  text-align: right;
+  width: 49%;
+}
+
+.privacy-statement {
+  text-align: center;
+}
+
+.svg-chart-container-left {
+  display: inline-block;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  vertical-align: middle;
+  width: 49%;
+}
+
+.svg-chart-container-right {
+  display: inline-block;
+  float: right;
+  overflow: hidden;
+  position: relative;
+  vertical-align: middle;
+  width: 49%;
+}
+
+.two-svg-charts-container {
+  display: block;
+}
+
+@media screen and (max-width: 700px) {
+  .svg-chart-container-left {
+    width: 100%;
+  }
+  .svg-chart-container-right {
+    float: none;
+    width: 100%;
+  }
+  .two-svg-charts-container {
+  }
+}
