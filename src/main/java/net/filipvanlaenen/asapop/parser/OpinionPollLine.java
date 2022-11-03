@@ -101,6 +101,9 @@ final class OpinionPollLine extends Line {
         if (!builder.hasDates()) {
             warnings.add(new DatesMissingWarning(lineNumber));
         }
+        if (!builder.hasPollingFirmOrCommissioner()) {
+            warnings.add(new PollingFirmAndCommissionerMissingWarning(lineNumber));   
+        }
         return new OpinionPollLine(builder.build(), warnings);
     }
 

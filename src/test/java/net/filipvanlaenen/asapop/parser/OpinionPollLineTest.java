@@ -331,4 +331,13 @@ public final class OpinionPollLineTest {
         Set<Warning> expected = Set.of(new DatesMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+    /**
+     * Verifies that a line missing both polling firm and commissioner produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForMissingPollingFirmsAndCommissioner() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PD: 2021-07-27 A:55 B:45", 1);
+        Set<Warning> expected = Set.of(new PollingFirmAndCommissionerMissingWarning(1));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
 }

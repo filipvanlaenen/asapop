@@ -238,6 +238,15 @@ public final class OpinionPoll {
         }
 
         /**
+         * Returns whether a polling firm and/or a commissioner has been registered in this builder instance.
+         *
+         * @return True if a polling firm or a commissioner has been registered in this builder instance.
+         */
+        public boolean hasPollingFirmOrCommissioner() {
+            return pollingFirm != null || !commissioners.isEmpty();
+        }
+
+        /**
          * Returns whether any results have been registered in this builder instance.
          *
          * @return True if at least one result has been registered in this builder instance.

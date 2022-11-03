@@ -33,6 +33,15 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that after a commissioner has been added, the builder responds that there is a polling firm or
+     * commissioner present.
+     */
+    @Test
+    public void hasPollingFirmOrCommissionerInBuilderShouldReturnTrueAfterCommissionerIsAdded() {
+        assertTrue(new OpinionPoll.Builder().addCommissioner("The Times").hasPollingFirmOrCommissioner());
+    }
+
+    /**
      * Verifies that the setArea method in the builder class is wired correctly to the getArea method.
      */
     @Test
@@ -47,6 +56,14 @@ public class OpinionPollTest {
     @Test
     public void hasDatesInBuilderShouldReturnFalseBeforeDatesAreAdded() {
         assertFalse(new OpinionPoll.Builder().hasDates());
+    }
+
+    /**
+     * Verifies that after instantiation, the builder responds that the polling firm and the commissioner are missing.
+     */
+    @Test
+    public void hasPollingFirmOrCommissionerInBuilderShouldReturnFalseAfterInstantiation() {
+        assertFalse(new OpinionPoll.Builder().hasPollingFirmOrCommissioner());
     }
 
     /**
@@ -109,6 +126,15 @@ public class OpinionPollTest {
     public void setPollingFirmInBuilderShouldBeWiredCorrectlyToGetPollingFirm() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").build();
         assertEquals("ACME", poll.getPollingFirm());
+    }
+
+    /**
+     * Verifies that after a polling firm has been added, the builder responds that there is a polling firm or
+     * commissioner present.
+     */
+    @Test
+    public void hasPollingFirmOrCommissionerInBuilderShouldReturnTrueAfterPollingFirmIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setPollingFirm("ACME").hasPollingFirmOrCommissioner());
     }
 
     /**
