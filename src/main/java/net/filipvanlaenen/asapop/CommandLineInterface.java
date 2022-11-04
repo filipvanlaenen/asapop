@@ -146,7 +146,8 @@ public final class CommandLineInterface {
                     }
                 }
                 Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
-                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap).build();
+                String baseStyleSheetContent = readResource("/base.css");
+                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, baseStyleSheetContent).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },

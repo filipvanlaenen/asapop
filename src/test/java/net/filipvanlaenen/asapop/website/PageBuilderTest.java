@@ -35,32 +35,7 @@ public class PageBuilderTest {
         expected.append("<head>\n");
         expected.append("  <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
         expected.append("  <title>ASAPOP Website</title>\n");
-        expected.append("  <style>header { display: block; width: 100%; }\n");
-        expected.append(".header-left {\n");
-        expected.append(
-                "  display: inline-block; float: left; overflow: hidden; position: relative; text-align: left;\n");
-        expected.append("  width: 49%;\n");
-        expected.append("}\n");
-        expected.append(".header-right {\n");
-        expected.append("  display: inline-block; float: right; overflow: hidden; position: relative;\n");
-        expected.append("  text-align: right; width: 49%;\n");
-        expected.append("}\n");
-        expected.append(".privacy-statement { text-align: center; }\n");
-        expected.append(".svg-chart-container-left {\n");
-        expected.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
-        expected.append("  overflow: hidden; float: left;\n");
-        expected.append("}\n");
-        expected.append(".svg-chart-container-right {\n");
-        expected.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
-        expected.append("  overflow: hidden; float: right;\n");
-        expected.append("}\n");
-        expected.append(".two-svg-charts-container { display: block; }\n");
-        expected.append("@media screen and (max-width: 700px) {\n");
-        expected.append("  .svg-chart-container-left { width: 100%; }\n");
-        expected.append("  .svg-chart-container-right { float: none; width: 100%; }\n");
-        expected.append("  .two-svg-charts-container { }\n");
-        expected.append("}\n");
-        expected.append("</style>\n");
+        expected.append("  <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
                 + " type=\"application/javascript\"> </script>\n");
         expected.append(

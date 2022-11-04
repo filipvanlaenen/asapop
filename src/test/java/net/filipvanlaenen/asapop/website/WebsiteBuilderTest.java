@@ -85,10 +85,13 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
+        String baseStyleSheetContent = "header { display: block; width: 100%; }";
+        map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap);
+        WebsiteBuilder builder =
+                new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap, baseStyleSheetContent);
         assertEquals(map, builder.build().asMap());
     }
 }

@@ -10,7 +10,7 @@ import net.filipvanlaenen.asapop.yaml.Terms;
 /**
  * Class building the JavaScripts files.
  */
-public class JavaScriptsBuilder {
+class JavaScriptsBuilder {
     /**
      * The internationalization terms.
      */
@@ -21,7 +21,7 @@ public class JavaScriptsBuilder {
      *
      * @param terms The internationalization terms.
      */
-    public JavaScriptsBuilder(final Terms terms) {
+    JavaScriptsBuilder(final Terms terms) {
         this.terms = terms;
     }
 
@@ -30,7 +30,7 @@ public class JavaScriptsBuilder {
      *
      * @return A map with the JavaScript files and their paths.
      */
-    public Map<Path, String> build() {
+    Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
         result.put(Paths.get("_js", "internationalization.js"), new InternationalizationScriptBuilder(terms).build());
         return result;

@@ -8,12 +8,13 @@ import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Header;
 import net.filipvanlaenen.txhtmlj.HttpEquivValue;
 import net.filipvanlaenen.txhtmlj.JavaScriptMimeTypeValue;
+import net.filipvanlaenen.txhtmlj.Link;
+import net.filipvanlaenen.txhtmlj.LinkTypeValue;
 import net.filipvanlaenen.txhtmlj.Meta;
 import net.filipvanlaenen.txhtmlj.Option;
 import net.filipvanlaenen.txhtmlj.Script;
 import net.filipvanlaenen.txhtmlj.Select;
 import net.filipvanlaenen.txhtmlj.Span;
-import net.filipvanlaenen.txhtmlj.Style;
 import net.filipvanlaenen.txhtmlj.Title;
 
 /**
@@ -93,7 +94,7 @@ abstract class PageBuilder {
         Head head = new Head();
         head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
         head.addElement(new Title("ASAPOP Website"));
-        head.addElement(createStyle());
+        head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href("_css/base.css").type("text/css"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
                 .src("https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
@@ -129,39 +130,5 @@ abstract class PageBuilder {
         languageSelector.addElement(new Option("norsk").value("no"));
         right.addElement(languageSelector);
         return header;
-    }
-
-    /**
-     * Creates a style element for a page.
-     *
-     * @return A style element for a page.
-     */
-    private Style createStyle() {
-        StringBuffer style = new StringBuffer();
-        style.append("header { display: block; width: 100%; }\n");
-        style.append(".header-left {\n");
-        style.append("  display: inline-block; float: left; overflow: hidden; position: relative; text-align: left;\n");
-        style.append("  width: 49%;\n");
-        style.append("}\n");
-        style.append(".header-right {\n");
-        style.append("  display: inline-block; float: right; overflow: hidden; position: relative;\n");
-        style.append("  text-align: right; width: 49%;\n");
-        style.append("}\n");
-        style.append(".privacy-statement { text-align: center; }\n");
-        style.append(".svg-chart-container-left {\n");
-        style.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
-        style.append("  overflow: hidden; float: left;\n");
-        style.append("}\n");
-        style.append(".svg-chart-container-right {\n");
-        style.append("  display: inline-block; position: relative; width: 49%; vertical-align: middle;\n");
-        style.append("  overflow: hidden; float: right;\n");
-        style.append("}\n");
-        style.append(".two-svg-charts-container { display: block; }\n");
-        style.append("@media screen and (max-width: 700px) {\n");
-        style.append("  .svg-chart-container-left { width: 100%; }\n");
-        style.append("  .svg-chart-container-right { float: none; width: 100%; }\n");
-        style.append("  .two-svg-charts-container { }\n");
-        style.append("}\n");
-        return new Style(style.toString());
     }
 }
