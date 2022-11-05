@@ -95,6 +95,7 @@ abstract class PageBuilder {
         head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
         head.addElement(new Title("ASAPOP Website"));
         head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href("_css/base.css").type("text/css"));
+        head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href("_css/skin.css").type("text/css"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
                 .src("https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)

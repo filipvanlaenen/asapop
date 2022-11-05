@@ -87,11 +87,13 @@ public class WebsiteBuilderTest {
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
         String baseStyleSheetContent = "header { display: block; width: 100%; }";
         map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
+        String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
+        map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        WebsiteBuilder builder =
-                new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap, baseStyleSheetContent);
+        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
+                baseStyleSheetContent, customStyleSheetContent);
         assertEquals(map, builder.build().asMap());
     }
 }

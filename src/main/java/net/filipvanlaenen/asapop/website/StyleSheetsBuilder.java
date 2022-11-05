@@ -7,14 +7,16 @@ import java.util.Map;
 
 class StyleSheetsBuilder {
     private final String baseStyleSheetContent;
+    private final String customStyleSheetContent;
 
     /**
      * Constructor taking the base style sheet content as its parameter.
      *
      * @param baseStyleSheetContent The base style sheet content.
      */
-    StyleSheetsBuilder(final String baseStyleSheetContent) {
+    StyleSheetsBuilder(final String baseStyleSheetContent, final String customStyleSheetContent) {
         this.baseStyleSheetContent = baseStyleSheetContent;
+        this.customStyleSheetContent = customStyleSheetContent;
     }
 
     /**
@@ -25,6 +27,7 @@ class StyleSheetsBuilder {
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
         result.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
+        result.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         return result;
     }
 }

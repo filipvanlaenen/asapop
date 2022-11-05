@@ -11,6 +11,7 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  */
 public class WebsiteBuilder {
     private final String baseStyleSheetContent;
+    private final String customStyleSheetContent;
     /**
      * The map with the opinion polls.
      */
@@ -33,11 +34,12 @@ public class WebsiteBuilder {
      * @param opinionPollsMap      The map with all the opinion polls.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
-            final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent) {
+            final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent, final String customStyleSheetContent) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
         this.baseStyleSheetContent = baseStyleSheetContent;
+        this.customStyleSheetContent = customStyleSheetContent;
     }
 
     /**
@@ -54,7 +56,7 @@ public class WebsiteBuilder {
         website.putAll(csvFilesBuilder.build());
         JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(terms);
         website.putAll(javaScriptsBuilder.build());
-        website.putAll(new StyleSheetsBuilder(baseStyleSheetContent).build());
+        website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
         return website;
     }
 }

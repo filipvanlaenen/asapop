@@ -55,6 +55,7 @@ public class CsvFilesPageBuilderTest {
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
         expected.append("    <title>ASAPOP Website</title>\n");
         expected.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
+        expected.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
                 + " type=\"application/javascript\"> </script>\n");
         expected.append(

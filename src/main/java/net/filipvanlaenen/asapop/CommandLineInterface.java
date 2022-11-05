@@ -48,6 +48,10 @@ public final class CommandLineInterface {
      * The integer number three.
      */
     private static final int THREE = 3;
+    /**
+     * The integer number four.
+     */
+    private static final int FOUR = 4;
 
     /**
      * The main entry point for the command line interface.
@@ -84,7 +88,8 @@ public final class CommandLineInterface {
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.println("  analyze <ropf-file-name> <election-yaml-file-name> <analysis-result-yaml-file-name>");
-        System.out.println("  build <site-dir-name> <website-configuration-yaml-file-name>");
+        System.out.println(
+                "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
     }
@@ -132,6 +137,7 @@ public final class CommandLineInterface {
                 String siteDirName = args[1];
                 String siteConfigurationFileName = args[2];
                 String ropfDirName = args[THREE];
+                String customStyleSheetFileName = args[FOUR];
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 WebsiteConfiguration websiteConfiguration =
@@ -147,7 +153,9 @@ public final class CommandLineInterface {
                 }
                 Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
                 String baseStyleSheetContent = readResource("/base.css");
-                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, baseStyleSheetContent).build();
+                String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
+                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap,
+                        baseStyleSheetContent, customStyleSheetContent).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },
