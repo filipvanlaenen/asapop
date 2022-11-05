@@ -5,14 +5,24 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classing building the style sheets.
+ */
 class StyleSheetsBuilder {
+    /**
+     * The content of the base style sheet.
+     */
     private final String baseStyleSheetContent;
+    /**
+     * The content of the custom style sheet.
+     */
     private final String customStyleSheetContent;
 
     /**
      * Constructor taking the base style sheet content as its parameter.
      *
-     * @param baseStyleSheetContent The base style sheet content.
+     * @param baseStyleSheetContent   The base style sheet content.
+     * @param customStyleSheetContent The custom style sheet content.
      */
     StyleSheetsBuilder(final String baseStyleSheetContent, final String customStyleSheetContent) {
         this.baseStyleSheetContent = baseStyleSheetContent;

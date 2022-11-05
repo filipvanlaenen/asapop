@@ -70,7 +70,7 @@ public final class PollingFirmAndCommissionerMissingWarningTest {
      * same hashCode.
      */
     @Test
-    public void twoPollingFirmAndCommissionerMissingWarningsConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
+    public void twoPollingFirmAndCommissionerMissingWarningsConstructedWithSameParametersShouldHaveTheSameHashCode() {
         assertEquals(WARNING_1.hashCode(), new PollingFirmAndCommissionerMissingWarning(1).hashCode());
     }
 

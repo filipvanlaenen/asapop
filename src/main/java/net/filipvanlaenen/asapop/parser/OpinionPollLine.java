@@ -102,7 +102,7 @@ final class OpinionPollLine extends Line {
             warnings.add(new DatesMissingWarning(lineNumber));
         }
         if (!builder.hasPollingFirmOrCommissioner()) {
-            warnings.add(new PollingFirmAndCommissionerMissingWarning(lineNumber));   
+            warnings.add(new PollingFirmAndCommissionerMissingWarning(lineNumber));
         }
         return new OpinionPollLine(builder.build(), warnings);
     }

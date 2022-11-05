@@ -11,7 +11,7 @@ class PollingFirmAndCommissionerMissingWarning extends Warning {
      *
      * @param lineNumber The number of the line where the warning occurred.
      */
-    PollingFirmAndCommissionerMissingWarning(int lineNumber) {
+    PollingFirmAndCommissionerMissingWarning(final int lineNumber) {
         super(lineNumber);
     }
 

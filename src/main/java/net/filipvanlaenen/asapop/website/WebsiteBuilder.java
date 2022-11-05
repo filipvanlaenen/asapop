@@ -10,7 +10,13 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  * Class building the website.
  */
 public class WebsiteBuilder {
+    /**
+     * The content of the base style sheet.
+     */
     private final String baseStyleSheetContent;
+    /**
+     * The content of the custom style sheet.
+     */
     private final String customStyleSheetContent;
     /**
      * The map with the opinion polls.
@@ -29,12 +35,15 @@ public class WebsiteBuilder {
      * Constructor taking a website configuration, the internationalization terms and a map with the opinion polls as
      * its parameters.
      *
-     * @param websiteConfiguration The website configuration.
-     * @param terms                The internationalization terms.
-     * @param opinionPollsMap      The map with all the opinion polls.
+     * @param websiteConfiguration    The website configuration.
+     * @param terms                   The internationalization terms.
+     * @param opinionPollsMap         The map with all the opinion polls.
+     * @param baseStyleSheetContent   The base style sheet content.
+     * @param customStyleSheetContent The custom style sheet content.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
-            final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent, final String customStyleSheetContent) {
+            final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent,
+            final String customStyleSheetContent) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
