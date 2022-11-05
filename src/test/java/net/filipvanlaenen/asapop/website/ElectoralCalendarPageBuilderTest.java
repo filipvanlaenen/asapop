@@ -56,7 +56,10 @@ public class ElectoralCalendarPageBuilderTest {
         ElectionConfiguration greenlandElection = new ElectionConfiguration();
         greenlandElection.setNextElectionDate("≤2025-04-06");
         greenlandElection.setType("Parliament");
-        greenland.setElectionConfigurations(Set.of(greenlandElection));
+        ElectionConfiguration greenlandElectionLocal = new ElectionConfiguration();
+        greenlandElectionLocal.setNextElectionDate("2023-03-05");
+        greenlandElectionLocal.setType("Local");
+        greenland.setElectionConfigurations(Set.of(greenlandElection, greenlandElectionLocal));
         websiteConfiguration
                 .setAreaConfigurations(Set.of(denmark, estonia, france, greenland, sweden, new AreaConfiguration()));
         return websiteConfiguration;
@@ -130,6 +133,11 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("            <td>2023-03-05</td>\n");
         expected.append("            <td class=\"_area_fr\"> </td>\n");
         expected.append("            <td class=\"president\"> </td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2023-03-05</td>\n");
+        expected.append("            <td class=\"_area_gl\"> </td>\n");
+        expected.append("            <td class=\"local\"> </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td><span class=\"around\"> </span> 2024-03</td>\n");
