@@ -73,10 +73,12 @@ final class CsvFilesPageBuilder extends PageBuilder {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
             tBody.addElement(areaTr);
-            TD td = new TD();
-            areaTr.addElement(td);
-            td.addElement(new A(areaCode + ".csv").href("_csv/" + areaCode + ".csv"));
-            areaTr.addElement(new TD(" ").clazz("_area_" + areaCode));
+            TD tdCsvLink = new TD();
+            areaTr.addElement(tdCsvLink);
+            tdCsvLink.addElement(new A(areaCode + ".csv").href("_csv/" + areaCode + ".csv"));
+            TD tdAreaName = new TD();
+            areaTr.addElement(tdAreaName);
+            tdAreaName.addElement(new A(" ").clazz("_area_" + areaCode).href(areaCode + "/index.html"));
         }
         body.addElement(createFooter());
         return html;
