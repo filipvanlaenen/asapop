@@ -58,14 +58,14 @@ public class WebsiteBuilder {
      */
     public Website build() {
         Website website = new Website();
-        website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());
-        website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration).build());
-        website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
-        CsvFilesBuilder csvFilesBuilder = new CsvFilesBuilder(websiteConfiguration, opinionPollsMap);
-        website.putAll(csvFilesBuilder.build());
         JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(terms);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
+        website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());
+        website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration).build());
+        website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
+        website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
+        website.putAll(new AreaIndexPagesBuilder(websiteConfiguration).build());
         return website;
     }
 }

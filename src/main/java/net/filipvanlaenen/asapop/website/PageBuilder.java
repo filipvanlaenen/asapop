@@ -65,11 +65,11 @@ abstract class PageBuilder {
          * @param currentPage The page for which to create a header link.
          * @return Either a span or an a element.
          */
-        private FlowContent createHeaderElement(final HeaderLink currentPage) {
-            if (currentPage.equals(this)) {
+        private FlowContent createHeaderElement(final HeaderLink currentPage, final String relativePath) {
+            if (this.equals(currentPage)) {
                 return new Span(" ").clazz(clazz);
             } else {
-                return new A(" ").clazz(clazz).href(href);
+                return new A(" ").clazz(clazz).href(relativePath + href);
             }
         }
     }
@@ -91,16 +91,29 @@ abstract class PageBuilder {
      * @return A head element for a page.
      */
     protected Head createHead() {
+        return createHead(0);
+    }
+
+    protected Head createHead(final int level) {
+        String relativePath = createRelativePath(level);
         Head head = new Head();
         head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
         head.addElement(new Title("ASAPOP Website"));
-        head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href("_css/base.css").type("text/css"));
-        head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href("_css/skin.css").type("text/css"));
+        head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(relativePath + "_css/base.css").type("text/css"));
+        head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(relativePath + "_css/skin.css").type("text/css"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
                 .src("https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
-                .src("_js/internationalization.js"));
+                .src(relativePath + "_js/internationalization.js"));
         return head;
+    }
+
+    protected Header createHeader() {
+        return createHeader(null, 0);
+    }
+
+    protected Header createHeader(final int level) {
+        return createHeader(null, level);
     }
 
     /**
@@ -110,15 +123,20 @@ abstract class PageBuilder {
      * @return A header element for a page.
      */
     protected Header createHeader(final HeaderLink currentPage) {
+        return createHeader(currentPage, 0);
+    }
+
+    protected Header createHeader(final HeaderLink currentPage, final int level) {
+        String relativePath = createRelativePath(level);
         Header header = new Header();
         Div left = new Div().clazz("header-left");
-        left.addElement(HeaderLink.INDEX.createHeaderElement(currentPage));
+        left.addElement(HeaderLink.INDEX.createHeaderElement(currentPage, relativePath));
         header.addElement(left);
         Div right = new Div().clazz("header-right");
         header.addElement(right);
-        right.addElement(HeaderLink.ELECTORAL_CALENDAR.createHeaderElement(currentPage));
+        right.addElement(HeaderLink.ELECTORAL_CALENDAR.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
-        right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage));
+        right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
         right.addElement(new Span(" ").clazz("language"));
         right.addContent(": ");
@@ -131,5 +149,13 @@ abstract class PageBuilder {
         languageSelector.addElement(new Option("norsk").value("no"));
         right.addElement(languageSelector);
         return header;
+    }
+
+    private String createRelativePath(final int level) {
+        String relativePath = "";
+        for (int i = 0; i < level; i++) {
+            relativePath += "../";
+        }
+        return relativePath;
     }
 }

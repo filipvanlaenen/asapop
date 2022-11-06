@@ -80,6 +80,7 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
+        map.put(Paths.get("mk", "index.html"), new AreaIndexPagesBuilder(websiteConfiguration).createAreaIndexPage("mk"));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_csv", "mk.csv"),
