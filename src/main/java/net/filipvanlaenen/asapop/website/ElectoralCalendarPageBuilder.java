@@ -7,6 +7,7 @@ import java.util.List;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Html;
@@ -161,7 +162,9 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
             } else {
                 areaTr.addElement(new TD(entry.getNextElectionDate().getDateString()));
             }
-            areaTr.addElement(new TD(" ").clazz("_area_" + entry.getAreaCode()));
+            TD td = new TD();
+            areaTr.addElement(td);
+            td.addElement(new A(" ").clazz("_area_" + entry.getAreaCode()).href(entry.getAreaCode() + "/index.html"));
             areaTr.addElement(new TD(" ").clazz(entry.getTypeAsClass()));
         }
         body.addElement(createFooter());
