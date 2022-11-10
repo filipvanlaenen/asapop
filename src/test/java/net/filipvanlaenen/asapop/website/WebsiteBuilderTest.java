@@ -25,6 +25,8 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    private AreaConfiguration northMacedonia;
+
     /**
      * Creates a set of terms for the internationalization script builder.
      *
@@ -61,7 +63,7 @@ public class WebsiteBuilderTest {
         bulgarianElection.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         bulgarianElection.setNextElectionDate("2022-10-02");
         bulgaria.setElectionConfigurations(Set.of(bulgarianElection));
-        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfiguration = new CsvConfiguration();
         csvConfiguration.setElectoralListKeys(List.of("A", "B"));
@@ -80,7 +82,8 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
-        map.put(Paths.get("mk", "index.html"), new AreaIndexPagesBuilder(websiteConfiguration).createAreaIndexPage("mk"));
+        map.put(Paths.get("mk", "index.html"),
+                new AreaIndexPagesBuilder(websiteConfiguration).createAreaIndexPage(northMacedonia));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_csv", "mk.csv"),

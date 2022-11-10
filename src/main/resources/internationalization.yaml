@@ -64,6 +64,9 @@ terms:
       fr: "Parlement européen"
       nl: "Europees Parlement"
       no: "Europaparlamentet"
+  - key: "fieldwork-period"
+    translations:
+      en: "Fieldwork Period"
   - key: "language"
     translations:
       de: "Sprache"
@@ -72,6 +75,14 @@ terms:
       fr: "Langue"
       nl: "Taal"
       no: "Språk"
+  - key: "latest-opinion-polls"
+    translations:
+      de: "Neueste Umfragen"
+      en: "Latest Opinion Polls"
+      eo: "Plej novaj opinisondoj"
+      fr: "Derniers sondages"
+      nl: "Laatste opiniepeilingen"
+      no: "Siste meningsmålinger"
   - key: "main-page"
     translations:
       de: "Hauptseite"
@@ -88,6 +99,14 @@ terms:
       fr: "Au plus tard"
       nl: "Niet later dan"
       no: "Senest"
+  - key: "none"
+    translations:
+      de: "Keine"
+      en: "None"
+      eo: "Neniu"
+      fr: "Aucun"
+      nl: "Geen"
+      no: "Ingen"
   - key: "parliament"
     translations:
       de: "Parlament"
@@ -96,6 +115,9 @@ terms:
       fr: "Parlement"
       nl: "Parlement"
       no: "Parlament"
+  - key: "polling-firm-commissioner"
+    translations:
+      en: "Polling Firm/Commissioner"
   - key: "president"
     translations:
       de: "Präsident"

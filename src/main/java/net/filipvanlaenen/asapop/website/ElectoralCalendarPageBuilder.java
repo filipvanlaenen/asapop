@@ -149,19 +149,16 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
             TR areaTr = new TR();
             tBody.addElement(areaTr);
             ExpectedDate nextElectionDate = entry.getNextElectionDate();
+            TD cell = new TD();
+            areaTr.addElement(cell);
             if (nextElectionDate.isApproximate()) {
-                TD cell = new TD();
                 cell.addElement(new Span(" ").clazz("around"));
-                cell.addContent(" " + entry.getNextElectionDate().getDateString());
-                areaTr.addElement(cell);
+                cell.addContent(" ");
             } else if (nextElectionDate.isDeadline()) {
-                TD cell = new TD();
                 cell.addElement(new Span(" ").clazz("no-later-than"));
-                cell.addContent(" " + entry.getNextElectionDate().getDateString());
-                areaTr.addElement(cell);
-            } else {
-                areaTr.addElement(new TD(entry.getNextElectionDate().getDateString()));
+                cell.addContent(" ");
             }
+            cell.addContent(nextElectionDate.getDateString());
             TD td = new TD();
             areaTr.addElement(td);
             td.addElement(new A(" ").clazz("_area_" + entry.getAreaCode()).href(entry.getAreaCode() + "/index.html"));
