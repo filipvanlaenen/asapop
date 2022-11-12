@@ -168,6 +168,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             P p = new P();
             section.addElement(p);
             p.addElement(new Span(" ").clazz("none"));
+            p.addContent(".");
         } else {
             List<OpinionPoll> opinionPollList = new ArrayList<OpinionPoll>(opinionPolls.getOpinionPolls());
             opinionPollList.sort(new Comparator<OpinionPoll>() {
@@ -205,7 +206,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             }
             List<Set<ElectoralList>> largestElectoralListSets =
                     sortedElectoralListSets.subList(0, numberOfElectoralListColumns);
-            Table table = new Table();
+            Table table = new Table().clazz("opinion-polls-table");
             section.addElement(table);
             THead tHead = new THead();
             table.addElement(tHead);
@@ -215,9 +216,10 @@ class AreaIndexPagesBuilder extends PageBuilder {
             tr.addElement(new TH(" ").clazz("polling-firm-commissioner"));
             for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
                 List<String> abbreviations =
-                        electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
+                        electoralListSet.stream().map(el -> el.getRomanizedAbbreviation() == null ? el.getAbbreviation()
+                                : el.getRomanizedAbbreviation()).collect(Collectors.toList());
                 Collections.sort(abbreviations);
-                tr.addElement(new TH(String.join("–", abbreviations)));
+                tr.addElement(new TH(String.join("–", abbreviations)).clazz("electoral-lists-th"));
             }
             tr.addElement(new TH(" ").clazz("other"));
             TBody tBody = new TBody();
@@ -268,7 +270,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
                     ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
                     if (resultValue == null) {
-                        opinionPollRow.addElement(new TD("—"));
+                        opinionPollRow.addElement(new TD("—").clazz("result-value-td"));
                     } else {
                         String thisPrecision = resultValue.getPrecision();
                         if (thisPrecision.equals("0.1")) {
@@ -280,9 +282,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
                         String text = resultValue.getText();
                         int decimalPointIndex = text.indexOf(".");
                         if (decimalPointIndex < 0) {
-                            opinionPollRow.addElement(new TD(text + "%"));
+                            opinionPollRow.addElement(new TD(text + "%").clazz("result-value-td"));
                         } else {
-                            TD valueTd = new TD();
+                            TD valueTd = new TD().clazz("result-value-td");
                             valueTd.addContent(text.substring(0, decimalPointIndex));
                             valueTd.addElement(new Span(" ").clazz("decimal-point"));
                             valueTd.addContent(text.substring(decimalPointIndex + 1) + "%");
@@ -299,12 +301,12 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 }
                 int decimalPointIndex = otherText.indexOf(".");
                 if (decimalPointIndex < 0) {
-                    opinionPollRow.addElement(new TD(otherText + "%"));
+                    opinionPollRow.addElement(new TD("("+otherText + "%)").clazz("result-value-td"));
                 } else {
-                    TD valueTd = new TD();
+                    TD valueTd = new TD("(").clazz("result-value-td");
                     valueTd.addContent(otherText.substring(0, decimalPointIndex));
                     valueTd.addElement(new Span(" ").clazz("decimal-point"));
-                    valueTd.addContent(otherText.substring(decimalPointIndex + 1) + "%");
+                    valueTd.addContent(otherText.substring(decimalPointIndex + 1) + "%)");
                     opinionPollRow.addElement(valueTd);
                 }
             }
