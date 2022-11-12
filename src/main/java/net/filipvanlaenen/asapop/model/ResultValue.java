@@ -25,6 +25,22 @@ public final class ResultValue {
         this.lessThan = text.startsWith("<");
     }
 
+    public Double getNominalValue() {
+        return Double.parseDouble(getPrimitiveText());
+    }
+
+    public String getPrecision() {
+        String number = getPrimitiveText();
+        if (number.contains(".")) {
+            if (number.endsWith(".5")) {
+                return "0.5";
+            } else if (!number.endsWith(".0")) {
+                return "0.1";
+            }
+        }
+        return "1";
+    }
+
     /**
      * Returns a primitive text representing the result value.
      *

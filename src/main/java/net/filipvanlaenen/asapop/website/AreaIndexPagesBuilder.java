@@ -2,13 +2,22 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
+import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
@@ -16,11 +25,14 @@ import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.H2;
 import net.filipvanlaenen.txhtmlj.Html;
+import net.filipvanlaenen.txhtmlj.I;
 import net.filipvanlaenen.txhtmlj.LI;
 import net.filipvanlaenen.txhtmlj.P;
 import net.filipvanlaenen.txhtmlj.Section;
 import net.filipvanlaenen.txhtmlj.Span;
+import net.filipvanlaenen.txhtmlj.Sup;
 import net.filipvanlaenen.txhtmlj.TBody;
+import net.filipvanlaenen.txhtmlj.TD;
 import net.filipvanlaenen.txhtmlj.TH;
 import net.filipvanlaenen.txhtmlj.THead;
 import net.filipvanlaenen.txhtmlj.TR;
@@ -71,12 +83,21 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
+     * A map with the opinion polls.
+     */
+    private final Map<String, OpinionPolls> opinionPollsMap;
+    /**
      * The configuration for the website.
      */
     private final WebsiteConfiguration websiteConfiguration;
+    private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    private static final DecimalFormat INTEGER = new DecimalFormat("0", symbols);
+    private static final DecimalFormat ONE_DECIMAL = new DecimalFormat("0.0", symbols);
 
-    AreaIndexPagesBuilder(final WebsiteConfiguration websiteConfiguration) {
+    AreaIndexPagesBuilder(final WebsiteConfiguration websiteConfiguration,
+            final Map<String, OpinionPolls> opinionPollsMap) {
         this.websiteConfiguration = websiteConfiguration;
+        this.opinionPollsMap = opinionPollsMap;
     }
 
     Map<Path, String> build() {
@@ -142,16 +163,160 @@ class AreaIndexPagesBuilder extends PageBuilder {
             }
         }
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
-        Table table = new Table();
-        section.addElement(table);
-        THead tHead = new THead();
-        table.addElement(tHead);
-        TR tr = new TR();
-        tHead.addElement(tr);
-        tr.addElement(new TH(" ").clazz("fieldwork-period"));
-        tr.addElement(new TH(" ").clazz("polling-firm-commissioner"));
-        TBody tBody = new TBody();
-        table.addElement(tBody);
+        OpinionPolls opinionPolls = opinionPollsMap.get(areaConfiguration.getAreaCode());
+        if (opinionPolls == null) {
+            P p = new P();
+            section.addElement(p);
+            p.addElement(new Span(" ").clazz("none"));
+        } else {
+            List<OpinionPoll> opinionPollList = new ArrayList<OpinionPoll>(opinionPolls.getOpinionPolls());
+            opinionPollList.sort(new Comparator<OpinionPoll>() {
+                @Override
+                public int compare(OpinionPoll op1, OpinionPoll op2) {
+                    return op2.getEndDate().compareTo(op1.getEndDate());
+                }
+            });
+            int numberOfOpinionPolls = opinionPollList.size();
+            List<OpinionPoll> latestOpinionPolls =
+                    opinionPollList.subList(0, numberOfOpinionPolls > 10 ? 10 : numberOfOpinionPolls);
+            Map<Set<ElectoralList>, Double> electoralListSets = new HashMap<Set<ElectoralList>, Double>();
+            for (OpinionPoll opinionPoll : latestOpinionPolls) {
+                for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario()
+                        .getElectoralListSets()) {
+                    ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
+                    Double nominalValue = resultValue.getNominalValue();
+                    if (!electoralListSets.containsKey(electoralListSet)
+                            || nominalValue > electoralListSets.get(electoralListSet)) {
+                        electoralListSets.put(electoralListSet, nominalValue);
+                    }
+                }
+            }
+            List<Set<ElectoralList>> sortedElectoralListSets =
+                    new ArrayList<Set<ElectoralList>>(electoralListSets.keySet());
+            sortedElectoralListSets.sort(new Comparator<Set<ElectoralList>>() {
+                @Override
+                public int compare(Set<ElectoralList> els1, Set<ElectoralList> els2) {
+                    return electoralListSets.get(els2).compareTo(electoralListSets.get(els1));
+                }
+            });
+            int numberOfElectoralListColumns = sortedElectoralListSets.size();
+            if (numberOfElectoralListColumns > 7) {
+                numberOfElectoralListColumns = 7;
+            }
+            List<Set<ElectoralList>> largestElectoralListSets =
+                    sortedElectoralListSets.subList(0, numberOfElectoralListColumns);
+            Table table = new Table();
+            section.addElement(table);
+            THead tHead = new THead();
+            table.addElement(tHead);
+            TR tr = new TR();
+            tHead.addElement(tr);
+            tr.addElement(new TH(" ").clazz("fieldwork-period"));
+            tr.addElement(new TH(" ").clazz("polling-firm-commissioner"));
+            for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
+                List<String> abbreviations =
+                        electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
+                Collections.sort(abbreviations);
+                tr.addElement(new TH(String.join("–", abbreviations)));
+            }
+            tr.addElement(new TH(" ").clazz("other"));
+            TBody tBody = new TBody();
+            table.addElement(tBody);
+            boolean publicationDateFootnote = false;
+            for (OpinionPoll opinionPoll : latestOpinionPolls) {
+                TR opinionPollRow = new TR();
+                tBody.addElement(opinionPollRow);
+                String start = "";
+                if (opinionPoll.getFieldworkStart() != null) {
+                    start = opinionPoll.getFieldworkStart().toString();
+                }
+                boolean publicationDateUsed = false;
+                String end = "";
+                if (opinionPoll.getFieldworkEnd() != null) {
+                    end = opinionPoll.getFieldworkEnd().toString();
+                } else if (opinionPoll.getPublicationDate() != null) {
+                    end = opinionPoll.getPublicationDate().toString();
+                    publicationDateUsed = true;
+                    publicationDateFootnote = true;
+                }
+                String fieldworkPeriod = start.equals(end) ? start : start + " – " + end;
+                TD fieldworkTd = new TD(fieldworkPeriod);
+                if (publicationDateUsed) {
+                    Sup sup = new Sup();
+                    fieldworkTd.addElement(sup);
+                    sup.addElement(new I("p"));
+                }
+                opinionPollRow.addElement(fieldworkTd);
+                String pollingFirm = opinionPoll.getPollingFirm();
+                List<String> commissioners = new ArrayList<String>(opinionPoll.getCommissioners());
+                commissioners.sort(new Comparator<String>() {
+                    @Override
+                    public int compare(String c1, String c2) {
+                        return c1.compareToIgnoreCase(c2);
+                    }
+                });
+                String commissionerText = String.join("–", commissioners);
+                if (pollingFirm == null) {
+                    opinionPollRow.addElement(new TD(commissionerText));
+                } else if (commissionerText.equals("")) {
+                    opinionPollRow.addElement(new TD(pollingFirm));
+                } else {
+                    opinionPollRow.addElement(new TD(pollingFirm + " / " + commissionerText));
+                }
+                Double other = 100.0;
+                String precision = "1";
+                for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
+                    ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
+                    if (resultValue == null) {
+                        opinionPollRow.addElement(new TD("—"));
+                    } else {
+                        String thisPrecision = resultValue.getPrecision();
+                        if (thisPrecision.equals("0.1")) {
+                            precision = "0.1";
+                        } else if (!precision.equals("0.1") && thisPrecision.equals("0.5")) {
+                            precision = "0.5";
+                        }
+                        other -= resultValue.getNominalValue();
+                        String text = resultValue.getText();
+                        int decimalPointIndex = text.indexOf(".");
+                        if (decimalPointIndex < 0) {
+                            opinionPollRow.addElement(new TD(text + "%"));
+                        } else {
+                            TD valueTd = new TD();
+                            valueTd.addContent(text.substring(0, decimalPointIndex));
+                            valueTd.addElement(new Span(" ").clazz("decimal-point"));
+                            valueTd.addContent(text.substring(decimalPointIndex + 1) + "%");
+                            opinionPollRow.addElement(valueTd);
+                        }
+                    }
+                }
+                String otherText = precision.equals("1") ? INTEGER.format(other) : ONE_DECIMAL.format(other);
+                if (otherText.equals("-0")) {
+                    otherText = "0";
+                }
+                if (otherText.equals("-0.0")) {
+                    otherText = "0.0";
+                }
+                int decimalPointIndex = otherText.indexOf(".");
+                if (decimalPointIndex < 0) {
+                    opinionPollRow.addElement(new TD(otherText + "%"));
+                } else {
+                    TD valueTd = new TD();
+                    valueTd.addContent(otherText.substring(0, decimalPointIndex));
+                    valueTd.addElement(new Span(" ").clazz("decimal-point"));
+                    valueTd.addContent(otherText.substring(decimalPointIndex + 1) + "%");
+                    opinionPollRow.addElement(valueTd);
+                }
+            }
+            if (publicationDateFootnote) {
+                P p = new P();
+                section.addElement(p);
+                Sup sup = new Sup();
+                p.addElement(sup);
+                sup.addElement(new I("p"));
+                p.addElement(new Span(" ").clazz("publication-date"));
+            }
+        }
         body.addElement(createFooter());
         return html.asString();
     }

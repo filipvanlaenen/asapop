@@ -79,11 +79,14 @@ public class WebsiteBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
+        ElectoralList.get("A").setAbbreviation("A");
+        ElectoralList.get("B").setAbbreviation("B");
         map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("mk", "index.html"),
-                new AreaIndexPagesBuilder(websiteConfiguration).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_csv", "mk.csv"),
@@ -93,9 +96,6 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
-        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
-        ElectoralList.get("A").setAbbreviation("A");
-        ElectoralList.get("B").setAbbreviation("B");
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
                 baseStyleSheetContent, customStyleSheetContent);
         assertEquals(map, builder.build().asMap());

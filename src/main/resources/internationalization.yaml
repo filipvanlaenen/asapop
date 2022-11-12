@@ -40,6 +40,14 @@ terms:
       fr: "Date"
       nl: "Datum"
       no: "Dato"
+  - key: "decimal-point"
+    translations:
+      de: ","
+      en: "."
+      eo: ","
+      fr: ","
+      nl: ","
+      no: ","
   - key: "election-type"
     translations:
       de: "Wahltyp"
@@ -66,7 +74,12 @@ terms:
       no: "Europaparlamentet"
   - key: "fieldwork-period"
     translations:
+      de: "Forschungsperiode"
       en: "Fieldwork Period"
+      eo: "Periodo de esplorado"
+      fr: "Période de recherche"
+      nl: "Onderzoeksperiode"
+      no: "Undersøkelsesperiode"
   - key: "language"
     translations:
       de: "Sprache"
@@ -107,6 +120,14 @@ terms:
       fr: "Aucun"
       nl: "Geen"
       no: "Ingen"
+  - key: "other"
+    translations:
+      de: "Sonstige"
+      en: "Other"
+      eo: "Aliaj"
+      fr: "Autres"
+      nl: "Anderen"
+      no: "Andre"
   - key: "parliament"
     translations:
       de: "Parlament"
@@ -117,7 +138,12 @@ terms:
       no: "Parlament"
   - key: "polling-firm-commissioner"
     translations:
-      en: "Polling Firm/Commissioner"
+      de: "Meinungsforschungsinstitut / Auftraggeber(e)"
+      en: "Polling Firm / Commissioner(s)"
+      eo: "Enketa agentejo / Kliento(j)"
+      fr: "Agence de sondage / Client(s)"
+      nl: "Peilingsbureau / Opdrachtgever(s)"
+      no: "Meningsmålingsinstitutt / Oppdragsgiver(e)"
   - key: "president"
     translations:
       de: "Präsident"
@@ -130,6 +156,14 @@ terms:
     translations:
       en: "Privacy statement: This website uses your browser's local store, a technology similar to cookies, to store your language preference between sessions."
       nl: "Verklaring over de bescherming van persoonsgegevens: Deze website gebruikt de local store van je browser, een technologie vergelijkbaar met cookies, om tussen twee sessies in je taalkeuze te kunnen bewaren."
+  - key: "publication-date"
+    translations:
+      de: "Veröffentlichungsdatum"
+      en: "Publication date"
+      eo: "Dato de publikigo"
+      fr: "Date de publication"
+      nl: "Publicatiedatum"
+      no: "Publiseringsdato"
   - key: "upcoming-elections"
     translations:
       de: "Künftige Wahlen"

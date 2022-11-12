@@ -486,6 +486,19 @@ public final class OpinionPoll {
     }
 
     /**
+     * Returns the end date for sorting.
+     *
+     * @return The end date of the opinion poll, either the fieldwork end date or the publication date.
+     */
+    public LocalDate getEndDate() {
+        if (fieldworkEnd == null) {
+            return publicationDate;
+        } else {
+            return fieldworkEnd.getEnd();
+        }
+    }
+
+    /**
      * Returns the share of excluded responses.
      *
      * @return The share of excluded responses.

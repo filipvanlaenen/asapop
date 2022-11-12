@@ -80,15 +80,11 @@ public abstract class Exporter {
     private static String calculatePrecision(final Set<ResultValue> resultValues) {
         String result = "1";
         for (ResultValue resultValue : resultValues) {
-            String number = resultValue.getPrimitiveText();
-            if (number.contains(".")) {
-                if (number.endsWith(".5")) {
-                    if (result.equals("1")) {
-                        result = "0.5";
-                    }
-                } else if (!number.endsWith(".0")) {
-                    result = "0.1";
-                }
+            String precision = resultValue.getPrecision();
+            if (precision.equals("0.1")) {
+                return "0.1";
+            } else if (precision.equals("0.5")) {
+                result = "0.5";
             }
         }
         return result;
@@ -102,8 +98,8 @@ public abstract class Exporter {
      * @return A comparison result usable for sorting.
      */
     static int compareOpinionPolls(final OpinionPoll op1, final OpinionPoll op2) {
-        LocalDate endDate1 = getOpinionPollEndDate(op1);
-        LocalDate endDate2 = getOpinionPollEndDate(op2);
+        LocalDate endDate1 = op1.getEndDate();
+        LocalDate endDate2 = op2.getEndDate();
         if (endDate1.equals(endDate2)) {
             LocalDate startDate1 = getOpinionPollStartDate(op1);
             LocalDate startDate2 = getOpinionPollStartDate(op2);
@@ -227,20 +223,6 @@ public abstract class Exporter {
     }
 
     /**
-     * Returns the end date of an opinion poll, for sorting.
-     *
-     * @param opinionPoll The opinion poll.
-     * @return The end date of the opinion poll, either the fieldword end date or the publication date.
-     */
-    private static LocalDate getOpinionPollEndDate(final OpinionPoll opinionPoll) {
-        if (opinionPoll.getFieldworkEnd() == null) {
-            return opinionPoll.getPublicationDate();
-        } else {
-            return opinionPoll.getFieldworkEnd().getEnd();
-        }
-    }
-
-    /**
      * Returns the start date of an opinion poll, for sorting.
      *
      * @param opinionPoll The opinion poll.
@@ -249,7 +231,7 @@ public abstract class Exporter {
      */
     private static LocalDate getOpinionPollStartDate(final OpinionPoll opinionPoll) {
         if (opinionPoll.getFieldworkStart() == null) {
-            return getOpinionPollEndDate(opinionPoll);
+            return opinionPoll.getEndDate();
         } else {
             return opinionPoll.getFieldworkStart().getStart();
         }

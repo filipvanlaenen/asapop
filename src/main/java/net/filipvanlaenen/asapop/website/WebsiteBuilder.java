@@ -65,7 +65,7 @@ public class WebsiteBuilder {
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
-        website.putAll(new AreaIndexPagesBuilder(websiteConfiguration).build());
+        website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).build());
         return website;
     }
 }
