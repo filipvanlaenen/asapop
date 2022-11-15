@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -26,7 +27,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        assertEquals(createEmptyAreadIndexPage(),
+        assertEquals(createEmptyAreaIndexPage(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
@@ -41,12 +42,82 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
-        assertEquals(createEmptyAreadIndexPage(),
+        assertEquals(createEmptyAreaIndexPage(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
-    private String createEmptyAreadIndexPage() {
+    /**
+     * Verifies that the index page for an area with upcoming elections is built correctly.
+     */
+    @Test
+    public void areaIndexPageWithUpcomingElectionsShouldBeBuiltCorrectly() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        ElectionConfiguration parliament = new ElectionConfiguration();
+        parliament.setNextElectionDate("2023-03-05");
+        parliament.setType("Parliament");
+        ElectionConfiguration regional = new ElectionConfiguration();
+        regional.setNextElectionDate("2023-03-05");
+        regional.setType("Regional");
+        ElectionConfiguration local = new ElectionConfiguration();
+        local.setNextElectionDate("2023-03-05");
+        local.setType("Local");
+        ElectionConfiguration president = new ElectionConfiguration();
+        president.setNextElectionDate("≈2024-03");
+        president.setType("President");
+        ElectionConfiguration european = new ElectionConfiguration();
+        european.setNextElectionDate("≤2025-03");
+        european.setType("European");
+        northMacedonia.setElectionConfigurations(Set.of(local, parliament, regional, president, european));
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        assertEquals(createAreaIndexPageWithUpcomingElections(),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+    }
+
+    private String createEmptyAreaIndexPage() {
         StringBuilder expected = new StringBuilder();
+        addTopPart(expected);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addMiddlePart(expected);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addBottomPart(expected);
+        return expected.toString();
+    }
+
+    private String createAreaIndexPageWithUpcomingElections() {
+        StringBuilder expected = new StringBuilder();
+        addTopPart(expected);
+        expected.append("      <ul>\n");
+        expected.append("        <li>2023-03-05: <span class=\"local\"> </span></li>\n");
+        expected.append("        <li>2023-03-05: <span class=\"parliament\"> </span></li>\n");
+        expected.append("        <li>2023-03-05: <span class=\"regional\"> </span></li>\n");
+        expected.append(
+                "        <li><span class=\"around\"> </span> 2024-03: <span class=\"president\"> </span></li>\n");
+        expected.append(
+                "        <li><span class=\"no-later-than\"> </span> 2025-03: <span class=\"european\"> </span></li>\n");
+        expected.append("      </ul>\n");
+        addMiddlePart(expected);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addBottomPart(expected);
+        return expected.toString();
+    }
+
+    private void addMiddlePart(StringBuilder expected) {
+        expected.append("      <h2 class=\"latest-opinion-polls\"> </h2>\n");
+    }
+
+    private void addBottomPart(StringBuilder expected) {
+        expected.append("    </section>\n");
+        expected.append("    <footer>\n");
+        expected.append("      <div class=\"privacy-statement\"> </div>\n");
+        expected.append("    </footer>\n");
+        expected.append("  </body>\n");
+        expected.append("</html>");
+    }
+
+    private void addTopPart(StringBuilder expected) {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
@@ -77,15 +148,5 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"_area_mk\"> </h1>\n");
         expected.append("      <h2 class=\"upcoming-elections\"> </h2>\n");
-        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
-        expected.append("      <h2 class=\"latest-opinion-polls\"> </h2>\n");
-        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
-        expected.append("    </section>\n");
-        expected.append("    <footer>\n");
-        expected.append("      <div class=\"privacy-statement\"> </div>\n");
-        expected.append("    </footer>\n");
-        expected.append("  </body>\n");
-        expected.append("</html>");
-        return expected.toString();
     }
 }
