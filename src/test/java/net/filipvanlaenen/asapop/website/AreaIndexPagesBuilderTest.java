@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
@@ -43,6 +44,23 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createEmptyAreaIndexPage(),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+    }
+
+    /**
+     * Verifies that the index page for an area with opinion polls is built correctly.
+     */
+    @Test
+    public void areaIndexPageWithOpinionPollsShouldBeBuiltCorrectly() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        OpinionPolls opinionPolls = RichOpinionPollsFile
+                .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: •A:AP", "B: •A:BL").getOpinionPolls();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        assertEquals(createAreaIndexPageWithOpinionPolls(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
@@ -82,6 +100,35 @@ public class AreaIndexPagesBuilderTest {
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addMiddlePart(expected);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addBottomPart(expected);
+        return expected.toString();
+    }
+
+    private String createAreaIndexPageWithOpinionPolls() {
+        StringBuilder expected = new StringBuilder();
+        addTopPart(expected);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addMiddlePart(expected);
+        expected.append("      <table class=\"opinion-polls-table\">\n");
+        expected.append("        <thead>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <th class=\"fieldwork-period\"> </th>\n");
+        expected.append("            <th class=\"polling-firm-commissioner\"> </th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">AP</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">BL</th>\n");
+        expected.append("            <th class=\"other\"> </th>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </thead>\n");
+        expected.append("        <tbody>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2021-07-27 – 2021-07-28</td>\n");
+        expected.append("            <td>ACME</td>\n");
+        expected.append("            <td class=\"result-value-td\">55%</td>\n");
+        expected.append("            <td class=\"result-value-td\">40%</td>\n");
+        expected.append("            <td class=\"result-value-td\">(5%)</td>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </tbody>\n");
+        expected.append("      </table>\n");
         addBottomPart(expected);
         return expected.toString();
     }
@@ -127,7 +174,7 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
                 + " type=\"application/javascript\"> </script>\n");
         expected.append(
-                "    <script src=\"../_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
+                "    <script src=\"../_js/internationalization.js\" type=\"application/javascript\"> </script>\n");
         expected.append("  </head>\n");
         expected.append("  <body onload=\"initializeLanguage();\">\n");
         expected.append("    <header>\n");
