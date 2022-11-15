@@ -126,6 +126,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             P p = new P();
             section.addElement(p);
             p.addElement(new Span(" ").clazz("none"));
+            p.addContent(".");
         } else {
             UL ul = new UL();
             section.addElement(ul);
@@ -164,7 +165,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
         }
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
         OpinionPolls opinionPolls = opinionPollsMap.get(areaConfiguration.getAreaCode());
-        if (opinionPolls == null) {
+        if (opinionPolls == null || opinionPolls.getOpinionPolls().isEmpty()) {
             P p = new P();
             section.addElement(p);
             p.addElement(new Span(" ").clazz("none"));
@@ -301,7 +302,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 }
                 int decimalPointIndex = otherText.indexOf(".");
                 if (decimalPointIndex < 0) {
-                    opinionPollRow.addElement(new TD("("+otherText + "%)").clazz("result-value-td"));
+                    opinionPollRow.addElement(new TD("(" + otherText + "%)").clazz("result-value-td"));
                 } else {
                     TD valueTd = new TD("(").clazz("result-value-td");
                     valueTd.addContent(otherText.substring(0, decimalPointIndex));
