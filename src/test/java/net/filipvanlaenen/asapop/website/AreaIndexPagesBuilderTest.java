@@ -48,10 +48,10 @@ public class AreaIndexPagesBuilderTest {
     }
 
     /**
-     * Verifies that the index page for an area with opinion polls is built correctly.
+     * Verifies that the index page for an area with a small opinion poll is built correctly.
      */
     @Test
-    public void areaIndexPageWithOpinionPollsShouldBeBuiltCorrectly() {
+    public void areaIndexPageWithASmallOpinionPollShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: •A:AP", "B: •A:BL").getOpinionPolls();
@@ -60,7 +60,28 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
-        assertEquals(createAreaIndexPageWithOpinionPolls(),
+        assertEquals(createAreaIndexPageWithASmallOpinionPoll(),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+    }
+
+    /**
+     * Verifies that the index page for an area with many and large opinion polls is built correctly.
+     */
+    @Test
+    public void areaIndexPageWithManyAndLargeOpinionPollsShouldBeBuiltCorrectly() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        OpinionPolls opinionPolls = RichOpinionPollsFile.parse(
+                "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:10 C:5 D:5 E+I+J:5 F:5 G:5 H:5",
+                "•C: The Times •FS: 2022-10-16 •PD: 2022-10-26 A:55 B:40 D:4",
+                "•PF: ACME •C: The Times •C: The Post •C: The Independent •FS: 2022-11-12 •FE: 2022-11-16 A:55 B:40",
+                "A: •A:AP", "B: •A:BL", "C: •A:C", "D: •A:D", "E: •A:E", "F: •A:F", "G: •A:G", "H: •A:H", "I: •A:I",
+                "J: •A:J").getOpinionPolls();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        assertEquals(createAreaIndexPageWithManyAndLargeOpinionPolls(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
@@ -104,7 +125,7 @@ public class AreaIndexPagesBuilderTest {
         return expected.toString();
     }
 
-    private String createAreaIndexPageWithOpinionPolls() {
+    private String createAreaIndexPageWithASmallOpinionPoll() {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
@@ -129,6 +150,77 @@ public class AreaIndexPagesBuilderTest {
         expected.append("          </tr>\n");
         expected.append("        </tbody>\n");
         expected.append("      </table>\n");
+        addBottomPart(expected);
+        return expected.toString();
+    }
+
+    private String createAreaIndexPageWithManyAndLargeOpinionPolls() {
+        StringBuilder expected = new StringBuilder();
+        addTopPart(expected);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addMiddlePart(expected);
+        expected.append("      <table class=\"opinion-polls-table\">\n");
+        expected.append("        <thead>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <th class=\"fieldwork-period\"> </th>\n");
+        expected.append("            <th class=\"polling-firm-commissioner\"> </th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">AP</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">BL</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">C</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">D</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">E–I–J</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">F</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">G</th>\n");
+        expected.append("            <th class=\"other\"> </th>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </thead>\n");
+        expected.append("        <tbody>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2022-11-12 – 2022-11-16</td>\n");
+        expected.append("            <td>ACME / The Independent–The Post–The Times</td>\n");
+        expected.append("            <td class=\"result-value-td\">55%</td>\n");
+        expected.append("            <td class=\"result-value-td\">40%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">(5%)</td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2022-10-16 – 2022-10-26<sup>\n");
+        expected.append("  <i>p</i>\n");
+        expected.append("</sup></td>\n");
+        expected.append("            <td>The Times</td>\n");
+        expected.append("            <td class=\"result-value-td\">55%</td>\n");
+        expected.append("            <td class=\"result-value-td\">40%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">4%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">(1%)</td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2021-07-27 – 2021-07-28</td>\n");
+        expected.append("            <td>ACME</td>\n");
+        expected.append("            <td class=\"result-value-td\">55%</td>\n");
+        expected.append("            <td class=\"result-value-td\">10%</td>\n");
+        expected.append("            <td class=\"result-value-td\">5%</td>\n");
+        expected.append("            <td class=\"result-value-td\">5%</td>\n");
+        expected.append("            <td class=\"result-value-td\">5%</td>\n");
+        expected.append("            <td class=\"result-value-td\">5%</td>\n");
+        expected.append("            <td class=\"result-value-td\">5%</td>\n");
+        expected.append("            <td class=\"result-value-td\">(10%)</td>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </tbody>\n");
+        expected.append("      </table>\n");
+        expected.append("      <p>\n");
+        expected.append("        <sup>\n");
+        expected.append("          <i>p</i>\n");
+        expected.append("        </sup>\n");
+        expected.append("        <span class=\"publication-date\"> </span>\n");
+        expected.append("      </p>\n");
         addBottomPart(expected);
         return expected.toString();
     }

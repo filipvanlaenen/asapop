@@ -179,29 +179,42 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 }
             });
             int numberOfOpinionPolls = opinionPollList.size();
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
             List<OpinionPoll> latestOpinionPolls =
                     opinionPollList.subList(0, numberOfOpinionPolls > 10 ? 10 : numberOfOpinionPolls);
-            Map<Set<ElectoralList>, Double> electoralListSets = new HashMap<Set<ElectoralList>, Double>();
+            Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
+            Map<Set<ElectoralList>, String> electoralListSetAbbreviation = new HashMap<Set<ElectoralList>, String>();
             for (OpinionPoll opinionPoll : latestOpinionPolls) {
                 for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario()
                         .getElectoralListSets()) {
                     ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
                     Double nominalValue = resultValue.getNominalValue();
-                    if (!electoralListSets.containsKey(electoralListSet)
-                            || nominalValue > electoralListSets.get(electoralListSet)) {
-                        electoralListSets.put(electoralListSet, nominalValue);
+                    // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+                    if (!electoralListSetMax.containsKey(electoralListSet)
+                            || nominalValue > electoralListSetMax.get(electoralListSet)) {
+                        electoralListSetMax.put(electoralListSet, nominalValue);
                     }
+                    List<String> abbreviations =
+                            electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
+                    Collections.sort(abbreviations);
+                    electoralListSetAbbreviation.put(electoralListSet, String.join("–", abbreviations));
                 }
             }
             List<Set<ElectoralList>> sortedElectoralListSets =
-                    new ArrayList<Set<ElectoralList>>(electoralListSets.keySet());
+                    new ArrayList<Set<ElectoralList>>(electoralListSetMax.keySet());
             sortedElectoralListSets.sort(new Comparator<Set<ElectoralList>>() {
                 @Override
                 public int compare(Set<ElectoralList> els1, Set<ElectoralList> els2) {
-                    return electoralListSets.get(els2).compareTo(electoralListSets.get(els1));
+                    int maxComparison = electoralListSetMax.get(els2).compareTo(electoralListSetMax.get(els1));
+                    if (maxComparison == 0) {
+                        return electoralListSetAbbreviation.get(els1).compareTo(electoralListSetAbbreviation.get(els2));
+                    } else {
+                        return maxComparison;
+                    }
                 }
             });
             int numberOfElectoralListColumns = sortedElectoralListSets.size();
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
             if (numberOfElectoralListColumns > 7) {
                 numberOfElectoralListColumns = 7;
             }
@@ -216,10 +229,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             tr.addElement(new TH(" ").clazz("fieldwork-period"));
             tr.addElement(new TH(" ").clazz("polling-firm-commissioner"));
             for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
-                List<String> abbreviations =
-                        electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
-                Collections.sort(abbreviations);
-                tr.addElement(new TH(String.join("–", abbreviations)).clazz("electoral-lists-th"));
+                tr.addElement(new TH(electoralListSetAbbreviation.get(electoralListSet)).clazz("electoral-lists-th"));
             }
             tr.addElement(new TH(" ").clazz("other"));
             TBody tBody = new TBody();
