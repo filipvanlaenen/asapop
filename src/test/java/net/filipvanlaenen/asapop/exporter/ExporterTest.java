@@ -13,6 +13,7 @@ import java.util.Set;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResultValue;
 
 /**
  * Unit tests on the class <code>Exporter</code>.
@@ -136,7 +137,7 @@ public class ExporterTest {
     public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55.0").addWellformedResult("B", "43").setWellformedOther("0.5").build();
-        assertEquals("0.5", Exporter.calculatePrecision(poll, A_AND_B));
+        assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(poll, A_AND_B));
     }
 
     /**
@@ -146,7 +147,7 @@ public class ExporterTest {
     public void shouldExportSimpleOpinionPollWithAResultWithTenthOfAPercent() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        assertEquals("0.1", Exporter.calculatePrecision(poll, A_AND_B));
+        assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(poll, A_AND_B));
     }
 
     /**
@@ -156,7 +157,7 @@ public class ExporterTest {
     public void shouldExportSimpleResponseScenarioWithAResultWithHalfAPercentOther() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55.0")
                 .addWellformedResult("B", "45").setWellformedOther("0.5").build();
-        assertEquals("0.5", Exporter.calculatePrecision(responseScenario, A_AND_B));
+        assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(responseScenario, A_AND_B));
     }
 
     /**
@@ -166,7 +167,7 @@ public class ExporterTest {
     public void shouldExportSimpleResponseScenarioWithAResultWithTenthOfAPercent() {
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        assertEquals("0.1", Exporter.calculatePrecision(responseScenario, A_AND_B));
+        assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(responseScenario, A_AND_B));
     }
 
     /**

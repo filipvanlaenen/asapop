@@ -6,6 +6,27 @@ import java.util.Objects;
  * Class modeling a result value.
  */
 public final class ResultValue {
+
+    public enum Precision {
+
+        ONE("1"), HALF("0.5"), TENTH("0.1");
+
+        private final String stringValue;
+
+        Precision(String stringValue) {
+            this.stringValue = stringValue;
+        }
+
+        public static Precision highest(Precision p1, Precision p2) {
+            return p1.ordinal() < p2.ordinal() ? p2 : p1;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
+    }
+
     /**
      * The text representing the result value.
      */
@@ -29,16 +50,16 @@ public final class ResultValue {
         return Double.parseDouble(getPrimitiveText());
     }
 
-    public String getPrecision() {
+    public Precision getPrecision() {
         String number = getPrimitiveText();
         if (number.contains(".")) {
             if (number.endsWith(".5")) {
-                return "0.5";
+                return Precision.HALF;
             } else if (!number.endsWith(".0")) {
-                return "0.1";
+                return Precision.TENTH;
             }
         }
-        return "1";
+        return Precision.ONE;
     }
 
     /**
