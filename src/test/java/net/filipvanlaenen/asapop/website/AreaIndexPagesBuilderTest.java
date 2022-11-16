@@ -73,7 +73,7 @@ public class AreaIndexPagesBuilderTest {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(
                 "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:10 C:5 D:5 E+I+J:5 F:5 G:5 H:5",
                 "•C: The Times •FS: 2022-10-16 •PD: 2022-10-26 A:55 B:40 D:4",
-                "•PF: ACME •C: The Times •C: The Post •C: The Independent •FS: 2022-11-12 •FE: 2022-11-16 A:55 B:40",
+                "•PF: ACME •C: The Times •C: The Post •C: The Independent •FS: 2022-11-12 •FE: 2022-11-16 A:55 B:40.1",
                 "A: •A:AP", "B: •A:BL", "C: •A:C", "D: •A:D", "E: •A:E", "F: •A:F", "G: •A:G", "H: •A:H", "I: •A:I",
                 "J: •A:J").getOpinionPolls();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
@@ -179,13 +179,13 @@ public class AreaIndexPagesBuilderTest {
         expected.append("            <td>2022-11-12 – 2022-11-16</td>\n");
         expected.append("            <td>ACME / The Independent–The Post–The Times</td>\n");
         expected.append("            <td class=\"result-value-td\">55%</td>\n");
-        expected.append("            <td class=\"result-value-td\">40%</td>\n");
+        expected.append("            <td class=\"result-value-td\">40<span class=\"decimal-point\"> </span>1%</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
-        expected.append("            <td class=\"result-value-td\">(5%)</td>\n");
+        expected.append("            <td class=\"result-value-td\">(4<span class=\"decimal-point\"> </span>9%)</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>2022-10-16 – 2022-10-26<sup>\n");

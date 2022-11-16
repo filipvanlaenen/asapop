@@ -286,7 +286,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                         other -= resultValue.getNominalValue();
                         String text = resultValue.getText();
                         int decimalPointIndex = text.indexOf(".");
-                        if (decimalPointIndex < 0) {
+                        if (decimalPointIndex == -1) {
                             opinionPollRow.addElement(new TD(text + "%").clazz("result-value-td"));
                         } else {
                             TD valueTd = new TD().clazz("result-value-td");
@@ -306,7 +306,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     otherText = "0.0";
                 }
                 int decimalPointIndex = otherText.indexOf(".");
-                if (decimalPointIndex < 0) {
+                if (decimalPointIndex == -1) {
                     opinionPollRow.addElement(new TD("(" + otherText + "%)").clazz("result-value-td"));
                 } else {
                     TD valueTd = new TD("(").clazz("result-value-td");
