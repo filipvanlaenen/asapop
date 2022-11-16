@@ -217,8 +217,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             tr.addElement(new TH(" ").clazz("polling-firm-commissioner"));
             for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
                 List<String> abbreviations =
-                        electoralListSet.stream().map(el -> el.getRomanizedAbbreviation() == null ? el.getAbbreviation()
-                                : el.getRomanizedAbbreviation()).collect(Collectors.toList());
+                        electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
                 Collections.sort(abbreviations);
                 tr.addElement(new TH(String.join("–", abbreviations)).clazz("electoral-lists-th"));
             }
