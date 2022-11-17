@@ -71,11 +71,12 @@ public class AreaIndexPagesBuilderTest {
     public void areaIndexPageWithManyAndLargeOpinionPollsShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(
-                "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:10 C:5 D:5 E+I+J:5 F:5 G:5 H:5",
+                "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:10 C:5 D:5 E+I+J+K:5 F:5 G:5 H:5",
                 "•C: The Times •FS: 2022-10-16 •PD: 2022-10-26 A:55 B:40 D:4",
+                "•PF: ACME •FE: 2022-10-17 A:55 B:42.1 D:2.9",
                 "•PF: ACME •C: The Times •C: The Post •C: The Independent •FS: 2022-11-12 •FE: 2022-11-16 A:55 B:40.1",
                 "A: •A:AP", "B: •A:BL", "C: •A:C", "D: •A:D", "E: •A:E", "F: •A:F", "G: •A:G", "H: •A:H", "I: •A:I",
-                "J: •A:J").getOpinionPolls();
+                "J: •A:J", "K: •A:K").getOpinionPolls();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -168,7 +169,7 @@ public class AreaIndexPagesBuilderTest {
         expected.append("            <th class=\"electoral-lists-th\">BL</th>\n");
         expected.append("            <th class=\"electoral-lists-th\">C</th>\n");
         expected.append("            <th class=\"electoral-lists-th\">D</th>\n");
-        expected.append("            <th class=\"electoral-lists-th\">E–I–J</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">E–I–J–K</th>\n");
         expected.append("            <th class=\"electoral-lists-th\">F</th>\n");
         expected.append("            <th class=\"electoral-lists-th\">G</th>\n");
         expected.append("            <th class=\"other\"> </th>\n");
@@ -200,6 +201,18 @@ public class AreaIndexPagesBuilderTest {
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">(1%)</td>\n");
+        expected.append("          </tr>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td> – 2022-10-17</td>\n");
+        expected.append("            <td>ACME</td>\n");
+        expected.append("            <td class=\"result-value-td\">55%</td>\n");
+        expected.append("            <td class=\"result-value-td\">42<span class=\"decimal-point\"> </span>1%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">2<span class=\"decimal-point\"> </span>9%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">(0<span class=\"decimal-point\"> </span>0%)</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>2021-07-27 – 2021-07-28</td>\n");
