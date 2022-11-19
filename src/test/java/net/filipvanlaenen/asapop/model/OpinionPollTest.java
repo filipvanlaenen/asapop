@@ -102,6 +102,34 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that getEndDate returns the end date of the fieldword end date if it has been set.
+     */
+    @Test
+    public void getEndDateShouldReturnEndDateOfFieldworkEnd() {
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        assertEquals("2021-07-27", poll.getEndDate().toString());
+    }
+
+    /**
+     * Verifies that getEndDate returns the end date of the fieldword end date even if the publication date is set.
+     */
+    @Test
+    public void getEndDateShouldReturnEndDateOfFieldworkEndEvenIfThereIsAPublicationDate() {
+        OpinionPoll poll =
+                new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").setPublicationDate("2021-07-28").build();
+        assertEquals("2021-07-27", poll.getEndDate().toString());
+    }
+
+    /**
+     * Verifies that getEndDate returns the publication date if the fieldwork end date is absent.
+     */
+    @Test
+    public void getEndDateShouldReturnPublicationDateIfFieldworkEndIsAbsent() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate("2021-07-28").build();
+        assertEquals("2021-07-28", poll.getEndDate().toString());
+    }
+
+    /**
      * Verifies that the setOther method in the builder class is wired correctly to the getOther method.
      */
     @Test
