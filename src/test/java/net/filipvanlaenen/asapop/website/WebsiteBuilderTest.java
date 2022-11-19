@@ -25,6 +25,9 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    /**
+     * The area configuration for North Macedonia.
+     */
     private AreaConfiguration northMacedonia;
 
     /**

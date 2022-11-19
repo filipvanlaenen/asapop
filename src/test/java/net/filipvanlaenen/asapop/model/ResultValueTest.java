@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -176,5 +177,13 @@ public final class ResultValueTest {
     @Test
     public void nominalValueOfALessThanResultValueShouldBeZero() {
         assertEquals(0D, new ResultValue("<1").getNominalValue());
+    }
+
+    /**
+     * Verifies the calculation of the nominal value for a malformed number.
+     */
+    @Test
+    public void nominalValueOfMalformedNumberShouldBeNull() {
+        assertNull(new ResultValue("a").getNominalValue());
     }
 }

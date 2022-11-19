@@ -62,7 +62,7 @@ public final class ResultValue {
     /**
      * The nominal value of the result value.
      */
-    private final double nominalValue;
+    private final Double nominalValue;
     /**
      * The precision of th result value.
      */
@@ -80,8 +80,21 @@ public final class ResultValue {
     public ResultValue(final String text) {
         this.text = text;
         this.lessThan = text.startsWith("<");
-        this.nominalValue = Double.parseDouble(getPrimitiveText());
+        this.nominalValue = calculateNominalValue();
         this.precision = calculatePrecision();
+    }
+
+    /**
+     * Calculates the nominal value of the result value.
+     *
+     * @return The nominal value of the result value.
+     */
+    private Double calculateNominalValue() {
+        try {
+            return Double.parseDouble(getPrimitiveText());
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
     }
 
     /**
