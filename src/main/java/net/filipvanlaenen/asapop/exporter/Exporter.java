@@ -55,7 +55,8 @@ public abstract class Exporter {
      * @param electoralListKeySets The sets of keys of the electoral lists to export.
      * @return The precision as a string.
      */
-    static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll, final List<Set<String>> electoralListKeySets) {
+    static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll,
+            final List<Set<String>> electoralListKeySets) {
         return calculatePrecision(extractResults(opinionPoll, electoralListKeySets));
     }
 
