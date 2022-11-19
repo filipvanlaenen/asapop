@@ -62,7 +62,8 @@ abstract class PageBuilder {
          * Creates the header element, either a span element if the current page is the same as the header link, or an a
          * element otherwise.
          *
-         * @param currentPage The page for which to create a header link.
+         * @param currentPage  The page for which to create a header link.
+         * @param relativePath The relative path to the root directory.
          * @return Either a span or an a element.
          */
         private FlowContent createHeaderElement(final HeaderLink currentPage, final String relativePath) {
@@ -94,6 +95,12 @@ abstract class PageBuilder {
         return createHead(0);
     }
 
+    /**
+     * Creates a head element for a page at a given directory level.
+     *
+     * @param level The directory level.
+     * @return A head element for a page at a given directory level.
+     */
     protected Head createHead(final int level) {
         String relativePath = createRelativePath(level);
         Head head = new Head();
@@ -108,10 +115,21 @@ abstract class PageBuilder {
         return head;
     }
 
+    /**
+     * Creates a header element for a page.
+     *
+     * @return A header element for a page.
+     */
     protected Header createHeader() {
         return createHeader(null, 0);
     }
 
+    /**
+     * Creates a header element for a page at a given directory level.
+     *
+     * @param level The directory level.
+     * @return A header element for a page at a given directory level.
+     */
     protected Header createHeader(final int level) {
         return createHeader(null, level);
     }
@@ -126,6 +144,13 @@ abstract class PageBuilder {
         return createHeader(currentPage, 0);
     }
 
+    /**
+     * Creates a header element for a page at a given directory level.
+     *
+     * @param currentPage A header link representing the page for which the header element should be created.
+     * @param level       The directory level.
+     * @return A header element for a page at a given directory level.
+     */
     protected Header createHeader(final HeaderLink currentPage, final int level) {
         String relativePath = createRelativePath(level);
         Header header = new Header();
@@ -151,6 +176,12 @@ abstract class PageBuilder {
         return header;
     }
 
+    /**
+     * Creates a relative path for a directory level.
+     *
+     * @param level The directory level.
+     * @return A relative path for a directory level.
+     */
     private String createRelativePath(final int level) {
         String relativePath = "";
         for (int i = 0; i < level; i++) {

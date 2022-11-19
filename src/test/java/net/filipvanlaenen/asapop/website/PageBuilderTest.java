@@ -70,17 +70,17 @@ public class PageBuilderTest {
     }
 
     /**
-     * Verifies that the header is built correctly when a link to the main page should be added.
+     * Verifies that the header is built correctly when no links should be added.
      */
     @Test
-    public void headerWithLinkToCsvFilesPageShouldBeBuiltCorrectly() {
+    public void headerWithoutLinksShouldBeBuiltCorrectly() {
         StringBuilder expected = new StringBuilder();
         expected.append("<header>\n");
         expected.append("  <div class=\"header-left\">\n");
         expected.append("    <a class=\"main-page\" href=\"index.html\"> </a>\n");
         expected.append("  </div>\n");
         expected.append("  <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
-                + " <span class=\"csv-files\"> </span> · <span class=\"language\"> </span>:"
+                + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
                 + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
@@ -90,7 +90,30 @@ public class PageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></div>\n");
         expected.append("</header>");
-        assertEquals(expected.toString(),
-                new LocalPageBuilder().createHeader(PageBuilder.HeaderLink.CSV_FILES).asString());
+        assertEquals(expected.toString(), new LocalPageBuilder().createHeader().asString());
+    }
+
+    /**
+     * Verifies that the header for a page in a subdirectory is built correctly when no links should be added.
+     */
+    @Test
+    public void headerInSubdirectoryWithoutLinksShouldBeBuiltCorrectly() {
+        StringBuilder expected = new StringBuilder();
+        expected.append("<header>\n");
+        expected.append("  <div class=\"header-left\">\n");
+        expected.append("    <a class=\"main-page\" href=\"../index.html\"> </a>\n");
+        expected.append("  </div>\n");
+        expected.append("  <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"../calendar.html\"> </a>"
+                + " · <a class=\"csv-files\" href=\"../csv.html\"> </a> · <span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("  <option value=\"de\">Deutsch</option>\n");
+        expected.append("  <option value=\"en\">English</option>\n");
+        expected.append("  <option value=\"eo\">Esperanto</option>\n");
+        expected.append("  <option value=\"fr\">français</option>\n");
+        expected.append("  <option value=\"nl\">Nederlands</option>\n");
+        expected.append("  <option value=\"no\">norsk</option>\n");
+        expected.append("</select></div>\n");
+        expected.append("</header>");
+        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(1).asString());
     }
 }
