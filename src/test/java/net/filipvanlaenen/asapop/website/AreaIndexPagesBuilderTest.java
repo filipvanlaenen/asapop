@@ -2,6 +2,8 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,22 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  * Unit tests on the <code>AreaIndexPagesBuilder</code> class.
  */
 public class AreaIndexPagesBuilderTest {
+    /**
+     * Verifies that the correct pages are built.
+     */
+    @Test
+    public void buildShouldBuilderTheCorrectPages() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        AreaConfiguration serbia = new AreaConfiguration();
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, serbia));
+        Map<String, OpinionPolls> opinionPollsMap = Collections.EMPTY_MAP;
+        AreaIndexPagesBuilder builder = new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap);
+        Map<Path, String> expected = Map.of(Paths.get("mk", "index.html"), builder.createAreaIndexPage(northMacedonia));
+        assertEquals(expected, builder.build());
+    }
+
     /**
      * Verifies that the index page for an area is built correctly when it is absent.
      */
