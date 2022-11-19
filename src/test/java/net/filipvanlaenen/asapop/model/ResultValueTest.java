@@ -11,6 +11,11 @@ import org.junit.jupiter.api.Test;
  */
 public final class ResultValueTest {
     /**
+     * The magic number 1.2.
+     */
+    private static final double DOUBLE_1_2 = 1.2D;
+
+    /**
      * Verifies that the getter for text is wired correctly to the constructor.
      */
     @Test
@@ -106,5 +111,70 @@ public final class ResultValueTest {
     @Test
     public void twoDifferentResultValuesWithDifferentTextsShouldHaveDifferentHashCodes() {
         assertFalse(new ResultValue("1").hashCode() == new ResultValue("2").hashCode());
+    }
+
+    /**
+     * Verifies that a precision of a half is higher than a precision of one.
+     */
+    @Test
+    public void halfShouldBeHigherPrecisionThanOne() {
+        assertEquals(ResultValue.Precision.HALF,
+                ResultValue.Precision.highest(ResultValue.Precision.HALF, ResultValue.Precision.ONE));
+    }
+
+    /**
+     * Verifies that string value of a precision.
+     */
+    @Test
+    public void stringValueOfPrecisionHalfShouldBe05() {
+        assertEquals("0.5", ResultValue.Precision.HALF.toString());
+    }
+
+    /**
+     * Verifies that the precision of 1.2 is 0.1.
+     */
+    @Test
+    public void precisionOfADecimalResultValueShouldBeTenth() {
+        assertEquals(ResultValue.Precision.TENTH, new ResultValue("1.2").getPrecision());
+    }
+
+    /**
+     * Verifies that the precision of 1.5 is 0.5.
+     */
+    @Test
+    public void precisionOfAResultValueWithHalfShouldBeHalf() {
+        assertEquals(ResultValue.Precision.HALF, new ResultValue("1.5").getPrecision());
+    }
+
+    /**
+     * Verifies that the precision of 1.0 is 1.
+     */
+    @Test
+    public void precisionOfAResultValueWithDecimalZeroShouldBeOne() {
+        assertEquals(ResultValue.Precision.ONE, new ResultValue("1.0").getPrecision());
+    }
+
+    /**
+     * Verifies that the precision of 1 is 1.
+     */
+    @Test
+    public void precisionOfAnIntegerResultValueShouldBeOne() {
+        assertEquals(ResultValue.Precision.ONE, new ResultValue("1").getPrecision());
+    }
+
+    /**
+     * Verifies the calculation of the nominal value.
+     */
+    @Test
+    public void nominalValueOfADecimalNumberShouldBeCorrect() {
+        assertEquals(DOUBLE_1_2, new ResultValue("1.2").getNominalValue());
+    }
+
+    /**
+     * Verifies the calculation of the nominal value for a less than result value.
+     */
+    @Test
+    public void nominalValueOfALessThanResultValueShouldBeZero() {
+        assertEquals(0D, new ResultValue("<1").getNominalValue());
     }
 }

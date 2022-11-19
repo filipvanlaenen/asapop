@@ -6,18 +6,46 @@ import java.util.Objects;
  * Class modeling a result value.
  */
 public final class ResultValue {
-
+    /**
+     * Enumeration with the precisions for result values.
+     */
     public enum Precision {
+        /**
+         * A precision of 1.
+         */
+        ONE("1"),
+        /**
+         * A precision of 0.5.
+         */
+        HALF("0.5"),
+        /**
+         * A precision of 0.1.
+         */
+        TENTH("0.1");
 
-        ONE("1"), HALF("0.5"), TENTH("0.1");
-
+        /**
+         * The string representation of the precision.
+         */
         private final String stringValue;
 
-        Precision(String stringValue) {
+        /**
+         * Constructor taking the string representation as its parameter.
+         *
+         * @param stringValue The string representation of the precision.
+         */
+        Precision(final String stringValue) {
             this.stringValue = stringValue;
         }
 
-        public static Precision highest(Precision p1, Precision p2) {
+        /**
+         * Returns the highest precision.
+         *
+         * @param p1 The first precision.
+         * @param p2 The second precision.
+         * @return The highest precision.
+         */
+        public static Precision highest(final Precision p1, final Precision p2) {
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
             return p1.ordinal() < p2.ordinal() ? p2 : p1;
         }
 
@@ -28,13 +56,21 @@ public final class ResultValue {
     }
 
     /**
+     * Flag indicating whether this is a less than value.
+     */
+    private final boolean lessThan;
+    /**
+     * The nominal value of the result value.
+     */
+    private final double nominalValue;
+    /**
+     * The precision of th result value.
+     */
+    private final Precision precision;
+    /**
      * The text representing the result value.
      */
     private final String text;
-    /**
-     * Flag indicating whether this is a less than value.
-     */
-    private boolean lessThan;
 
     /**
      * Constructor taking the text representing the result value as its parameter.
@@ -44,13 +80,16 @@ public final class ResultValue {
     public ResultValue(final String text) {
         this.text = text;
         this.lessThan = text.startsWith("<");
+        this.nominalValue = Double.parseDouble(getPrimitiveText());
+        this.precision = calculatePrecision();
     }
 
-    public Double getNominalValue() {
-        return Double.parseDouble(getPrimitiveText());
-    }
-
-    public Precision getPrecision() {
+    /**
+     * Calculates the precision of the result value.
+     *
+     * @return The precision of the result value.
+     */
+    private Precision calculatePrecision() {
         String number = getPrimitiveText();
         if (number.contains(".")) {
             if (number.endsWith(".5")) {
@@ -60,6 +99,34 @@ public final class ResultValue {
             }
         }
         return Precision.ONE;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof ResultValue) {
+            ResultValue otherResultValue = (ResultValue) obj;
+            return otherResultValue.text.equals(text);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the nominal value of the result value.
+     *
+     * @return The nominal value of the result value.
+     */
+    public Double getNominalValue() {
+        return nominalValue;
+    }
+
+    /**
+     * Returns the precision of the result value.
+     *
+     * @return The precision of the result value.
+     */
+    public Precision getPrecision() {
+        return precision;
     }
 
     /**
@@ -78,16 +145,6 @@ public final class ResultValue {
      */
     public String getText() {
         return text;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof ResultValue) {
-            ResultValue otherResultValue = (ResultValue) obj;
-            return otherResultValue.text.equals(text);
-        } else {
-            return false;
-        }
     }
 
     @Override
