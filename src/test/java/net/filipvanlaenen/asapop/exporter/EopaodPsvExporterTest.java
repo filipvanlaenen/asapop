@@ -47,13 +47,13 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportOpinionPollWithCombinedElectoralLists() {
         OpinionPolls opinionPolls =
-                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A+C:55 B+D:45").getOpinionPolls();
+                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A+C+E:55 B+D:45").getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
-        expected.append(" | Participation | Precision | A+C | B+D | Other\n");
+        expected.append(" | Participation | Precision | A+C+E | B+D | Other\n");
         expected.append("ACME | N/A | 2021-07-27 | 2021-07-27 | N/A | N/A | N/A | 1 | 55 | 45 | N/A");
         assertEquals(expected.toString(),
-                EopaodPsvExporter.export(opinionPolls, null, List.of(Set.of("A", "C"), Set.of("B", "D"))));
+                EopaodPsvExporter.export(opinionPolls, null, List.of(Set.of("A", "C", "E"), Set.of("B", "D"))));
     }
 
     /**
