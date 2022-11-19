@@ -39,6 +39,9 @@ import net.filipvanlaenen.txhtmlj.TR;
 import net.filipvanlaenen.txhtmlj.Table;
 import net.filipvanlaenen.txhtmlj.UL;
 
+/**
+ * Class building the index pages for all areas.
+ */
 class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * Class representing an entry in the electoral calendar.
@@ -83,6 +86,30 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
+     * The magic number seven.
+     */
+    private static final int SEVEN = 7;
+    /**
+     * The magic number ten.
+     */
+    private static final int TEN = 10;
+    /**
+     * The magic number 100.0.
+     */
+    private static final double ONE_HUNDRED = 100.0;
+    /**
+     * The decimal format symbols for the US.
+     */
+    private static final DecimalFormatSymbols US_FORMAT_SYMBOLS = new DecimalFormatSymbols(Locale.US);
+    /**
+     * The decimal format for integers, i.e. no decimals.
+     */
+    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("0", US_FORMAT_SYMBOLS);
+    /**
+     * The decimal format for one decimal digit.
+     */
+    private static final DecimalFormat ONE_DECIMAL_FORMAT = new DecimalFormat("0.0", US_FORMAT_SYMBOLS);
+    /**
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
@@ -90,136 +117,46 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * The configuration for the website.
      */
     private final WebsiteConfiguration websiteConfiguration;
-    private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
-    private static final DecimalFormat INTEGER = new DecimalFormat("0", symbols);
-    private static final DecimalFormat ONE_DECIMAL = new DecimalFormat("0.0", symbols);
 
+    /**
+     * Constructor taking the website configuration and the opinion polls map as its parameters.
+     *
+     * @param websiteConfiguration The website configuration.
+     * @param opinionPollsMap      A map with all the opinion polls.
+     */
     AreaIndexPagesBuilder(final WebsiteConfiguration websiteConfiguration,
             final Map<String, OpinionPolls> opinionPollsMap) {
         this.websiteConfiguration = websiteConfiguration;
         this.opinionPollsMap = opinionPollsMap;
     }
 
-    Map<Path, String> build() {
-        Map<Path, String> result = new HashMap<Path, String>();
-        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
-            String areaCode = areaConfiguration.getAreaCode();
-            if (areaCode != null) {
-                result.put(Paths.get(areaCode, "index.html"), createAreaIndexPage(areaConfiguration));
-            }
-        }
-        return result;
+    /**
+     * Adds a paragraph with None to the section.
+     *
+     * @param section The section to add None to.
+     */
+    private void addNoneParagraph(final Section section) {
+        P p = new P();
+        section.addElement(p);
+        p.addElement(new Span(" ").clazz("none"));
+        p.addContent(".");
     }
 
-    String createAreaIndexPage(final AreaConfiguration areaConfiguration) {
-        Html html = new Html();
-        html.addElement(createHead(1));
-        Body body = new Body().onload("initializeLanguage();");
-        html.addElement(body);
-        body.addElement(createHeader(1));
-        Section section = new Section();
-        body.addElement(section);
-        section.addElement(new H1(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
-        section.addElement(new H2(" ").clazz("upcoming-elections"));
-        Set<ElectionConfiguration> electionConfigurations = areaConfiguration.getElectionConfigurations();
-        if (electionConfigurations == null || electionConfigurations.isEmpty()) {
-            P p = new P();
-            section.addElement(p);
-            p.addElement(new Span(" ").clazz("none"));
-            p.addContent(".");
-        } else {
-            UL ul = new UL();
-            section.addElement(ul);
-            List<Entry> entries = new ArrayList<Entry>();
-            for (ElectionConfiguration electionConfiguration : electionConfigurations) {
-                if (electionConfiguration.getNextElectionDate() != null) {
-                    entries.add(new Entry(electionConfiguration));
-                }
-            }
-            entries.sort(new Comparator<Entry>() {
-                @Override
-                public int compare(final Entry e1, final Entry e2) {
-                    int dateResult = e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
-                    if (dateResult != 0) {
-                        return dateResult;
-                    } else {
-                        return e1.getTypeAsClass().compareTo(e2.getTypeAsClass());
-                    }
-                }
-            });
-            for (Entry entry : entries) {
-                LI li = new LI();
-                ul.addElement(li);
-                ExpectedDate nextElectionDate = entry.getNextElectionDate();
-                if (nextElectionDate.isApproximate()) {
-                    li.addElement(new Span(" ").clazz("around"));
-                    li.addContent(" ");
-                } else if (nextElectionDate.isDeadline()) {
-                    li.addElement(new Span(" ").clazz("no-later-than"));
-                    li.addContent(" ");
-                }
-                li.addContent(nextElectionDate.getDateString());
-                li.addContent(": ");
-                li.addElement(new Span(" ").clazz(entry.getTypeAsClass()));
-            }
-        }
-        section.addElement(new H2(" ").clazz("latest-opinion-polls"));
+    /**
+     * Adds the most recent opinion polls as a table to a section, or none if there are none.
+     *
+     * @param section           The section to add the upcoming election to.
+     * @param areaConfiguration The configuration for the area.
+     */
+    private void addOpinionPolls(final Section section, final AreaConfiguration areaConfiguration) {
         OpinionPolls opinionPolls = opinionPollsMap.get(areaConfiguration.getAreaCode());
         if (opinionPolls == null || opinionPolls.getOpinionPolls().isEmpty()) {
-            P p = new P();
-            section.addElement(p);
-            p.addElement(new Span(" ").clazz("none"));
-            p.addContent(".");
+            addNoneParagraph(section);
         } else {
-            List<OpinionPoll> opinionPollList = new ArrayList<OpinionPoll>(opinionPolls.getOpinionPolls());
-            opinionPollList.sort(new Comparator<OpinionPoll>() {
-                @Override
-                public int compare(OpinionPoll op1, OpinionPoll op2) {
-                    return op2.getEndDate().compareTo(op1.getEndDate());
-                }
-            });
-            int numberOfOpinionPolls = opinionPollList.size();
-            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-            List<OpinionPoll> latestOpinionPolls =
-                    opinionPollList.subList(0, numberOfOpinionPolls > 10 ? 10 : numberOfOpinionPolls);
-            Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
+            List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
             Map<Set<ElectoralList>, String> electoralListSetAbbreviation = new HashMap<Set<ElectoralList>, String>();
-            for (OpinionPoll opinionPoll : latestOpinionPolls) {
-                for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario()
-                        .getElectoralListSets()) {
-                    ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
-                    Double nominalValue = resultValue.getNominalValue();
-                    // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-                    if (!electoralListSetMax.containsKey(electoralListSet)
-                            || nominalValue > electoralListSetMax.get(electoralListSet)) {
-                        electoralListSetMax.put(electoralListSet, nominalValue);
-                    }
-                    List<String> abbreviations =
-                            electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
-                    Collections.sort(abbreviations);
-                    electoralListSetAbbreviation.put(electoralListSet, String.join("–", abbreviations));
-                }
-            }
-            List<Set<ElectoralList>> sortedElectoralListSets =
-                    new ArrayList<Set<ElectoralList>>(electoralListSetMax.keySet());
-            sortedElectoralListSets.sort(new Comparator<Set<ElectoralList>>() {
-                @Override
-                public int compare(Set<ElectoralList> els1, Set<ElectoralList> els2) {
-                    int maxComparison = electoralListSetMax.get(els2).compareTo(electoralListSetMax.get(els1));
-                    if (maxComparison == 0) {
-                        return electoralListSetAbbreviation.get(els1).compareTo(electoralListSetAbbreviation.get(els2));
-                    } else {
-                        return maxComparison;
-                    }
-                }
-            });
-            int numberOfElectoralListColumns = sortedElectoralListSets.size();
-            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-            if (numberOfElectoralListColumns > 7) {
-                numberOfElectoralListColumns = 7;
-            }
             List<Set<ElectoralList>> largestElectoralListSets =
-                    sortedElectoralListSets.subList(0, numberOfElectoralListColumns);
+                    calculateLargestElectoralListSetsAndAbbreviations(electoralListSetAbbreviation, latestOpinionPolls);
             Table table = new Table().clazz("opinion-polls-table");
             section.addElement(table);
             THead tHead = new THead();
@@ -263,7 +200,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 List<String> commissioners = new ArrayList<String>(opinionPoll.getCommissioners());
                 commissioners.sort(new Comparator<String>() {
                     @Override
-                    public int compare(String c1, String c2) {
+                    public int compare(final String c1, final String c2) {
                         return c1.compareToIgnoreCase(c2);
                     }
                 });
@@ -275,7 +212,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 } else {
                     opinionPollRow.addElement(new TD(pollingFirm + " / " + commissionerText));
                 }
-                Double other = 100.0;
+                Double other = ONE_HUNDRED;
                 ResultValue.Precision precision = ResultValue.Precision.ONE;
                 for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
                     ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
@@ -297,8 +234,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
                         }
                     }
                 }
-                String otherText =
-                        precision == ResultValue.Precision.ONE ? INTEGER.format(other) : ONE_DECIMAL.format(other);
+                String otherText = precision == ResultValue.Precision.ONE ? INTEGER_FORMAT.format(other)
+                        : ONE_DECIMAL_FORMAT.format(other);
                 if (otherText.equals("-0")) {
                     otherText = "0";
                 }
@@ -325,7 +262,158 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 p.addElement(new Span(" ").clazz("publication-date"));
             }
         }
+    }
+
+    /**
+     * Adds the upcoming elections as an unordered list to a section, or none if there are none.
+     *
+     * @param section           The section to add the upcoming election to.
+     * @param areaConfiguration The configuration for the area.
+     */
+    private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration) {
+        Set<ElectionConfiguration> electionConfigurations = areaConfiguration.getElectionConfigurations();
+        if (electionConfigurations == null || electionConfigurations.isEmpty()) {
+            addNoneParagraph(section);
+        } else {
+            UL ul = new UL();
+            section.addElement(ul);
+            List<Entry> entries = new ArrayList<Entry>();
+            for (ElectionConfiguration electionConfiguration : electionConfigurations) {
+                if (electionConfiguration.getNextElectionDate() != null) {
+                    entries.add(new Entry(electionConfiguration));
+                }
+            }
+            entries.sort(new Comparator<Entry>() {
+                @Override
+                public int compare(final Entry e1, final Entry e2) {
+                    int dateResult = e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
+                    if (dateResult != 0) {
+                        return dateResult;
+                    } else {
+                        return e1.getTypeAsClass().compareTo(e2.getTypeAsClass());
+                    }
+                }
+            });
+            for (Entry entry : entries) {
+                LI li = new LI();
+                ul.addElement(li);
+                ExpectedDate nextElectionDate = entry.getNextElectionDate();
+                if (nextElectionDate.isApproximate()) {
+                    li.addElement(new Span(" ").clazz("around"));
+                    li.addContent(" ");
+                } else if (nextElectionDate.isDeadline()) {
+                    li.addElement(new Span(" ").clazz("no-later-than"));
+                    li.addContent(" ");
+                }
+                li.addContent(nextElectionDate.getDateString());
+                li.addContent(": ");
+                li.addElement(new Span(" ").clazz(entry.getTypeAsClass()));
+            }
+        }
+    }
+
+    /**
+     * Builds the index pages for all areas.
+     *
+     * @return A map with the index pages for all areas.
+     */
+    Map<Path, String> build() {
+        Map<Path, String> result = new HashMap<Path, String>();
+        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+            String areaCode = areaConfiguration.getAreaCode();
+            if (areaCode != null) {
+                result.put(Paths.get(areaCode, "index.html"), createAreaIndexPage(areaConfiguration));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calculates which electoral lists sets are the largest, and stores their abbreviations.
+     *
+     * @param electoralListSetAbbreviation A map where the abbreviations for the electoral list sets can be stored.
+     * @param latestOpinionPolls           The opinion polls for which the largest electoral list sets should be
+     *                                     calculated.
+     * @return A list with the largest electoral list sets.
+     */
+    private List<Set<ElectoralList>> calculateLargestElectoralListSetsAndAbbreviations(
+            final Map<Set<ElectoralList>, String> electoralListSetAbbreviation,
+            final List<OpinionPoll> latestOpinionPolls) {
+        Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
+        for (OpinionPoll opinionPoll : latestOpinionPolls) {
+            for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario().getElectoralListSets()) {
+                ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
+                Double nominalValue = resultValue.getNominalValue();
+                // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+                if (!electoralListSetMax.containsKey(electoralListSet)
+                        || nominalValue > electoralListSetMax.get(electoralListSet)) {
+                    electoralListSetMax.put(electoralListSet, nominalValue);
+                }
+                List<String> abbreviations =
+                        electoralListSet.stream().map(el -> el.getAbbreviation()).collect(Collectors.toList());
+                Collections.sort(abbreviations);
+                electoralListSetAbbreviation.put(electoralListSet, String.join("–", abbreviations));
+            }
+        }
+        List<Set<ElectoralList>> sortedElectoralListSets =
+                new ArrayList<Set<ElectoralList>>(electoralListSetMax.keySet());
+        sortedElectoralListSets.sort(new Comparator<Set<ElectoralList>>() {
+            @Override
+            public int compare(final Set<ElectoralList> els1, final Set<ElectoralList> els2) {
+                int maxComparison = electoralListSetMax.get(els2).compareTo(electoralListSetMax.get(els1));
+                if (maxComparison == 0) {
+                    return electoralListSetAbbreviation.get(els1).compareTo(electoralListSetAbbreviation.get(els2));
+                } else {
+                    return maxComparison;
+                }
+            }
+        });
+        int numberOfElectoralListSets = sortedElectoralListSets.size();
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+        return sortedElectoralListSets.subList(0,
+                numberOfElectoralListSets > SEVEN ? SEVEN : numberOfElectoralListSets);
+    }
+
+    /**
+     * Calculates the latest opinion polls.
+     *
+     * @param opinionPolls The opinion polls.
+     * @return The latest opinion polls.
+     */
+    private List<OpinionPoll> calculateLatestOpinionPolls(final OpinionPolls opinionPolls) {
+        List<OpinionPoll> opinionPollList = new ArrayList<OpinionPoll>(opinionPolls.getOpinionPolls());
+        opinionPollList.sort(new Comparator<OpinionPoll>() {
+            @Override
+            public int compare(final OpinionPoll op1, final OpinionPoll op2) {
+                return op2.getEndDate().compareTo(op1.getEndDate());
+            }
+        });
+        int numberOfOpinionPolls = opinionPollList.size();
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+        return opinionPollList.subList(0, numberOfOpinionPolls > TEN ? TEN : numberOfOpinionPolls);
+    }
+
+    /**
+     * Creates the index page for an area.
+     *
+     * @param areaConfiguration The configuration for the area.
+     * @return The index page for an area.
+     */
+    String createAreaIndexPage(final AreaConfiguration areaConfiguration) {
+        Html html = new Html();
+        html.addElement(createHead(1));
+        Body body = new Body().onload("initializeLanguage();");
+        html.addElement(body);
+        body.addElement(createHeader(1));
+        Section section = new Section();
+        body.addElement(section);
+        section.addElement(new H1(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
+        section.addElement(new H2(" ").clazz("upcoming-elections"));
+        addUpcomingElections(section, areaConfiguration);
+        section.addElement(new H2(" ").clazz("latest-opinion-polls"));
+        addOpinionPolls(section, areaConfiguration);
         body.addElement(createFooter());
         return html.asString();
     }
+
 }

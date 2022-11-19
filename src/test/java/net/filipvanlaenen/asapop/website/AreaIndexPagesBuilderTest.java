@@ -116,6 +116,11 @@ public class AreaIndexPagesBuilderTest {
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
+    /**
+     * Creates an empty area index page.
+     *
+     * @return An empty area index page.
+     */
     private String createEmptyAreaIndexPage() {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected);
@@ -126,6 +131,11 @@ public class AreaIndexPagesBuilderTest {
         return expected.toString();
     }
 
+    /**
+     * Creates an index page for an area with only one small opinion poll.
+     *
+     * @return An index page for an area with only one small opinion poll.
+     */
     private String createAreaIndexPageWithASmallOpinionPoll() {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected);
@@ -155,6 +165,11 @@ public class AreaIndexPagesBuilderTest {
         return expected.toString();
     }
 
+    /**
+     * Creates an index page for an area with many and large opinion polls.
+     *
+     * @return An index page for an area with many and large opinion polls.
+     */
     private String createAreaIndexPageWithManyAndLargeOpinionPolls() {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected);
@@ -238,6 +253,11 @@ public class AreaIndexPagesBuilderTest {
         return expected.toString();
     }
 
+    /**
+     * Creates an index page for an area with upcoming elections.
+     *
+     * @return An index page for an area with upcoming elections.
+     */
     private String createAreaIndexPageWithUpcomingElections() {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected);
@@ -256,11 +276,21 @@ public class AreaIndexPagesBuilderTest {
         return expected.toString();
     }
 
-    private void addMiddlePart(StringBuilder expected) {
+    /**
+     * Adds the middle part of an area index page to a StringBuilder instance.
+     *
+     * @param expected The StringBuilder instance to add the middle part to.
+     */
+    private void addMiddlePart(final StringBuilder expected) {
         expected.append("      <h2 class=\"latest-opinion-polls\"> </h2>\n");
     }
 
-    private void addBottomPart(StringBuilder expected) {
+    /**
+     * Adds the bottom part of an area index page to a StringBuilder instance.
+     *
+     * @param expected The StringBuilder instance to add the bottom part to.
+     */
+    private void addBottomPart(final StringBuilder expected) {
         expected.append("    </section>\n");
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
@@ -269,7 +299,12 @@ public class AreaIndexPagesBuilderTest {
         expected.append("</html>");
     }
 
-    private void addTopPart(StringBuilder expected) {
+    /**
+     * Adds the top part of an area index page to a StringBuilder instance.
+     *
+     * @param expected The StringBuilder instance to add the top part to.
+     */
+    private void addTopPart(final StringBuilder expected) {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
