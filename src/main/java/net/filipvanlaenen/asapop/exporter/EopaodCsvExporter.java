@@ -102,7 +102,7 @@ public final class EopaodCsvExporter extends Exporter {
         List<String> lines = new ArrayList<String>();
         if (areaMatches(area, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
-            elements.add(escapeCommasAndQuotes(exportPollingFirms(opinionPoll)));
+            elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
             elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));

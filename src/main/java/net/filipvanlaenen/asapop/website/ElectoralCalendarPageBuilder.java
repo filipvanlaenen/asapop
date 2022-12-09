@@ -82,17 +82,12 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
     }
 
     /**
-     * The configuration for the website.
-     */
-    private final WebsiteConfiguration websiteConfiguration;
-
-    /**
      * Constructor taking the website configuration as its parameter.
      *
      * @param websiteConfiguration The website configuration.
      */
     ElectoralCalendarPageBuilder(final WebsiteConfiguration websiteConfiguration) {
-        this.websiteConfiguration = websiteConfiguration;
+        super(websiteConfiguration);
     }
 
     /**
@@ -121,7 +116,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         TBody tBody = new TBody();
         table.addElement(tBody);
         List<Entry> entries = new ArrayList<Entry>();
-        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+        for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
             if (areaConfiguration.getAreaCode() != null && areaConfiguration.getElectionConfigurations() != null) {
                 for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
                     if (electionConfiguration.getNextElectionDate() != null) {

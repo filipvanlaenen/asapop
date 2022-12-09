@@ -23,17 +23,12 @@ import net.filipvanlaenen.txhtmlj.Table;
  */
 final class CsvFilesPageBuilder extends PageBuilder {
     /**
-     * The configuration for the website.
-     */
-    private final WebsiteConfiguration websiteConfiguration;
-
-    /**
      * Constructor taking the website configuration as its parameter.
      *
      * @param websiteConfiguration The website configuration.
      */
     CsvFilesPageBuilder(final WebsiteConfiguration websiteConfiguration) {
-        this.websiteConfiguration = websiteConfiguration;
+        super(websiteConfiguration);
     }
 
     /**
@@ -60,7 +55,7 @@ final class CsvFilesPageBuilder extends PageBuilder {
         tr.addElement(new TH(" ").clazz("country"));
         TBody tBody = new TBody();
         table.addElement(tBody);
-        List<AreaConfiguration> sortedAreaConfigurations = websiteConfiguration.getAreaConfigurations().stream()
+        List<AreaConfiguration> sortedAreaConfigurations = getAreaConfigurations().stream()
                 .filter(ac -> ac.getAreaCode() != null && ac.getCsvConfiguration() != null)
                 .collect(Collectors.toList());
         sortedAreaConfigurations.sort(new Comparator<AreaConfiguration>() {

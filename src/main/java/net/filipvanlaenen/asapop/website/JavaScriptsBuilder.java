@@ -12,6 +12,10 @@ import net.filipvanlaenen.asapop.yaml.Terms;
  */
 class JavaScriptsBuilder {
     /**
+     * The content of the navigation script.
+     */
+    private final String navigationScriptContent;
+    /**
      * The internationalization terms.
      */
     private final Terms terms;
@@ -19,10 +23,12 @@ class JavaScriptsBuilder {
     /**
      * Constructor taking the internationalization terms as its parameter.
      *
-     * @param terms The internationalization terms.
+     * @param navigationScriptContent The content of the navigation script.
+     * @param terms                   The internationalization terms.
      */
-    JavaScriptsBuilder(final Terms terms) {
+    JavaScriptsBuilder(final String navigationScriptContent, final Terms terms) {
         this.terms = terms;
+        this.navigationScriptContent = navigationScriptContent;
     }
 
     /**
@@ -33,6 +39,7 @@ class JavaScriptsBuilder {
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
         result.put(Paths.get("_js", "internationalization.js"), new InternationalizationScriptBuilder(terms).build());
+        result.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         return result;
     }
 }

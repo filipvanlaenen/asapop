@@ -37,10 +37,6 @@ final class IndexPageBuilder extends PageBuilder {
      * The list with GitHub website URLs, sorted by next election date.
      */
     private List<String> gitHubWebsiteUrlsByNextElectionDate;
-    /**
-     * The configuration for the website.
-     */
-    private final WebsiteConfiguration websiteConfiguration;
 
     /**
      * Constructor taking the website configuration as its parameter.
@@ -48,7 +44,7 @@ final class IndexPageBuilder extends PageBuilder {
      * @param websiteConfiguration The website configuration.
      */
     IndexPageBuilder(final WebsiteConfiguration websiteConfiguration) {
-        this.websiteConfiguration = websiteConfiguration;
+        super(websiteConfiguration);
     }
 
     /**
@@ -81,7 +77,7 @@ final class IndexPageBuilder extends PageBuilder {
     private void calculateGitHubWebsiteUrlsSortedByNextElectionDate() {
         List<ElectionConfiguration> electionConfigurations = new ArrayList<ElectionConfiguration>();
         Map<ElectionConfiguration, ExpectedDate> expectedDates = new HashMap<ElectionConfiguration, ExpectedDate>();
-        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+        for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
             if (areaConfiguration.getElectionConfigurations() != null) {
                 for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
                     if (electionConfiguration.getNextElectionDate() != null

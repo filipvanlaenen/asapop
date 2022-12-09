@@ -1,5 +1,12 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.FlowContent;
@@ -76,6 +83,37 @@ abstract class PageBuilder {
     }
 
     /**
+     * The configuration for the website.
+     */
+    private final WebsiteConfiguration websiteConfiguration;
+
+    /**
+     * Constructor taking the website configuration as its parameter.
+     *
+     * @param websiteConfiguration The website configuration.
+     */
+    protected PageBuilder(final WebsiteConfiguration websiteConfiguration) {
+        this.websiteConfiguration = websiteConfiguration;
+    }
+
+    private Select createAreaSelector(final int level) {
+        Select select = new Select().id("area-selector").onchange("moveToArea(" + level + ");");
+        select.addElement(new Option(" "));
+        List<String> areaCodes = new ArrayList<String>();
+        for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
+            String areaCode = areaConfiguration.getAreaCode();
+            if (areaCode != null) {
+                areaCodes.add(areaCode);
+            }
+        }
+        Collections.sort(areaCodes);
+        for (String areaCode : areaCodes) {
+            select.addElement(new Option(" ").clazz("_area_" + areaCode).value(areaCode));
+        }
+        return select;
+    }
+
+    /**
      * Creates a footer element for a page.
      *
      * @return A footer element for a page.
@@ -112,6 +150,8 @@ abstract class PageBuilder {
                 .src("https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
                 .src(relativePath + "_js/internationalization.js"));
+        head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
+                .src(relativePath + "_js/navigation.js"));
         return head;
     }
 
@@ -159,6 +199,10 @@ abstract class PageBuilder {
         header.addElement(left);
         Div right = new Div().clazz("header-right");
         header.addElement(right);
+        right.addElement(new Span(" ").clazz("go-to"));
+        right.addContent(": ");
+        right.addElement(createAreaSelector(level));
+        right.addContent(" · ");
         right.addElement(HeaderLink.ELECTORAL_CALENDAR.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
         right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage, relativePath));
@@ -188,5 +232,9 @@ abstract class PageBuilder {
             relativePath += "../";
         }
         return relativePath;
+    }
+
+    protected Set<AreaConfiguration> getAreaConfigurations() {
+        return websiteConfiguration.getAreaConfigurations();
     }
 }

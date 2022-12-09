@@ -2,7 +2,11 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
  * Unit tests on the <code>PageBuilder</code> class.
@@ -12,6 +16,15 @@ public class PageBuilderTest {
      * Local subclass of PageBuilder to run the unit tests on.
      */
     class LocalPageBuilder extends PageBuilder {
+        protected LocalPageBuilder(final WebsiteConfiguration websiteConfiguration) {
+            super(websiteConfiguration);
+        }
+    }
+
+    private LocalPageBuilder createLocalPageBuilder() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
+        return new LocalPageBuilder(websiteConfiguration);
     }
 
     /**
@@ -23,7 +36,7 @@ public class PageBuilderTest {
         expected.append("<footer>\n");
         expected.append("  <div class=\"privacy-statement\"> </div>\n");
         expected.append("</footer>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createFooter().asString());
+        assertEquals(expected.toString(), createLocalPageBuilder().createFooter().asString());
     }
 
     /**
@@ -39,10 +52,10 @@ public class PageBuilderTest {
         expected.append("  <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
                 + " type=\"application/javascript\"> </script>\n");
-        expected.append(
-                "  <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
+        expected.append("  <script src=\"_js/internationalization.js\" type=\"application/javascript\"> </script>\n");
+        expected.append("  <script src=\"_js/navigation.js\" type=\"application/javascript\"> </script>\n");
         expected.append("</head>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHead().asString());
+        assertEquals(expected.toString(), createLocalPageBuilder().createHead().asString());
     }
 
     /**
@@ -55,9 +68,12 @@ public class PageBuilderTest {
         expected.append("  <div class=\"header-left\">\n");
         expected.append("    <span class=\"main-page\"> </span>\n");
         expected.append("  </div>\n");
-        expected.append("  <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
-                + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>: <select"
-                + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("  <div class=\"header-right\"><span class=\"go-to\"> </span>: <select id=\"area-selector\""
+                + " onchange=\"moveToArea(0);\">\n");
+        expected.append("  <option> </option>\n");
+        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
+                + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");
@@ -66,7 +82,8 @@ public class PageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></div>\n");
         expected.append("</header>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(PageBuilder.HeaderLink.INDEX).asString());
+        assertEquals(expected.toString(),
+                createLocalPageBuilder().createHeader(PageBuilder.HeaderLink.INDEX).asString());
     }
 
     /**
@@ -79,7 +96,10 @@ public class PageBuilderTest {
         expected.append("  <div class=\"header-left\">\n");
         expected.append("    <a class=\"main-page\" href=\"index.html\"> </a>\n");
         expected.append("  </div>\n");
-        expected.append("  <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
+        expected.append("  <div class=\"header-right\"><span class=\"go-to\"> </span>: <select id=\"area-selector\""
+                + " onchange=\"moveToArea(0);\">\n");
+        expected.append("  <option> </option>\n");
+        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
                 + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
                 + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
@@ -90,7 +110,7 @@ public class PageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></div>\n");
         expected.append("</header>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHeader().asString());
+        assertEquals(expected.toString(), createLocalPageBuilder().createHeader().asString());
     }
 
     /**
@@ -103,8 +123,11 @@ public class PageBuilderTest {
         expected.append("  <div class=\"header-left\">\n");
         expected.append("    <a class=\"main-page\" href=\"../index.html\"> </a>\n");
         expected.append("  </div>\n");
-        expected.append("  <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"../calendar.html\"> </a>"
-                + " · <a class=\"csv-files\" href=\"../csv.html\"> </a> · <span class=\"language\"> </span>:"
+        expected.append("  <div class=\"header-right\"><span class=\"go-to\"> </span>: <select id=\"area-selector\""
+                + " onchange=\"moveToArea(1);\">\n");
+        expected.append("  <option> </option>\n");
+        expected.append("</select> · <a class=\"electoral-calendar\" href=\"../calendar.html\"> </a> ·"
+                + " <a class=\"csv-files\" href=\"../csv.html\"> </a> · <span class=\"language\"> </span>:"
                 + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
@@ -114,6 +137,6 @@ public class PageBuilderTest {
         expected.append("  <option value=\"no\">norsk</option>\n");
         expected.append("</select></div>\n");
         expected.append("</header>");
-        assertEquals(expected.toString(), new LocalPageBuilder().createHeader(1).asString());
+        assertEquals(expected.toString(), createLocalPageBuilder().createHeader(1).asString());
     }
 }

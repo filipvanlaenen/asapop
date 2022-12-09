@@ -154,8 +154,9 @@ public final class CommandLineInterface {
                 Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
+                String navigationScriptContent = readResource("/navigation.js");
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap,
-                        baseStyleSheetContent, customStyleSheetContent).build();
+                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },

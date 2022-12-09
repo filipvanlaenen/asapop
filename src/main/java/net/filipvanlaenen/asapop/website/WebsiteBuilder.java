@@ -19,6 +19,10 @@ public class WebsiteBuilder {
      */
     private final String customStyleSheetContent;
     /**
+     * The content of the navigation script.
+     */
+    private final String navigationScriptContent;
+    /**
      * The map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
@@ -40,15 +44,17 @@ public class WebsiteBuilder {
      * @param opinionPollsMap         The map with all the opinion polls.
      * @param baseStyleSheetContent   The base style sheet content.
      * @param customStyleSheetContent The custom style sheet content.
+     * @param navigationScriptContent The content of the navigation script.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent,
-            final String customStyleSheetContent) {
+            final String customStyleSheetContent, final String navigationScriptContent) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
         this.baseStyleSheetContent = baseStyleSheetContent;
         this.customStyleSheetContent = customStyleSheetContent;
+        this.navigationScriptContent = navigationScriptContent;
     }
 
     /**
@@ -58,7 +64,7 @@ public class WebsiteBuilder {
      */
     public Website build() {
         Website website = new Website();
-        JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(terms);
+        JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(navigationScriptContent, terms);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
         website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());

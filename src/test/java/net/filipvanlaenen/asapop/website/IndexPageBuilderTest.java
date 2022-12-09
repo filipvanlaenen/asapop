@@ -58,15 +58,20 @@ public class IndexPageBuilderTest {
                 + " type=\"application/javascript\"> </script>\n");
         expected.append(
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
+        expected.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
         expected.append("  <body onload=\"initializeLanguage();\">\n");
         expected.append("    <header>\n");
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <span class=\"main-page\"> </span>\n");
         expected.append("      </div>\n");
-        expected.append("      <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"calendar.html\">"
-                + " </a> · <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
-                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("      <div class=\"header-right\"><span class=\"go-to\"> </span>: <select"
+                + " id=\"area-selector\" onchange=\"moveToArea(0);\">\n");
+        expected.append("  <option> </option>\n");
+        expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
+                + " class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>: <select"
+                + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");

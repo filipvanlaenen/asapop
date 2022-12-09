@@ -46,7 +46,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        assertEquals(createEmptyAreaIndexPage(),
+        assertEquals(createEmptyAreaIndexPage(false),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
@@ -61,7 +61,7 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
-        assertEquals(createEmptyAreaIndexPage(),
+        assertEquals(createEmptyAreaIndexPage(true),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
     }
 
@@ -139,9 +139,9 @@ public class AreaIndexPagesBuilderTest {
      *
      * @return An empty area index page.
      */
-    private String createEmptyAreaIndexPage() {
+    private String createEmptyAreaIndexPage(final boolean includeNavigationToArea) {
         StringBuilder expected = new StringBuilder();
-        addTopPart(expected);
+        addTopPart(expected, includeNavigationToArea);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addMiddlePart(expected);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
@@ -156,7 +156,7 @@ public class AreaIndexPagesBuilderTest {
      */
     private String createAreaIndexPageWithASmallOpinionPoll() {
         StringBuilder expected = new StringBuilder();
-        addTopPart(expected);
+        addTopPart(expected, true);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addMiddlePart(expected);
         expected.append("      <table class=\"opinion-polls-table\">\n");
@@ -190,7 +190,7 @@ public class AreaIndexPagesBuilderTest {
      */
     private String createAreaIndexPageWithManyAndLargeOpinionPolls() {
         StringBuilder expected = new StringBuilder();
-        addTopPart(expected);
+        addTopPart(expected, true);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addMiddlePart(expected);
         expected.append("      <table class=\"opinion-polls-table\">\n");
@@ -278,7 +278,7 @@ public class AreaIndexPagesBuilderTest {
      */
     private String createAreaIndexPageWithUpcomingElections() {
         StringBuilder expected = new StringBuilder();
-        addTopPart(expected);
+        addTopPart(expected, true);
         expected.append("      <ul>\n");
         expected.append("        <li>2023-03-05: <span class=\"local\"> </span></li>\n");
         expected.append("        <li>2023-03-05: <span class=\"parliament\"> </span></li>\n");
@@ -322,7 +322,7 @@ public class AreaIndexPagesBuilderTest {
      *
      * @param expected The StringBuilder instance to add the top part to.
      */
-    private void addTopPart(final StringBuilder expected) {
+    private void addTopPart(final StringBuilder expected, final boolean includeNavigationToArea) {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
@@ -333,15 +333,22 @@ public class AreaIndexPagesBuilderTest {
                 + " type=\"application/javascript\"> </script>\n");
         expected.append(
                 "    <script src=\"../_js/internationalization.js\" type=\"application/javascript\"> </script>\n");
+        expected.append("    <script src=\"../_js/navigation.js\" type=\"application/javascript\"> </script>\n");
         expected.append("  </head>\n");
         expected.append("  <body onload=\"initializeLanguage();\">\n");
         expected.append("    <header>\n");
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <a class=\"main-page\" href=\"../index.html\"> </a>\n");
         expected.append("      </div>\n");
-        expected.append("      <div class=\"header-right\"><a class=\"electoral-calendar\" href=\"../calendar.html\">"
-                + " </a> · <a class=\"csv-files\" href=\"../csv.html\"> </a> · <span class=\"language\"> </span>:"
-                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        expected.append("      <div class=\"header-right\"><span class=\"go-to\"> </span>: <select"
+                + " id=\"area-selector\" onchange=\"moveToArea(1);\">\n");
+        expected.append("  <option> </option>\n");
+        if (includeNavigationToArea) {
+            expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        }
+        expected.append("</select> · <a class=\"electoral-calendar\" href=\"../calendar.html\"> </a> ·"
+                + " <a class=\"csv-files\" href=\"../csv.html\"> </a> · <span class=\"language\"> </span>: <select"
+                + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");

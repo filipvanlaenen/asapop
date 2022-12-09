@@ -92,6 +92,8 @@ public class WebsiteBuilderTest {
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
+        String navigationScriptContent = "function moveToArea(level) {}";
+        map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
@@ -100,7 +102,7 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
-                baseStyleSheetContent, customStyleSheetContent);
+                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent);
         assertEquals(map, builder.build().asMap());
     }
 }

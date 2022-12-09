@@ -11,7 +11,7 @@ import net.filipvanlaenen.asapop.yaml.Terms;
 /**
  * Class building the internationalization script.
  */
-public class InternationalizationScriptBuilder {
+class InternationalizationScriptBuilder {
     /**
      * The internationalization terms, sorted.
      */
@@ -22,7 +22,7 @@ public class InternationalizationScriptBuilder {
      *
      * @param terms The terms.
      */
-    public InternationalizationScriptBuilder(final Terms terms) {
+    InternationalizationScriptBuilder(final Terms terms) {
         this.sortedTerms = new ArrayList<Term>(terms.getTerms());
         sortedTerms.sort(new Comparator<Term>() {
             @Override
@@ -37,7 +37,7 @@ public class InternationalizationScriptBuilder {
      *
      * @return The content of the internationalization script.
      */
-    public String build() {
+    String build() {
         StringBuilder sb = new StringBuilder();
         sb.append(buildInitializeLanguage());
         sb.append("\n");

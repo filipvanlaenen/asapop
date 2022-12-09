@@ -113,10 +113,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
-    /**
-     * The configuration for the website.
-     */
-    private final WebsiteConfiguration websiteConfiguration;
 
     /**
      * Constructor taking the website configuration and the opinion polls map as its parameters.
@@ -126,7 +122,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      */
     AreaIndexPagesBuilder(final WebsiteConfiguration websiteConfiguration,
             final Map<String, OpinionPolls> opinionPollsMap) {
-        this.websiteConfiguration = websiteConfiguration;
+        super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
     }
 
@@ -319,7 +315,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      */
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
-        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+        for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
             String areaCode = areaConfiguration.getAreaCode();
             if (areaCode != null) {
                 result.put(Paths.get(areaCode, "index.html"), createAreaIndexPage(areaConfiguration));

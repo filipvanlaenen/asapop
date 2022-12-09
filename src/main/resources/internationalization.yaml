@@ -80,6 +80,14 @@ terms:
       fr: "Période de recherche"
       nl: "Onderzoeksperiode"
       no: "Undersøkelsesperiode"
+  - key: "go-to"
+    translations:
+      de: "Gehe nach"
+      en: "Go to"
+      eo: "Iru al"
+      fr: "Aller à"
+      nl: "Ga naar"
+      no: "Gå til"
   - key: "language"
     translations:
       de: "Sprache"
