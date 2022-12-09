@@ -17,11 +17,21 @@ public class PageBuilderTest {
      * Local subclass of PageBuilder to run the unit tests on.
      */
     class LocalPageBuilder extends PageBuilder {
+        /**
+         * Constructor taking a website configuration as a parameter.
+         *
+         * @param websiteConfiguration The website configuration.
+         */
         protected LocalPageBuilder(final WebsiteConfiguration websiteConfiguration) {
             super(websiteConfiguration);
         }
     }
 
+    /**
+     * Creates a local page builder subclass instance.
+     *
+     * @return An instance of the local page builder subclass.
+     */
     private LocalPageBuilder createLocalPageBuilder() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         AreaConfiguration northMacedonia = new AreaConfiguration();

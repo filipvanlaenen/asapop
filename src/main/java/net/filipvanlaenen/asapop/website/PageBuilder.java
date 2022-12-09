@@ -96,6 +96,12 @@ abstract class PageBuilder {
         this.websiteConfiguration = websiteConfiguration;
     }
 
+    /**
+     * Creates a select element for the areas.
+     *
+     * @param level The level of the current page.
+     * @return A select element for the areas.
+     */
     private Select createAreaSelector(final int level) {
         Select select = new Select().id("area-selector").onchange("moveToArea(" + level + ");");
         select.addElement(new Option(" "));
@@ -234,6 +240,11 @@ abstract class PageBuilder {
         return relativePath;
     }
 
+    /**
+     * Returns the area configurations.
+     *
+     * @return The area configurations.
+     */
     protected Set<AreaConfiguration> getAreaConfigurations() {
         return websiteConfiguration.getAreaConfigurations();
     }

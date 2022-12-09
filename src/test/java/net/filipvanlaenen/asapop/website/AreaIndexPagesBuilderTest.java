@@ -137,6 +137,7 @@ public class AreaIndexPagesBuilderTest {
     /**
      * Creates an empty area index page.
      *
+     * @param includeNavigationToArea True if the navigation to an area should be included.
      * @return An empty area index page.
      */
     private String createEmptyAreaIndexPage(final boolean includeNavigationToArea) {
@@ -320,7 +321,8 @@ public class AreaIndexPagesBuilderTest {
     /**
      * Adds the top part of an area index page to a StringBuilder instance.
      *
-     * @param expected The StringBuilder instance to add the top part to.
+     * @param includeNavigationToArea True if the navigation to an area should be included.
+     * @param expected                The StringBuilder instance to add the top part to.
      */
     private void addTopPart(final StringBuilder expected, final boolean includeNavigationToArea) {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
