@@ -2,10 +2,11 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collections;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -23,7 +24,13 @@ public class PageBuilderTest {
 
     private LocalPageBuilder createLocalPageBuilder() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
-        websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        AreaConfiguration serbia = new AreaConfiguration();
+        serbia.setAreaCode("rs");
+        AreaConfiguration sweden = new AreaConfiguration();
+        sweden.setAreaCode("se");
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, serbia, sweden));
         return new LocalPageBuilder(websiteConfiguration);
     }
 
@@ -71,6 +78,9 @@ public class PageBuilderTest {
         expected.append("  <div class=\"header-right\"><span class=\"go-to\"> </span>: <select id=\"area-selector\""
                 + " onchange=\"moveToArea(0);\">\n");
         expected.append("  <option> </option>\n");
+        expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
+        expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
                 + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
                 + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
@@ -99,6 +109,9 @@ public class PageBuilderTest {
         expected.append("  <div class=\"header-right\"><span class=\"go-to\"> </span>: <select id=\"area-selector\""
                 + " onchange=\"moveToArea(0);\">\n");
         expected.append("  <option> </option>\n");
+        expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
+        expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
                 + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>:"
                 + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
@@ -126,6 +139,9 @@ public class PageBuilderTest {
         expected.append("  <div class=\"header-right\"><span class=\"go-to\"> </span>: <select id=\"area-selector\""
                 + " onchange=\"moveToArea(1);\">\n");
         expected.append("  <option> </option>\n");
+        expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
+        expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"../calendar.html\"> </a> ·"
                 + " <a class=\"csv-files\" href=\"../csv.html\"> </a> · <span class=\"language\"> </span>:"
                 + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
