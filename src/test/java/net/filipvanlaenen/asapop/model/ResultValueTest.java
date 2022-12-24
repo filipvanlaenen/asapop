@@ -12,6 +12,10 @@ import org.junit.jupiter.api.Test;
  */
 public final class ResultValueTest {
     /**
+     * The magic number 0.5.
+     */
+    private static final double DOUBLE_0_5 = 0.5D;
+    /**
      * The magic number 1.2.
      */
     private static final double DOUBLE_1_2 = 1.2D;
@@ -124,11 +128,19 @@ public final class ResultValueTest {
     }
 
     /**
-     * Verifies that string value of a precision.
+     * Verifies the string value of a precision.
      */
     @Test
     public void stringValueOfPrecisionHalfShouldBe05() {
         assertEquals("0.5", ResultValue.Precision.HALF.toString());
+    }
+
+    /**
+     * Verifies the value of a precision.
+     */
+    @Test
+    public void valueOfPrecisionHalfShouldBe05() {
+        assertEquals(DOUBLE_0_5, ResultValue.Precision.HALF.getValue());
     }
 
     /**

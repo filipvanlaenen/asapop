@@ -13,28 +13,43 @@ public final class ResultValue {
         /**
          * A precision of 1.
          */
-        ONE("1"),
+        ONE("1", 1D),
         /**
          * A precision of 0.5.
          */
-        HALF("0.5"),
+        HALF("0.5", 0.5D),
         /**
          * A precision of 0.1.
          */
-        TENTH("0.1");
+        TENTH("0.1", 0.1D);
 
         /**
          * The string representation of the precision.
          */
         private final String stringValue;
+        /**
+         * The numerical value of the precision.
+         */
+        private final double value;
 
         /**
          * Constructor taking the string representation as its parameter.
          *
          * @param stringValue The string representation of the precision.
+         * @param value       The numerical value of the precision.
          */
-        Precision(final String stringValue) {
+        Precision(final String stringValue, final double value) {
             this.stringValue = stringValue;
+            this.value = value;
+        }
+
+        /**
+         * Returns the numerical value of the precision.
+         *
+         * @return The numerical value of the precision.
+         */
+        public double getValue() {
+            return value;
         }
 
         /**
