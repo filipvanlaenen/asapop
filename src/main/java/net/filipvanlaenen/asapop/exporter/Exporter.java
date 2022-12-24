@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.exporter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,18 @@ public abstract class Exporter {
     /**
      * Calculates the precision of a response scenario.
      *
+     * @param responseScenario The response scenario.
+     * @return The precision as a string.
+     */
+    static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario) {
+        Collection<ResultValue> allResults = new HashSet<ResultValue>(responseScenario.getResults());
+        allResults.add(responseScenario.getOther());
+        return calculatePrecision(allResults);
+    }
+
+    /**
+     * Calculates the precision of a response scenario.
+     *
      * @param responseScenario     The response scenario.
      * @param electoralListKeySets The sets of keys of the electoral lists to export.
      * @return The precision as a string.
@@ -78,7 +91,7 @@ public abstract class Exporter {
      * @param resultValues A set of result values.
      * @return The precision as a string.
      */
-    private static ResultValue.Precision calculatePrecision(final Set<ResultValue> resultValues) {
+    private static ResultValue.Precision calculatePrecision(final Collection<ResultValue> resultValues) {
         ResultValue.Precision precision = ResultValue.Precision.ONE;
         for (ResultValue resultValue : resultValues) {
             precision = ResultValue.Precision.highest(precision, resultValue.getPrecision());

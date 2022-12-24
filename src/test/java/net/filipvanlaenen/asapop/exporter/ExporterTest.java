@@ -151,13 +151,23 @@ public class ExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple response scenario with results having half of a percent for other.
+     * Verifies the calculation of a precision of half a percent for a selection of results in a response scenario.
      */
     @Test
-    public void shouldExportSimpleResponseScenarioWithAResultWithHalfAPercentOther() {
+    public void shouldCalculatePrecisionOfHalfAPercentForSelectedResultsInAResponseScenario() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55.0")
                 .addWellformedResult("B", "45").setWellformedOther("0.5").build();
         assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(responseScenario, A_AND_B));
+    }
+
+    /**
+     * Verifies the calculation of a precision of half a percent for a response scenario.
+     */
+    @Test
+    public void shouldCalculatePrecisionOfHalfAPercentForAResponseScenario() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55.0")
+                .addWellformedResult("B", "45").setWellformedOther("0.5").build();
+        assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(responseScenario));
     }
 
     /**
