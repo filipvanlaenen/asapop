@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -276,6 +277,15 @@ public final class ResponseScenario {
      */
     public ResultValue getResult(final Set<String> electoralListKeys) {
         return results.get(ElectoralList.get(electoralListKeys));
+    }
+
+    /**
+     * Returns all the results.
+     *
+     * @return All the results.
+     */
+    public Collection<ResultValue> getResults() {
+        return results.values();
     }
 
     /**

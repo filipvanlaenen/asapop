@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ResponseScenarioTest {
     /**
-     * Verifies getElectoralLists returns the electoral lists of the response scenario.
+     * Verifies that getElectoralLists returns the electoral lists of the response scenario.
      */
     @Test
     public void getElectoralListsReturnsTheElectoralLists() {
@@ -21,6 +22,17 @@ public class ResponseScenarioTest {
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(Set.of(ElectoralList.get(Set.of("A")), ElectoralList.get(Set.of("B"))),
                 responseScenario.getElectoralListSets());
+    }
+
+    /**
+     * Verifies that getResults returns the result values of the response scenario.
+     */
+    @Test
+    public void getResultsReturnsTheResults() {
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        assertEquals(Set.of(new ResultValue("55"), new ResultValue("45")),
+                new HashSet<ResultValue>(responseScenario.getResults()));
     }
 
     /**
