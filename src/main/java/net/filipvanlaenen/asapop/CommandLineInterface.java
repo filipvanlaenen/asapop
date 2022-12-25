@@ -26,6 +26,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
+import net.filipvanlaenen.asapop.exporter.SaporExporter;
 import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
@@ -36,6 +37,7 @@ import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
@@ -92,6 +94,7 @@ public final class CommandLineInterface {
                 "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
+        System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
     }
 
     /**
@@ -161,7 +164,7 @@ public final class CommandLineInterface {
             }
         },
         /**
-         * Command read an ROPF file and convert it to another format.
+         * Command to read an ROPF file and convert it to another format.
          */
         Convert {
             @Override
@@ -192,6 +195,29 @@ public final class CommandLineInterface {
                     outputContent = EopaodPsvExporter.export(opinionPolls, area, electoralListKeySets);
                 }
                 writeFile(outputFileName, outputContent);
+            }
+        },
+        /**
+         * Command to provide SAPOR files.
+         */
+        Provide {
+            @Override
+            void execute(final String[] args) throws IOException {
+                String inputFileName = args[1];
+                String saporDirName = args[2];
+                String saporConfigurationFileName = args[THREE];
+                String[] ropfContent = readFile(inputFileName);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                    System.out.println(warning);
+                }
+                OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
+                ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+                objectMapper.setSerializationInclusion(Include.NON_NULL);
+                SaporConfiguration saporConfiguration =
+                        objectMapper.readValue(new File(saporConfigurationFileName), SaporConfiguration.class);
+                SaporExporter saporExporter = new SaporExporter(saporConfiguration);
+                writeFiles(saporDirName, saporExporter.export(opinionPolls));
             }
         };
 
