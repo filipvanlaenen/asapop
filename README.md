@@ -7,6 +7,7 @@
 - [Build a Website](#build-a-website)
 - [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
 - [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
+- [Provide SAPOR files](#provide-sapor-files)
 
 ## Getting Started
 
@@ -214,13 +215,14 @@ build <site-dir-name> <website-configuration-yaml-file-name> <ropf-dir-name> <cu
 
 Assume ``~/public/asapop`` is a valid and existing directory on your computer, the website configuration is stored
 in a local file ``website-configuration.yaml``, the ROPF files can be found in the directory ``~/ropf`` and
-``~/custom.css`` is the custom style sheet, then you can use the following command to produce a website:
+``custom.css`` is the custom style sheet, then you can use the following command to produce a website:
 
 ```
-java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar build ~/public/asapop website-configuration.yaml ~/ropf ~/custom.css
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar build ~/public/asapop website-configuration.yaml ~/ropf custom.css
 ```
 
 Below is an example of a valid website configuration file:
+
 ```
 ---
 areaConfigurations:
@@ -351,4 +353,57 @@ Use `--` to indicate that only opinion polls and response scenarios not related 
 
 ```
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI -a=--
+```
+
+## Provide SAPOR files
+
+An ROPF file can be converted to a directory with SAPOR files using the following command:
+
+```
+provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>
+```
+
+Assume the opinion polls have been stored in a file called `nn.ropf`, and you
+want to convert them to SAPOR files in a directory called ``~/sapor/nn``, and the SAPOR configuration is stored
+in a local file ``sapor-configuration.yaml``, then you can use the following command to do the
+conversion:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar provide nn.ropf ~/sapor/nn sapor-configuration.yaml
+```
+
+Below is an example of a valid SAPOR configuration file:
+
+```
+---
+area: "LU"
+mapping:
+- directMapping:
+    source: "ADR"
+    target: "Alternativ Demokratesch Reformpartei"  
+- directMapping:
+    source: "CSV"
+    target: "Chrëschtlech-Sozial Vollekspartei"  
+- directMapping:
+    source: "DG"
+    target: "déi gréng"  
+- directMapping:
+    source: "DL"
+    target: "déi Lénk"  
+- directMapping:
+    source: "DP"
+    target: "Demokratesch Partei"  
+- directMapping:
+    source: "KPL"
+    target: "Kommunistesch Partei Lëtzebuerg"  
+- directMapping:
+    source: "LSAP"
+    target: "Lëtzebuerger Sozialistesch Aarbechterpartei"  
+- directMapping:
+    source: "PID"
+    target: "Partei fir Integral Demokratie"  
+- directMapping:
+    source: "PPLU"
+    target: "Piratepartei Lëtzebuerg"  
+lastElectionDate: "2018-10-14"
 ```
