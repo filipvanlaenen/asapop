@@ -3,7 +3,7 @@ package net.filipvanlaenen.asapop.parser;
 /**
  * Abstract class defining a warning from the parser and implementing functionality common for all warnings.
  */
-public abstract class Warning {
+public abstract class ParserWarning {
     /**
      * The number of the line where the warning occurred.
      */
@@ -14,7 +14,7 @@ public abstract class Warning {
      *
      * @param lineNumber The number of the line where the warning occurred.
      */
-    Warning(final int lineNumber) {
+    ParserWarning(final int lineNumber) {
         this.lineNumber = lineNumber;
     }
 

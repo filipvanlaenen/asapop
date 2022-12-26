@@ -164,7 +164,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedResultValue() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:Error B:43", 1);
-        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
@@ -174,7 +174,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedNoResponsesValue() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •N:Error", 1);
-        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
@@ -184,7 +184,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedOtherValue() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", 1);
-        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
@@ -194,7 +194,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldProduceAWarningForAnUnknownMetadataKey() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •XX: X A:55 B:43", 1);
-        Set<Warning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
+        Set<ParserWarning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
@@ -204,7 +204,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldProduceAWarningForAnUnknownScopeValue() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", 1);
-        Set<Warning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
@@ -214,7 +214,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldProduceAWarningForMissingResults() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •SC: N", 1);
-        Set<Warning> expected = Set.of(new ResultsMissingWarning(1));
+        Set<ParserWarning> expected = Set.of(new ResultsMissingWarning(1));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 

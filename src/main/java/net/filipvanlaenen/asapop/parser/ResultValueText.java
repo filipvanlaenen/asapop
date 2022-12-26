@@ -22,7 +22,7 @@ final class ResultValueText {
     /**
      * The warnings.
      */
-    private final Set<Warning> warnings;
+    private final Set<ParserWarning> warnings;
 
     /**
      * Constructor taking a result value and the warnings collected while parsing the text.
@@ -30,7 +30,7 @@ final class ResultValueText {
      * @param value    The result value.
      * @param warnings The warnings collected while parsing.
      */
-    private ResultValueText(final ResultValue value, final Set<Warning> warnings) {
+    private ResultValueText(final ResultValue value, final Set<ParserWarning> warnings) {
         this.value = value;
         this.warnings = warnings;
     }
@@ -49,7 +49,7 @@ final class ResultValueText {
      *
      * @return The warnings.
      */
-    Set<Warning> getWarnings() {
+    Set<ParserWarning> getWarnings() {
         return Collections.unmodifiableSet(warnings);
     }
 
@@ -61,7 +61,7 @@ final class ResultValueText {
      * @return An instance representing the parsed text.
      */
     static ResultValueText parse(final String value, final int lineNumber) {
-        Set<Warning> warnings = new HashSet<Warning>();
+        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         if (!WELLFORMED_RESULT_VALUE_PATTERN.matcher(value).matches()) {
             warnings.add(new MalformedResultValueWarning(lineNumber, value));
         }

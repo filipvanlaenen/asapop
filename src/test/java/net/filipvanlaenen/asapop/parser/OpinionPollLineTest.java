@@ -256,7 +256,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedResultValue() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:Error B:43", 1);
-        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -267,7 +267,7 @@ public final class OpinionPollLineTest {
     public void shouldProduceAWarningForAMalformedOtherValue() {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", 1);
-        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -278,7 +278,7 @@ public final class OpinionPollLineTest {
     public void shouldProduceAWarningForAMalformedNoResponsesValue() {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error", 1);
-        Set<Warning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -288,7 +288,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForAnUnknownMetadataKey() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •XX: X •SC: N A:55 B:43", 1);
-        Set<Warning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
+        Set<ParserWarning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -298,7 +298,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForAnUnknownScopeValue() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", 1);
-        Set<Warning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -308,7 +308,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43", 1);
-        Set<Warning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
+        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -318,7 +318,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForMissingResults() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N", 1);
-        Set<Warning> expected = Set.of(new ResultsMissingWarning(1));
+        Set<ParserWarning> expected = Set.of(new ResultsMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -328,7 +328,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForMissingDates() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", 1);
-        Set<Warning> expected = Set.of(new DatesMissingWarning(1));
+        Set<ParserWarning> expected = Set.of(new DatesMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
     /**
@@ -337,7 +337,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForMissingPollingFirmsAndCommissioner() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PD: 2021-07-27 A:55 B:45", 1);
-        Set<Warning> expected = Set.of(new PollingFirmAndCommissionerMissingWarning(1));
+        Set<ParserWarning> expected = Set.of(new PollingFirmAndCommissionerMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 }

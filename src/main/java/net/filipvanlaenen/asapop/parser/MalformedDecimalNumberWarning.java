@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a metadata field containing a malformed decimal number.
  */
-class MalformedDecimalNumberWarning extends Warning {
+class MalformedDecimalNumberWarning extends ParserWarning {
     /**
      * The key.
      */

@@ -17,7 +17,7 @@ public final class RichOpinionPollsFile {
     /**
      * The warnings.
      */
-    private final Set<Warning> warnings;
+    private final Set<ParserWarning> warnings;
 
     /**
      * Private constructor creating a new instance from a set of opinion polls and the warnings collected while parsing.
@@ -25,7 +25,7 @@ public final class RichOpinionPollsFile {
      * @param opinionPollsSet The set with the opinion polls.
      * @param warnings        The set with warnings collected while parsing.
      */
-    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final Set<Warning> warnings) {
+    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final Set<ParserWarning> warnings) {
         this.opinionPolls = new OpinionPolls(opinionPollsSet);
         this.warnings = warnings;
     }
@@ -44,7 +44,7 @@ public final class RichOpinionPollsFile {
      *
      * @return The warnings.
      */
-    public Set<Warning> getWarnings() {
+    public Set<ParserWarning> getWarnings() {
         return warnings;
     }
 
@@ -56,7 +56,7 @@ public final class RichOpinionPollsFile {
      */
     public static RichOpinionPollsFile parse(final String... lines) {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
-        Set<Warning> warnings = new HashSet<Warning>();
+        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         OpinionPoll lastOpinionPoll = null;
         int lineNumber = 0;
         for (String line : lines) {

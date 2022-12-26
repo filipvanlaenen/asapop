@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a line with an unrecognized format.
  */
-class UnrecognizedLineFormatWarning extends Warning {
+class UnrecognizedLineFormatWarning extends ParserWarning {
     /**
      * Constructor taking the line number as its parameter.
      *

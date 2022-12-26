@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a malformed result value.
  */
-class MalformedResultValueWarning extends Warning {
+class MalformedResultValueWarning extends ParserWarning {
     /**
      * The malformed value.
      */

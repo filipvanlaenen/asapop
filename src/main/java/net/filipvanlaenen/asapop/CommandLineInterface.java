@@ -30,7 +30,7 @@ import net.filipvanlaenen.asapop.exporter.SaporExporter;
 import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
-import net.filipvanlaenen.asapop.parser.Warning;
+import net.filipvanlaenen.asapop.parser.ParserWarning;
 import net.filipvanlaenen.asapop.website.Website;
 import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
@@ -119,7 +119,7 @@ public final class CommandLineInterface {
                 String outputFileName = args[THREE];
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
-                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                for (ParserWarning warning : richOpinionPollsFile.getWarnings()) {
                     System.out.println(warning);
                 }
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
@@ -184,7 +184,7 @@ public final class CommandLineInterface {
                 }
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
-                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                for (ParserWarning warning : richOpinionPollsFile.getWarnings()) {
                     System.out.println(warning);
                 }
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
@@ -208,7 +208,7 @@ public final class CommandLineInterface {
                 String saporConfigurationFileName = args[THREE];
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
-                for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                for (ParserWarning warning : richOpinionPollsFile.getWarnings()) {
                     System.out.println(warning);
                 }
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
@@ -249,7 +249,7 @@ public final class CommandLineInterface {
                     System.out.println("Going to parse " + areaCode + "...");
                     String[] ropfContent = readFile(ropfPath);
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
-                    for (Warning warning : richOpinionPollsFile.getWarnings()) {
+                    for (ParserWarning warning : richOpinionPollsFile.getWarnings()) {
                         System.out.println(warning);
                     }
                     opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());

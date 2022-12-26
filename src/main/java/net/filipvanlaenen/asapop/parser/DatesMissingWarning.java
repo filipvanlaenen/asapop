@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a line missing dates.
  */
-class DatesMissingWarning extends Warning {
+class DatesMissingWarning extends ParserWarning {
     /**
      * Constructor taking the line number as its parameter.
      *

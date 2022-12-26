@@ -40,7 +40,7 @@ final class OpinionPollLine extends Line {
     /**
      * The warnings.
      */
-    private final Set<Warning> warnings;
+    private final Set<ParserWarning> warnings;
 
     /**
      * Private constructor taking the opinion poll as its parameter.
@@ -48,7 +48,7 @@ final class OpinionPollLine extends Line {
      * @param opinionPoll The opinion poll represented by the line.
      * @param warnings    The warnings related to the line.
      */
-    private OpinionPollLine(final OpinionPoll opinionPoll, final Set<Warning> warnings) {
+    private OpinionPollLine(final OpinionPoll opinionPoll, final Set<ParserWarning> warnings) {
         this.opinionPoll = opinionPoll;
         this.warnings = warnings;
     }
@@ -67,7 +67,7 @@ final class OpinionPollLine extends Line {
      *
      * @return The warnings.
      */
-    Set<Warning> getWarnings() {
+    Set<ParserWarning> getWarnings() {
         return Collections.unmodifiableSet(warnings);
     }
 
@@ -90,7 +90,7 @@ final class OpinionPollLine extends Line {
      */
     static OpinionPollLine parse(final String line, final int lineNumber) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
-        Set<Warning> warnings = new HashSet<Warning>();
+        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         String remainder = line;
         while (!remainder.isEmpty()) {
             remainder = parseKeyValue(builder, warnings, remainder, lineNumber);
@@ -116,7 +116,7 @@ final class OpinionPollLine extends Line {
      * @param lineNumber The line number the data block.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<Warning> warnings,
+    private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
             final String remainder, final int lineNumber) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
@@ -137,7 +137,7 @@ final class OpinionPollLine extends Line {
      * @param keyValueString The data block to process.
      * @param lineNumber     The line number the data block.
      */
-    private static void processMetadata(final OpinionPoll.Builder builder, final Set<Warning> warnings,
+    private static void processMetadata(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
             final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
@@ -207,7 +207,7 @@ final class OpinionPollLine extends Line {
      * @param keyValueString The data block to process.
      * @param lineNumber     The line number the data block.
      */
-    private static void processResultData(final OpinionPoll.Builder builder, final Set<Warning> warnings,
+    private static void processResultData(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
             final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();

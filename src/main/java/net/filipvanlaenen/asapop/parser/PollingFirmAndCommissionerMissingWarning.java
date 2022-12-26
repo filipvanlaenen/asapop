@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a line missing both polling firm and commissioner.
  */
-class PollingFirmAndCommissionerMissingWarning extends Warning {
+class PollingFirmAndCommissionerMissingWarning extends ParserWarning {
     /**
      * Constructor taking the line number as its parameter.
      *

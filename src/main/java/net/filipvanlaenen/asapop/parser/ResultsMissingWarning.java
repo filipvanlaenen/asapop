@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a line missing results.
  */
-class ResultsMissingWarning extends Warning {
+class ResultsMissingWarning extends ParserWarning {
     /**
      * Constructor taking the line number as its parameter.
      *

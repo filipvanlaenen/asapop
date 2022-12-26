@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests on the <code>Warning</code> class.
  */
-public class WarningTest {
+public class ParserWarningTest {
     /**
      * Verifies that the getter method <code>getLineNumber</code> is wired correctly to the constructor.
      */

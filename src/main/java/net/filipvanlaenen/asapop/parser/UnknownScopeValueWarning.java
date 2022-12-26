@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about an unknown scope value.
  */
-final class UnknownScopeValueWarning extends Warning {
+final class UnknownScopeValueWarning extends ParserWarning {
     /**
      * The unknown scope value.
      */

@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about an unknown metadata key.
  */
-final class UnknownMetadataKeyWarning extends Warning {
+final class UnknownMetadataKeyWarning extends ParserWarning {
     /**
      * The unknown metadata key.
      */

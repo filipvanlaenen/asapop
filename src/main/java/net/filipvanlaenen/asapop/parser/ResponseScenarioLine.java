@@ -39,7 +39,7 @@ final class ResponseScenarioLine extends Line {
     /**
      * The warnings.
      */
-    private final Set<Warning> warnings;
+    private final Set<ParserWarning> warnings;
 
     /**
      * Private constructor taking the response scenario as its parameter.
@@ -47,7 +47,7 @@ final class ResponseScenarioLine extends Line {
      * @param responseScenario The response scenario represented by the line.
      * @param warnings         The warnings related to this line.
      */
-    private ResponseScenarioLine(final ResponseScenario responseScenario, final Set<Warning> warnings) {
+    private ResponseScenarioLine(final ResponseScenario responseScenario, final Set<ParserWarning> warnings) {
         this.responseScenario = responseScenario;
         this.warnings = warnings;
     }
@@ -66,7 +66,7 @@ final class ResponseScenarioLine extends Line {
      *
      * @return The warnings.
      */
-    Set<Warning> getWarnings() {
+    Set<ParserWarning> getWarnings() {
         return Collections.unmodifiableSet(warnings);
     }
 
@@ -89,7 +89,7 @@ final class ResponseScenarioLine extends Line {
      */
     static ResponseScenarioLine parse(final String line, final int lineNumber) {
         ResponseScenario.Builder builder = new ResponseScenario.Builder();
-        Set<Warning> warnings = new HashSet<Warning>();
+        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         Matcher responseScenarioMatcher = RESPONSE_SCENARIO_PATTERN.matcher(line);
         responseScenarioMatcher.find();
         String remainder = responseScenarioMatcher.group(1);
@@ -111,7 +111,7 @@ final class ResponseScenarioLine extends Line {
      * @param lineNumber The line number the data block.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final ResponseScenario.Builder builder, final Set<Warning> warnings,
+    private static String parseKeyValue(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
             final String remainder, final int lineNumber) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
@@ -132,7 +132,7 @@ final class ResponseScenarioLine extends Line {
      * @param keyValueString The data block to process.
      * @param lineNumber     The line number the data block.
      */
-    private static void processMetadata(final ResponseScenario.Builder builder, final Set<Warning> warnings,
+    private static void processMetadata(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
             final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
@@ -176,7 +176,7 @@ final class ResponseScenarioLine extends Line {
      * @param keyValueString The data block to process.
      * @param lineNumber     The line number the data block.
      */
-    private static void processResultData(final ResponseScenario.Builder builder, final Set<Warning> warnings,
+    private static void processResultData(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
             final String keyValueString, final int lineNumber) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
