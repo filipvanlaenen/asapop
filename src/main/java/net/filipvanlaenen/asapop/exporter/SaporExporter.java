@@ -45,7 +45,10 @@ public class SaporExporter extends Exporter {
      * The mapping to create the SAPOR bodies.
      */
     private final Set<SaporMapping> mapping;
-    private final Set<Set<ElectoralList>> mappedElectoralLists;
+    /**
+     * A set with the mapped electoral list combinations.
+     */
+    private final Set<Set<ElectoralList>> mappedElectoralListCombinations;
 
     /**
      * Creates an exporter taking the SAPOR configuration as its parameter.
@@ -56,7 +59,7 @@ public class SaporExporter extends Exporter {
         this.area = saporConfiguration.getArea();
         this.lastElectionDate = LocalDate.parse(saporConfiguration.getLastElectionDate());
         this.mapping = saporConfiguration.getMapping();
-        this.mappedElectoralLists = calculateMappedElectoralLists();
+        this.mappedElectoralListCombinations = calculateMappedElectoralListCombinations();
     }
 
     /**
@@ -108,7 +111,7 @@ public class SaporExporter extends Exporter {
      * @param content     The StringBuilder to append the SAPOR header to.
      * @param opinionPoll The opinion poll.
      */
-    private void appendSaporHeader(final StringBuilder content, final OpinionPoll opinionPoll) {
+    void appendSaporHeader(final StringBuilder content, final OpinionPoll opinionPoll) {
         content.append("Type=Election\n");
         content.append("PollingFirm=" + exportPollingFirms(opinionPoll) + "\n");
         if (!opinionPoll.getCommissioners().isEmpty()) {
@@ -127,7 +130,12 @@ public class SaporExporter extends Exporter {
         content.append("Area=" + area + "\n");
     }
 
-    private Set<Set<ElectoralList>> calculateMappedElectoralLists() {
+    /**
+     * Calculate the set of electoral list combinations covered by the SAPOR mapping.
+     *
+     * @return A set with the electoral list combinations covered by the SAPOR mapping.
+     */
+    private Set<Set<ElectoralList>> calculateMappedElectoralListCombinations() {
         Set<Set<ElectoralList>> result = new HashSet<Set<ElectoralList>>();
         for (SaporMapping saporMapping : mapping) {
             DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
@@ -155,11 +163,17 @@ public class SaporExporter extends Exporter {
         return result;
     }
 
+    /**
+     * Returns the warnings encountered during the export of an opinion poll.
+     *
+     * @param opinionPoll The warnings encountered during the export of an opinion poll.
+     * @return A set with exporter warnings for an opinion poll.
+     */
     private Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
         Set<ExporterWarning> warnings = new HashSet<ExporterWarning>();
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
         for (Set<ElectoralList> electoralList : electoralLists) {
-            if (!mappedElectoralLists.contains(electoralList)) {
+            if (!mappedElectoralListCombinations.contains(electoralList)) {
                 warnings.add(new MissingSaporMappingWarning(electoralList));
             }
         }
