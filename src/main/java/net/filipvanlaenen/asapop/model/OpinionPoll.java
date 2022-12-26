@@ -53,10 +53,6 @@ public final class OpinionPoll {
      */
     private ResultValue noResponses;
     /**
-     * The result for other.
-     */
-    private ResultValue other;
-    /**
      * The name of the polling firm.
      */
     private String pollingFirm;
@@ -94,7 +90,6 @@ public final class OpinionPoll {
         fieldworkStart = builder.fieldworkStart;
         mainResponseScenario = builder.responseScenarioBuilder.build();
         noResponses = builder.noResponses;
-        other = builder.other;
         pollingFirm = builder.pollingFirm;
         pollingFirmPartner = builder.pollingFirmPartner;
         publicationDate = builder.publicationDate;
@@ -138,10 +133,6 @@ public final class OpinionPoll {
          * The result for no responses.
          */
         private ResultValue noResponses;
-        /**
-         * The result for other.
-         */
-        private ResultValue other;
         /**
          * The name of the polling firm.
          */
@@ -317,7 +308,7 @@ public final class OpinionPoll {
          * @return This builder instance.
          */
         public Builder setOther(final ResultValue otherString) {
-            this.other = otherString;
+            responseScenarioBuilder.setOther(otherString);
             return this;
         }
 
@@ -418,7 +409,6 @@ public final class OpinionPoll {
                     && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
                     && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
                     && equalsOrBothNull(noResponses, otherOpinionPoll.noResponses)
-                    && equalsOrBothNull(other, otherOpinionPoll.other)
                     && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                     && equalsOrBothNull(pollingFirmPartner, otherOpinionPoll.pollingFirmPartner)
                     && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
@@ -549,7 +539,7 @@ public final class OpinionPoll {
      * @return The result for other.
      */
     public ResultValue getOther() {
-        return other;
+        return mainResponseScenario.getOther();
     }
 
     /**
@@ -619,7 +609,6 @@ public final class OpinionPoll {
     @Override
     public int hashCode() {
         return Objects.hash(alternativeResponseScenarios, area, commissioners, excluded, fieldworkEnd, fieldworkStart,
-                mainResponseScenario, noResponses, other, pollingFirm, pollingFirmPartner, publicationDate, sampleSize,
-                scope);
+                mainResponseScenario, noResponses, pollingFirm, pollingFirmPartner, publicationDate, sampleSize, scope);
     }
 }

@@ -23,6 +23,36 @@ public class SaporExporterTest {
     private static SaporExporter saporExporter;
 
     /**
+     * Creates a direct SAPOR mapping.
+     *
+     * @param source The source for the direct SAPOR mapping.
+     * @param target The target for the direct SAPOR mapping.
+     * @return A SAPOR mapping with a direct mapping from the source to the target.
+     */
+    private static SaporMapping createDirectSaporMapping(final String source, final String target) {
+        SaporMapping saporMapping = new SaporMapping();
+        DirectSaporMapping directSaporMapping = new DirectSaporMapping();
+        directSaporMapping.setSource(source);
+        directSaporMapping.setTarget(target);
+        saporMapping.setDirectMapping(directSaporMapping);
+        return saporMapping;
+    }
+
+    /**
+     * Returns the SAPOR body for an opinion poll with the lines sorted.
+     *
+     * @param poll The opinion poll.
+     * @return The SAPOR body with the lines sorted.
+     */
+    private String getSortedSaporBody(final OpinionPoll poll) {
+        StringBuilder sb = new StringBuilder();
+        saporExporter.appendSaporBody(sb, poll);
+        String[] lines = sb.toString().split("\\n");
+        Arrays.sort(lines);
+        return String.join("\n", lines);
+    }
+
+    /**
      * Creates the SAPOR exporter to run the tests on.
      */
     @BeforeAll
@@ -33,15 +63,6 @@ public class SaporExporterTest {
                 .setMapping(Set.of(createDirectSaporMapping("A", "Party A"), createDirectSaporMapping("B", "Party B")));
         saporConfiguration.setArea("AR");
         saporExporter = new SaporExporter(saporConfiguration);
-    }
-
-    private static SaporMapping createDirectSaporMapping(final String source, final String target) {
-        SaporMapping saporMapping = new SaporMapping();
-        DirectSaporMapping directSaporMapping = new DirectSaporMapping();
-        directSaporMapping.setSource(source);
-        directSaporMapping.setTarget(target);
-        saporMapping.setDirectMapping(directSaporMapping);
-        return saporMapping;
     }
 
     /**
@@ -126,15 +147,40 @@ public class SaporExporterTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
                 .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").build();
-        StringBuilder sb = new StringBuilder();
-        saporExporter.appendSaporBody(sb, poll);
-        String[] lines = sb.toString().split("\\n");
-        Arrays.sort(lines);
-        String actual = String.join("\n", lines);
         StringBuilder expected = new StringBuilder();
         expected.append("Other=20\n");
         expected.append("Party A=550\n");
         expected.append("Party B=430");
-        assertEquals(expected.toString(), actual);
+        assertEquals(expected.toString(), getSortedSaporBody(poll));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll with a zero value.
+     */
+    @Test
+    public void opinionPollWithZeroValueShouldProduceBodyCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "0").build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=447\n");
+        expected.append("Party A=550\n");
+        expected.append("Party B=3");
+        assertEquals(expected.toString(), getSortedSaporBody(poll));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll with overflowing rounding.
+     */
+    @Test
+    public void opinionPollWithOverflowingRoundingShouldProduceBodyCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "45").setWellformedOther("1").build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=9\n");
+        expected.append("Party A=545\n");
+        expected.append("Party B=446");
+        assertEquals(expected.toString(), getSortedSaporBody(poll));
     }
 }
