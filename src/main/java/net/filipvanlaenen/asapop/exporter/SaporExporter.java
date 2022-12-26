@@ -3,7 +3,9 @@ package net.filipvanlaenen.asapop.exporter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +30,10 @@ public class SaporExporter extends Exporter {
      */
     private static final double ONE_HUNDRED = 100D;
     /**
+     * The string for the pattern to match the separator between electoral list keys.
+     */
+    static final String ELECTORAL_LIST_KEY_SEPARATOR = "\\+";
+    /**
      * The area as it should be exported to the SAPOR files.
      */
     private final String area;
@@ -39,6 +45,7 @@ public class SaporExporter extends Exporter {
      * The mapping to create the SAPOR bodies.
      */
     private final Set<SaporMapping> mapping;
+    private final Set<Set<ElectoralList>> mappedElectoralLists;
 
     /**
      * Creates an exporter taking the SAPOR configuration as its parameter.
@@ -49,6 +56,7 @@ public class SaporExporter extends Exporter {
         this.area = saporConfiguration.getArea();
         this.lastElectionDate = LocalDate.parse(saporConfiguration.getLastElectionDate());
         this.mapping = saporConfiguration.getMapping();
+        this.mappedElectoralLists = calculateMappedElectoralLists();
     }
 
     /**
@@ -80,16 +88,17 @@ public class SaporExporter extends Exporter {
         }
         int remainder = effectiveSampleSize;
         for (SaporMapping map : mapping) {
-            DirectSaporMapping dm = map.getDirectMapping();
-            Set<ElectoralList> electoralLists = Set.of(ElectoralList.get(dm.getSource())); // TODO: Combinations
+            DirectSaporMapping directSaporMapping = map.getDirectMapping();
+            Set<String> keys = new HashSet<String>(
+                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_KEY_SEPARATOR)));
+            Set<ElectoralList> electoralLists = ElectoralList.get(keys);
             if (actualValues.containsKey(electoralLists)) {
                 int sample = (int) Math
                         .round(actualValues.get(electoralLists) * effectiveSampleSize * calibration / ONE_HUNDRED);
-                content.append(dm.getTarget() + "=" + sample + "\n");
+                content.append(directSaporMapping.getTarget() + "=" + sample + "\n");
                 remainder -= sample;
             }
         }
-        // TODO: Warnings for unused result values
         content.append("Other=" + (remainder < 0 ? 0 : remainder) + "\n");
     }
 
@@ -118,20 +127,43 @@ public class SaporExporter extends Exporter {
         content.append("Area=" + area + "\n");
     }
 
+    private Set<Set<ElectoralList>> calculateMappedElectoralLists() {
+        Set<Set<ElectoralList>> result = new HashSet<Set<ElectoralList>>();
+        for (SaporMapping saporMapping : mapping) {
+            DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
+            Set<String> keys = new HashSet<String>(
+                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_KEY_SEPARATOR)));
+            result.add(ElectoralList.get(keys));
+        }
+        return result;
+    }
+
     /**
      * Exports the opinion polls to SAPOR files.
      *
      * @param opinionPolls The opinion polls.
      * @return A map with the SAPOR file paths and contents.
      */
-    public Map<Path, String> export(final OpinionPolls opinionPolls) {
-        Map<Path, String> result = new HashMap<Path, String>();
+    public SaporDirectory export(final OpinionPolls opinionPolls) {
+        SaporDirectory result = new SaporDirectory();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             if (lastElectionDate.isBefore(opinionPoll.getEndDate())) {
                 result.put(getSaporFilePath(opinionPoll), getSaporContent(opinionPoll));
+                result.addWarnings(getSaporWarnings(opinionPoll));
             }
         }
         return result;
+    }
+
+    private Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
+        Set<ExporterWarning> warnings = new HashSet<ExporterWarning>();
+        Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
+        for (Set<ElectoralList> electoralList : electoralLists) {
+            if (!mappedElectoralLists.contains(electoralList)) {
+                warnings.add(new MissingSaporMappingWarning(electoralList));
+            }
+        }
+        return warnings;
     }
 
     /**
