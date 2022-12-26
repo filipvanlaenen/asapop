@@ -69,7 +69,10 @@ public abstract class Exporter {
      */
     static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario) {
         Collection<ResultValue> allResults = new HashSet<ResultValue>(responseScenario.getResults());
-        allResults.add(responseScenario.getOther());
+        ResultValue other = responseScenario.getOther();
+        if (other != null) {
+            allResults.add(other);
+        }
         return calculatePrecision(allResults);
     }
 
