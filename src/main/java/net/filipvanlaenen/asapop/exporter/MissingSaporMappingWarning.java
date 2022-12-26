@@ -8,18 +8,29 @@ import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 
+/**
+ * Class modeling a warning for a missing combination of electoral lists in the SAPOR mapping.
+ */
 class MissingSaporMappingWarning extends ExporterWarning {
-    private final Set<ElectoralList> missingElectoralList;
+    /**
+     * The electoral list combination missing.
+     */
+    private final Set<ElectoralList> missingElectoralListCombination;
 
-    MissingSaporMappingWarning(Set<ElectoralList> missingElectoralList) {
-        this.missingElectoralList = missingElectoralList;
+    /**
+     * Constructor taking the missing electoral list combination as its parameter.
+     *
+     * @param missingElectoralListCombination The combination of electoral lists missing in the SAPOR mapping.
+     */
+    MissingSaporMappingWarning(final Set<ElectoralList> missingElectoralListCombination) {
+        this.missingElectoralListCombination = missingElectoralListCombination;
     }
 
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof MissingSaporMappingWarning) {
             MissingSaporMappingWarning otherWarning = (MissingSaporMappingWarning) obj;
-            return otherWarning.missingElectoralList.equals(missingElectoralList);
+            return otherWarning.missingElectoralListCombination.equals(missingElectoralListCombination);
         } else {
             return false;
         }
@@ -27,12 +38,12 @@ class MissingSaporMappingWarning extends ExporterWarning {
 
     @Override
     public int hashCode() {
-        return Objects.hash(missingElectoralList);
+        return Objects.hash(missingElectoralListCombination);
     }
 
     @Override
     public String toString() {
-        List<String> keys = new ArrayList<String>(ElectoralList.getKeys(missingElectoralList));
+        List<String> keys = new ArrayList<String>(ElectoralList.getKeys(missingElectoralListCombination));
         Collections.sort(keys);
         return "SAPOR mapping missing for “" + String.join("+", keys) + "”.";
     }
