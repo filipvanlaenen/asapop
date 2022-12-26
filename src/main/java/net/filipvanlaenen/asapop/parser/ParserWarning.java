@@ -1,9 +1,11 @@
 package net.filipvanlaenen.asapop.parser;
 
+import net.filipvanlaenen.asapop.Warning;
+
 /**
  * Abstract class defining a warning from the parser and implementing functionality common for all warnings.
  */
-public abstract class ParserWarning {
+abstract class ParserWarning implements Warning {
     /**
      * The number of the line where the warning occurred.
      */
