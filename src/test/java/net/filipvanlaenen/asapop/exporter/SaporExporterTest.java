@@ -2,33 +2,46 @@ package net.filipvanlaenen.asapop.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
+import net.filipvanlaenen.asapop.yaml.SaporMapping;
 
 /**
  * Unit tests on the <code>SaporExporter</code> class.
  */
 public class SaporExporterTest {
     /**
-     * The sapor exporter to run the tests on.
+     * The SAPOR exporter to run the tests on.
      */
     private static SaporExporter saporExporter;
 
     /**
-     * Creates the sapor exporter to run the tests on.
+     * Creates the SAPOR exporter to run the tests on.
      */
     @BeforeAll
     public static void createSaporExporter() {
         SaporConfiguration saporConfiguration = new SaporConfiguration();
         saporConfiguration.setLastElectionDate("2020-12-06");
-        saporConfiguration.setMapping(Collections.EMPTY_SET);
+        saporConfiguration
+                .setMapping(Set.of(createDirectSaporMapping("A", "Party A"), createDirectSaporMapping("B", "Party B")));
         saporConfiguration.setArea("AR");
         saporExporter = new SaporExporter(saporConfiguration);
+    }
+
+    private static SaporMapping createDirectSaporMapping(final String source, final String target) {
+        SaporMapping saporMapping = new SaporMapping();
+        DirectSaporMapping directSaporMapping = new DirectSaporMapping();
+        directSaporMapping.setSource(source);
+        directSaporMapping.setTarget(target);
+        saporMapping.setDirectMapping(directSaporMapping);
+        return saporMapping;
     }
 
     /**
@@ -103,5 +116,25 @@ public class SaporExporterTest {
         expected.append("FieldworkEnd=2021-08-02\n");
         expected.append("Area=AR\n");
         assertEquals(expected.toString(), sb.toString());
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll.
+     */
+    @Test
+    public void opinionPollShouldProduceBodyCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        StringBuilder sb = new StringBuilder();
+        saporExporter.appendSaporBody(sb, poll);
+        String[] lines = sb.toString().split("\\n");
+        Arrays.sort(lines);
+        String actual = String.join("\n", lines);
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=20\n");
+        expected.append("Party A=550\n");
+        expected.append("Party B=430");
+        assertEquals(expected.toString(), actual);
     }
 }

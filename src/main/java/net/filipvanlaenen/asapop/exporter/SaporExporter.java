@@ -68,7 +68,7 @@ public class SaporExporter extends Exporter {
      * @param content     The StringBuilder to append the SAPOR body to.
      * @param opinionPoll The opinion poll.
      */
-    private void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll) {
+    void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll) {
         int effectiveSampleSize = opinionPoll.getEffectiveSampleSize(); // TODO: Should come from the scenario
         ResponseScenario responseScenario = opinionPoll.getMainResponseScenario();
         double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
@@ -98,11 +98,16 @@ public class SaporExporter extends Exporter {
             if (actualValues.containsKey(electoralLists)) {
                 int sample = (int) Math
                         .round(actualValues.get(electoralLists) * effectiveSampleSize * calibration / ONE_HUNDRED);
-                content.append(directSaporMapping.getTarget() + "=" + sample + "\n");
+                content.append(directSaporMapping.getTarget());
+                content.append("=");
+                content.append(sample);
+                content.append("\n");
                 remainder -= sample;
             }
         }
-        content.append("Other=" + (remainder < 0 ? 0 : remainder) + "\n");
+        content.append("Other=");
+        content.append(remainder < 0 ? 0 : remainder);
+        content.append("\n");
     }
 
     /**
@@ -113,9 +118,13 @@ public class SaporExporter extends Exporter {
      */
     void appendSaporHeader(final StringBuilder content, final OpinionPoll opinionPoll) {
         content.append("Type=Election\n");
-        content.append("PollingFirm=" + exportPollingFirms(opinionPoll) + "\n");
+        content.append("PollingFirm=");
+        content.append(exportPollingFirms(opinionPoll));
+        content.append("\n");
         if (!opinionPoll.getCommissioners().isEmpty()) {
-            content.append("Commissioners=" + exportCommissioners(opinionPoll) + "\n");
+            content.append("Commissioners=");
+            content.append(exportCommissioners(opinionPoll));
+            content.append("\n");
         }
         content.append("FieldworkStart=");
         if (opinionPoll.getFieldworkStart() != null) {
@@ -126,8 +135,12 @@ public class SaporExporter extends Exporter {
             content.append(opinionPoll.getPublicationDate().toString());
         }
         content.append("\n");
-        content.append("FieldworkEnd=" + opinionPoll.getEndDate().toString() + "\n");
-        content.append("Area=" + area + "\n");
+        content.append("FieldworkEnd=");
+        content.append(opinionPoll.getEndDate().toString());
+        content.append("\n");
+        content.append("Area=");
+        content.append(area);
+        content.append("\n");
     }
 
     /**
