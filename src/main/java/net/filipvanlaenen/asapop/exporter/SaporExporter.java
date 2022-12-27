@@ -200,7 +200,7 @@ public class SaporExporter extends Exporter {
      * @param opinionPoll The opinion poll.
      * @return The content of the SAPOR file.
      */
-    private String getSaporContent(final OpinionPoll opinionPoll) {
+    String getSaporContent(final OpinionPoll opinionPoll) {
         StringBuilder content = new StringBuilder();
         appendSaporHeader(content, opinionPoll);
         content.append("==\n");
@@ -214,9 +214,9 @@ public class SaporExporter extends Exporter {
      * @param opinionPoll The opinion poll.
      * @return The path of the SAPOR file.
      */
-    private Path getSaporFilePath(final OpinionPoll opinionPoll) {
+    Path getSaporFilePath(final OpinionPoll opinionPoll) {
         StringBuilder sb = new StringBuilder();
-        sb.append(opinionPoll.getEndDate().toString());
+        sb.append(opinionPoll.getEndDate());
         sb.append("-");
         sb.append(
                 exportPollingFirms(opinionPoll).replaceAll("[ !\"#%&'\\(\\)\\*\\+,\\./:<=>\\?@\\[\\\\\\]\\{\\}]", ""));

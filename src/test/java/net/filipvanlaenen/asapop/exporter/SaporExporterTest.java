@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.exporter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -184,6 +185,43 @@ public class SaporExporterTest {
         expected.append("Party A=545\n");
         expected.append("Party B=446");
         assertEquals(expected.toString(), getSortedSaporBody(poll));
+    }
+
+    /**
+     * Verifies that the entire content is produced correctly.
+     */
+    @Test
+    public void opinionPollShouldProduceEntireContent() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        StringBuilder expected1 = new StringBuilder();
+        expected1.append("Type=Election\n");
+        expected1.append("PollingFirm=ACME\n");
+        expected1.append("FieldworkStart=2021-08-01\n");
+        expected1.append("FieldworkEnd=2021-08-02\n");
+        expected1.append("Area=AR\n");
+        expected1.append("==\n");
+        StringBuilder expected2 = new StringBuilder();
+        expected2.append(expected1.toString());
+        expected1.append("Party A=550\n");
+        expected1.append("Party B=430\n");
+        expected1.append("Other=20\n");
+        expected2.append("Party B=430\n");
+        expected2.append("Party A=550\n");
+        expected2.append("Other=20\n");
+        assertTrue(Set.of(expected1.toString(), expected2.toString()).contains(saporExporter.getSaporContent(poll)));
+    }
+
+    /**
+     * Verifies that the file path is produced correctly.
+     */
+    @Test
+    public void opinionPollShouldProduceFilePath() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        assertEquals(Paths.get("2021-08-02-ACME.poll"), saporExporter.getSaporFilePath(poll));
     }
 
     /**
