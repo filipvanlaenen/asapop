@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
@@ -170,10 +172,10 @@ public class SaporExporterTest {
     }
 
     /**
-     * Verifies that the body can be created for an opinion poll with overflowing rounding.
+     * Verifies that the body can be created for an opinion poll with other and overflowing rounding.
      */
     @Test
-    public void opinionPollWithOverflowingRoundingShouldProduceBodyCorrectly() {
+    public void opinionPollWithOtherAndOverflowingRoundingShouldProduceBodyCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
                 .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
                 .addWellformedResult("B", "45").setWellformedOther("1").build();
@@ -182,5 +184,28 @@ public class SaporExporterTest {
         expected.append("Party A=545\n");
         expected.append("Party B=446");
         assertEquals(expected.toString(), getSortedSaporBody(poll));
+    }
+
+    /**
+     * Verifies that no warnings are issued for an opinion poll without conversion problems.
+     */
+    @Test
+    public void opinionPollShouldNotProduceWarnings() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        assertTrue(saporExporter.getSaporWarnings(poll).isEmpty());
+    }
+
+    /**
+     * Verifies that a warning about a missing mapping is issued.
+     */
+    @Test
+    public void opinionPollShouldProduceMissingSaporMappingWarning() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("Z", "43").build();
+        assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))),
+                saporExporter.getSaporWarnings(poll));
     }
 }

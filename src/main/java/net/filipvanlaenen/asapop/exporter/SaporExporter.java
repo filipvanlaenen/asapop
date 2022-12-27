@@ -106,6 +106,7 @@ public class SaporExporter extends Exporter {
             }
         }
         content.append("Other=");
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         content.append(remainder < 0 ? 0 : remainder);
         content.append("\n");
     }
@@ -182,7 +183,7 @@ public class SaporExporter extends Exporter {
      * @param opinionPoll The warnings encountered during the export of an opinion poll.
      * @return A set with exporter warnings for an opinion poll.
      */
-    private Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
+    Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
         Set<ExporterWarning> warnings = new HashSet<ExporterWarning>();
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
         for (Set<ElectoralList> electoralList : electoralLists) {
