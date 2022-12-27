@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
@@ -225,6 +226,38 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that the entire directory is produced correctly.
+     */
+    @Test
+    public void opinionPollsShouldProduceDirectory() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("B", "43").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkStart("2021-09-01")
+                .setFieldworkEnd("2021-09-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("Z", "43").build();
+        OpinionPolls polls = new OpinionPolls(Set.of(poll1, poll2));
+        SaporDirectory saporDirectory = saporExporter.export(polls);
+        String actual = saporDirectory.asMap().get(Paths.get("2021-08-02-ACME.poll"));
+        StringBuilder expected1 = new StringBuilder();
+        expected1.append("Type=Election\n");
+        expected1.append("PollingFirm=ACME\n");
+        expected1.append("FieldworkStart=2021-08-01\n");
+        expected1.append("FieldworkEnd=2021-08-02\n");
+        expected1.append("Area=AR\n");
+        expected1.append("==\n");
+        StringBuilder expected2 = new StringBuilder();
+        expected2.append(expected1.toString());
+        expected1.append("Party A=550\n");
+        expected1.append("Party B=430\n");
+        expected1.append("Other=20\n");
+        expected2.append("Party B=430\n");
+        expected2.append("Party A=550\n");
+        expected2.append("Other=20\n");
+        assertTrue(Set.of(expected1.toString(), expected2.toString()).contains(actual));
+    }
+
+    /**
      * Verifies that no warnings are issued for an opinion poll without conversion problems.
      */
     @Test
@@ -245,5 +278,22 @@ public class SaporExporterTest {
                 .addWellformedResult("Z", "43").build();
         assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))),
                 saporExporter.getSaporWarnings(poll));
+    }
+
+    /**
+     * Verifies that the export produces warnings.
+     */
+    @Test
+    public void opinionPollsShouldProduceWarnings() {
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
+                .setFieldworkEnd("2021-08-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("Q", "43").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkStart("2021-09-01")
+                .setFieldworkEnd("2021-09-02").setSampleSize("1000").addWellformedResult("A", "55")
+                .addWellformedResult("Z", "43").build();
+        OpinionPolls polls = new OpinionPolls(Set.of(poll1, poll2));
+        SaporDirectory saporDirectory = saporExporter.export(polls);
+        assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Q"))),
+                new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))), saporDirectory.getWarnings());
     }
 }
