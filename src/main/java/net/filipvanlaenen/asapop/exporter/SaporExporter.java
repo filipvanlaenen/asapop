@@ -69,7 +69,7 @@ public class SaporExporter extends Exporter {
      * @param opinionPoll The opinion poll.
      */
     void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll) {
-        int effectiveSampleSize = opinionPoll.getEffectiveSampleSize(); // TODO: Should come from the scenario
+        int effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
         ResponseScenario responseScenario = opinionPoll.getMainResponseScenario();
         double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
         Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
