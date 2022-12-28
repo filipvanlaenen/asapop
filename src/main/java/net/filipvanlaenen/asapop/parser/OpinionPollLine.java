@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -7,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.Scope;
@@ -23,6 +25,14 @@ final class OpinionPollLine extends Line {
      * The integer number four.
      */
     private static final int FOUR = 4;
+    /**
+     * The pattern to match a date.
+     */
+    private static final Pattern DATE_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+    /**
+     * The pattern to match a date or month.
+     */
+    private static final Pattern DATE_OR_MONTH_PATTERN = Pattern.compile("^\\d{4}-\\d{2}(-\\d{2})?$");
     /**
      * The pattern to match a decimal number.
      */
@@ -159,10 +169,20 @@ final class OpinionPollLine extends Line {
             }
             break;
         case "FE":
-            builder.setFieldworkEnd(value);
+            if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
+                DateOrMonth fieldworkEnd = DateOrMonth.parse(value);
+                builder.setFieldworkEnd(fieldworkEnd);
+            } else {
+                warnings.add(new MalformedDateOrMonthWarning(lineNumber, key, value));
+            }
             break;
         case "FS":
-            builder.setFieldworkStart(value);
+            if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
+                DateOrMonth fieldworkStart = DateOrMonth.parse(value);
+                builder.setFieldworkStart(fieldworkStart);
+            } else {
+                warnings.add(new MalformedDateOrMonthWarning(lineNumber, key, value));
+            }
             break;
         case "N":
             ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
@@ -175,7 +195,12 @@ final class OpinionPollLine extends Line {
             builder.setOther(other.getValue());
             break;
         case "PD":
-            builder.setPublicationDate(value);
+            if (textMatchesPattern(DATE_PATTERN, value)) {
+                LocalDate publicationDate = LocalDate.parse(value);
+                builder.setPublicationDate(publicationDate);
+            } else {
+                warnings.add(new MalformedDateWarning(lineNumber, key, value));
+            }
             break;
         case "PF":
             builder.setPollingFirm(value);

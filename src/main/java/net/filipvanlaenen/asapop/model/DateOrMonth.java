@@ -133,7 +133,7 @@ public abstract class DateOrMonth {
      * @param text The text to parse.
      * @return A date or month wrapped in a DateOrMonth instance.
      */
-    static DateOrMonth parse(final String text) {
+    public static DateOrMonth parse(final String text) {
         try {
             return new Date(LocalDate.parse(text));
         } catch (DateTimeParseException dtpe) {

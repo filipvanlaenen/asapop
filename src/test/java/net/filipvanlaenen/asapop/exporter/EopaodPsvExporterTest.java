@@ -3,11 +3,13 @@ package net.filipvanlaenen.asapop.exporter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -19,6 +21,9 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  * Unit tests on the class <code>EopaodPsvExporter</code>.
  */
 public class EopaodPsvExporterTest {
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
+    private static final LocalDate DATE = LocalDate.parse("2021-08-02");
     /**
      * A list with the electoral lists A and B.
      */
@@ -92,7 +97,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithPublicationDateOnlyCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
@@ -103,8 +108,8 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithFieldworkPeriodCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
-                .setFieldworkEnd("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
     }
@@ -114,7 +119,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithSameScopeCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .setScope(Scope.National).build();
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
@@ -127,7 +132,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithExcludedResponsesCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .setExcluded(DecimalNumber.parse("10")).build();
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
@@ -140,7 +145,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithDifferentScopeCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .setScope(Scope.National).build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").setScope(Scope.European).build();
@@ -153,7 +158,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithSampleSizeCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setSampleSize("1000").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | 1000 | N/A | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
@@ -164,9 +169,9 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithExcludedResponsesCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").setExcluded(DecimalNumber.parse("10"))
-                .build();
+        OpinionPoll poll =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).addWellformedResult("A", "55")
+                        .addWellformedResult("B", "43").setExcluded(DecimalNumber.parse("10")).build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | 90 | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
     }
@@ -176,7 +181,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithOtherResultCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedOther("2").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
@@ -188,7 +193,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithOneCommissioner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+                .setPublicationDate(DATE).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME | The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
     }
@@ -199,7 +204,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithTwoCommissioners() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                .addCommissioner("The Post").setPublicationDate("2021-08-02").addWellformedResult("A", "55")
+                .addCommissioner("The Post").setPublicationDate(DATE).addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").build();
         String expected =
                 "ACME | The Post and The Times | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43" + " | N/A";
@@ -212,7 +217,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithPollingFirmAndPollingFirmPartner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPollingFirmPartner("EMCA")
-                .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+                .setPublicationDate(DATE).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME and EMCA | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
     }
@@ -222,7 +227,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55.5").addWellformedResult("B", "43").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 0.5 | 55.5 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B));
@@ -233,7 +238,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithALessThanResult() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").addWellformedResult("C", "<1").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 0 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(poll, null, A_AND_B_AND_C));
@@ -244,7 +249,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldNotExportSimpleOpinionPollWithOtherAreaThanTheOneSpecified() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55.5").addWellformedResult("B", "43").setArea("N").build();
         assertNull(EopaodPsvExporter.export(poll, "S", A_AND_B));
     }
@@ -254,7 +259,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithPublicationDateOnlyCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).build();
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
@@ -266,8 +271,8 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithFieldworkPeriodCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
-                .setFieldworkEnd("2021-08-02").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "ACME | N/A | 2021-08-01 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 45 | N/A";
@@ -279,7 +284,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportSimpleResponseScenarioWithOtherResultCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").setWellformedOther("2").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | 2";
@@ -291,7 +296,7 @@ public class EopaodPsvExporterTest {
      */
     @Test
     public void shouldExportAResponseScenarioWithADifferentSampleSizeCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .setSampleSize("1000").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999")
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
@@ -305,7 +310,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportSimpleResponseScenarioInheritingTheSpecifiedArea() {
         OpinionPoll poll =
-                new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setArea("N").build();
+                new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).setArea("N").build();
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N/A | N/A | N/A | 1 | 55 | 43 | N/A";
@@ -318,7 +323,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldNotExportSimpleResponseScenarioOverridingWithANonSpecifiedArea() {
         OpinionPoll poll =
-                new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02").setArea("N").build();
+                new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).setArea("N").build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").setArea("S").build();
         assertNull(EopaodPsvExporter.export(responseScenario, poll, "N", A_AND_B));

@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,9 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  * Unit tests on the <code>RichOpinionPollsFile</code> class.
  */
 public final class RichOpinionPollsFileTest {
+    private static final LocalDate DATE1 = LocalDate.parse("2021-07-27");
+    private static final LocalDate DATE2 = LocalDate.parse("2021-07-28");
+
     /**
      * Sample poll line.
      */
@@ -24,7 +28,7 @@ public final class RichOpinionPollsFileTest {
      * Sample poll corresponding to the sample poll line.
      */
     private static final OpinionPoll SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("ACME")
-            .setPublicationDate("2021-07-27").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+            .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
     /**
      * Other sample poll line.
      */
@@ -33,7 +37,7 @@ public final class RichOpinionPollsFileTest {
      * Sample poll corresponding to the other sample poll line.
      */
     private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("BCME")
-            .setPublicationDate("2021-07-28").addWellformedResult("A", "56").addWellformedResult("C", "43").build();
+            .setPublicationDate(DATE2).addWellformedResult("A", "56").addWellformedResult("C", "43").build();
 
     /**
      * Verifies that a single line containing a simple opinion poll can be parsed.
@@ -87,7 +91,7 @@ public final class RichOpinionPollsFileTest {
     @Test
     public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
         String[] content = new String[] {SAMPLE_POLL_LINE, "& A:50 B:40 C:10"};
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         ResponseScenario scenario = new ResponseScenario.Builder().addWellformedResult("A", "50")
                 .addWellformedResult("B", "40").addWellformedResult("C", "10").build();

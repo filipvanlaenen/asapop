@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,10 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the class <code>OpinionPoll</code>.
  */
 public class OpinionPollTest {
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07-27");
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
+    private static final LocalDate DATE1 = LocalDate.parse("2021-07-29");
+    private static final LocalDate DATE2 = LocalDate.parse("2021-07-30");
     /**
      * The magic number 1000.
      */
@@ -71,8 +76,8 @@ public class OpinionPollTest {
      */
     @Test
     public void setFieldworkEndInBuilderShouldBeWiredCorrectlyToGetFieldworkEnd() {
-        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
-        assertEquals("2021-07-27", poll.getFieldworkEnd().toString());
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).build();
+        assertEquals(DATE_OR_MONTH1, poll.getFieldworkEnd());
     }
 
     /**
@@ -80,7 +85,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasDatesInBuilderShouldReturnTrueAfterFieldworkEndIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").hasDates());
+        assertTrue(new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).hasDates());
     }
 
     /**
@@ -89,8 +94,8 @@ public class OpinionPollTest {
      */
     @Test
     public void setFieldworkStartInBuilderShouldBeWiredCorrectlyToGetFieldworkStart() {
-        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
-        assertEquals("2021-07-27", poll.getFieldworkStart().toString());
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH1).build();
+        assertEquals(DATE_OR_MONTH1, poll.getFieldworkStart());
     }
 
     /**
@@ -98,7 +103,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasDatesInBuilderShouldReturnTrueAfterFieldworkStartIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setFieldworkStart("2021-07-27").hasDates());
+        assertTrue(new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH1).hasDates());
     }
 
     /**
@@ -106,7 +111,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getEndDateShouldReturnEndDateOfFieldworkEnd() {
-        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).build();
         assertEquals("2021-07-27", poll.getEndDate().toString());
     }
 
@@ -115,8 +120,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getEndDateShouldReturnEndDateOfFieldworkEndEvenIfThereIsAPublicationDate() {
-        OpinionPoll poll =
-                new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").setPublicationDate("2021-07-28").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).setPublicationDate(DATE1).build();
         assertEquals("2021-07-27", poll.getEndDate().toString());
     }
 
@@ -125,8 +129,8 @@ public class OpinionPollTest {
      */
     @Test
     public void getEndDateShouldReturnPublicationDateIfFieldworkEndIsAbsent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate("2021-07-28").build();
-        assertEquals("2021-07-28", poll.getEndDate().toString());
+        OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate(DATE1).build();
+        assertEquals(DATE1, poll.getEndDate());
     }
 
     /**
@@ -181,8 +185,8 @@ public class OpinionPollTest {
      */
     @Test
     public void setPublicationDateInBuilderShouldBeWiredCorrectlyToGetPublicationDate() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
-        assertEquals("2021-07-27", poll.getPublicationDate().toString());
+        OpinionPoll poll = new OpinionPoll.Builder().setPublicationDate(DATE1).build();
+        assertEquals(DATE1, poll.getPublicationDate());
     }
 
     /**
@@ -190,7 +194,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasDatesInBuilderShouldReturnTrueAfterPublicationDateIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setPublicationDate("2021-07-27").hasDates());
+        assertTrue(new OpinionPoll.Builder().setPublicationDate(DATE1).hasDates());
     }
 
     /**
@@ -417,8 +421,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentFieldworkEnd() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-28").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH2).build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -427,7 +431,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheFieldworkEnd() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -438,7 +442,7 @@ public class OpinionPollTest {
     @Test
     public void anOpinionPollMissingFieldworkEndShouldNotBeEqualToAnotherOpinionPollHavingAFieldworkEnd() {
         OpinionPoll poll1 = new OpinionPoll.Builder().build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -447,8 +451,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentFieldworkEnd() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-27").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd("2021-07-28").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH2).build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 
@@ -457,8 +461,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentFieldworkStart() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkStart("2021-07-28").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH1).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH2).build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -467,7 +471,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheFieldworkStart() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH1).build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -477,8 +481,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentFieldworkStart() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart("2021-07-27").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkStart("2021-07-28").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH1).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH2).build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 
@@ -607,8 +611,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentPublicationDate() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPublicationDate("2021-07-28").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate(DATE1).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPublicationDate(DATE2).build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -617,7 +621,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingThePublicationDate() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate(DATE1).build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -627,8 +631,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentPublicationDate() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate("2021-07-27").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPublicationDate("2021-07-28").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPublicationDate(DATE1).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPublicationDate(DATE2).build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 

@@ -7,9 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -19,6 +21,13 @@ import net.filipvanlaenen.asapop.model.ResultValue;
  * Unit tests on the class <code>Exporter</code>.
  */
 public class ExporterTest {
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
+    private static final DateOrMonth DATE_OR_MONTH3 = DateOrMonth.parse("2021-08-03");
+    private static final DateOrMonth DATE_OR_MONTH4 = DateOrMonth.parse("2021-08-05");
+    private static final LocalDate DATE1 = LocalDate.parse("2021-08-02");
+    private static final LocalDate DATE2 = LocalDate.parse("2021-08-03");
+    private static final LocalDate DATE3 = LocalDate.parse("2021-08-04");
     /**
      * A list with the electoral lists A and B.
      */
@@ -29,7 +38,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldUsePublicationDateAsFieldworkPeriodWhenOtherDatesAbsent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         List<String> expected = List.of("2021-08-02", "2021-08-02");
         assertEquals(expected, Exporter.exportDates(poll));
@@ -40,8 +49,8 @@ public class ExporterTest {
      */
     @Test
     public void shouldUseFieldworkStartAndEndAsFieldworkPeriod() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
-                .setFieldworkEnd("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         List<String> expected = List.of("2021-08-01", "2021-08-02");
         assertEquals(expected, Exporter.exportDates(poll));
     }
@@ -51,7 +60,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldUseFieldworkEndDateAsFieldworkPeriodWhenOtherDatesAbsent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         List<String> expected = List.of("2021-08-02", "2021-08-02");
         assertEquals(expected, Exporter.exportDates(poll));
@@ -62,8 +71,8 @@ public class ExporterTest {
      */
     @Test
     public void shouldUseFieldworkStartAndPublicationDateAsFieldworkPeriodWhenFieldworkEndIsAbsent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-08-01")
-                .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         List<String> expected = List.of("2021-08-01", "2021-08-02");
         assertEquals(expected, Exporter.exportDates(poll));
     }
@@ -73,7 +82,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithPollingFirmWithoutPollingFirmPartner() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("ACME", Exporter.exportPollingFirms(poll));
     }
@@ -84,7 +93,7 @@ public class ExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithPollingFirmAndPollingFirmPartner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPollingFirmPartner("EMCA")
-                .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+                .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("ACME and EMCA", Exporter.exportPollingFirms(poll));
     }
 
@@ -93,7 +102,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithNoCommissioner() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertNull(Exporter.exportCommissioners(poll));
     }
@@ -104,7 +113,7 @@ public class ExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithOneCommissioner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                .setPublicationDate("2021-08-02").addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+                .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("The Times", Exporter.exportCommissioners(poll));
     }
 
@@ -114,7 +123,7 @@ public class ExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithTwoCommissioners() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                .addCommissioner("The Post").setPublicationDate("2021-08-02").addWellformedResult("A", "55")
+                .addCommissioner("The Post").setPublicationDate(DATE1).addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").build();
         assertEquals("The Post and The Times", Exporter.exportCommissioners(poll));
     }
@@ -125,7 +134,7 @@ public class ExporterTest {
     @Test
     public void shouldExportSimpleOpinionPollWithThreeCommissioners() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                .addCommissioner("The Post").addCommissioner("The Mail").setPublicationDate("2021-08-02")
+                .addCommissioner("The Post").addCommissioner("The Mail").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("The Mail, The Post and The Times", Exporter.exportCommissioners(poll));
     }
@@ -135,7 +144,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55.0").addWellformedResult("B", "43").setWellformedOther("0.5").build();
         assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(poll, A_AND_B));
     }
@@ -145,7 +154,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportSimpleOpinionPollWithAResultWithTenthOfAPercent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(poll, A_AND_B));
     }
@@ -185,9 +194,9 @@ public class ExporterTest {
      */
     @Test
     public void shouldCompareOpinionPollsWithPublicationDatesOnlyCorrectly() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-03")
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE2)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
     }
@@ -197,9 +206,9 @@ public class ExporterTest {
      */
     @Test
     public void shouldCompareOpinionPollsWithFieldworkEndDatesOnlyCorrectly() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-03")
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH3)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
     }
@@ -209,10 +218,12 @@ public class ExporterTest {
      */
     @Test
     public void shouldCompareOpinionPollsWithEqualFieldworkEndDatesByFieldworkStartDatesCorrectly() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-20")
-                .setFieldworkEnd("2021-08-02").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-21")
-                .setFieldworkEnd("2021-08-02").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH3).addWellformedResult("A", "55.4").addWellformedResult("B", "43")
+                .build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH2)
+                .setFieldworkEnd(DATE_OR_MONTH3).addWellformedResult("A", "55.4").addWellformedResult("B", "43")
+                .build();
         assertTrue(Exporter.compareOpinionPolls(poll1, poll2) > 0);
     }
 
@@ -222,10 +233,11 @@ public class ExporterTest {
      */
     @Test
     public void shouldUseEndDateAsStartDateWhenComparingOpinionPollsWithEqualFieldworkEndDatesIfFieldworkStartAbsent() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-21")
-                .setFieldworkEnd("2021-08-02").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55.4").addWellformedResult("B", "43")
+                .build();
         assertTrue(Exporter.compareOpinionPolls(poll1, poll2) < 0);
     }
 
@@ -235,9 +247,9 @@ public class ExporterTest {
      */
     @Test
     public void shouldUseSampleSizeValueForComparisonOfOpinionPollsWhenStartAndEndDatesAreEqual() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
                 .setSampleSize("1000").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-02")
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
                 .setSampleSize("999").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         assertTrue(Exporter.compareOpinionPolls(poll1, poll2) < 0);
     }
@@ -247,16 +259,18 @@ public class ExporterTest {
      */
     @Test
     public void shouldSortASetOfOpinionPollsIntoAList() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-08-03")
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH3)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll3 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-04")
+        OpinionPoll poll3 = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE3)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll4 = new OpinionPoll.Builder().setPollingFirm("ACME").setSampleSize("800")
-                .setFieldworkEnd("2021-08-05").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
-        OpinionPoll poll5 = new OpinionPoll.Builder().setPollingFirm("BCME").setSampleSize("1000")
-                .setFieldworkEnd("2021-08-05").addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        OpinionPoll poll4 =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setSampleSize("800").setFieldworkEnd(DATE_OR_MONTH4)
+                        .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
+        OpinionPoll poll5 =
+                new OpinionPoll.Builder().setPollingFirm("BCME").setSampleSize("1000").setFieldworkEnd(DATE_OR_MONTH4)
+                        .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         List<OpinionPoll> expected = List.of(poll5, poll4, poll3, poll2, poll1);
         assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4, poll5)));
     }
@@ -322,7 +336,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportNoParticipationRateWhenExcludedIsMissing() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertNull(Exporter.exportParticipationRate(poll));
     }
@@ -332,7 +346,7 @@ public class ExporterTest {
      */
     @Test
     public void shouldExportParticipationRateCorrectlyForExcluded() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-08-02")
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .setExcluded(DecimalNumber.parse("10")).addWellformedResult("A", "55").addWellformedResult("B", "43")
                 .build();
         assertEquals("90", Exporter.exportParticipationRate(poll));

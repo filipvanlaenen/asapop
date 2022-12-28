@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.Scope;
@@ -16,10 +18,15 @@ import net.filipvanlaenen.asapop.model.Scope;
  * Unit tests on the <code>OpinionPollLine</code> class.
  */
 public final class OpinionPollLineTest {
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07");
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
+    private static final LocalDate DATE1 = LocalDate.parse("2021-07-27");
+    private static final LocalDate DATE2 = LocalDate.parse("2021-07-29");
+
     /**
      * Simple opinion poll line.
      */
-    private static final String SIMPLE_OPINION_POLL_LINE = "•PF: ACME •PD: 2021-07-27 A:55 B:45";
+    private static final String SIMPLE_OPINION_POLL_LINE = "•PF: ACME •PD: 2021-07-29 A:55 B:45";
     /**
      * Opinion poll line with a combination of electoral lists.
      */
@@ -57,7 +64,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseSingleLineWithASimpleOpinionPoll() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE2)
                 .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -68,7 +75,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseSingleLineWithAnOpinionPollWithCombinedElectoralLists() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse(OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS, 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult(Set.of("A", "C"), "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -79,7 +86,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldAllowDiacriticsInTheKeysForTheElectoralLists() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 Ä:55 Æ:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("Ä", "55").addWellformedResult("Æ", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -90,7 +97,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldAllowGreekAndCyrillicLettersInTheKeysForTheElectoralLists() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 Б:55 Ω:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("Б", "55").addWellformedResult("Ω", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -101,8 +108,8 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAnArea() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: AB A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
-                .setArea("AB").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1).setArea("AB")
+                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -112,7 +119,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithACommissioner() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •C: The Times •PD: 2021-07-27 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addCommissioner("The Times").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -123,7 +130,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAPollingFirmPartner() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PFP: EMCA •PD: 2021-07-27 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .setPollingFirmPartner("EMCA").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -135,7 +142,7 @@ public final class OpinionPollLineTest {
     public void shouldParseAnOpinionPollWithTwoCommissioners() {
         String line = "•PF: ACME •C: The Times •C: The Post •PD: 2021-07-27 A:55 B:45";
         OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addCommissioner("The Times").addCommissioner("The Post").addWellformedResult("A", "55")
                 .addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
@@ -147,7 +154,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithASampleSize() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .setSampleSize("1000").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -158,7 +165,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithExcluded() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 10 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .setExcluded(DecimalNumber.parse("10")).addWellformedResult("A", "55").addWellformedResult("B", "45")
                 .build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
@@ -170,7 +177,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAResultForOther() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •O:2", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedOther("2").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -181,7 +188,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAResultForNoResponse() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •N:2", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedNoResponses("2").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -191,8 +198,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAFieldworkStart() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07-27")
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07-28 A:55 B:43", 1);
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH2)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -203,7 +210,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAYearMonthFieldworkStart() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart("2021-07")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -213,8 +220,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAFieldworkEnd() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-07-27")
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07-28 A:55 B:43", 1);
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -225,7 +232,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAYearMonthFieldworkEnd() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd("2021-07")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -236,7 +243,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithAScope() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate("2021-07-27")
+        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .setScope(Scope.National).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
@@ -331,6 +338,7 @@ public final class OpinionPollLineTest {
         Set<ParserWarning> expected = Set.of(new DatesMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+
     /**
      * Verifies that a line missing both polling firm and commissioner produces a warning.
      */

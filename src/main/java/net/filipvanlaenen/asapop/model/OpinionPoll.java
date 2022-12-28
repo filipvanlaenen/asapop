@@ -269,24 +269,24 @@ public final class OpinionPoll {
         }
 
         /**
-         * Sets the fieldwork end date from a string.
+         * Sets the fieldwork end date.
          *
-         * @param fieldworkEndString A string representing the fieldwork end date.
+         * @param fieldworkEnd The fieldwork end date.
          * @return This builder instance.
          */
-        public Builder setFieldworkEnd(final String fieldworkEndString) {
-            this.fieldworkEnd = DateOrMonth.parse(fieldworkEndString);
+        public Builder setFieldworkEnd(final DateOrMonth fieldworkEnd) {
+            this.fieldworkEnd = fieldworkEnd;
             return this;
         }
 
         /**
-         * Sets the fieldwork start date from a string.
+         * Sets the fieldwork start date.
          *
-         * @param fieldworkStartString A string representing the fieldwork start date.
+         * @param fieldworkStart The fieldwork start date.
          * @return This builder instance.
          */
-        public Builder setFieldworkStart(final String fieldworkStartString) {
-            this.fieldworkStart = DateOrMonth.parse(fieldworkStartString);
+        public Builder setFieldworkStart(final DateOrMonth fieldworkStart) {
+            this.fieldworkStart = fieldworkStart;
             return this;
         }
 
@@ -335,13 +335,13 @@ public final class OpinionPoll {
         }
 
         /**
-         * Sets the publication date from a string.
+         * Sets the publication date.
          *
-         * @param publicationDateString A string representing the publication date.
+         * @param publicationDate The publication date.
          * @return This builder instance.
          */
-        public Builder setPublicationDate(final String publicationDateString) {
-            this.publicationDate = LocalDate.parse(publicationDateString);
+        public Builder setPublicationDate(final LocalDate publicationDate) {
+            this.publicationDate = publicationDate;
             return this;
         }
 

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
+import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -69,11 +71,11 @@ public class AnalysisBuilderTest {
     /**
      * The first fieldwork end date.
      */
-    private static final String FIELDWORK_END = "2022-01-19";
+    private static final DateOrMonth FIELDWORK_END = DateOrMonth.parse("2022-01-19");
     /**
      * The fieldwork start date.
      */
-    private static final String FIELDWORK_START = "2022-01-18";
+    private static final DateOrMonth FIELDWORK_START = DateOrMonth.parse("2022-01-18");
     /**
      * The name of the polling firm for an opinion poll about a parliamentary election.
      */
@@ -89,7 +91,7 @@ public class AnalysisBuilderTest {
     /**
      * The publication date.
      */
-    private static final String PUBLICATION_DATE = "2022-01-20";
+    private static final LocalDate PUBLICATION_DATE = LocalDate.parse("2022-01-20");
     /**
      * The size of the population (the number of voters for the first round of the French presidential election of
      * 2017).
@@ -277,7 +279,7 @@ public class AnalysisBuilderTest {
     @Test
     public void buildingAnAnalysisShouldSetTheFieldworkEndOfAnOpinionPoll() {
         assertNotNull(opinionPollAnalysis);
-        assertEquals(FIELDWORK_END, opinionPollAnalysis.getFieldworkEnd());
+        assertEquals(FIELDWORK_END.toString(), opinionPollAnalysis.getFieldworkEnd());
     }
 
     /**
@@ -286,7 +288,7 @@ public class AnalysisBuilderTest {
     @Test
     public void buildingAnAnalysisShouldSetTheFieldworkStartOfAnOpinionPoll() {
         assertNotNull(opinionPollAnalysis);
-        assertEquals(FIELDWORK_START, opinionPollAnalysis.getFieldworkStart());
+        assertEquals(FIELDWORK_START.toString(), opinionPollAnalysis.getFieldworkStart());
     }
 
     /**
@@ -313,7 +315,7 @@ public class AnalysisBuilderTest {
     @Test
     public void buildingAnAnalysisShouldSetThePublicationDateOfAnOpinionPoll() {
         assertNotNull(opinionPollAnalysis);
-        assertEquals(PUBLICATION_DATE, opinionPollAnalysis.getPublicationDate());
+        assertEquals(PUBLICATION_DATE.toString(), opinionPollAnalysis.getPublicationDate());
     }
 
     /**
