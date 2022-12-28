@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a metadata field containing a malformed date.
  */
-public class MalformedDateWarning extends ParserWarning {
+class MalformedDateWarning extends ParserWarning {
     /**
      * The key.
      */

@@ -271,22 +271,22 @@ public final class OpinionPoll {
         /**
          * Sets the fieldwork end date.
          *
-         * @param fieldworkEnd The fieldwork end date.
+         * @param fieldworkEndDate The fieldwork end date.
          * @return This builder instance.
          */
-        public Builder setFieldworkEnd(final DateOrMonth fieldworkEnd) {
-            this.fieldworkEnd = fieldworkEnd;
+        public Builder setFieldworkEnd(final DateOrMonth fieldworkEndDate) {
+            this.fieldworkEnd = fieldworkEndDate;
             return this;
         }
 
         /**
          * Sets the fieldwork start date.
          *
-         * @param fieldworkStart The fieldwork start date.
+         * @param fieldworkStartDate The fieldwork start date.
          * @return This builder instance.
          */
-        public Builder setFieldworkStart(final DateOrMonth fieldworkStart) {
-            this.fieldworkStart = fieldworkStart;
+        public Builder setFieldworkStart(final DateOrMonth fieldworkStartDate) {
+            this.fieldworkStart = fieldworkStartDate;
             return this;
         }
 
@@ -337,11 +337,11 @@ public final class OpinionPoll {
         /**
          * Sets the publication date.
          *
-         * @param publicationDate The publication date.
+         * @param thePublicationDate The publication date.
          * @return This builder instance.
          */
-        public Builder setPublicationDate(final LocalDate publicationDate) {
-            this.publicationDate = publicationDate;
+        public Builder setPublicationDate(final LocalDate thePublicationDate) {
+            this.publicationDate = thePublicationDate;
             return this;
         }
 
