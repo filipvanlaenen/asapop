@@ -17,9 +17,14 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
  * Unit tests on the <code>RichOpinionPollsFile</code> class.
  */
 public final class RichOpinionPollsFileTest {
+    /**
+     * A date for the unit tests.
+     */
     private static final LocalDate DATE1 = LocalDate.parse("2021-07-27");
+    /**
+     * Another date for the unit tests.
+     */
     private static final LocalDate DATE2 = LocalDate.parse("2021-07-28");
-
     /**
      * Sample poll line.
      */

@@ -18,11 +18,22 @@ import net.filipvanlaenen.asapop.model.Scope;
  * Unit tests on the <code>OpinionPollLine</code> class.
  */
 public final class OpinionPollLineTest {
-    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07");
-    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
+    /**
+     * A date for the unit tests.
+     */
     private static final LocalDate DATE1 = LocalDate.parse("2021-07-27");
+    /**
+     * Another date for the unit tests.
+     */
     private static final LocalDate DATE2 = LocalDate.parse("2021-07-29");
-
+    /**
+     * A date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07");
+    /**
+     * Another date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
     /**
      * Simple opinion poll line.
      */

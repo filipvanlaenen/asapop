@@ -17,14 +17,26 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the class <code>OpinionPoll</code>.
  */
 public class OpinionPollTest {
-    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07-27");
-    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
-    private static final LocalDate DATE1 = LocalDate.parse("2021-07-29");
-    private static final LocalDate DATE2 = LocalDate.parse("2021-07-30");
     /**
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
+    /**
+     * A date for the unit tests.
+     */
+    private static final LocalDate DATE1 = LocalDate.parse("2021-07-29");
+    /**
+     * Another date for the unit tests.
+     */
+    private static final LocalDate DATE2 = LocalDate.parse("2021-07-30");
+    /**
+     * A date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07-27");
+    /**
+     * Another date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
 
     /**
      * Verifies that the addCommissioner method in the builder class is wired correctly to the getCommissioners method.

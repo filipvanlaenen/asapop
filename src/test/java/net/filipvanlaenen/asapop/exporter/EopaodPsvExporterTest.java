@@ -21,9 +21,18 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  * Unit tests on the class <code>EopaodPsvExporter</code>.
  */
 public class EopaodPsvExporterTest {
-    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
-    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
+    /**
+     * A date for the unit tests.
+     */
     private static final LocalDate DATE = LocalDate.parse("2021-08-02");
+    /**
+     * A date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
+    /**
+     * Another date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
     /**
      * A list with the electoral lists A and B.
      */

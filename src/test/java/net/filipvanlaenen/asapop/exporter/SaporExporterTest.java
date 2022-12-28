@@ -23,10 +23,25 @@ import net.filipvanlaenen.asapop.yaml.SaporMapping;
  * Unit tests on the <code>SaporExporter</code> class.
  */
 public class SaporExporterTest {
+    /**
+     * A date for the unit tests.
+     */
     private static final LocalDate DATE = LocalDate.parse("2021-08-02");
+    /**
+     * A date or month for the unit tests.
+     */
     private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
+    /**
+     * Another date or month for the unit tests.
+     */
     private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
+    /**
+     * A third date or month for the unit tests.
+     */
     private static final DateOrMonth DATE_OR_MONTH3 = DateOrMonth.parse("2021-09-01");
+    /**
+     * A fourth date or month for the unit tests.
+     */
     private static final DateOrMonth DATE_OR_MONTH4 = DateOrMonth.parse("2021-09-02");
     /**
      * The SAPOR exporter to run the tests on.
