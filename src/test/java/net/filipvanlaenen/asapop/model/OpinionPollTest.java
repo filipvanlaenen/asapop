@@ -309,6 +309,25 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that by default, the number of response scenarios is one.
+     */
+    @Test
+    public void byDefaultGetNumberOfResponseScenariosReturnsOne() {
+        OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        assertEquals(1, poll.getNumberOfResponseScenarios());
+    }
+
+    /**
+     * Verifies the number of result values when there is no alternative response scenario.
+     */
+    @Test
+    public void getNumberOfResultValuesShouldBeCorrect() {
+        OpinionPoll poll =
+                new OpinionPoll.Builder().addCommissioner("The Times").addWellformedResult("A", "54").build();
+        assertEquals(1, poll.getNumberOfResultValues());
+    }
+
+    /**
      * Verifies that the main response scenario is correctly when there are no alternative response scenarios.
      */
     @Test
@@ -341,6 +360,29 @@ public class OpinionPollTest {
         List<ResponseScenario> expected = new ArrayList<ResponseScenario>();
         expected.add(responseScenario);
         assertEquals(expected, poll.getAlternativeResponseScenarios());
+    }
+
+    /**
+     * Verifies that when an alternative response scenario is added, the number of response scenarios is two.
+     */
+    @Test
+    public void getNumberOfResponseScenariosShouldReturnTwoWhenAlternativeResponseScenarioIsAdded() {
+        OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        poll.addAlternativeResponseScenario(responseScenario);
+        assertEquals(2, poll.getNumberOfResponseScenarios());
+    }
+
+    /**
+     * Verifies the number of result values includes the ones from the alternative response scenario.
+     */
+    @Test
+    public void getNumberOfResultValuesShouldIncludeThoseFromTheAlternativeResponseScenario() {
+        OpinionPoll poll =
+                new OpinionPoll.Builder().addCommissioner("The Times").addWellformedResult("A", "54").build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        poll.addAlternativeResponseScenario(responseScenario);
+        assertEquals(2, poll.getNumberOfResultValues());
     }
 
     /**
