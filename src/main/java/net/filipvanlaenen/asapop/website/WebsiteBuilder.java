@@ -27,6 +27,9 @@ public class WebsiteBuilder {
      * The map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
+    /**
+     * The start of the year.
+     */
     private final LocalDate startOfYear;
     /**
      * The internationalization terms.
@@ -47,6 +50,7 @@ public class WebsiteBuilder {
      * @param baseStyleSheetContent   The base style sheet content.
      * @param customStyleSheetContent The custom style sheet content.
      * @param navigationScriptContent The content of the navigation script.
+     * @param startOfYear             The start of the year.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent,

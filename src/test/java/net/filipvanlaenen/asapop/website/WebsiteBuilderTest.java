@@ -27,6 +27,9 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    /**
+     * The start of the year 2022.
+     */
     private static final LocalDate START_OF_YEAR = LocalDate.of(2022, Month.JANUARY, 1);
     /**
      * The area configuration for North Macedonia.
