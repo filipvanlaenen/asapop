@@ -31,10 +31,21 @@ public final class OpinionPolls {
         return opinionPolls;
     }
 
+    /**
+     * Returns the number of opinion polls.
+     *
+     * @return The number of opinion polls.
+     */
     public int getNumberOfOpinionPolls() {
         return opinionPolls.size();
     }
 
+    /**
+     * Returns the number of opinion polls with an end date on or after the date.
+     *
+     * @param fromDate The cut-off date to count the number of opinion polls.
+     * @return The number of opinion polls with an end date on or after the date.
+     */
     public int getNumberOfOpinionPolls(final LocalDate fromDate) {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -45,6 +56,11 @@ public final class OpinionPolls {
         return result;
     }
 
+    /**
+     * Returns the number of response scenarios.
+     *
+     * @return The number of response scenarios.
+     */
     public int getNumberOfResponseScenarios() {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -53,6 +69,12 @@ public final class OpinionPolls {
         return result;
     }
 
+    /**
+     * Returns the number of response scenarios for opinion polls with an end date on or after the date.
+     *
+     * @param fromDate The cut-off date to count the number of response scenarios.
+     * @return The number of response scenarios for opinion polls with an end date on or after the date.
+     */
     public int getNumberOfResponseScenarios(final LocalDate fromDate) {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -63,6 +85,11 @@ public final class OpinionPolls {
         return result;
     }
 
+    /**
+     * Returns the number or result values.
+     *
+     * @return The number of result values.
+     */
     public int getNumberOfResultValues() {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -71,6 +98,12 @@ public final class OpinionPolls {
         return result;
     }
 
+    /**
+     * Returns the number of result values for opinion polls with an end date on or after the date.
+     *
+     * @param fromDate The cut-off date to count the number of result values.
+     * @return The number of result values for opinion polls with an end date on or after the date.
+     */
     public int getNumberOfResultValues(final LocalDate fromDate) {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
