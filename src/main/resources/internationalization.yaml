@@ -212,6 +212,14 @@ terms:
       fr: "Statistiques"
       nl: "Statistieken"
       no: "Statistikkene"
+  - key: "thousands-separator"
+    translations:
+      de: "."
+      en: ","
+      eo: "."
+      fr: " "
+      nl: "."
+      no: " "
   - key: "total"
     translations:
       de: "Total"

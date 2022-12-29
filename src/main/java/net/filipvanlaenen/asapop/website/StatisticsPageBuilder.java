@@ -1,8 +1,11 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,14 @@ import net.filipvanlaenen.txhtmlj.Table;
  * Class building the page with statistics.
  */
 final class StatisticsPageBuilder extends PageBuilder {
+    /**
+     * The decimal format symbols for the US.
+     */
+    private static final DecimalFormatSymbols US_FORMAT_SYMBOLS = new DecimalFormatSymbols(Locale.US);
+    /**
+     * The decimal format for integers, i.e. no decimals.
+     */
+    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#,###", US_FORMAT_SYMBOLS);
     /**
      * A map with the opinion polls.
      */
@@ -123,12 +134,11 @@ final class StatisticsPageBuilder extends PageBuilder {
                 totalNumberOfResponseScenariosYtd += numberOfResponseScenariosYtd;
                 totalNumberOfResultValues += numberOfResultValues;
                 totalNumberOfResultValuesYtd += numberOfResultValuesYtd;
-                areaTr.addElement(new TD(numberAndYearToDateAsText(numberOfOpinionPolls, numberOfOpinionPollsYtd))
+                areaTr.addElement(createNumberAndYearToDateTd(numberOfOpinionPolls, numberOfOpinionPollsYtd)
                         .clazz("statistics-value-td"));
-                areaTr.addElement(
-                        new TD(numberAndYearToDateAsText(numberOfResponseScenarios, numberOfResponseScenariosYtd))
-                                .clazz("statistics-value-td"));
-                areaTr.addElement(new TD(numberAndYearToDateAsText(numberOfResultValues, numberOfResultValuesYtd))
+                areaTr.addElement(createNumberAndYearToDateTd(numberOfResponseScenarios, numberOfResponseScenariosYtd)
+                        .clazz("statistics-value-td"));
+                areaTr.addElement(createNumberAndYearToDateTd(numberOfResultValues, numberOfResultValuesYtd)
                         .clazz("statistics-value-td"));
             } else {
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -137,18 +147,28 @@ final class StatisticsPageBuilder extends PageBuilder {
             }
         }
         totalTr.addElement(new TD(" ").clazz("total"));
-        totalTr.addElement(new TD(numberAndYearToDateAsText(totalNumberOfOpinionPolls, totalNumberOfOpinionPollsYtd))
+        totalTr.addElement(createNumberAndYearToDateTd(totalNumberOfOpinionPolls, totalNumberOfOpinionPollsYtd)
                 .clazz("statistics-total-td"));
         totalTr.addElement(
-                new TD(numberAndYearToDateAsText(totalNumberOfResponseScenarios, totalNumberOfResponseScenariosYtd))
+                createNumberAndYearToDateTd(totalNumberOfResponseScenarios, totalNumberOfResponseScenariosYtd)
                         .clazz("statistics-total-td"));
-        totalTr.addElement(new TD(numberAndYearToDateAsText(totalNumberOfResultValues, totalNumberOfResultValuesYtd))
+        totalTr.addElement(createNumberAndYearToDateTd(totalNumberOfResultValues, totalNumberOfResultValuesYtd)
                 .clazz("statistics-total-td"));
         body.addElement(createFooter());
         return html;
     }
 
-    private String numberAndYearToDateAsText(final int number, final int ytd) {
-        return Integer.toString(number) + " (" + Integer.toString(ytd) + ")";
+    private TD createNumberAndYearToDateTd(final int number, final int ytd) {
+        TD td = new TD();
+        String text = INTEGER_FORMAT.format(number) + " (" + INTEGER_FORMAT.format(ytd) + ")";
+        int thousandsSeparatorIndex = text.indexOf(",");
+        while (thousandsSeparatorIndex != -1) {
+            td.addContent(text.substring(0, thousandsSeparatorIndex));
+            td.addElement(new Span(" ").clazz("thousands-separator"));
+            text = text.substring(thousandsSeparatorIndex + 1);
+            thousandsSeparatorIndex = text.indexOf(",");
+        }
+        td.addContent(text);
+        return td;
     }
 }
