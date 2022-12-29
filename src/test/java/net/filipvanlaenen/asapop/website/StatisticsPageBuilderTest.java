@@ -20,6 +20,14 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  */
 public class StatisticsPageBuilderTest {
     /**
+     * The magic number 1,234.
+     */
+    private static final int LARGE_INTEGER_1234 = 1234;
+    /**
+     * The magic number 2,345.
+     */
+    private static final int LARGE_INTEGER_2345 = 2345;
+    /**
      * The start of the year 2022.
      */
     private static final LocalDate START_OF_YEAR = LocalDate.of(2022, Month.JANUARY, 1);
@@ -176,5 +184,16 @@ public class StatisticsPageBuilderTest {
         assertEquals(expected.toString(),
                 new StatisticsPageBuilder(createWebsiteConfiguration(), createOpinionPollsMap(), START_OF_YEAR).build()
                         .asString());
+    }
+
+    /**
+     * Verifies that TD element is produced correctly for large numbers.
+     */
+    @Test
+    public void shouldProduceTdElementForLargeNumbersWithThousandsSeparators() {
+        assertEquals(
+                "<td>2<span class=\"thousands-separator\"> </span>345"
+                        + " (1<span class=\"thousands-separator\"> </span>234)</td>",
+                StatisticsPageBuilder.createNumberAndYearToDateTd(LARGE_INTEGER_2345, LARGE_INTEGER_1234).asString());
     }
 }

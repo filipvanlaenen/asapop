@@ -169,7 +169,7 @@ final class StatisticsPageBuilder extends PageBuilder {
      * @param ytd    The year-to-date number to be included in a TD element.
      * @return A TD element with a number and its year-to-date number.
      */
-    private TD createNumberAndYearToDateTd(final int number, final int ytd) {
+    static TD createNumberAndYearToDateTd(final int number, final int ytd) {
         TD td = new TD();
         String text = INTEGER_FORMAT.format(number) + " (" + INTEGER_FORMAT.format(ytd) + ")";
         int thousandsSeparatorIndex = text.indexOf(",");
