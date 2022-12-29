@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    private static final LocalDate START_OF_YEAR = LocalDate.of(2022, Month.JANUARY, 1);
     /**
      * The area configuration for North Macedonia.
      */
@@ -89,7 +92,7 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
-                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap).build().asString());
+                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, START_OF_YEAR).build().asString());
         map.put(Paths.get("mk", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
         map.put(Paths.get("_js", "internationalization.js"),
@@ -104,7 +107,7 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
-                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent);
+                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, START_OF_YEAR);
         assertEquals(map, builder.build().asMap());
     }
 }

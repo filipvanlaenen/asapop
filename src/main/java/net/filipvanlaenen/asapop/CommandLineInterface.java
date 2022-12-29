@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -156,8 +157,9 @@ public final class CommandLineInterface {
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
                 String navigationScriptContent = readResource("/navigation.js");
+                LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap,
-                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent).build();
+                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, startOfYear).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },

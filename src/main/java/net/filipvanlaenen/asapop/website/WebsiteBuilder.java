@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -26,6 +27,7 @@ public class WebsiteBuilder {
      * The map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
+    private final LocalDate startOfYear;
     /**
      * The internationalization terms.
      */
@@ -48,13 +50,14 @@ public class WebsiteBuilder {
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent,
-            final String customStyleSheetContent, final String navigationScriptContent) {
+            final String customStyleSheetContent, final String navigationScriptContent, final LocalDate startOfYear) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
         this.baseStyleSheetContent = baseStyleSheetContent;
         this.customStyleSheetContent = customStyleSheetContent;
         this.navigationScriptContent = navigationScriptContent;
+        this.startOfYear = startOfYear;
     }
 
     /**
@@ -70,7 +73,8 @@ public class WebsiteBuilder {
         website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
-        website.put("statistics.html", new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap).build());
+        website.put("statistics.html",
+                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, startOfYear).build());
         website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
         website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).build());
         return website;

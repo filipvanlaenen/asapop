@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Html;
 import net.filipvanlaenen.txhtmlj.Section;
+import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.TBody;
 import net.filipvanlaenen.txhtmlj.TD;
 import net.filipvanlaenen.txhtmlj.TH;
@@ -28,6 +30,7 @@ final class StatisticsPageBuilder extends PageBuilder {
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
+    private final LocalDate startOfYear;
 
     /**
      * Constructor taking the website configuration and the map with the opinion polls as its parameter.
@@ -36,9 +39,10 @@ final class StatisticsPageBuilder extends PageBuilder {
      * @param opinionPollsMap      The map with the opinion polls.
      */
     StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
-            final Map<String, OpinionPolls> opinionPollsMap) {
+            final Map<String, OpinionPolls> opinionPollsMap, final LocalDate startOfYear) {
         super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
+        this.startOfYear = startOfYear;
     }
 
     /**
@@ -62,9 +66,24 @@ final class StatisticsPageBuilder extends PageBuilder {
         TR tr = new TR();
         tHead.addElement(tr);
         tr.addElement(new TH(" ").clazz("country"));
-        tr.addElement(new TH(" ").clazz("number-of-opinion-polls"));
-        tr.addElement(new TH(" ").clazz("number-of-response-scenarios"));
-        tr.addElement(new TH(" ").clazz("number-of-result-values"));
+        TH thOpinionPolls = new TH().clazz("number-of-opinion-polls-th");
+        thOpinionPolls.addElement(new Span(" ").clazz("number-of-opinion-polls"));
+        thOpinionPolls.addContent(" (");
+        thOpinionPolls.addElement(new Span(" ").clazz("year-to-date"));
+        thOpinionPolls.addContent(")");
+        tr.addElement(thOpinionPolls);
+        TH thResponseScenarios = new TH().clazz("number-of-response-scenarios-th");
+        thResponseScenarios.addElement(new Span(" ").clazz("number-of-response-scenarios"));
+        thResponseScenarios.addContent(" (");
+        thResponseScenarios.addElement(new Span(" ").clazz("year-to-date"));
+        thResponseScenarios.addContent(")");
+        tr.addElement(thResponseScenarios);
+        TH thResultValue = new TH().clazz("number-of-result-values-th");
+        thResultValue.addElement(new Span(" ").clazz("number-of-result-values"));
+        thResultValue.addContent(" (");
+        thResultValue.addElement(new Span(" ").clazz("year-to-date"));
+        thResultValue.addContent(")");
+        tr.addElement(thResultValue);
         TBody tBody = new TBody();
         table.addElement(tBody);
         TR totalTr = new TR();
@@ -78,8 +97,11 @@ final class StatisticsPageBuilder extends PageBuilder {
             }
         });
         int totalNumberOfOpinionPolls = 0;
+        int totalNumberOfOpinionPollsYtd = 0;
         int totalNumberOfResponseScenarios = 0;
+        int totalNumberOfResponseScenariosYtd = 0;
         int totalNumberOfResultValues = 0;
+        int totalNumberOfResultValuesYtd = 0;
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -90,14 +112,24 @@ final class StatisticsPageBuilder extends PageBuilder {
             if (opinionPollsMap.containsKey(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
+                int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
+                int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
+                int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
                 totalNumberOfOpinionPolls += numberOfOpinionPolls;
+                totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
                 totalNumberOfResponseScenarios += numberOfResponseScenarios;
+                totalNumberOfResponseScenariosYtd += numberOfResponseScenariosYtd;
                 totalNumberOfResultValues += numberOfResultValues;
-                areaTr.addElement(new TD(Integer.toString(numberOfOpinionPolls)).clazz("statistics-value-td"));
-                areaTr.addElement(new TD(Integer.toString(numberOfResponseScenarios)).clazz("statistics-value-td"));
-                areaTr.addElement(new TD(Integer.toString(numberOfResultValues)).clazz("statistics-value-td"));
+                totalNumberOfResultValuesYtd += numberOfResultValuesYtd;
+                areaTr.addElement(new TD(numberAndYearToDateAsText(numberOfOpinionPolls, numberOfOpinionPollsYtd))
+                        .clazz("statistics-value-td"));
+                areaTr.addElement(
+                        new TD(numberAndYearToDateAsText(numberOfResponseScenarios, numberOfResponseScenariosYtd))
+                                .clazz("statistics-value-td"));
+                areaTr.addElement(new TD(numberAndYearToDateAsText(numberOfResultValues, numberOfResultValuesYtd))
+                        .clazz("statistics-value-td"));
             } else {
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -105,10 +137,18 @@ final class StatisticsPageBuilder extends PageBuilder {
             }
         }
         totalTr.addElement(new TD(" ").clazz("total"));
-        totalTr.addElement(new TD(Integer.toString(totalNumberOfOpinionPolls)).clazz("statistics-total-td"));
-        totalTr.addElement(new TD(Integer.toString(totalNumberOfResponseScenarios)).clazz("statistics-total-td"));
-        totalTr.addElement(new TD(Integer.toString(totalNumberOfResultValues)).clazz("statistics-total-td"));
+        totalTr.addElement(new TD(numberAndYearToDateAsText(totalNumberOfOpinionPolls, totalNumberOfOpinionPollsYtd))
+                .clazz("statistics-total-td"));
+        totalTr.addElement(
+                new TD(numberAndYearToDateAsText(totalNumberOfResponseScenarios, totalNumberOfResponseScenariosYtd))
+                        .clazz("statistics-total-td"));
+        totalTr.addElement(new TD(numberAndYearToDateAsText(totalNumberOfResultValues, totalNumberOfResultValuesYtd))
+                .clazz("statistics-total-td"));
         body.addElement(createFooter());
         return html;
+    }
+
+    private String numberAndYearToDateAsText(final int number, final int ytd) {
+        return Integer.toString(number) + " (" + Integer.toString(ytd) + ")";
     }
 }

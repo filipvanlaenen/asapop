@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
 
@@ -34,6 +35,16 @@ public final class OpinionPolls {
         return opinionPolls.size();
     }
 
+    public int getNumberOfOpinionPolls(final LocalDate fromDate) {
+        int result = 0;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            if (!opinionPoll.getEndDate().isBefore(fromDate)) {
+                result += 1;
+            }
+        }
+        return result;
+    }
+
     public int getNumberOfResponseScenarios() {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -42,10 +53,30 @@ public final class OpinionPolls {
         return result;
     }
 
+    public int getNumberOfResponseScenarios(final LocalDate fromDate) {
+        int result = 0;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            if (!opinionPoll.getEndDate().isBefore(fromDate)) {
+                result += opinionPoll.getNumberOfResponseScenarios();
+            }
+        }
+        return result;
+    }
+
     public int getNumberOfResultValues() {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
             result += opinionPoll.getNumberOfResultValues();
+        }
+        return result;
+    }
+
+    public int getNumberOfResultValues(final LocalDate fromDate) {
+        int result = 0;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            if (!opinionPoll.getEndDate().isBefore(fromDate)) {
+                result += opinionPoll.getNumberOfResultValues();
+            }
         }
         return result;
     }

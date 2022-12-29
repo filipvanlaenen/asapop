@@ -228,3 +228,11 @@ terms:
       fr: "Prochaines élections"
       nl: "Komende verkiezingen"
       no: "Kommende valg"
+  - key: "year-to-date"
+    translations:
+      de: "year-to-date"
+      en: "Year-to-date"
+      eo: "ĝis nun ĉi-jare"
+      fr: "année à ce jour"
+      nl: "year-to-date"
+      no: "hittil i år"
