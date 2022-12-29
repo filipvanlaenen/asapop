@@ -33,4 +33,20 @@ public final class OpinionPolls {
     public int getNumberOfOpinionPolls() {
         return opinionPolls.size();
     }
+
+    public int getNumberOfResponseScenarios() {
+        int result = 0;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            result += opinionPoll.getNumberOfResponseScenarios();
+        }
+        return result;
+    }
+
+    public int getNumberOfResultValues() {
+        int result = 0;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            result += opinionPoll.getNumberOfResultValues();
+        }
+        return result;
+    }
 }

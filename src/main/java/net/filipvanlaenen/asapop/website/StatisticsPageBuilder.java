@@ -77,7 +77,9 @@ final class StatisticsPageBuilder extends PageBuilder {
                 return ac0.getAreaCode().compareTo(ac1.getAreaCode());
             }
         });
-        int numberOfOpinionPolls = 0;
+        int totalNumberOfOpinionPolls = 0;
+        int totalNumberOfResponseScenarios = 0;
+        int totalNumberOfResultValues = 0;
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -87,20 +89,25 @@ final class StatisticsPageBuilder extends PageBuilder {
             tdAreaName.addElement(new A(" ").clazz("_area_" + areaCode).href(areaCode + "/index.html"));
             if (opinionPollsMap.containsKey(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
-                numberOfOpinionPolls += opinionPolls.getNumberOfOpinionPolls();
-                areaTr.addElement(new TD(Integer.toString(opinionPolls.getNumberOfOpinionPolls())).clazz("statistics-value-td"));
-                areaTr.addElement(new TD(" ").clazz("statistics-value-td"));
-                areaTr.addElement(new TD(" ").clazz("statistics-value-td"));
+                int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
+                int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
+                int numberOfResultValues = opinionPolls.getNumberOfResultValues();
+                totalNumberOfOpinionPolls += numberOfOpinionPolls;
+                totalNumberOfResponseScenarios += numberOfResponseScenarios;
+                totalNumberOfResultValues += numberOfResultValues;
+                areaTr.addElement(new TD(Integer.toString(numberOfOpinionPolls)).clazz("statistics-value-td"));
+                areaTr.addElement(new TD(Integer.toString(numberOfResponseScenarios)).clazz("statistics-value-td"));
+                areaTr.addElement(new TD(Integer.toString(numberOfResultValues)).clazz("statistics-value-td"));
             } else {
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
             }
-        }        
+        }
         totalTr.addElement(new TD(" ").clazz("total"));
-        totalTr.addElement(new TD(Integer.toString(numberOfOpinionPolls)).clazz("statistics-total-td"));
-        totalTr.addElement(new TD(" ").clazz("statistics-total-td"));
-        totalTr.addElement(new TD(" ").clazz("statistics-total-td"));
+        totalTr.addElement(new TD(Integer.toString(totalNumberOfOpinionPolls)).clazz("statistics-total-td"));
+        totalTr.addElement(new TD(Integer.toString(totalNumberOfResponseScenarios)).clazz("statistics-total-td"));
+        totalTr.addElement(new TD(Integer.toString(totalNumberOfResultValues)).clazz("statistics-total-td"));
         body.addElement(createFooter());
         return html;
     }

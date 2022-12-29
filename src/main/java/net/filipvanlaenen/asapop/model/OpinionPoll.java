@@ -533,6 +533,18 @@ public final class OpinionPoll {
         return noResponses;
     }
 
+    public int getNumberOfResponseScenarios() {
+        return 1 + alternativeResponseScenarios.size();
+    }
+
+    public int getNumberOfResultValues() {
+        int result = mainResponseScenario.getResults().size();
+        for (ResponseScenario responseScenario : alternativeResponseScenarios) {
+            result += responseScenario.getResults().size();
+        }
+        return result;
+    }
+
     /**
      * Returns the result for other.
      *
