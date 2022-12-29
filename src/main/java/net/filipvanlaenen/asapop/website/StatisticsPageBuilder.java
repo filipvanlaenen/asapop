@@ -41,6 +41,9 @@ final class StatisticsPageBuilder extends PageBuilder {
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
+    /**
+     * The start of the year.
+     */
     private final LocalDate startOfYear;
 
     /**
@@ -48,6 +51,7 @@ final class StatisticsPageBuilder extends PageBuilder {
      *
      * @param websiteConfiguration The website configuration.
      * @param opinionPollsMap      The map with the opinion polls.
+     * @param startOfYear          The start of the year.
      */
     StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
             final Map<String, OpinionPolls> opinionPollsMap, final LocalDate startOfYear) {
@@ -158,6 +162,13 @@ final class StatisticsPageBuilder extends PageBuilder {
         return html;
     }
 
+    /**
+     * Creates a TD element with a number and its year-to-date number.
+     *
+     * @param number The number to be included in a TD elemement.
+     * @param ytd    The year-to-date number to be included in a TD element.
+     * @return A TD element with a number and its year-to-date number.
+     */
     private TD createNumberAndYearToDateTd(final int number, final int ytd) {
         TD td = new TD();
         String text = INTEGER_FORMAT.format(number) + " (" + INTEGER_FORMAT.format(ytd) + ")";
