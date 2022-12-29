@@ -29,4 +29,8 @@ public final class OpinionPolls {
     public Set<OpinionPoll> getOpinionPolls() {
         return opinionPolls;
     }
+
+    public int getNumberOfOpinionPolls() {
+        return opinionPolls.size();
+    }
 }

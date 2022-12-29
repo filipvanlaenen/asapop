@@ -43,7 +43,11 @@ abstract class PageBuilder {
         /**
          * Link to the main page.
          */
-        INDEX("main-page", "index.html");
+        INDEX("main-page", "index.html"),
+        /**
+         * Link to the statistics page.
+         */
+        STATISTICS("statistics-page", "statistics.html");
 
         /**
          * The string value for the class attribute.
@@ -212,6 +216,8 @@ abstract class PageBuilder {
         right.addElement(HeaderLink.ELECTORAL_CALENDAR.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
         right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage, relativePath));
+        right.addContent(" · ");
+        right.addElement(HeaderLink.STATISTICS.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
         right.addElement(new Span(" ").clazz("language"));
         right.addContent(": ");

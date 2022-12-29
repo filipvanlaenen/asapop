@@ -70,7 +70,8 @@ public class IndexPageBuilderTest {
         expected.append("  <option> </option>\n");
         expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
-                + " class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"language\"> </span>: <select"
+                + " class=\"csv-files\" href=\"csv.html\"> </a> · <a class=\"statistics-page\""
+                + " href=\"statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
                 + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");

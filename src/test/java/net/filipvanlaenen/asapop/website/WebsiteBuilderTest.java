@@ -88,6 +88,8 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
+        map.put(Paths.get("statistics.html"),
+                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap).build().asString());
         map.put(Paths.get("mk", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
         map.put(Paths.get("_js", "internationalization.js"),

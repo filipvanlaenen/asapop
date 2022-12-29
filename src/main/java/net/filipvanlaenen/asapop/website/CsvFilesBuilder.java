@@ -30,7 +30,7 @@ public class CsvFilesBuilder {
     private final WebsiteConfiguration websiteConfiguration;
 
     /**
-     * Constructor taking the map with the opinion polls as its parameter.
+     * Constructor taking the website configuration and the map with the opinion polls as its parameter.
      *
      * @param websiteConfiguration The website configuration.
      * @param opinionPollsMap      The map with the opinion polls.

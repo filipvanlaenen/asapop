@@ -75,8 +75,9 @@ public class CsvFilesPageBuilderTest {
         expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
         expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <span"
-                + " class=\"csv-files\"> </span> · <span class=\"language\"> </span>: <select"
-                + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+                + " class=\"csv-files\"> </span> · <a class=\"statistics-page\" href=\"statistics.html\"> </a> ·"
+                + " <span class=\"language\"> </span>: <select id=\"language-selector\""
+                + " onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");

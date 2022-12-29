@@ -60,7 +60,7 @@ public class WebsiteBuilder {
     /**
      * Builds the website.
      *
-     * @return The website
+     * @return The website.
      */
     public Website build() {
         Website website = new Website();
@@ -70,6 +70,7 @@ public class WebsiteBuilder {
         website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
+        website.put("statistics.html", new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap).build());
         website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
         website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).build());
         return website;

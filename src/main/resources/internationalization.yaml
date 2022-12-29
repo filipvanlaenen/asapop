@@ -172,6 +172,22 @@ terms:
       fr: "Date de publication"
       nl: "Publicatiedatum"
       no: "Publiseringsdato"
+  - key: "statistics"
+    translations:
+      de: "Statistiken"
+      en: "Statistics"
+      eo: "Statistikoj"
+      fr: "Statistiques"
+      nl: "Statistieken"
+      no: "Statistikkene"
+  - key: "statistics-page"
+    translations:
+      de: "Statistiken"
+      en: "Statistics"
+      eo: "Statistikoj"
+      fr: "Statistiques"
+      nl: "Statistieken"
+      no: "Statistikkene"
   - key: "upcoming-elections"
     translations:
       de: "Künftige Wahlen"
