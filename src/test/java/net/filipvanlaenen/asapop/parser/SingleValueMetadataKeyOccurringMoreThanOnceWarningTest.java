@@ -91,7 +91,8 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void singleValueMetadataKeyOccurredMoreThanOnceWithDifferentLineNumbersShouldHaveDifferentHashCodes() {
-        assertFalse(WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnceWarning(2, "a").hashCode());
+        assertFalse(
+                WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnceWarning(2, "a").hashCode());
     }
 
     /**
@@ -109,6 +110,7 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void singleValueMetadataKeyOccurredMoreThanOnceWithDifferentMetadataKeysShouldHaveDifferentHashCodes() {
-        assertFalse(WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "b").hashCode());
+        assertFalse(
+                WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "b").hashCode());
     }
 }

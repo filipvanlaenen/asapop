@@ -218,4 +218,53 @@ public final class ResponseScenarioLineTest {
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
+    /**
+     * Verifies that a line adding the area twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenAreaIsAddedTwice() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •A: A •A: A A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "A"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding no responses twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding other twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenOtherIsAddedTwice() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •O: 12 •O: 12 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding scope twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenScopeIsAddedTwice() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SC: N •SC: N A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SC"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding sample size twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenSampleSizeIsAddedTwice() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 1000 •SS: 1000 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SS"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
 }

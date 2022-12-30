@@ -359,4 +359,120 @@ public final class OpinionPollLineTest {
         Set<ParserWarning> expected = Set.of(new PollingFirmAndCommissionerMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
+
+    /**
+     * Verifies that a line adding the area twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenAreaIsAddedTwice() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: A •A: A A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "A"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding excluded twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenExcludedIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 12 •EX: 12 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "EX"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding fieldwork end twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenFieldworkEndIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 •FE: 2021-07-27 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "FE"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding fieldwork start twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenFieldworkStartIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 •FS: 2021-07-27 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "FS"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding no responses twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding other twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenOtherIsAddedTwice() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding publication date twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenPublicationDateIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •PD: 2021-07-27 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PD"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding polling firm twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenPollingFirmIsAddedTwice() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PF: ACME •PD: 2021-07-27 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PF"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding polling firm partner twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenPollingFirmPartnerIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PFP: BCME •PFP: BCME •PD: 2021-07-27 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PFP"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding scope twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenScopeIsAddedTwice() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N •SC: N A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SC"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding sample size twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenSampleSizeIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 •SS: 1000 A:55 B:45", 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SS"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
 }
