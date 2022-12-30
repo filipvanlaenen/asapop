@@ -80,8 +80,7 @@ public class UnknownMetadataKeyWarningTest {
     }
 
     /**
-     * Verifies that two different unknown metadata key warnings with different line numbers have different hash
-     * codes.
+     * Verifies that two different unknown metadata key warnings with different line numbers have different hash codes.
      */
     @Test
     public void twoDifferentUnknownMetadataKeyWarningsWithDifferentLineNumbersShouldHaveDifferentHashCodes() {
@@ -97,12 +96,10 @@ public class UnknownMetadataKeyWarningTest {
     }
 
     /**
-     * Verifies that two different unknown metadata key warnings with different metadata keys have different hash
-     * codes.
+     * Verifies that two different unknown metadata key warnings with different metadata keys have different hash codes.
      */
     @Test
     public void twoDifferentUnknownMetadataKeyWarningsWithDifferentMetadataKeysShouldHaveDifferentHashCodes() {
         assertFalse(WARNING_1_A.hashCode() == new UnknownMetadataKeyWarning(1, "b").hashCode());
     }
-
 }

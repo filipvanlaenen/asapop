@@ -24,7 +24,7 @@ final class SingleValueMetadataKeyOccurringMoreThanOnce extends ParserWarning {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof UnknownMetadataKeyWarning) {
+        if (obj instanceof SingleValueMetadataKeyOccurringMoreThanOnce) {
             SingleValueMetadataKeyOccurringMoreThanOnce otherWarning =
                     (SingleValueMetadataKeyOccurringMoreThanOnce) obj;
             return otherWarning.getLineNumber() == getLineNumber() && otherWarning.metadataKey.equals(metadataKey);
