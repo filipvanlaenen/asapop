@@ -120,6 +120,14 @@ terms:
       fr: "Au plus tard"
       nl: "Niet later dan"
       no: "Senest"
+  - key: "no-later-than-around"
+    translations:
+      de: "Spätestens etwa"
+      en: "No later than around"
+      eo: "Ne pli malfrue ol ĉirkaŭ"
+      fr: "Au plus tard environ"
+      nl: "Niet later dan omtrent"
+      no: "Senest omtrent"
   - key: "none"
     translations:
       de: "Keine"

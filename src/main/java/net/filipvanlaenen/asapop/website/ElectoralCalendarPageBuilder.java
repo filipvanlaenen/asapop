@@ -146,7 +146,10 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
             ExpectedDate nextElectionDate = entry.getNextElectionDate();
             TD cell = new TD();
             areaTr.addElement(cell);
-            if (nextElectionDate.isApproximate()) {
+            if (nextElectionDate.isApproximate() && nextElectionDate.isDeadline()) {
+                cell.addElement(new Span(" ").clazz("no-later-than-around"));
+                cell.addContent(" ");
+            } else if (nextElectionDate.isApproximate()) {
                 cell.addElement(new Span(" ").clazz("around"));
                 cell.addContent(" ");
             } else if (nextElectionDate.isDeadline()) {

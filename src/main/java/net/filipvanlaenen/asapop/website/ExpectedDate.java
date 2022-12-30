@@ -138,6 +138,8 @@ abstract class ExpectedDate {
             return parseDate(text.substring(1), true, false);
         } else if (text.startsWith("≤")) {
             return parseDate(text.substring(1), false, true);
+        } else if (text.startsWith("⪅")) {
+            return parseDate(text.substring(1), true, true);
         } else {
             return parseDate(text, false, false);
         }

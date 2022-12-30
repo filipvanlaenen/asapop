@@ -264,7 +264,7 @@ areaConfigurations:
     - "NQ"
     - "SA"
   electionConfigurations:
-  - nextElectionDate: "≤2025-04-06"
+  - nextElectionDate: "⪅2025-04-06"
     type: Parliament
   translations:
     de: "Grönland"
@@ -276,8 +276,9 @@ areaConfigurations:
 ```
 
 Notice that the field ``nextElectionDate`` doesn't need to contain a complete date (``YYYY-MM-DD``): a month
-(``YYYY-MM``) or a year (``YYYY``) already suffice. In addition, the date can be preceded by ``≤`` (no later than) or
-``≈`` (approximate date) to indicate further uncertainty about when the next election will take place.
+(``YYYY-MM``) or a year (``YYYY``) already suffice. In addition, the date can be preceded by ``≤`` (no later than),
+``≈`` (approximate date) or ``⪅`` (no later than approximate date) to indicate further uncertainty about when the next
+election will take place.
 
 ## Conversion from ROPF to CSV
 
