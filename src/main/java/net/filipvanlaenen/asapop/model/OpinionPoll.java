@@ -219,13 +219,41 @@ public final class OpinionPoll {
             return new OpinionPoll(this);
         }
 
+        public boolean hasArea() {
+            return area != null;
+        }
+
         /**
          * Returns whether any date has been registered in this builder instance.
          *
          * @return True if at least one date has been registered in this builder instance.
          */
         public boolean hasDates() {
-            return fieldworkEnd != null || fieldworkStart != null || publicationDate != null;
+            return hasFieldworkEnd() || hasFieldworkStart() || hasPublicationDate();
+        }
+
+        public boolean hasExcluded() {
+            return excluded != null;
+        }
+
+        public boolean hasFieldworkEnd() {
+            return fieldworkEnd != null;
+        }
+
+        public boolean hasFieldworkStart() {
+            return fieldworkStart != null;
+        }
+
+        public boolean hasNoResponses() {
+            return noResponses != null;
+        }
+
+        public boolean hasOther() {
+            return responseScenarioBuilder.hasOther();
+        }
+
+        public boolean hasPollingFirm() {
+            return pollingFirm != null;
         }
 
         /**
@@ -234,7 +262,15 @@ public final class OpinionPoll {
          * @return True if a polling firm or a commissioner has been registered in this builder instance.
          */
         public boolean hasPollingFirmOrCommissioner() {
-            return pollingFirm != null || !commissioners.isEmpty();
+            return hasPollingFirm() || !commissioners.isEmpty();
+        }
+
+        public boolean hasPollingFirmPartner() {
+            return pollingFirmPartner != null;
+        }
+
+        public boolean hasPublicationDate() {
+            return publicationDate != null;
         }
 
         /**
@@ -244,6 +280,14 @@ public final class OpinionPoll {
          */
         public boolean hasResults() {
             return responseScenarioBuilder.hasResults();
+        }
+
+        public boolean hasSampleSize() {
+            return sampleSize != null;
+        }
+
+        public boolean hasScope() {
+            return scope != null;
         }
 
         /**

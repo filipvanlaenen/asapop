@@ -140,28 +140,48 @@ final class ResponseScenarioLine extends Line {
         String value = keyValueMatcher.group(2);
         switch (key) {
         case "A":
-            builder.setArea(value);
+            if (builder.hasArea()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+            } else {
+                builder.setArea(value);
+            }
             break;
         case "N":
-            ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
-            warnings.addAll(noResponse.getWarnings());
-            builder.setNoResponses(noResponse.getValue());
+            if (builder.hasNoResponses()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+            } else {
+                ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
+                warnings.addAll(noResponse.getWarnings());
+                builder.setNoResponses(noResponse.getValue());
+            }
             break;
         case "O":
-            ResultValueText other = ResultValueText.parse(value, lineNumber);
-            warnings.addAll(other.getWarnings());
-            builder.setOther(other.getValue());
+            if (builder.hasOther()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+            } else {
+                ResultValueText other = ResultValueText.parse(value, lineNumber);
+                warnings.addAll(other.getWarnings());
+                builder.setOther(other.getValue());
+            }
             break;
         case "SC":
-            Scope scope = parseScope(value);
-            if (scope == null) {
-                warnings.add(new UnknownScopeValueWarning(lineNumber, value));
+            if (builder.hasScope()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
             } else {
-                builder.setScope(scope);
+                Scope scope = parseScope(value);
+                if (scope == null) {
+                    warnings.add(new UnknownScopeValueWarning(lineNumber, value));
+                } else {
+                    builder.setScope(scope);
+                }
             }
             break;
         case "SS":
-            builder.setSampleSize(value);
+            if (builder.hasSampleSize()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+            } else {
+                builder.setSampleSize(value);
+            }
             break;
         default:
             warnings.add(new UnknownMetadataKeyWarning(lineNumber, key));

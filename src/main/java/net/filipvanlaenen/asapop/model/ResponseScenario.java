@@ -122,6 +122,18 @@ public final class ResponseScenario {
             return new ResponseScenario(this);
         }
 
+        public boolean hasArea() {
+            return area != null;
+        }
+
+        public boolean hasNoResponses() {
+            return noResponses != null;
+        }
+
+        public boolean hasOther() {
+            return other != null;
+        }
+
         /**
          * Returns whether any results have been registered in this builder instance.
          *
@@ -129,6 +141,14 @@ public final class ResponseScenario {
          */
         public boolean hasResults() {
             return !results.isEmpty();
+        }
+
+        public boolean hasSampleSize() {
+            return sampleSize != null;
+        }
+
+        public boolean hasScope() {
+            return scope != null;
         }
 
         /**
