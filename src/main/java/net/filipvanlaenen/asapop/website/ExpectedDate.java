@@ -8,20 +8,50 @@ import java.time.format.DateTimeParseException;
 
 /**
  * Class modeling an expected date, which can be a date (<code>LocalDate</code>), a month (<code>YearMonth</code>) or a
- * year (<code>Year</code>), possibly with the modifier that it's approximate or a deadline.
+ * year (<code>Year</code>), with a qualifier.
  */
 abstract class ExpectedDate {
-    enum Qualifier {
-        EXACT_DATE(null), DEADLINE("no-later-than"), APPROXIMATE_DEADLINE("no-later-than-around"),
+    /**
+     * Enumeration modeling the qualifier for the date.
+     */
+    private enum Qualifier {
+        /**
+         * An exact date.
+         */
+        EXACT_DATE(null),
+        /**
+         * A deadline.
+         */
+        DEADLINE("no-later-than"),
+        /**
+         * An approximate deadline.
+         */
+        APPROXIMATE_DEADLINE("no-later-than-around"),
+        /**
+         * An approximate date.
+         */
         APPROXIMATE_DATE("around");
 
+        /**
+         * The term key corresponding to the qualifier.
+         */
         private final String termKey;
 
+        /**
+         * Constructor taking the term key as its parameter.
+         *
+         * @param termKey The term key for the qualifier.
+         */
         Qualifier(final String termKey) {
             this.termKey = termKey;
         }
 
-        String getTermKey() {
+        /**
+         * Returns the term key for the qualifier.
+         *
+         * @return The term key for the qualifier.
+         */
+        private String getTermKey() {
             return termKey;
         }
     }
@@ -36,11 +66,10 @@ abstract class ExpectedDate {
         private final LocalDate date;
 
         /**
-         * Constructor taking the date as its parameter in addition to whether it's an approximate date or a deadline.
+         * Constructor taking the date as its parameter in addition to a qualifier.
          *
-         * @param date        The date.
-         * @param approximate True if the date is approximate.
-         * @param deadline    True if the date is a deadline.
+         * @param date      The date.
+         * @param qualifier The qualifier for the date.
          */
         private ExpectedDay(final LocalDate date, final Qualifier qualifier) {
             super(qualifier);
@@ -68,11 +97,10 @@ abstract class ExpectedDate {
         private final YearMonth month;
 
         /**
-         * Constructor taking the month as its parameter in addition to whether it's an approximate date or a deadline.
+         * Constructor taking the month as its parameter in addition to a qualifier.
          *
-         * @param month       The month.
-         * @param approximate True if the month is approximate.
-         * @param deadline    True if the month is a deadline.
+         * @param month     The month.
+         * @param qualifier The qualifier for the date.
          */
         private ExpectedMonth(final YearMonth month, final Qualifier qualifier) {
             super(qualifier);
@@ -100,11 +128,10 @@ abstract class ExpectedDate {
         private final Year year;
 
         /**
-         * Constructor taking the year as its parameter in addition to whether it's an approximate date or a deadline.
+         * Constructor taking the year as its parameter in addition to a qualifier.
          *
-         * @param year        The year.
-         * @param approximate True if the year is approximate.
-         * @param deadline    True if the year is a deadline.
+         * @param year      The year.
+         * @param qualifier The qualifier for the date.
          */
         private ExpectedYear(final Year year, final Qualifier qualifier) {
             super(qualifier);
@@ -128,10 +155,9 @@ abstract class ExpectedDate {
     private final Qualifier qualifier;
 
     /**
-     * Constructor taking whether the expected date is an approximate date or a deadline as its parameters.
+     * Constructor taking a qualifier as its parameter.
      *
-     * @param approximate True if the year is approximate.
-     * @param deadline    True if the year is a deadline.
+     * @param qualifier The qualifier for the date.
      */
     private ExpectedDate(final Qualifier qualifier) {
         this.qualifier = qualifier;
@@ -156,12 +182,10 @@ abstract class ExpectedDate {
     }
 
     /**
-     * Creates an instance of the appropriate subclass based on the provided text, also passing on whether the date is
-     * approximate or a deadline.
+     * Creates an instance of the appropriate subclass based on the provided text, also passing on the qualifier.
      *
-     * @param text        The text to be parsed for a date.
-     * @param approximate True if the date is approximate.
-     * @param deadline    True if the date is a deadline.
+     * @param text      The text to be parsed for a date.
+     * @param qualifier The qualifier for the date.
      * @return An instance of the appropriate subclass.
      */
     private static ExpectedDate parseDate(final String text, final Qualifier qualifier) {
@@ -179,7 +203,8 @@ abstract class ExpectedDate {
     /**
      * Compares this expected date to another expected date. In principle, the end date decides which date is greater
      * than the other. If the end dates are equal, days are less than months, and months less than years. Within the
-     * same subclass, exact dates are less than deadlines, and deadlines are less than approximate dates.
+     * same subclass, exact dates are less than deadlines, deadlines less than approximate deadlines, and approximate
+     * deadlines are less than approximate dates.
      *
      * @param other The expected date to compare this expected date to.
      * @return A negative number if this instance is less than the other instance, a positive number if it is greater,
@@ -220,6 +245,11 @@ abstract class ExpectedDate {
      */
     protected abstract LocalDate getEndDate();
 
+    /**
+     * Returns the term key according to the qualifier, or <code>null</code> for exact dates.
+     *
+     * @return The term key according to the qualifier, or <code>null</code> for exact dates.
+     */
     String getQualifierTermKey() {
         return qualifier.getTermKey();
     }
