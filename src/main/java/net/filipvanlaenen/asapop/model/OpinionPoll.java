@@ -219,6 +219,11 @@ public final class OpinionPoll {
             return new OpinionPoll(this);
         }
 
+        /**
+         * Returns whether an area has been registered in this builder instance.
+         *
+         * @return True if an area has been registered in this builder instance.
+         */
         public boolean hasArea() {
             return area != null;
         }
@@ -232,26 +237,56 @@ public final class OpinionPoll {
             return hasFieldworkEnd() || hasFieldworkStart() || hasPublicationDate();
         }
 
+        /**
+         * Returns whether excluded has been registered in this builder instance.
+         *
+         * @return True if excluded has been registered in this builder instance.
+         */
         public boolean hasExcluded() {
             return excluded != null;
         }
 
+        /**
+         * Returns whether a fieldwork end has been registered in this builder instance.
+         *
+         * @return True if a fieldwork end has been registered in this builder instance.
+         */
         public boolean hasFieldworkEnd() {
             return fieldworkEnd != null;
         }
 
+        /**
+         * Returns whether a fieldwork start has been registered in this builder instance.
+         *
+         * @return True if a fieldwork start has been registered in this builder instance.
+         */
         public boolean hasFieldworkStart() {
             return fieldworkStart != null;
         }
 
+        /**
+         * Returns whether no responses has been registered in this builder instance.
+         *
+         * @return True if no responses has been registered in this builder instance.
+         */
         public boolean hasNoResponses() {
             return noResponses != null;
         }
 
+        /**
+         * Returns whether other has been registered in this builder instance.
+         *
+         * @return True if other has been registered in this builder instance.
+         */
         public boolean hasOther() {
             return responseScenarioBuilder.hasOther();
         }
 
+        /**
+         * Returns whether a polling firm has been registered in this builder instance.
+         *
+         * @return True if a polling firm has been registered in this builder instance.
+         */
         public boolean hasPollingFirm() {
             return pollingFirm != null;
         }
@@ -265,10 +300,20 @@ public final class OpinionPoll {
             return hasPollingFirm() || !commissioners.isEmpty();
         }
 
+        /**
+         * Returns whether a polling firm partner has been registered in this builder instance.
+         *
+         * @return True if a polling firm partner has been registered in this builder instance.
+         */
         public boolean hasPollingFirmPartner() {
             return pollingFirmPartner != null;
         }
 
+        /**
+         * Returns whether a publication date has been registered in this builder instance.
+         *
+         * @return True if a publication date has been registered in this builder instance.
+         */
         public boolean hasPublicationDate() {
             return publicationDate != null;
         }
@@ -282,10 +327,20 @@ public final class OpinionPoll {
             return responseScenarioBuilder.hasResults();
         }
 
+        /**
+         * Returns whether a sample size has been registered in this builder instance.
+         *
+         * @return True if a sample size has been registered in this builder instance.
+         */
         public boolean hasSampleSize() {
             return sampleSize != null;
         }
 
+        /**
+         * Returns whether a scope has been registered in this builder instance.
+         *
+         * @return True if a scope has been registered in this builder instance.
+         */
         public boolean hasScope() {
             return scope != null;
         }

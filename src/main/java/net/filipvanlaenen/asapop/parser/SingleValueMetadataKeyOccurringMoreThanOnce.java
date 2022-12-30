@@ -2,6 +2,9 @@ package net.filipvanlaenen.asapop.parser;
 
 import java.util.Objects;
 
+/**
+ * A warning about a single value metadata key occurring more than once.
+ */
 final class SingleValueMetadataKeyOccurringMoreThanOnce extends ParserWarning {
     /**
      * The single value metadata key occurring more than once.

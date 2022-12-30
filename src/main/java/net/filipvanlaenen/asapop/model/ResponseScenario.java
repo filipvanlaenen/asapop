@@ -122,14 +122,29 @@ public final class ResponseScenario {
             return new ResponseScenario(this);
         }
 
+        /**
+         * Returns whether an area has been registered in this builder instance.
+         *
+         * @return True if an area has been registered in this builder instance.
+         */
         public boolean hasArea() {
             return area != null;
         }
 
+        /**
+         * Returns whether no responses has been registered in this builder instance.
+         *
+         * @return True if no responses has been registered in this builder instance.
+         */
         public boolean hasNoResponses() {
             return noResponses != null;
         }
 
+        /**
+         * Returns whether other has been registered in this builder instance.
+         *
+         * @return True if other has been registered in this builder instance.
+         */
         public boolean hasOther() {
             return other != null;
         }
@@ -143,10 +158,20 @@ public final class ResponseScenario {
             return !results.isEmpty();
         }
 
+        /**
+         * Returns whether a sample size has been registered in this builder instance.
+         *
+         * @return True if a sample size has been registered in this builder instance.
+         */
         public boolean hasSampleSize() {
             return sampleSize != null;
         }
 
+        /**
+         * Returns whether a scope has been registered in this builder instance.
+         *
+         * @return True if a scope has been registered in this builder instance.
+         */
         public boolean hasScope() {
             return scope != null;
         }
