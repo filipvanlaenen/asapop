@@ -294,11 +294,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 LI li = new LI();
                 ul.addElement(li);
                 ExpectedDate nextElectionDate = entry.getNextElectionDate();
-                if (nextElectionDate.isApproximate()) {
-                    li.addElement(new Span(" ").clazz("around"));
-                    li.addContent(" ");
-                } else if (nextElectionDate.isDeadline()) {
-                    li.addElement(new Span(" ").clazz("no-later-than"));
+                String qualifierClass = nextElectionDate.getQualifierTermKey();
+                if (qualifierClass != null) {
+                    li.addElement(new Span(" ").clazz(qualifierClass));
                     li.addContent(" ");
                 }
                 li.addContent(nextElectionDate.getDateString());

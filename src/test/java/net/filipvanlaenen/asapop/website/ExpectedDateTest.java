@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -78,51 +79,35 @@ public class ExpectedDateTest {
     }
 
     /**
-     * Verifies that an exact date is not approximate.
+     * Verifies that an exact date has no qualifier term key.
      */
     @Test
-    public void exactDateShouldNotBeApproximate() {
-        assertFalse(ExpectedDate.parse("2022-10-16").isApproximate());
+    public void exactDateShouldNotHaveQualifierTermKey() {
+        assertNull(ExpectedDate.parse("2022-10-16").getQualifierTermKey());
     }
 
     /**
-     * Verifies that an approximate date is approximate.
+     * Verifies that an approximate date has the qualifier term key <code>around</code>.
      */
     @Test
-    public void approximateDateShouldBeApproximate() {
-        assertTrue(ExpectedDate.parse("≈2022-10-16").isApproximate());
+    public void approximateDateShouldHaveQualifierTermKeyAround() {
+        assertEquals("around", ExpectedDate.parse("≈2022-10-16").getQualifierTermKey());
     }
 
     /**
-     * Verifies that a deadline is not approximate.
+     * Verifies that a deadline has the qualifier term key <code>no-later-than</code>..
      */
     @Test
-    public void deadlineShouldNotBeApproximate() {
-        assertFalse(ExpectedDate.parse("≤2022-10-16").isApproximate());
+    public void deadlineShouldHaveQualifierTermKeyNoLaterThan() {
+        assertEquals("no-later-than", ExpectedDate.parse("≤2022-10-16").getQualifierTermKey());
     }
 
     /**
-     * Verifies that an exact date is not da eadline.
+     * Verifies that an approximate deadline has the qualifier term key <code>no-later-than-around</code>..
      */
     @Test
-    public void exactDateShouldNotBeADeadline() {
-        assertFalse(ExpectedDate.parse("2022-10-16").isDeadline());
-    }
-
-    /**
-     * Verifies that an approximate date is not a deadline.
-     */
-    @Test
-    public void approximateDateShouldNotBeADeadline() {
-        assertFalse(ExpectedDate.parse("≈2022-10-16").isDeadline());
-    }
-
-    /**
-     * Verifies that a deadline is deadline.
-     */
-    @Test
-    public void deadlineShouldBeDeadline() {
-        assertTrue(ExpectedDate.parse("≤2022-10-16").isDeadline());
+    public void approximateDeadlineShouldHaveQualifierTermKeyNoLaterThanAround() {
+        assertEquals("no-later-than-around", ExpectedDate.parse("⪅2022-10-16").getQualifierTermKey());
     }
 
     /**
@@ -243,5 +228,53 @@ public class ExpectedDateTest {
     @Test
     public void deadlineShouldBeLessThanApproximateDate() {
         assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("≈2022-10-16")) < 0);
+    }
+
+    /**
+     * Verifies that an exact date is less than an approximate deadline.
+     */
+    @Test
+    public void exactDateShouldBeLessThanApproximateDeadline() {
+        assertTrue(ExpectedDate.parse("2022-10-16").compareTo(ExpectedDate.parse("⪅2022-10-16")) < 0);
+    }
+
+    /**
+     * Verifies that an approximate deadline is greater than an exact date.
+     */
+    @Test
+    public void approximateDeadlineShouldBeGreaterThanExactDate() {
+        assertTrue(ExpectedDate.parse("⪅2022-10-16").compareTo(ExpectedDate.parse("2022-10-16")) > 0);
+    }
+
+    /**
+     * Verifies that an approximate deadline is greater than a deadline.
+     */
+    @Test
+    public void approximateDeadlineShouldBeGreaterThanADeadline() {
+        assertTrue(ExpectedDate.parse("⪅2022-10-16").compareTo(ExpectedDate.parse("≤2022-10-16")) > 0);
+    }
+
+    /**
+     * Verifies that a deadline is less than an approximate deadline.
+     */
+    @Test
+    public void deadlineShouldBeLessThanApproximateDeadline() {
+        assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("⪅2022-10-16")) < 0);
+    }
+
+    /**
+     * Verifies that an approximate date is greater than an approximate deadline.
+     */
+    @Test
+    public void approximateDateShouldBeGreaterThanApproximateDeadline() {
+        assertTrue(ExpectedDate.parse("≈2022-10-16").compareTo(ExpectedDate.parse("⪅2022-10-16")) > 0);
+    }
+
+    /**
+     * Verifies that an approximate deadline is less than an approximate date.
+     */
+    @Test
+    public void approximateDeadlineShouldBeLessThanApproximateDate() {
+        assertTrue(ExpectedDate.parse("⪅2022-10-16").compareTo(ExpectedDate.parse("≈2022-10-16")) < 0);
     }
 }
