@@ -141,14 +141,14 @@ final class ResponseScenarioLine extends Line {
         switch (key) {
         case "A":
             if (builder.hasArea()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setArea(value);
             }
             break;
         case "N":
             if (builder.hasNoResponses()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
                 warnings.addAll(noResponse.getWarnings());
@@ -157,7 +157,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "O":
             if (builder.hasOther()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 ResultValueText other = ResultValueText.parse(value, lineNumber);
                 warnings.addAll(other.getWarnings());
@@ -166,7 +166,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "SC":
             if (builder.hasScope()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 Scope scope = parseScope(value);
                 if (scope == null) {
@@ -178,7 +178,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "SS":
             if (builder.hasSampleSize()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setSampleSize(value);
             }

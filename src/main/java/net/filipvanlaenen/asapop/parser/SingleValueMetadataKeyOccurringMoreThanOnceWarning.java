@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A warning about a single value metadata key occurring more than once.
  */
-final class SingleValueMetadataKeyOccurringMoreThanOnce extends ParserWarning {
+final class SingleValueMetadataKeyOccurringMoreThanOnceWarning extends ParserWarning {
     /**
      * The single value metadata key occurring more than once.
      */
@@ -17,16 +17,16 @@ final class SingleValueMetadataKeyOccurringMoreThanOnce extends ParserWarning {
      * @param lineNumber  The number of the line where the warning occurred.
      * @param metadataKey The single value metadata key occuring more than once.
      */
-    SingleValueMetadataKeyOccurringMoreThanOnce(final int lineNumber, final String metadataKey) {
+    SingleValueMetadataKeyOccurringMoreThanOnceWarning(final int lineNumber, final String metadataKey) {
         super(lineNumber);
         this.metadataKey = metadataKey;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof SingleValueMetadataKeyOccurringMoreThanOnce) {
-            SingleValueMetadataKeyOccurringMoreThanOnce otherWarning =
-                    (SingleValueMetadataKeyOccurringMoreThanOnce) obj;
+        if (obj instanceof SingleValueMetadataKeyOccurringMoreThanOnceWarning) {
+            SingleValueMetadataKeyOccurringMoreThanOnceWarning otherWarning =
+                    (SingleValueMetadataKeyOccurringMoreThanOnceWarning) obj;
             return otherWarning.getLineNumber() == getLineNumber() && otherWarning.metadataKey.equals(metadataKey);
         } else {
             return false;

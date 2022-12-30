@@ -156,7 +156,7 @@ final class OpinionPollLine extends Line {
         switch (key) {
         case "A":
             if (builder.hasArea()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setArea(value);
             }
@@ -166,7 +166,7 @@ final class OpinionPollLine extends Line {
             break;
         case "EX":
             if (builder.hasExcluded()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else if (textMatchesPattern(DECIMAL_NUMBER_PATTERN, value)) {
                 DecimalNumber excluded = DecimalNumber.parse(value);
                 builder.setExcluded(excluded);
@@ -176,7 +176,7 @@ final class OpinionPollLine extends Line {
             break;
         case "FE":
             if (builder.hasFieldworkEnd()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
                 DateOrMonth fieldworkEnd = DateOrMonth.parse(value);
                 builder.setFieldworkEnd(fieldworkEnd);
@@ -186,7 +186,7 @@ final class OpinionPollLine extends Line {
             break;
         case "FS":
             if (builder.hasFieldworkStart()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
                 DateOrMonth fieldworkStart = DateOrMonth.parse(value);
                 builder.setFieldworkStart(fieldworkStart);
@@ -196,7 +196,7 @@ final class OpinionPollLine extends Line {
             break;
         case "N":
             if (builder.hasNoResponses()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
                 warnings.addAll(noResponse.getWarnings());
@@ -205,7 +205,7 @@ final class OpinionPollLine extends Line {
             break;
         case "O":
             if (builder.hasOther()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 ResultValueText other = ResultValueText.parse(value, lineNumber);
                 warnings.addAll(other.getWarnings());
@@ -214,7 +214,7 @@ final class OpinionPollLine extends Line {
             break;
         case "PD":
             if (builder.hasPublicationDate()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else if (textMatchesPattern(DATE_PATTERN, value)) {
                 LocalDate publicationDate = LocalDate.parse(value);
                 builder.setPublicationDate(publicationDate);
@@ -224,21 +224,21 @@ final class OpinionPollLine extends Line {
             break;
         case "PF":
             if (builder.hasPollingFirm()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setPollingFirm(value);
             }
             break;
         case "PFP":
             if (builder.hasPollingFirmPartner()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setPollingFirmPartner(value);
             }
             break;
         case "SC":
             if (builder.hasScope()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 Scope scope = parseScope(value);
                 if (scope == null) {
@@ -250,7 +250,7 @@ final class OpinionPollLine extends Line {
             break;
         case "SS":
             if (builder.hasSampleSize()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnce(lineNumber, key));
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setSampleSize(value);
             }

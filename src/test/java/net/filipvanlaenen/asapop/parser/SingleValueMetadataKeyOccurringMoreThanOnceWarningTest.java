@@ -13,8 +13,8 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
     /**
      * A warning that a single value metadata key a occurred more than once on line 1.
      */
-    private static final SingleValueMetadataKeyOccurringMoreThanOnce WARNING_1_A =
-            new SingleValueMetadataKeyOccurringMoreThanOnce(1, "a");
+    private static final SingleValueMetadataKeyOccurringMoreThanOnceWarning WARNING_1_A =
+            new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "a");
 
     /**
      * Verifies that the warning is converted to a String correctly.
@@ -64,7 +64,7 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void warningsThatASingleValueMetadataKeyOccurredMoreThanOnceConstructedWithTheSameParametersShouldBeEqual() {
-        assertEquals(WARNING_1_A, new SingleValueMetadataKeyOccurringMoreThanOnce(1, "a"));
+        assertEquals(WARNING_1_A, new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "a"));
     }
 
     /**
@@ -73,7 +73,7 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void warningsThatSingleValueMetadataKeyOccurredMoreThanOnceFromTheSameParametersShouldHaveSameHashCode() {
-        assertEquals(WARNING_1_A.hashCode(), new SingleValueMetadataKeyOccurringMoreThanOnce(1, "a").hashCode());
+        assertEquals(WARNING_1_A.hashCode(), new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "a").hashCode());
     }
 
     /**
@@ -82,7 +82,7 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void warningsThatASingleValueMetadataKeyOccurredMoreThanOnceWithDifferentLineNumbersShouldNotBeEqual() {
-        assertFalse(WARNING_1_A.equals(new SingleValueMetadataKeyOccurringMoreThanOnce(2, "a")));
+        assertFalse(WARNING_1_A.equals(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(2, "a")));
     }
 
     /**
@@ -91,7 +91,7 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void singleValueMetadataKeyOccurredMoreThanOnceWithDifferentLineNumbersShouldHaveDifferentHashCodes() {
-        assertFalse(WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnce(2, "a").hashCode());
+        assertFalse(WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnceWarning(2, "a").hashCode());
     }
 
     /**
@@ -100,7 +100,7 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void warningsThatASingleValueMetadataKeyOccurredMoreThanOnceWithDifferentMetadataKeysShouldNotBeEqual() {
-        assertFalse(WARNING_1_A.equals(new SingleValueMetadataKeyOccurringMoreThanOnce(1, "b")));
+        assertFalse(WARNING_1_A.equals(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "b")));
     }
 
     /**
@@ -109,6 +109,6 @@ public class SingleValueMetadataKeyOccurringMoreThanOnceWarningTest {
      */
     @Test
     public void singleValueMetadataKeyOccurredMoreThanOnceWithDifferentMetadataKeysShouldHaveDifferentHashCodes() {
-        assertFalse(WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnce(1, "b").hashCode());
+        assertFalse(WARNING_1_A.hashCode() == new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "b").hashCode());
     }
 }
