@@ -70,12 +70,44 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that before other has been added, the builder responds that other is missing.
+     */
+    @Test
+    public void hasOtherInBuilderShouldReturnFalseBeforeOtherIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasOther());
+    }
+
+    /**
+     * Verifies that after other has been added, the builder responds that other is present.
+     */
+    @Test
+    public void hasOtherInBuilderShouldReturnTrueAfterOtherIsAdded() {
+        assertTrue(new ResponseScenario.Builder().setWellformedOther("12").hasOther());
+    }
+
+    /**
      * Verifies that the setNoResponses method in the builder class is wired correctly to the getNoResponses method.
      */
     @Test
     public void setNoResponsesInBuilderShouldBeWiredCorrectlyToGetNoResponses() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
         assertEquals("5", responseScenario.getNoResponses().getText());
+    }
+
+    /**
+     * Verifies that before no responses has been added, the builder responds that no responses is missing.
+     */
+    @Test
+    public void hasNoResponsesInBuilderShouldReturnFalseBeforeNoResponsesIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasNoResponses());
+    }
+
+    /**
+     * Verifies that after no responses has been added, the builder responds that no responses is present.
+     */
+    @Test
+    public void hasNoResponsesInBuilderShouldReturnTrueAfterNoResponsesIsAdded() {
+        assertTrue(new ResponseScenario.Builder().setWellformedNoResponses("12").hasNoResponses());
     }
 
     /**
@@ -88,6 +120,22 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that before an area has been added, the builder responds that the area is missing.
+     */
+    @Test
+    public void hasAreaInBuilderShouldReturnFalseBeforeAreaIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasArea());
+    }
+
+    /**
+     * Verifies that after an area has been added, the builder responds that the area is present.
+     */
+    @Test
+    public void hasAreaInBuilderShouldReturnTrueAfterAreaIsAdded() {
+        assertTrue(new ResponseScenario.Builder().setArea("A").hasArea());
+    }
+
+    /**
      * Verifies that the setScope method in the builder class is wired correctly to the getScope method.
      */
     @Test
@@ -97,12 +145,44 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that before a scope has been added, the builder responds that a scope is missing.
+     */
+    @Test
+    public void hasScopeInBuilderShouldReturnFalseBeforeScopeIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasScope());
+    }
+
+    /**
+     * Verifies that after a scope has been added, the builder responds that a scope is present.
+     */
+    @Test
+    public void hasScopeInBuilderShouldReturnTrueAfterScopeIsAdded() {
+        assertTrue(new ResponseScenario.Builder().setScope(Scope.National).hasScope());
+    }
+
+    /**
      * Verifies that the setSampleSize method in the builder class is wired correctly to the getSampleSize method.
      */
     @Test
     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize() {
         ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999").build();
         assertEquals("999", responseScenario.getSampleSize());
+    }
+
+    /**
+     * Verifies that before a sample size has been added, the builder responds that a sample size is missing.
+     */
+    @Test
+    public void hasSampleSizeInBuilderShouldReturnFalseBeforeSampleSizeIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasSampleSize());
+    }
+
+    /**
+     * Verifies that after a sample size has been added, the builder responds that a sample size is present.
+     */
+    @Test
+    public void hasSampleSizeInBuilderShouldReturnTrueAfterSampleSizeIsAdded() {
+        assertTrue(new ResponseScenario.Builder().setSampleSize("12").hasSampleSize());
     }
 
     /**

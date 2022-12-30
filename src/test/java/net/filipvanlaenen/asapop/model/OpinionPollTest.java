@@ -68,6 +68,22 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before an area has been added, the builder responds that the area is missing.
+     */
+    @Test
+    public void hasAreaInBuilderShouldReturnFalseBeforeAreaIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasArea());
+    }
+
+    /**
+     * Verifies that after an area has been added, the builder responds that the area is present.
+     */
+    @Test
+    public void hasAreaInBuilderShouldReturnTrueAfterAreaIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setArea("A").hasArea());
+    }
+
+    /**
      * Verifies that before a date has been added, the builder responds that the dates are missing.
      */
     @Test
@@ -155,12 +171,44 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before other has been added, the builder responds that other is missing.
+     */
+    @Test
+    public void hasOtherInBuilderShouldReturnFalseBeforeOtherIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasOther());
+    }
+
+    /**
+     * Verifies that after other has been added, the builder responds that other is present.
+     */
+    @Test
+    public void hasOtherInBuilderShouldReturnTrueAfterOtherIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setWellformedOther("12").hasOther());
+    }
+
+    /**
      * Verifies that the setNoResponses method in the builder class is wired correctly to the getNoResponses method.
      */
     @Test
     public void setNoResponsesInBuilderShouldBeWiredCorrectlyToGetNoResponses() {
         OpinionPoll poll = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
         assertEquals("2", poll.getNoResponses().getText());
+    }
+
+    /**
+     * Verifies that before no responses has been added, the builder responds that no responses is missing.
+     */
+    @Test
+    public void hasNoResponsesInBuilderShouldReturnFalseBeforeNoResponsesIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasNoResponses());
+    }
+
+    /**
+     * Verifies that after no responses has been added, the builder responds that no responses is present.
+     */
+    @Test
+    public void hasNoResponsesInBuilderShouldReturnTrueAfterNoResponsesIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setWellformedNoResponses("12").hasNoResponses());
     }
 
     /**
@@ -189,6 +237,24 @@ public class OpinionPollTest {
     public void setPollingFirmPartnerInBuilderShouldBeWiredCorrectlyToGetPollingFirmPartner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirmPartner("ACME").build();
         assertEquals("ACME", poll.getPollingFirmPartner());
+    }
+
+    /**
+     * Verifies that before a polling firm partner has been added, the builder responds that a polling firm partner is
+     * missing.
+     */
+    @Test
+    public void hasPollingFirmPartnerInBuilderShouldReturnFalseBeforePollingFirmPartnerIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasPollingFirmPartner());
+    }
+
+    /**
+     * Verifies that after a polling firm partner has been added, the builder responds that a polling firm partner is
+     * present.
+     */
+    @Test
+    public void hasPollingFirmPartnerInBuilderShouldReturnTrueAfterPollingFirmPartnerIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setPollingFirmPartner("ACME").hasPollingFirmPartner());
     }
 
     /**
@@ -253,6 +319,22 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before a sample size has been added, the builder responds that a sample size is missing.
+     */
+    @Test
+    public void hasSampleSizeInBuilderShouldReturnFalseBeforeSampleSizeIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasSampleSize());
+    }
+
+    /**
+     * Verifies that after a sample size has been added, the builder responds that a sample size is present.
+     */
+    @Test
+    public void hasSampleSizeInBuilderShouldReturnTrueAfterSampleSizeIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setSampleSize("12").hasSampleSize());
+    }
+
+    /**
      * Verifies that the getEffectiveSampleSize returns <code>null</code> when no sample size has been specified.
      */
     @Test
@@ -290,6 +372,22 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before a scope has been added, the builder responds that a scope is missing.
+     */
+    @Test
+    public void hasScopeInBuilderShouldReturnFalseBeforeScopeIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasScope());
+    }
+
+    /**
+     * Verifies that after a scope has been added, the builder responds that a scope is present.
+     */
+    @Test
+    public void hasScopeInBuilderShouldReturnTrueAfterScopeIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setScope(Scope.National).hasScope());
+    }
+
+    /**
      * Verifies that the setExcluded method in the builder class is wired correctly to the getExcluded method.
      */
     @Test
@@ -297,6 +395,22 @@ public class OpinionPollTest {
         DecimalNumber expected = DecimalNumber.parse("10");
         OpinionPoll poll = new OpinionPoll.Builder().setExcluded(expected).build();
         assertEquals(expected, poll.getExcluded());
+    }
+
+    /**
+     * Verifies that before excluded has been added, the builder responds that excluded is missing.
+     */
+    @Test
+    public void hasExcludedInBuilderShouldReturnFalseBeforeExcludedIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasExcluded());
+    }
+
+    /**
+     * Verifies that after excluded has been added, the builder responds that excluded is present.
+     */
+    @Test
+    public void hasExcludedInBuilderShouldReturnTrueAfterExcludedIsAdded() {
+        assertTrue(new OpinionPoll.Builder().setExcluded(DecimalNumber.parse("12")).hasExcluded());
     }
 
     /**
