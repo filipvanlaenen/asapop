@@ -156,6 +156,19 @@ Imagine an opinion poll was conducted with the following results:
   * 200 people had C as their preference,
   * and 100 people had other as their preference.
 
+Below are a number of ways in which the results can be registered:
+
+| Registration in an ROPF File                         | Derived Values  | Effective Sample Size |
+|------------------------------------------------------|-----------------|-----------------------|
+| `•SS: 1000         A: 40 B: 30 C: 20`                | `•O: 10 •N: ?`  | 1,000                 |
+| `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20`                | `•O: 10 •N: 20` | 1,250 - 20% = 1,000   |
+| `•SS: 1000         A: 40 B: 30 C: 20 •O: 10`         | `•N: ?`         | 1,000                 |
+| `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10`         | `•N: 20`        | 1,250 - 20% = 1,000   |
+| `•SS: 1250         A: 32 B: 24 C: 16 •O: 8`          | `•N: 20`        | 1,250 - 20% = 1,000   |
+| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8`          | `•N: 20`        | 1,250 - 20% = 1,000   |
+| `•SS: 1250         A: 32 B: 24 C: 16 •O: 8  •N: 20`  |                 | 1,250 - 20% = 1,000   |
+| `•SS: 1250         A: 32 B: 24 C: 16        •N: 20`  | `•O: 8`         | 1,250 - 20% = 1,000   |
+
 ### Electoral Lists
 
 The second part of a rich opinion poll file contains the lines with electoral lists. Each electoral list appearing in
