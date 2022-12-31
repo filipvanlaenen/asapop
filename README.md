@@ -174,6 +174,8 @@ Below are a number of ways in which the results can be registered:
 | `•SS: 1250 •EX: 20 A: 8  B: 6  C: 4  •O: 2  •N: 5 `  | ²³              | 1,250 - 20% = 1,000   |
 | `•SS: 1250         A: 40 B: 30 C: 20 •O: 10 •N: 25`  | ³               | 1,250 - 20% = 1,000   |
 | `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10 •N: 25`  | ²³              | 1,250 - 20% = 1,000   |
+| `•SS: 1000         A: 80 B: 60 C: 40`                | ³               | 1,000                 |
+| `•SS: 1000         A: 80 B: 60 C: 40 •O: 20`         | ³               | 1,000                 |
 
 ¹ Field N is only calculated if the sum of the registered results is less than 100 - floor((_n_ - 1) / 2) × precision, in order to cater for rounding effects.
 
