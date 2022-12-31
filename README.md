@@ -164,14 +164,16 @@ Below are a number of ways in which the results can be registered:
 | `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20`                | `•O: 10 •N: 20` | 1,250 - 20% = 1,000   |
 | `•SS: 1000         A: 40 B: 30 C: 20 •O: 10`         | `•N: ?`         | 1,000                 |
 | `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10`         | `•N: 20`        | 1,250 - 20% = 1,000   |
-| `•SS: 1250         A: 32 B: 24 C: 16 •O: 8`          | `•N: 20`        | 1,250 - 20% = 1,000   |
-| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8`          | `•N: 20`¹       | 1,250 - 20% = 1,000   |
+| `•SS: 1250         A: 32 B: 24 C: 16 •O: 8`          | `•N: 20`¹       | 1,250 - 20% = 1,000   |
+| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8`          | `•N: 20`¹²      | 1,250 - 20% = 1,000   |
 | `•SS: 1250         A: 32 B: 24 C: 16 •O: 8  •N: 20`  |                 | 1,250 - 20% = 1,000   |
-| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8  •N: 20`  | ¹               | 1,250 - 20% = 1,000   |
+| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8  •N: 20`  | ²               | 1,250 - 20% = 1,000   |
 | `•SS: 1250         A: 32 B: 24 C: 16        •N: 20`  | `•O: 8`         | 1,250 - 20% = 1,000   |
-| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16        •N: 20`  | `•O: 8`¹        | 1,250 - 20% = 1,000   |
+| `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16        •N: 20`  | `•O: 8`²        | 1,250 - 20% = 1,000   |
 
-¹ Field EX will be ignored.
+¹ Field N is only calculated if the sum of the registered results is less than 100 - floor((_n_ - 1) / 2) × precision, in order to cater for rounding effects.
+
+² Field EX will be ignored.
 
 ### Electoral Lists
 
