@@ -3,6 +3,7 @@
 - [Getting Started](#getting-started)
 - [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
   - [Opinion Polls](#opinion-polls)
+  - [Incomplete Results](#incomplete-results)
   - [Electoral Lists](#electoral-lists)
   - [Comments and Empty Lines](#comments-and-empty-lines)
 - [File Cache](#file-cache)
@@ -137,6 +138,23 @@ The type `Scope` accepts the values as in the table below:
 | E     | European elections                 |
 | N     | National elections                 |
 | P1    | Presidential election, first round |
+
+### Incomplete Results
+
+Polling firms and media outlets don't present their results in a standard way across all countries. Sometimes there are
+even differences within the same country, or the results presented are incomplete. Opinion poll results should be
+registered as close as possible to the original results, and any needed conversion and/or interpretation should be
+left as much as possible to the software, possibly with the aid of hints in a configuration file.
+
+Imagine an opinion poll was conducted with the following results:
+
+* 1,250 people were polled,
+* 250 of them refused to anwer,
+* Of the 1,000 that answered:
+  * 400 people had A as their preference,
+  * 300 people had B as their preference,
+  * 200 people had C as their preference,
+  * and 100 people had other as their preference.
 
 ### Electoral Lists
 
