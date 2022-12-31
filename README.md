@@ -3,6 +3,8 @@
 - [Getting Started](#getting-started)
 - [Rich Opinion Poll File Format (ROPF)](#rich-opinion-poll-file-format-ropf)
   - [Opinion Polls](#opinion-polls)
+  - [Electoral Lists](#electoral-lists)
+  - [Comments and Empty Lines](#comments-and-empty-lines)
 - [File Cache](#file-cache)
 - [Analysis](#analysis)
 - [Build a Website](#build-a-website)
