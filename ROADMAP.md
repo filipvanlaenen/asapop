@@ -2,10 +2,10 @@
 
 | Functional Description                 | Milestones |
 |----------------------------------------|------------|
-| ROPF data format                       | [M1](https://github.com/filipvanlaenen/asapop/milestone/1), [M3](https://github.com/filipvanlaenen/asapop/milestone/2), [M4](https://github.com/filipvanlaenen/asapop/milestone/6), [M12](https://github.com/filipvanlaenen/asapop/milestone/29), Md |
+| ROPF data format                       | [M1](https://github.com/filipvanlaenen/asapop/milestone/1), [M3](https://github.com/filipvanlaenen/asapop/milestone/2), [M4](https://github.com/filipvanlaenen/asapop/milestone/6), [M12](https://github.com/filipvanlaenen/asapop/milestone/29), [M15](https://github.com/filipvanlaenen/asapop/milestone/8), Md |
 | Export formats                         | [M2](https://github.com/filipvanlaenen/asapop/milestone/4), Me |
 | Vote share analysis                    | [M5](https://github.com/filipvanlaenen/asapop/milestone/5), [M8](https://github.com/filipvanlaenen/asapop/milestone/9), [M9](https://github.com/filipvanlaenen/asapop/milestone/11), [Mv](https://github.com/filipvanlaenen/asapop/milestone/10), [Mv](https://github.com/filipvanlaenen/asapop/milestone/12), [Mv](https://github.com/filipvanlaenen/asapop/milestone/13), [Mv](https://github.com/filipvanlaenen/asapop/milestone/17) |
-| Projections for presidential elections | [M6](https://github.com/filipvanlaenen/asapop/milestone/3), [Mp](https://github.com/filipvanlaenen/asapop/milestone/8), [Mp](https://github.com/filipvanlaenen/asapop/milestone/18), [Mp](https://github.com/filipvanlaenen/asapop/milestone/19) |
+| Projections for presidential elections | [M6](https://github.com/filipvanlaenen/asapop/milestone/3), [Mp](https://github.com/filipvanlaenen/asapop/milestone/18), [Mp](https://github.com/filipvanlaenen/asapop/milestone/19) |
 | Projections for referendums            | Mr |
 | Seat projections                       | [Ms](https://github.com/filipvanlaenen/asapop/milestone/7) |
 | ROPF formatting                        | Mf |
