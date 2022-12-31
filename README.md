@@ -170,10 +170,16 @@ Below are a number of ways in which the results can be registered:
 | `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8  •N: 20`  | ²               | 1,250 - 20% = 1,000   |
 | `•SS: 1250         A: 32 B: 24 C: 16        •N: 20`  | `•O: 8`         | 1,250 - 20% = 1,000   |
 | `•SS: 1250 •EX: 20 A: 32 B: 24 C: 16        •N: 20`  | `•O: 8`²        | 1,250 - 20% = 1,000   |
+| `•SS: 1250         A: 8  B: 6  C: 4  •O: 2  •N: 5 `  | ³               | 1,250 - 20% = 1,000   |
+| `•SS: 1250 •EX: 20 A: 8  B: 6  C: 4  •O: 2  •N: 5 `  | ²³              | 1,250 - 20% = 1,000   |
+| `•SS: 1250         A: 40 B: 30 C: 20 •O: 10 •N: 25`  | ³               | 1,250 - 20% = 1,000   |
+| `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10 •N: 25`  | ²³              | 1,250 - 20% = 1,000   |
 
 ¹ Field N is only calculated if the sum of the registered results is less than 100 - floor((_n_ - 1) / 2) × precision, in order to cater for rounding effects.
 
 ² Field EX will be ignored.
+
+³ If the sum of the registered results is not within 100 ± floor((_n_ - 1) / 2) × precision, they will be rescaled.
 
 ### Electoral Lists
 
