@@ -49,10 +49,6 @@ public final class OpinionPoll {
      */
     private ResponseScenario mainResponseScenario;
     /**
-     * The result for no responses.
-     */
-    private ResultValue noResponses;
-    /**
      * The name of the polling firm.
      */
     private String pollingFirm;
@@ -89,7 +85,6 @@ public final class OpinionPoll {
         fieldworkEnd = builder.fieldworkEnd;
         fieldworkStart = builder.fieldworkStart;
         mainResponseScenario = builder.responseScenarioBuilder.build();
-        noResponses = builder.noResponses;
         pollingFirm = builder.pollingFirm;
         pollingFirmPartner = builder.pollingFirmPartner;
         publicationDate = builder.publicationDate;
@@ -129,10 +124,6 @@ public final class OpinionPoll {
          * The fieldwork start.
          */
         private DateOrMonth fieldworkStart;
-        /**
-         * The result for no responses.
-         */
-        private ResultValue noResponses;
         /**
          * The name of the polling firm.
          */
@@ -270,7 +261,7 @@ public final class OpinionPoll {
          * @return True if no responses has been registered in this builder instance.
          */
         public boolean hasNoResponses() {
-            return noResponses != null;
+            return responseScenarioBuilder.hasNoResponses();
         }
 
         /**
@@ -406,7 +397,7 @@ public final class OpinionPoll {
          * @return This builder instance.
          */
         public Builder setNoResponses(final ResultValue noResponsesString) {
-            this.noResponses = noResponsesString;
+            responseScenarioBuilder.setNoResponses(noResponsesString);
             return this;
         }
 
@@ -517,7 +508,6 @@ public final class OpinionPoll {
                     && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
                     && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
                     && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
-                    && equalsOrBothNull(noResponses, otherOpinionPoll.noResponses)
                     && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                     && equalsOrBothNull(pollingFirmPartner, otherOpinionPoll.pollingFirmPartner)
                     && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
@@ -639,7 +629,7 @@ public final class OpinionPoll {
      * @return The result for no responses.
      */
     public ResultValue getNoResponses() {
-        return noResponses;
+        return mainResponseScenario.getNoResponses();
     }
 
     /**
@@ -740,6 +730,6 @@ public final class OpinionPoll {
     @Override
     public int hashCode() {
         return Objects.hash(alternativeResponseScenarios, area, commissioners, excluded, fieldworkEnd, fieldworkStart,
-                mainResponseScenario, noResponses, pollingFirm, pollingFirmPartner, publicationDate, sampleSize, scope);
+                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, sampleSize, scope);
     }
 }

@@ -943,4 +943,26 @@ public class OpinionPollTest {
         OpinionPoll poll2 = new OpinionPoll.Builder().setArea("YZ").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
+
+    /**
+     * Verifies the upper bound of results adding up.
+     */
+    @Test
+    public void resultsShouldAddUpForUpperBound() {
+        OpinionPoll.Builder opinionPollBuilder =
+                new OpinionPoll.Builder().addWellformedResult("A", "100").addWellformedResult("B", "1")
+                        .addWellformedResult("C", "1").setWellformedOther("0").setWellformedNoResponses("0");
+        assertTrue(opinionPollBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the results don't add up above the upper bound.
+     */
+    @Test
+    public void resultsShouldNotAddUpAboveUpperBound() {
+        OpinionPoll.Builder opinionPollBuilder =
+                new OpinionPoll.Builder().addWellformedResult("A", "100").addWellformedResult("B", "0.1")
+                        .addWellformedResult("C", "0").setWellformedOther("0.1").setWellformedNoResponses("0.1");
+        assertFalse(opinionPollBuilder.resultsAddUp());
+    }
 }
