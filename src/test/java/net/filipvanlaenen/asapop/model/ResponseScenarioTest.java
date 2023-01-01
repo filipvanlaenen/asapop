@@ -431,4 +431,68 @@ public class ResponseScenarioTest {
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().setScope(Scope.European).build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
+
+    /**
+     * Verifies that the lower bound for the results to add up doesn't apply when no responses have been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddDoesNotApplyWhenNoNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenario.Builder().addWellformedResult("A", "50")
+                .addWellformedResult("B", "0").addWellformedResult("C", "0").setWellformedOther("0");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the lower bound for the results to add up doesn't apply when no other have been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddDoesNotApplyWhenNoOther() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenario.Builder().addWellformedResult("A", "50")
+                .addWellformedResult("B", "0").addWellformedResult("C", "0").setWellformedOther("0");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the lower bound of results adding up.
+     */
+    @Test
+    public void resultsShouldAddUpForLowerBound() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenario.Builder().addWellformedResult("A", "98").addWellformedResult("B", "0")
+                        .addWellformedResult("C", "0").setWellformedOther("0").setWellformedNoResponses("0");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the results don't add up below the lower bound.
+     */
+    @Test
+    public void resultsShouldNotAddUpBelowLowerBound() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenario.Builder().addWellformedResult("A", "97").addWellformedResult("B", "0")
+                        .addWellformedResult("C", "0").setWellformedOther("0").setWellformedNoResponses("0");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results adding up.
+     */
+    @Test
+    public void resultsShouldAddUpForUpperBound() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenario.Builder().addWellformedResult("A", "100").addWellformedResult("B", "1")
+                        .addWellformedResult("C", "1").setWellformedOther("0").setWellformedNoResponses("0");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the results don't add up above the upper bound.
+     */
+    @Test
+    public void resultsShouldNotAddUpAboveUpperBound() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenario.Builder().addWellformedResult("A", "100").addWellformedResult("B", "0.1")
+                        .addWellformedResult("C", "0").setWellformedOther("0.1").setWellformedNoResponses("0.1");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
 }
