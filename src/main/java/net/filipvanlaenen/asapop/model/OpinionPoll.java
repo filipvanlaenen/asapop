@@ -345,6 +345,12 @@ public final class OpinionPoll {
             return scope != null;
         }
 
+        /**
+         * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
+         * errors, defined as 100 ± floor((n - 1) / 2) × precision..
+         *
+         * @return True if the sum of results is within the interval of rounding errors.
+         */
         public boolean resultsAddUp() {
             return responseScenarioBuilder.resultsAddUp();
         }

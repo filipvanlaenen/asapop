@@ -100,7 +100,7 @@ final class ResponseScenarioLine extends Line {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
         if (!builder.resultsAddUp()) {
-            warnings.add(new resultValuesNotAddingUpWithinRoundingErrorIntervalWarning(lineNumber));
+            warnings.add(new ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning(lineNumber));
         }
         return new ResponseScenarioLine(builder.build(), warnings);
     }

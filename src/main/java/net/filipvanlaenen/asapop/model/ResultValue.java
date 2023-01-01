@@ -65,7 +65,13 @@ public final class ResultValue {
             return p1.ordinal() < p2.ordinal() ? p2 : p1;
         }
 
-        static Precision highest(Collection<ResultValue> resultValues) {
+        /**
+         * Returns the highest precision in a collection of result values.
+         *
+         * @param resultValues The result values.
+         * @return The highest precision in the collection of result values.
+         */
+        static Precision getHighestPrecision(final Collection<ResultValue> resultValues) {
             Precision result = ONE;
             for (ResultValue resultValue : resultValues) {
                 result = highest(result, resultValue.getPrecision());

@@ -57,6 +57,10 @@ public final class ResponseScenario {
      */
     public static class Builder {
         /**
+         * The magic number one hundred.
+         */
+        private static final double ONE_HUNDRED = 100D;
+        /**
          * The area.
          */
         private String area;
@@ -186,7 +190,7 @@ public final class ResponseScenario {
          */
         public boolean resultsAddUp() {
             int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
-            Precision precision = Precision.highest(results.values());
+            Precision precision = Precision.getHighestPrecision(results.values());
             double sum = 0D;
             for (ResultValue resultValue : results.values()) {
                 Double value = resultValue.getNominalValue();
@@ -209,7 +213,7 @@ public final class ResponseScenario {
                 }
             }
             double epsilon = ((n - 1) / 2) * precision.getValue();
-            return (100D - epsilon <= sum || !hasOther() || !hasNoResponses()) && sum <= 100D + epsilon;
+            return (ONE_HUNDRED - epsilon <= sum || !hasOther() || !hasNoResponses()) && sum <= ONE_HUNDRED + epsilon;
         }
 
         /**

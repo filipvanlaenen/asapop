@@ -5,21 +5,21 @@ import java.util.Objects;
 /**
  * A warning about the sum of results being not within the interval of rounding errors.
  */
-class resultValuesNotAddingUpWithinRoundingErrorIntervalWarning extends ParserWarning {
+class ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning extends ParserWarning {
     /**
      * Constructor taking the line number as its parameter.
      *
      * @param lineNumber The number of the line where the warning occurred.
      */
-    resultValuesNotAddingUpWithinRoundingErrorIntervalWarning(final int lineNumber) {
+    ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning(final int lineNumber) {
         super(lineNumber);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof resultValuesNotAddingUpWithinRoundingErrorIntervalWarning) {
-            resultValuesNotAddingUpWithinRoundingErrorIntervalWarning otherWarning =
-                    (resultValuesNotAddingUpWithinRoundingErrorIntervalWarning) obj;
+        if (obj instanceof ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning) {
+            ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning otherWarning =
+                    (ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning) obj;
             return otherWarning.getLineNumber() == getLineNumber();
         } else {
             return false;
