@@ -418,7 +418,7 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenOtherIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:55 B:45", 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:53 B:35", 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }

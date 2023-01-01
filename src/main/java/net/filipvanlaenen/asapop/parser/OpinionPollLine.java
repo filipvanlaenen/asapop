@@ -108,6 +108,9 @@ final class OpinionPollLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
+        if (!builder.resultsAddUp()) {
+            warnings.add(new resultValuesNotAddingUpWithinRoundingErrorIntervalWarning(lineNumber));
+        }
         if (!builder.hasDates()) {
             warnings.add(new DatesMissingWarning(lineNumber));
         }

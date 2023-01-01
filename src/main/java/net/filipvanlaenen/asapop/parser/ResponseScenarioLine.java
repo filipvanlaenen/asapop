@@ -99,6 +99,9 @@ final class ResponseScenarioLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
+        if (!builder.resultsAddUp()) {
+            warnings.add(new resultValuesNotAddingUpWithinRoundingErrorIntervalWarning(lineNumber));
+        }
         return new ResponseScenarioLine(builder.build(), warnings);
     }
 

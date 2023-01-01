@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.ResultValue.Precision;
+
 /**
  * Class representing a response scenario.
  */
@@ -174,6 +176,40 @@ public final class ResponseScenario {
          */
         public boolean hasScope() {
             return scope != null;
+        }
+
+        /**
+         * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
+         * errors, defined as 100 ± floor((n - 1) / 2) × precision..
+         *
+         * @return True if the sum of results is within the interval of rounding errors.
+         */
+        public boolean resultsAddUp() {
+            int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
+            Precision precision = Precision.highest(results.values());
+            double sum = 0D;
+            for (ResultValue resultValue : results.values()) {
+                Double value = resultValue.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            if (hasOther()) {
+                precision = Precision.highest(precision, other.getPrecision());
+                Double value = other.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            if (hasNoResponses()) {
+                precision = Precision.highest(precision, noResponses.getPrecision());
+                Double value = noResponses.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            double epsilon = ((n - 1) / 2) * precision.getValue();
+            return (100D - epsilon <= sum || !hasOther() || !hasNoResponses()) && sum <= 100D + epsilon;
         }
 
         /**

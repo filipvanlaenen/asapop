@@ -345,6 +345,10 @@ public final class OpinionPoll {
             return scope != null;
         }
 
+        public boolean resultsAddUp() {
+            return responseScenarioBuilder.resultsAddUp();
+        }
+
         /**
          * Sets the area.
          *

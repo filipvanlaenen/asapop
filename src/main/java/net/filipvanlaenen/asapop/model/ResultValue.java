@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -62,6 +63,14 @@ public final class ResultValue {
         public static Precision highest(final Precision p1, final Precision p2) {
             // EQMU: Changing the conditional boundary below produces an equivalent mutant.
             return p1.ordinal() < p2.ordinal() ? p2 : p1;
+        }
+
+        static Precision highest(Collection<ResultValue> resultValues) {
+            Precision result = ONE;
+            for (ResultValue resultValue : resultValues) {
+                result = highest(result, resultValue.getPrecision());
+            }
+            return result;
         }
 
         @Override

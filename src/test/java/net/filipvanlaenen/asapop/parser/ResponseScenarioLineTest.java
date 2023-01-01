@@ -233,7 +233,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:55 B:45", 1);
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:53 B:35", 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
@@ -243,7 +243,7 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenOtherIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •O: 12 •O: 12 A:55 B:45", 1);
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
