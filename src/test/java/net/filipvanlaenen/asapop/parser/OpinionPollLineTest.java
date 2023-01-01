@@ -408,7 +408,7 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:55 B:45", 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:53 B:35", 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }

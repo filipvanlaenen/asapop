@@ -58,7 +58,7 @@ public abstract class Exporter {
      */
     static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll,
             final List<Set<String>> electoralListKeySets) {
-        return calculatePrecision(extractResults(opinionPoll, electoralListKeySets));
+        return ResultValue.Precision.getHighestPrecision(extractResults(opinionPoll, electoralListKeySets));
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class Exporter {
         if (other != null) {
             allResults.add(other);
         }
-        return calculatePrecision(allResults);
+        return ResultValue.Precision.getHighestPrecision(allResults);
     }
 
     /**
@@ -85,21 +85,7 @@ public abstract class Exporter {
      */
     static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario,
             final List<Set<String>> electoralListKeySets) {
-        return calculatePrecision(extractResults(responseScenario, electoralListKeySets));
-    }
-
-    /**
-     * Calculates the precision of a set of result values.
-     *
-     * @param resultValues A set of result values.
-     * @return The precision as a string.
-     */
-    private static ResultValue.Precision calculatePrecision(final Collection<ResultValue> resultValues) {
-        ResultValue.Precision precision = ResultValue.Precision.ONE;
-        for (ResultValue resultValue : resultValues) {
-            precision = ResultValue.Precision.highest(precision, resultValue.getPrecision());
-        }
-        return precision;
+        return ResultValue.Precision.getHighestPrecision(extractResults(responseScenario, electoralListKeySets));
     }
 
     /**

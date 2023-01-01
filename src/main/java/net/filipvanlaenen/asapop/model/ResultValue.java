@@ -60,7 +60,7 @@ public final class ResultValue {
          * @param p2 The second precision.
          * @return The highest precision.
          */
-        public static Precision highest(final Precision p1, final Precision p2) {
+        static Precision highest(final Precision p1, final Precision p2) {
             // EQMU: Changing the conditional boundary below produces an equivalent mutant.
             return p1.ordinal() < p2.ordinal() ? p2 : p1;
         }
@@ -71,7 +71,7 @@ public final class ResultValue {
          * @param resultValues The result values.
          * @return The highest precision in the collection of result values.
          */
-        static Precision getHighestPrecision(final Collection<ResultValue> resultValues) {
+        public static Precision getHighestPrecision(final Collection<ResultValue> resultValues) {
             Precision result = ONE;
             for (ResultValue resultValue : resultValues) {
                 result = highest(result, resultValue.getPrecision());

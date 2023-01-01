@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -125,6 +127,15 @@ public final class ResultValueTest {
     public void halfShouldBeHigherPrecisionThanOne() {
         assertEquals(ResultValue.Precision.HALF,
                 ResultValue.Precision.highest(ResultValue.Precision.HALF, ResultValue.Precision.ONE));
+    }
+
+    /**
+     * Verifies the calculation of the precision on a collection of result values.
+     */
+    @Test
+    public void shouldCalculatePrecisionOnCollectionOfResultValuesCorrectly() {
+        assertEquals(ResultValue.Precision.HALF,
+                ResultValue.Precision.getHighestPrecision(Set.of(new ResultValue("0.5"), new ResultValue("1"))));
     }
 
     /**
