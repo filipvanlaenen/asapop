@@ -55,7 +55,7 @@ public class CsvFilesBuilder {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 List<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListKeys().stream()
                         .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+")))).collect(Collectors.toList());
-                String outputContent = EopaodCsvExporter.export(opinionPolls, "--", electoralListKeySets);
+                String outputContent = EopaodCsvExporter.export(opinionPolls, null, electoralListKeySets);
                 result.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
             }
         }
