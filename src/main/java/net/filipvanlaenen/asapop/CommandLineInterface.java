@@ -157,9 +157,11 @@ public final class CommandLineInterface {
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
                 String navigationScriptContent = readResource("/navigation.js");
-                LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
-                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap,
-                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, startOfYear).build();
+                LocalDate now = LocalDate.now();
+                LocalDate startOfYear = now.withDayOfYear(1);
+                Website website =
+                        new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, baseStyleSheetContent,
+                                customStyleSheetContent, navigationScriptContent, now, startOfYear).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },

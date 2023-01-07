@@ -24,6 +24,10 @@ public class WebsiteBuilder {
      */
     private final String navigationScriptContent;
     /**
+     * Today's day.
+     */
+    private final LocalDate now;
+    /**
      * The map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
@@ -50,17 +54,20 @@ public class WebsiteBuilder {
      * @param baseStyleSheetContent   The base style sheet content.
      * @param customStyleSheetContent The custom style sheet content.
      * @param navigationScriptContent The content of the navigation script.
+     * @param now                     Today's date.
      * @param startOfYear             The start of the year.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent,
-            final String customStyleSheetContent, final String navigationScriptContent, final LocalDate startOfYear) {
+            final String customStyleSheetContent, final String navigationScriptContent, final LocalDate now,
+            final LocalDate startOfYear) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
         this.baseStyleSheetContent = baseStyleSheetContent;
         this.customStyleSheetContent = customStyleSheetContent;
         this.navigationScriptContent = navigationScriptContent;
+        this.now = now;
         this.startOfYear = startOfYear;
     }
 
@@ -78,7 +85,7 @@ public class WebsiteBuilder {
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.put("statistics.html",
-                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, startOfYear).build());
+                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, now, startOfYear).build());
         website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
         website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).build());
         return website;

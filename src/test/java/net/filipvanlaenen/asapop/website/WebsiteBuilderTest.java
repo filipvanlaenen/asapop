@@ -28,9 +28,13 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  */
 public class WebsiteBuilderTest {
     /**
+     * Today's date.
+     */
+    private static final LocalDate NOW = LocalDate.of(2022, Month.DECEMBER, 7);
+    /**
      * The start of the year 2022.
      */
-    private static final LocalDate START_OF_YEAR = LocalDate.of(2022, Month.JANUARY, 1);
+    private static final LocalDate START_OF_YEAR = NOW.withDayOfYear(1);
     /**
      * The area configuration for North Macedonia.
      */
@@ -95,7 +99,8 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
-                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, START_OF_YEAR).build().asString());
+                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, NOW, START_OF_YEAR).build()
+                        .asString());
         map.put(Paths.get("mk", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
         map.put(Paths.get("_js", "internationalization.js"),
@@ -110,7 +115,7 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
-                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, START_OF_YEAR);
+                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, NOW, START_OF_YEAR);
         assertEquals(map, builder.build().asMap());
     }
 }

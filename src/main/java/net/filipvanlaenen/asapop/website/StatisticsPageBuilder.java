@@ -32,6 +32,41 @@ import net.filipvanlaenen.txhtmlj.Table;
  * Class building the page with statistics.
  */
 final class StatisticsPageBuilder extends PageBuilder {
+
+    private enum CurrencyQualification {
+        UP_TO_DATE("■", "up-to-date-color", 0.8D), PROBABLY_UP_TO_DATE("●", "probably-up-to-date-color", 0.5D),
+        POSSIBLY_OUT_OF_DATE("●", "possibly-out-of-date-color", 0.2D),
+        PROBABLY_OUT_OF_DATE("▲", "probably-out-of-date-color", 0.05D), OUT_OF_DATE("▲", "out-of-date-color", 0D);
+
+        private final String clazz;
+        private final String symbol;
+        private final double threshold;
+
+        private CurrencyQualification(final String symbol, final String clazz, final double threshold) {
+            this.symbol = symbol;
+            this.clazz = clazz;
+            this.threshold = threshold;
+        }
+
+        private Span getSpan() {
+            return new Span(symbol).clazz(clazz);
+        }
+
+        private static CurrencyQualification extracted(double numberOfOpinionPollsPerDay,
+                long daysSinceLastOpinionPoll) {
+            if (daysSinceLastOpinionPoll <= 7) {
+                return CurrencyQualification.UP_TO_DATE;
+            }
+            double probability = Math.pow(1D - numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll - 7);
+            for (CurrencyQualification qualification : values()) {
+                if (probability >= qualification.threshold) {
+                    return qualification;
+                }
+            }
+            return CurrencyQualification.OUT_OF_DATE;
+        }
+    }
+
     /**
      * The decimal format symbols for the US.
      */
@@ -40,6 +75,10 @@ final class StatisticsPageBuilder extends PageBuilder {
      * The decimal format for integers, i.e. no decimals.
      */
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#,###", US_FORMAT_SYMBOLS);
+    /**
+     * Today's day.
+     */
+    private final LocalDate now;
     /**
      * A map with the opinion polls.
      */
@@ -54,12 +93,14 @@ final class StatisticsPageBuilder extends PageBuilder {
      *
      * @param websiteConfiguration The website configuration.
      * @param opinionPollsMap      The map with the opinion polls.
+     * @param now                  Today's day.
      * @param startOfYear          The start of the year.
      */
     StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
-            final Map<String, OpinionPolls> opinionPollsMap, final LocalDate startOfYear) {
+            final Map<String, OpinionPolls> opinionPollsMap, final LocalDate now, final LocalDate startOfYear) {
         super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
+        this.now = now;
         this.startOfYear = startOfYear;
     }
 
@@ -147,25 +188,9 @@ final class StatisticsPageBuilder extends PageBuilder {
                 int numberOfOpinionPollsLastThreeYears =
                         opinionPolls.getNumberOfOpinionPolls(threeYearBeforeMostRecentDate);
                 double numberOfOpinionPollsPerDay = numberOfOpinionPollsLastThreeYears / 1096D;
-                long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, LocalDate.now());
-                String qualificationSymbol = "■";
-                String qualificationClass = "up-to-date-color";
-                if (daysSinceLastOpinionPoll > 7) {
-                    double probability = Math.pow(1D - numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll - 7);
-                    if (probability < 0.05D) {
-                        qualificationSymbol = "▲";
-                        qualificationClass = "out-of-date-color";
-                    } else if (probability < 0.2D) {
-                        qualificationSymbol = "▲";
-                        qualificationClass = "probably-out-of-date-color";
-                    } else if (probability < 0.5D) {
-                        qualificationSymbol = "●";
-                        qualificationClass = "possibly-out-of-date-color";
-                    } else if (probability < 0.8D) {
-                        qualificationSymbol = "●";
-                        qualificationClass = "probably-up-to-date-color";
-                    }
-                }
+                long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, now);
+                CurrencyQualification currencyQualification =
+                        CurrencyQualification.extracted(numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll);
                 totalNumberOfOpinionPolls += numberOfOpinionPolls;
                 totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
                 totalNumberOfResponseScenarios += numberOfResponseScenarios;
@@ -181,7 +206,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 areaTr.addElement(createNumberAndYearToDateTd(numberOfResultValues, numberOfResultValuesYtd)
                         .clazz("statistics-value-td"));
                 TD mostRecentDateTd = new TD().clazz("statistics-value-td");
-                mostRecentDateTd.addElement(new Span(qualificationSymbol).clazz(qualificationClass));
+                mostRecentDateTd.addElement(currencyQualification.getSpan());
                 mostRecentDateTd.addContent(" " + mostRecentDate.toString());
                 areaTr.addElement(mostRecentDateTd);
             } else {
@@ -205,15 +230,15 @@ final class StatisticsPageBuilder extends PageBuilder {
         footnote.addContent(" ");
         footnote.addElement(new Span(" ").clazz("qualification-of-currency"));
         footnote.addContent(": ");
-        footnote.addElement(new Span("■").clazz("up-to-date-color"));
+        footnote.addElement(CurrencyQualification.UP_TO_DATE.getSpan());
         footnote.addContent(" P ≥ 80 %, ");
-        footnote.addElement(new Span("●").clazz("probably-up-to-date-color"));
+        footnote.addElement(CurrencyQualification.PROBABLY_UP_TO_DATE.getSpan());
         footnote.addContent(" 80 % > P ≥ 50 %, ");
-        footnote.addElement(new Span("●").clazz("possibly-out-of-date-color"));
+        footnote.addElement(CurrencyQualification.POSSIBLY_OUT_OF_DATE.getSpan());
         footnote.addContent(" 50 % > P ≥ 20 %, ");
-        footnote.addElement(new Span("▲").clazz("probably-out-of-date-color"));
+        footnote.addElement(CurrencyQualification.PROBABLY_OUT_OF_DATE.getSpan());
         footnote.addContent(" 20 % > P ≥ 5 %, ");
-        footnote.addElement(new Span("▲").clazz("out-of-date-color"));
+        footnote.addElement(CurrencyQualification.OUT_OF_DATE.getSpan());
         footnote.addContent(" 5 % > P.");
         section.addElement(footnote);
         body.addElement(createFooter());

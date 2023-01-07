@@ -28,9 +28,13 @@ public class StatisticsPageBuilderTest {
      */
     private static final int LARGE_INTEGER_2345 = 2345;
     /**
+     * Today's date.
+     */
+    private static final LocalDate NOW = LocalDate.of(2022, Month.DECEMBER, 7);
+    /**
      * The start of the year 2022.
      */
-    private static final LocalDate START_OF_YEAR = LocalDate.of(2022, Month.JANUARY, 1);
+    private static final LocalDate START_OF_YEAR = NOW.withDayOfYear(1);
     /**
      * A date to run the unit tests on.
      */
@@ -38,7 +42,7 @@ public class StatisticsPageBuilderTest {
     /**
      * Another date to run the unit tests on.
      */
-    private static final LocalDate DATE2 = LocalDate.parse("2022-12-29");
+    private static final LocalDate DATE2 = LocalDate.parse("2022-06-29");
 
     /**
      * Creates an opinion polls map.
@@ -144,7 +148,7 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-total-td\">5 (3)</td>\n");
         expected.append("            <td class=\"statistics-total-td\">8 (4)</td>\n");
         expected.append("            <td class=\"statistics-total-td\">9 (5)</td>\n");
-        expected.append("            <td class=\"statistics-total-td\">2022-12-29</td>\n");
+        expected.append("            <td class=\"statistics-total-td\">2022-06-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("        </thead>\n");
         expected.append("        <tbody>\n");
@@ -155,8 +159,8 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">3 (2)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">5 (3)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">6 (4)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\"><span class=\"up-to-date-color\">■</span>"
-                + " 2022-12-29</td>\n");
+        expected.append("            <td class=\"statistics-value-td\"><span class=\"probably-up-to-date-color\">●</span>"
+                + " 2022-06-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>\n");
@@ -165,8 +169,8 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">2 (1)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\"><span class=\"up-to-date-color\">■</span>"
-                + " 2022-12-29</td>\n");
+        expected.append("            <td class=\"statistics-value-td\"><span class=\"probably-up-to-date-color\">●</span>"
+                + " 2022-06-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>\n");
@@ -201,8 +205,8 @@ public class StatisticsPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         assertEquals(expected.toString(),
-                new StatisticsPageBuilder(createWebsiteConfiguration(), createOpinionPollsMap(), START_OF_YEAR).build()
-                        .asString());
+                new StatisticsPageBuilder(createWebsiteConfiguration(), createOpinionPollsMap(), NOW, START_OF_YEAR)
+                        .build().asString());
     }
 
     /**
