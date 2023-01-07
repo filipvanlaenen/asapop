@@ -32,32 +32,85 @@ import net.filipvanlaenen.txhtmlj.Table;
  * Class building the page with statistics.
  */
 final class StatisticsPageBuilder extends PageBuilder {
-
+    /**
+     * Enumeration modeling the qualification of currency.
+     */
     private enum CurrencyQualification {
-        UP_TO_DATE("■", "up-to-date-color", 0.8D), PROBABLY_UP_TO_DATE("●", "probably-up-to-date-color", 0.5D),
+        /**
+         * Up-to-date.
+         */
+        UP_TO_DATE("■", "up-to-date-color", 0.8D),
+        /**
+         * Probably up-to-date.
+         */
+        PROBABLY_UP_TO_DATE("●", "probably-up-to-date-color", 0.5D),
+        /**
+         * Possibly out-of-date.
+         */
         POSSIBLY_OUT_OF_DATE("●", "possibly-out-of-date-color", 0.2D),
-        PROBABLY_OUT_OF_DATE("▲", "probably-out-of-date-color", 0.05D), OUT_OF_DATE("▲", "out-of-date-color", 0D);
+        /**
+         * Probably out-of-date.
+         */
+        PROBABLY_OUT_OF_DATE("▲", "probably-out-of-date-color", 0.05D),
+        /**
+         * Out-of-date.
+         */
+        OUT_OF_DATE("▲", "out-of-date-color", 0D);
 
+        /**
+         * The magic number seven.
+         */
+        private static final int SEVEN = 7;
+
+        /**
+         * The class for the span element.
+         */
         private final String clazz;
+        /**
+         * The symbol.
+         */
         private final String symbol;
+        /**
+         * The (lower) threshold.
+         */
         private final double threshold;
 
-        private CurrencyQualification(final String symbol, final String clazz, final double threshold) {
+        /**
+         * Constructor taking the symbol, the span element class and the (lower) threshold as its parameters.
+         *
+         * @param symbol    The symbol.
+         * @param clazz     The span element class.
+         * @param threshold The (lower) threshold.
+         */
+        CurrencyQualification(final String symbol, final String clazz, final double threshold) {
             this.symbol = symbol;
             this.clazz = clazz;
             this.threshold = threshold;
         }
 
-        private Span getSpan() {
+        /**
+         * Creates a span element for the currency qualification.
+         *
+         * @return A span element for the currency qualification.
+         */
+        private Span createSpan() {
             return new Span(symbol).clazz(clazz);
         }
 
-        private static CurrencyQualification extracted(double numberOfOpinionPollsPerDay,
-                long daysSinceLastOpinionPoll) {
-            if (daysSinceLastOpinionPoll <= 7) {
+        /**
+         * Calculates the currency qualification using the number of opinion polls per day and the number of days since
+         * the last opinion poll.
+         *
+         * @param numberOfOpinionPollsPerDay The number of opinion polls per day.
+         * @param daysSinceLastOpinionPoll   The number of days since the last opinion poll.
+         * @return The currency qualification.
+         */
+        private static CurrencyQualification calculateCurrencyQualification(final double numberOfOpinionPollsPerDay,
+                final long daysSinceLastOpinionPoll) {
+            if (daysSinceLastOpinionPoll <= SEVEN) {
                 return CurrencyQualification.UP_TO_DATE;
             }
-            double probability = Math.pow(1D - numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll - 7);
+            double probability = Math.pow(1D - numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll - SEVEN);
             for (CurrencyQualification qualification : values()) {
                 if (probability >= qualification.threshold) {
                     return qualification;
@@ -189,8 +242,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                         opinionPolls.getNumberOfOpinionPolls(threeYearBeforeMostRecentDate);
                 double numberOfOpinionPollsPerDay = numberOfOpinionPollsLastThreeYears / 1096D;
                 long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, now);
-                CurrencyQualification currencyQualification =
-                        CurrencyQualification.extracted(numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll);
+                CurrencyQualification currencyQualification = CurrencyQualification
+                        .calculateCurrencyQualification(numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll);
                 totalNumberOfOpinionPolls += numberOfOpinionPolls;
                 totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
                 totalNumberOfResponseScenarios += numberOfResponseScenarios;
@@ -206,7 +259,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 areaTr.addElement(createNumberAndYearToDateTd(numberOfResultValues, numberOfResultValuesYtd)
                         .clazz("statistics-value-td"));
                 TD mostRecentDateTd = new TD().clazz("statistics-value-td");
-                mostRecentDateTd.addElement(currencyQualification.getSpan());
+                mostRecentDateTd.addElement(currencyQualification.createSpan());
                 mostRecentDateTd.addContent(" " + mostRecentDate.toString());
                 areaTr.addElement(mostRecentDateTd);
             } else {
@@ -230,15 +283,15 @@ final class StatisticsPageBuilder extends PageBuilder {
         footnote.addContent(" ");
         footnote.addElement(new Span(" ").clazz("qualification-of-currency"));
         footnote.addContent(": ");
-        footnote.addElement(CurrencyQualification.UP_TO_DATE.getSpan());
+        footnote.addElement(CurrencyQualification.UP_TO_DATE.createSpan());
         footnote.addContent(" P ≥ 80 %, ");
-        footnote.addElement(CurrencyQualification.PROBABLY_UP_TO_DATE.getSpan());
+        footnote.addElement(CurrencyQualification.PROBABLY_UP_TO_DATE.createSpan());
         footnote.addContent(" 80 % > P ≥ 50 %, ");
-        footnote.addElement(CurrencyQualification.POSSIBLY_OUT_OF_DATE.getSpan());
+        footnote.addElement(CurrencyQualification.POSSIBLY_OUT_OF_DATE.createSpan());
         footnote.addContent(" 50 % > P ≥ 20 %, ");
-        footnote.addElement(CurrencyQualification.PROBABLY_OUT_OF_DATE.getSpan());
+        footnote.addElement(CurrencyQualification.PROBABLY_OUT_OF_DATE.createSpan());
         footnote.addContent(" 20 % > P ≥ 5 %, ");
-        footnote.addElement(CurrencyQualification.OUT_OF_DATE.getSpan());
+        footnote.addElement(CurrencyQualification.OUT_OF_DATE.createSpan());
         footnote.addContent(" 5 % > P.");
         section.addElement(footnote);
         body.addElement(createFooter());
