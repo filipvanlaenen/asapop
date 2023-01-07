@@ -131,4 +131,12 @@ public class OpinionPollsTest {
     public void getNumberOfResultValuesFromADateShouldBeCorrect() {
         assertEquals(FOUR, opinionPolls.getNumberOfResultValues(DATE2));
     }
+
+    /**
+     * Verifies that the most recent date is calculated correctly.
+     */
+    @Test
+    public void getMostRecentDateShouldBeCorrect() {
+        assertEquals(DATE2, opinionPolls.getMostRecentDate());
+    }
 }
