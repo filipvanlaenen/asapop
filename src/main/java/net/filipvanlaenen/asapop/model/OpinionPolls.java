@@ -23,12 +23,19 @@ public final class OpinionPolls {
     }
 
     /**
-     * Returns the opinion polls.
+     * Returns the most recent date.
      *
-     * @return An unmodifiable set with the opinion polls.
+     * @return The most recent date.
      */
-    public Set<OpinionPoll> getOpinionPolls() {
-        return opinionPolls;
+    public LocalDate getMostRecentDate() {
+        LocalDate result = LocalDate.EPOCH;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            LocalDate endDate = opinionPoll.getEndDate();
+            if (endDate.isAfter(result)) {
+                result = endDate;
+            }
+        }
+        return result;
     }
 
     /**
@@ -112,5 +119,14 @@ public final class OpinionPolls {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the opinion polls.
+     *
+     * @return An unmodifiable set with the opinion polls.
+     */
+    public Set<OpinionPoll> getOpinionPolls() {
+        return opinionPolls;
     }
 }

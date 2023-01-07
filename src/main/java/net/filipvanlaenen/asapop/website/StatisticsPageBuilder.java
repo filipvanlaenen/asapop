@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.website;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -16,8 +17,10 @@ import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Html;
+import net.filipvanlaenen.txhtmlj.P;
 import net.filipvanlaenen.txhtmlj.Section;
 import net.filipvanlaenen.txhtmlj.Span;
+import net.filipvanlaenen.txhtmlj.Sup;
 import net.filipvanlaenen.txhtmlj.TBody;
 import net.filipvanlaenen.txhtmlj.TD;
 import net.filipvanlaenen.txhtmlj.TH;
@@ -99,6 +102,12 @@ final class StatisticsPageBuilder extends PageBuilder {
         thResultValue.addElement(new Span(" ").clazz("year-to-date"));
         thResultValue.addContent(")");
         tr.addElement(thResultValue);
+        TH thMostRecentDate = new TH().clazz("most-recent-date-th");
+        thMostRecentDate.addElement(new Span(" ").clazz("most-recent-date"));
+        Sup footnoteLink = new Sup();
+        footnoteLink.addElement(new A("1").href("#footnote-1"));
+        thMostRecentDate.addElement(footnoteLink);
+        tr.addElement(thMostRecentDate);
         TBody tBody = new TBody();
         table.addElement(tBody);
         TR totalTr = new TR();
@@ -117,6 +126,7 @@ final class StatisticsPageBuilder extends PageBuilder {
         int totalNumberOfResponseScenariosYtd = 0;
         int totalNumberOfResultValues = 0;
         int totalNumberOfResultValuesYtd = 0;
+        LocalDate totalMostRecentDate = LocalDate.EPOCH;
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -132,19 +142,50 @@ final class StatisticsPageBuilder extends PageBuilder {
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
+                LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
+                LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(1096);
+                int numberOfOpinionPollsLastThreeYears =
+                        opinionPolls.getNumberOfOpinionPolls(threeYearBeforeMostRecentDate);
+                double numberOfOpinionPollsPerDay = numberOfOpinionPollsLastThreeYears / 1096D;
+                long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, LocalDate.now());
+                String qualificationSymbol = "■";
+                String qualificationClass = "up-to-date-color";
+                if (daysSinceLastOpinionPoll > 7) {
+                    double probability = Math.pow(1D - numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll - 7);
+                    if (probability < 0.05D) {
+                        qualificationSymbol = "▲";
+                        qualificationClass = "out-of-date-color";
+                    } else if (probability < 0.2D) {
+                        qualificationSymbol = "▲";
+                        qualificationClass = "probably-out-of-date-color";
+                    } else if (probability < 0.5D) {
+                        qualificationSymbol = "●";
+                        qualificationClass = "possibly-out-of-date-color";
+                    } else if (probability < 0.8D) {
+                        qualificationSymbol = "●";
+                        qualificationClass = "probably-up-to-date-color";
+                    }
+                }
                 totalNumberOfOpinionPolls += numberOfOpinionPolls;
                 totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
                 totalNumberOfResponseScenarios += numberOfResponseScenarios;
                 totalNumberOfResponseScenariosYtd += numberOfResponseScenariosYtd;
                 totalNumberOfResultValues += numberOfResultValues;
                 totalNumberOfResultValuesYtd += numberOfResultValuesYtd;
+                totalMostRecentDate =
+                        mostRecentDate.isAfter(totalMostRecentDate) ? mostRecentDate : totalMostRecentDate;
                 areaTr.addElement(createNumberAndYearToDateTd(numberOfOpinionPolls, numberOfOpinionPollsYtd)
                         .clazz("statistics-value-td"));
                 areaTr.addElement(createNumberAndYearToDateTd(numberOfResponseScenarios, numberOfResponseScenariosYtd)
                         .clazz("statistics-value-td"));
                 areaTr.addElement(createNumberAndYearToDateTd(numberOfResultValues, numberOfResultValuesYtd)
                         .clazz("statistics-value-td"));
+                TD mostRecentDateTd = new TD().clazz("statistics-value-td");
+                mostRecentDateTd.addElement(new Span(qualificationSymbol).clazz(qualificationClass));
+                mostRecentDateTd.addContent(" " + mostRecentDate.toString());
+                areaTr.addElement(mostRecentDateTd);
             } else {
+                areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -158,6 +199,23 @@ final class StatisticsPageBuilder extends PageBuilder {
                         .clazz("statistics-total-td"));
         totalTr.addElement(createNumberAndYearToDateTd(totalNumberOfResultValues, totalNumberOfResultValuesYtd)
                 .clazz("statistics-total-td"));
+        totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
+        P footnote = new P().id("footnote-1");
+        footnote.addElement(new Sup("1"));
+        footnote.addContent(" ");
+        footnote.addElement(new Span(" ").clazz("qualification-of-currency"));
+        footnote.addContent(": ");
+        footnote.addElement(new Span("■").clazz("up-to-date-color"));
+        footnote.addContent(" P ≥ 80 %, ");
+        footnote.addElement(new Span("●").clazz("probably-up-to-date-color"));
+        footnote.addContent(" 80 % > P ≥ 50 %, ");
+        footnote.addElement(new Span("●").clazz("possibly-out-of-date-color"));
+        footnote.addContent(" 50 % > P ≥ 20 %, ");
+        footnote.addElement(new Span("▲").clazz("probably-out-of-date-color"));
+        footnote.addContent(" 20 % > P ≥ 5 %, ");
+        footnote.addElement(new Span("▲").clazz("out-of-date-color"));
+        footnote.addContent(" 5 % > P.");
+        section.addElement(footnote);
         body.addElement(createFooter());
         return html;
     }

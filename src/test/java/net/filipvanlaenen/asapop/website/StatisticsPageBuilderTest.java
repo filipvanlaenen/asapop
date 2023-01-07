@@ -132,12 +132,19 @@ public class StatisticsPageBuilderTest {
                 + " class=\"number-of-response-scenarios\"> </span> (<span class=\"year-to-date\"> </span>)</th>\n");
         expected.append("            <th class=\"number-of-result-values-th\"><span"
                 + " class=\"number-of-result-values\"> </span> (<span class=\"year-to-date\"> </span>)</th>\n");
+        expected.append("            <th class=\"most-recent-date-th\">\n");
+        expected.append("              <span class=\"most-recent-date\"> </span>\n");
+        expected.append("              <sup>\n");
+        expected.append("                <a href=\"#footnote-1\">1</a>\n");
+        expected.append("              </sup>\n");
+        expected.append("            </th>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td class=\"total\"> </td>\n");
         expected.append("            <td class=\"statistics-total-td\">5 (3)</td>\n");
         expected.append("            <td class=\"statistics-total-td\">8 (4)</td>\n");
         expected.append("            <td class=\"statistics-total-td\">9 (5)</td>\n");
+        expected.append("            <td class=\"statistics-total-td\">2022-12-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("        </thead>\n");
         expected.append("        <tbody>\n");
@@ -148,6 +155,8 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">3 (2)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">5 (3)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">6 (4)</td>\n");
+        expected.append("            <td class=\"statistics-value-td\"><span class=\"up-to-date-color\">■</span>"
+                + " 2022-12-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>\n");
@@ -156,11 +165,14 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">2 (1)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
+        expected.append("            <td class=\"statistics-value-td\"><span class=\"up-to-date-color\">■</span>"
+                + " 2022-12-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_no\" href=\"no/index.html\"> </a>\n");
         expected.append("            </td>\n");
+        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
@@ -172,9 +184,16 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
+        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("          </tr>\n");
         expected.append("        </tbody>\n");
         expected.append("      </table>\n");
+        expected.append("      <p id=\"footnote-1\"><sup>1</sup> <span class=\"qualification-of-currency\"> </span>:"
+                + " <span class=\"up-to-date-color\">■</span> P ≥ 80 %,"
+                + " <span class=\"probably-up-to-date-color\">●</span> 80 % &gt; P ≥ 50 %, <span"
+                + " class=\"possibly-out-of-date-color\">●</span> 50 % &gt; P ≥ 20 %,"
+                + " <span class=\"probably-out-of-date-color\">▲</span> 20 % &gt; P ≥ 5 %,"
+                + " <span class=\"out-of-date-color\">▲</span> 5 % &gt; P.</p>\n");
         expected.append("    </section>\n");
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
