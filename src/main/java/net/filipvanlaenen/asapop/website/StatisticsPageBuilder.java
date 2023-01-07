@@ -35,7 +35,7 @@ final class StatisticsPageBuilder extends PageBuilder {
     /**
      * Enumeration modeling the qualification of currency.
      */
-    private enum CurrencyQualification {
+    static enum CurrencyQualification {
         /**
          * Up-to-date.
          */
@@ -105,10 +105,14 @@ final class StatisticsPageBuilder extends PageBuilder {
          * @param daysSinceLastOpinionPoll   The number of days since the last opinion poll.
          * @return The currency qualification.
          */
-        private static CurrencyQualification calculateCurrencyQualification(final double numberOfOpinionPollsPerDay,
+        static CurrencyQualification calculateCurrencyQualification(final double numberOfOpinionPollsPerDay,
                 final long daysSinceLastOpinionPoll) {
             if (daysSinceLastOpinionPoll <= SEVEN) {
-                return CurrencyQualification.UP_TO_DATE;
+                return UP_TO_DATE;
+            }
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+            if (numberOfOpinionPollsPerDay > 1D) {
+                return OUT_OF_DATE;
             }
             double probability = Math.pow(1D - numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll - SEVEN);
             for (CurrencyQualification qualification : values()) {
@@ -116,7 +120,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                     return qualification;
                 }
             }
-            return CurrencyQualification.OUT_OF_DATE;
+            // EQMU: Replacing the return value with null produces an equivalent mutant because the code is unreachable.
+            return OUT_OF_DATE;
         }
     }
 

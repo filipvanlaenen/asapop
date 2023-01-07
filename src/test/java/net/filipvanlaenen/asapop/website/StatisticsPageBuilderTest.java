@@ -159,8 +159,8 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">3 (2)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">5 (3)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">6 (4)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\"><span class=\"probably-up-to-date-color\">●</span>"
-                + " 2022-06-29</td>\n");
+        expected.append("            <td class=\"statistics-value-td\"><span"
+                + " class=\"probably-up-to-date-color\">●</span> 2022-06-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>\n");
@@ -169,8 +169,8 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">2 (1)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
         expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\"><span class=\"probably-up-to-date-color\">●</span>"
-                + " 2022-06-29</td>\n");
+        expected.append("            <td class=\"statistics-value-td\"><span"
+                + " class=\"probably-up-to-date-color\">●</span> 2022-06-29</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>\n");
@@ -218,5 +218,74 @@ public class StatisticsPageBuilderTest {
                 "<td>2<span class=\"thousands-separator\"> </span>345"
                         + " (1<span class=\"thousands-separator\"> </span>234)</td>",
                 StatisticsPageBuilder.createNumberAndYearToDateTd(LARGE_INTEGER_2345, LARGE_INTEGER_1234).asString());
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was seven days ago, the currency qualification is up-to-date.
+     */
+    @Test
+    public void mostRecentOpinionPollSevenDaysAgoShouldBeUpToDate() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.UP_TO_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(1.1D, 7));
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was eight days ago, and the number of opinion polls per days is
+     * more than one, the currency qualification is out-of-date.
+     */
+    @Test
+    public void moreThanOneOpinionPollPerDayShouldBeOutOfDateAfterEightDays() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.OUT_OF_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(1.1D, 8));
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was eight days ago, and the number of opinion polls per days is
+     * 0.2, the currency qualification is up-to-date.
+     */
+    @Test
+    public void averageOf0_2OpinionPollsPerDayShouldBeUpToDateAfterEightDays() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.UP_TO_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.2D, 8));
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was eight days ago, and the number of opinion polls per days is
+     * 0.5, the currency qualification is probably up-to-date.
+     */
+    @Test
+    public void averageOf0_5OpinionPollsPerDayShouldBeProbablyUpToDateAfterEightDays() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.PROBABLY_UP_TO_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.5D, 8));
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was eight days ago, and the number of opinion polls per days is
+     * 0.8, the currency qualification is possibly out-of-date.
+     */
+    @Test
+    public void averageOf0_8OpinionPollsPerDayShouldBePossiblyOutOfToDateAfterEightDays() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.POSSIBLY_OUT_OF_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.799D, 8));
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was eight days ago, and the number of opinion polls per days is
+     * 0.95, the currency qualification is probably out-of-date.
+     */
+    @Test
+    public void averageOf0_95OpinionPollsPerDayShouldBeProbablyOutOfToDateAfterEightDays() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.PROBABLY_OUT_OF_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.95D, 8));
+    }
+
+    /**
+     * Verifies that if the most recent opinion poll was eight days ago, and the number of opinion polls per days is
+     * 0.96, the currency qualification is out-of-date.
+     */
+    @Test
+    public void averageOf0_96OpinionPollsPerDayShouldBeOutOfToDateAfterEightDays() {
+        assertEquals(StatisticsPageBuilder.CurrencyQualification.OUT_OF_DATE,
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.951D, 8));
     }
 }
