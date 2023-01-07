@@ -112,6 +112,14 @@ terms:
       fr: "Accueil principal"
       nl: "Hoofdpagina"
       no: "Forside"
+  - key: "most-recent-date"
+    translations:
+      de: "Datum der letzten Umfrage"
+      en: "Date of Most Recent Opinion Poll"
+      eo: "Dato de la plej lasta opinisondo"
+      fr: "Date du sondage le plus récent"
+      nl: "Datum van recentste opiniepeiling"
+      no: "Dato for siste meningsmåling"
   - key: "no-later-than"
     translations:
       de: "Spätestens"
@@ -204,6 +212,14 @@ terms:
       fr: "Date de publication"
       nl: "Publicatiedatum"
       no: "Publiseringsdato"
+  - key: "qualification-of-currency"
+    translations:
+      de: "Qualifizierung der Aktualität"
+      en: "Qualification of currency"
+      eo: "Kvalifiko de aktualeco"
+      fr: "Qualification de mise à jour"
+      nl: "Kwalificatie van de bijgewerktheid"
+      no: "Kvalifisering av oppdaterthet"
   - key: "statistics"
     translations:
       de: "Statistiken"
