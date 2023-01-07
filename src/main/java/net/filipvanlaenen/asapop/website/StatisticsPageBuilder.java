@@ -35,7 +35,7 @@ final class StatisticsPageBuilder extends PageBuilder {
     /**
      * Enumeration modeling the qualification of currency.
      */
-    static enum CurrencyQualification {
+    enum CurrencyQualification {
         /**
          * Up-to-date.
          */
@@ -133,6 +133,11 @@ final class StatisticsPageBuilder extends PageBuilder {
      * The decimal format for integers, i.e. no decimals.
      */
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#,###", US_FORMAT_SYMBOLS);
+    /**
+     * The number of days in three years.
+     */
+    private static final int THREE_YEARS_AS_DAYS = 1 + 3 * 365;
+
     /**
      * Today's day.
      */
@@ -242,10 +247,10 @@ final class StatisticsPageBuilder extends PageBuilder {
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
-                LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(1096);
+                LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
                         opinionPolls.getNumberOfOpinionPolls(threeYearBeforeMostRecentDate);
-                double numberOfOpinionPollsPerDay = numberOfOpinionPollsLastThreeYears / 1096D;
+                double numberOfOpinionPollsPerDay = ((double) numberOfOpinionPollsLastThreeYears) / THREE_YEARS_AS_DAYS;
                 long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, now);
                 CurrencyQualification currencyQualification = CurrencyQualification
                         .calculateCurrencyQualification(numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll);

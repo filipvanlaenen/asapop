@@ -20,6 +20,38 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  */
 public class StatisticsPageBuilderTest {
     /**
+     * The magic number seven.
+     */
+    private static final int SEVEN = 7;
+    /**
+     * The magic number eight.
+     */
+    private static final int EIGHT = 8;
+    /**
+     * The magic number 0.2 (or slightly below).
+     */
+    private static final double UP_TO_0_2 = 0.2D;
+    /**
+     * The magic number 0.5 (or slightly below).
+     */
+    private static final double UP_TO_0_5 = 0.5D;
+    /**
+     * The magic number 0.8 (or slightly below).
+     */
+    private static final double UP_TO_0_8 = 0.7999D;
+    /**
+     * The magic number 0.95 (or slightly below).
+     */
+    private static final double UP_TO_0_95 = 0.95D;
+    /**
+     * A magic number slightly above 0.95.
+     */
+    private static final double ABOVE_0_95 = 0.9501D;
+    /**
+     * A magic number slightly above 1.
+     */
+    private static final double ABOVE_ONE = 1.0001D;
+    /**
      * The magic number 1,234.
      */
     private static final int LARGE_INTEGER_1234 = 1234;
@@ -226,7 +258,7 @@ public class StatisticsPageBuilderTest {
     @Test
     public void mostRecentOpinionPollSevenDaysAgoShouldBeUpToDate() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.UP_TO_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(1.1D, 7));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(ABOVE_ONE, SEVEN));
     }
 
     /**
@@ -236,7 +268,7 @@ public class StatisticsPageBuilderTest {
     @Test
     public void moreThanOneOpinionPollPerDayShouldBeOutOfDateAfterEightDays() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.OUT_OF_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(1.1D, 8));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(ABOVE_ONE, EIGHT));
     }
 
     /**
@@ -244,9 +276,9 @@ public class StatisticsPageBuilderTest {
      * 0.2, the currency qualification is up-to-date.
      */
     @Test
-    public void averageOf0_2OpinionPollsPerDayShouldBeUpToDateAfterEightDays() {
+    public void averageUpTo02OpinionPollsPerDayShouldBeUpToDateAfterEightDays() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.UP_TO_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.2D, 8));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(UP_TO_0_2, EIGHT));
     }
 
     /**
@@ -254,9 +286,9 @@ public class StatisticsPageBuilderTest {
      * 0.5, the currency qualification is probably up-to-date.
      */
     @Test
-    public void averageOf0_5OpinionPollsPerDayShouldBeProbablyUpToDateAfterEightDays() {
+    public void averageUpYo05OpinionPollsPerDayShouldBeProbablyUpToDateAfterEightDays() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.PROBABLY_UP_TO_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.5D, 8));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(UP_TO_0_5, EIGHT));
     }
 
     /**
@@ -264,9 +296,9 @@ public class StatisticsPageBuilderTest {
      * 0.8, the currency qualification is possibly out-of-date.
      */
     @Test
-    public void averageOf0_8OpinionPollsPerDayShouldBePossiblyOutOfToDateAfterEightDays() {
+    public void averageUpTo08OpinionPollsPerDayShouldBePossiblyOutOfToDateAfterEightDays() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.POSSIBLY_OUT_OF_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.799D, 8));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(UP_TO_0_8, EIGHT));
     }
 
     /**
@@ -274,9 +306,9 @@ public class StatisticsPageBuilderTest {
      * 0.95, the currency qualification is probably out-of-date.
      */
     @Test
-    public void averageOf0_95OpinionPollsPerDayShouldBeProbablyOutOfToDateAfterEightDays() {
+    public void averageUpTo095OpinionPollsPerDayShouldBeProbablyOutOfToDateAfterEightDays() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.PROBABLY_OUT_OF_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.95D, 8));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(UP_TO_0_95, EIGHT));
     }
 
     /**
@@ -284,8 +316,8 @@ public class StatisticsPageBuilderTest {
      * 0.96, the currency qualification is out-of-date.
      */
     @Test
-    public void averageOf0_96OpinionPollsPerDayShouldBeOutOfToDateAfterEightDays() {
+    public void averageAbove095OpinionPollsPerDayShouldBeOutOfToDateAfterEightDays() {
         assertEquals(StatisticsPageBuilder.CurrencyQualification.OUT_OF_DATE,
-                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(0.951D, 8));
+                StatisticsPageBuilder.CurrencyQualification.calculateCurrencyQualification(ABOVE_0_95, EIGHT));
     }
 }
