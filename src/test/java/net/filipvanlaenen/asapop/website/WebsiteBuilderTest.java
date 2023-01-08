@@ -115,7 +115,7 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
-                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, NOW, START_OF_YEAR);
+                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, NOW);
         assertEquals(map, builder.build().asMap());
     }
 }

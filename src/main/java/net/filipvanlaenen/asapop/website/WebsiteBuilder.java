@@ -55,12 +55,10 @@ public class WebsiteBuilder {
      * @param customStyleSheetContent The custom style sheet content.
      * @param navigationScriptContent The content of the navigation script.
      * @param now                     Today's date.
-     * @param startOfYear             The start of the year.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final String baseStyleSheetContent,
-            final String customStyleSheetContent, final String navigationScriptContent, final LocalDate now,
-            final LocalDate startOfYear) {
+            final String customStyleSheetContent, final String navigationScriptContent, final LocalDate now) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
@@ -68,7 +66,7 @@ public class WebsiteBuilder {
         this.customStyleSheetContent = customStyleSheetContent;
         this.navigationScriptContent = navigationScriptContent;
         this.now = now;
-        this.startOfYear = startOfYear;
+        this.startOfYear = now.withDayOfYear(1);
     }
 
     /**
