@@ -359,7 +359,7 @@ public class ExporterTest {
     public void shouldExportNoParticipationRateWhenExcludedIsMissing() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
-        assertNull(Exporter.exportParticipationRate(poll));
+        assertNull(Exporter.exportParticipationRate(poll.getMainResponseScenario(), poll));
     }
 
     /**
@@ -370,6 +370,6 @@ public class ExporterTest {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .setExcluded(DecimalNumber.parse("10")).addWellformedResult("A", "55").addWellformedResult("B", "43")
                 .build();
-        assertEquals("90", Exporter.exportParticipationRate(poll));
+        assertEquals("90", Exporter.exportParticipationRate(poll.getMainResponseScenario(), poll));
     }
 }

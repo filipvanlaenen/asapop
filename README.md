@@ -107,7 +107,7 @@ The table below gives an overview over the metadata fields and their use:
 |--------------|----------------------|----------------|-------------|-------------------|
 | A            | Area                 | Text           | 0…1         | Yes               |
 | C            | Commissioner         | Text           | 0…_n_       | No                |
-| EX           | Excluded responses   | Decimal Number | 0…1         | No                |
+| EX           | Excluded responses   | Decimal Number | 0…1         | Yes               |
 | FE           | Fieldwork end        | Date or Month  | 0…1         | No                |
 | FS           | Fieldwork start      | Date or Month  | 0…1         | No                |
 | N            | No responses         | Result Value   | 0…1         | Yes¹              |

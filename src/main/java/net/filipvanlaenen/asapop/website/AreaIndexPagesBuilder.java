@@ -2,14 +2,11 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,19 +93,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * The magic number 100.0.
      */
-    private static final double ONE_HUNDRED = 100.0;
-    /**
-     * The decimal format symbols for the US.
-     */
-    private static final DecimalFormatSymbols US_FORMAT_SYMBOLS = new DecimalFormatSymbols(Locale.US);
-    /**
-     * The decimal format for integers, i.e. no decimals.
-     */
-    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("0", US_FORMAT_SYMBOLS);
-    /**
-     * The decimal format for one decimal digit.
-     */
-    private static final DecimalFormat ONE_DECIMAL_FORMAT = new DecimalFormat("0.0", US_FORMAT_SYMBOLS);
+    private static final double ONE_HUNDRED = 100D;
+
     /**
      * A map with the opinion polls.
      */
@@ -230,8 +216,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 }
                 ResultValue.Precision precision =
                         ResultValue.Precision.getHighestPrecision(opinionPoll.getMainResponseScenario().getResults());
-                String otherText = precision == ResultValue.Precision.ONE ? INTEGER_FORMAT.format(other)
-                        : ONE_DECIMAL_FORMAT.format(other);
+                String otherText = precision.getFormat().format(other);
                 if (otherText.equals("-0")) {
                     otherText = "0";
                 }

@@ -76,7 +76,7 @@ public final class EopaodPsvExporter extends Exporter {
             elements.addAll(exportDates(opinionPoll));
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
-            elements.add(naIfNull(exportParticipationRate(opinionPoll)));
+            elements.add(naIfNull(exportParticipationRate(opinionPoll.getMainResponseScenario(), opinionPoll)));
             elements.add(calculatePrecision(opinionPoll, electoralListKeySets).toString());
             for (Set<String> electoralListKeySet : electoralListKeySets) {
                 elements.add(naIfNull(opinionPoll.getResult(electoralListKeySet)));
@@ -117,7 +117,7 @@ public final class EopaodPsvExporter extends Exporter {
         elements.addAll(exportDates(opinionPoll));
         elements.add(naIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
-        elements.add(naIfNull(exportParticipationRate(opinionPoll)));
+        elements.add(naIfNull(exportParticipationRate(responseScenario, opinionPoll)));
         elements.add(calculatePrecision(responseScenario, electoralListKeySets).toString());
         for (Set<String> electoralListKeySet : electoralListKeySets) {
             elements.add(naIfNull(responseScenario.getResult(electoralListKeySet)));

@@ -18,6 +18,10 @@ public final class ResponseScenario {
      */
     private String area;
     /**
+     * The share of excluded responses.
+     */
+    private DecimalNumber excluded;
+    /**
      * The result for no responses.
      */
     private ResultValue noResponses;
@@ -34,6 +38,10 @@ public final class ResponseScenario {
      */
     private String sampleSize;
     /**
+     * The scale.
+     */
+    private double scale;
+    /**
      * The scope.
      */
     private Scope scope;
@@ -45,10 +53,12 @@ public final class ResponseScenario {
      */
     private ResponseScenario(final Builder builder) {
         area = builder.area;
+        excluded = builder.excluded;
         noResponses = builder.noResponses;
         other = builder.other;
         results = Collections.unmodifiableMap(builder.results);
         sampleSize = builder.sampleSize;
+        scale = builder.calculateScale();
         scope = builder.scope;
     }
 
@@ -64,6 +74,10 @@ public final class ResponseScenario {
          * The area.
          */
         private String area;
+        /**
+         * The share of excluded responses.
+         */
+        private DecimalNumber excluded;
         /**
          * The result for no responses.
          */
@@ -129,12 +143,74 @@ public final class ResponseScenario {
         }
 
         /**
+         * Calculates the scale. If the results add up, the scale is 1D, and otherwise the sum of all results.
+         *
+         * @return The scale.
+         */
+        Double calculateScale() {
+            if (!resultsAddUp()) {
+                return calculateResultsAndOtherSum() / ONE_HUNDRED;
+            } else if (hasNoResponses()) {
+                return 1D - noResponses.getNominalValue() / ONE_HUNDRED;
+            } else {
+                return 1D;
+            }
+        }
+
+        /**
+         * Calculates the sum of the results and other.
+         *
+         * @return The sum of the results and other.
+         */
+        private double calculateResultsAndOtherSum() {
+            double sum = 0D;
+            for (ResultValue resultValue : results.values()) {
+                Double value = resultValue.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            if (hasOther()) {
+                Double value = other.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            return sum;
+        }
+
+        /**
+         * Calculates the sum.
+         *
+         * @return The sum.
+         */
+        private double calculateSum() {
+            double sum = calculateResultsAndOtherSum();
+            if (hasNoResponses()) {
+                Double value = noResponses.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            return sum;
+        }
+
+        /**
          * Returns whether an area has been registered in this builder instance.
          *
          * @return True if an area has been registered in this builder instance.
          */
         public boolean hasArea() {
             return area != null;
+        }
+
+        /**
+         * Returns whether excluded has been registered in this builder instance.
+         *
+         * @return True if excluded has been registered in this builder instance.
+         */
+        public boolean hasExcluded() {
+            return excluded != null;
         }
 
         /**
@@ -191,27 +267,13 @@ public final class ResponseScenario {
         public boolean resultsAddUp() {
             int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
             Precision precision = Precision.getHighestPrecision(results.values());
-            double sum = 0D;
-            for (ResultValue resultValue : results.values()) {
-                Double value = resultValue.getNominalValue();
-                if (value != null) {
-                    sum += value;
-                }
-            }
             if (hasOther()) {
                 precision = Precision.highest(precision, other.getPrecision());
-                Double value = other.getNominalValue();
-                if (value != null) {
-                    sum += value;
-                }
             }
             if (hasNoResponses()) {
                 precision = Precision.highest(precision, noResponses.getPrecision());
-                Double value = noResponses.getNominalValue();
-                if (value != null) {
-                    sum += value;
-                }
             }
+            double sum = calculateSum();
             double epsilon = ((n - 1) / 2) * precision.getValue();
             return (ONE_HUNDRED - epsilon <= sum || !hasOther() || !hasNoResponses()) && sum <= ONE_HUNDRED + epsilon;
         }
@@ -224,6 +286,17 @@ public final class ResponseScenario {
          */
         public Builder setArea(final String areaCode) {
             this.area = areaCode;
+            return this;
+        }
+
+        /**
+         * Sets the share of excluded responses.
+         *
+         * @param excludedShare The share of the excluded responses.
+         * @return This build instance.
+         */
+        public Builder setExcluded(final DecimalNumber excludedShare) {
+            this.excluded = excludedShare;
             return this;
         }
 
@@ -297,6 +370,7 @@ public final class ResponseScenario {
         if (obj instanceof ResponseScenario) {
             ResponseScenario otherResponseScenario = (ResponseScenario) obj;
             return equalsOrBothNull(area, otherResponseScenario.area)
+                    && equalsOrBothNull(excluded, otherResponseScenario.excluded)
                     && equalsOrBothNull(noResponses, otherResponseScenario.noResponses)
                     && equalsOrBothNull(other, otherResponseScenario.other)
                     && otherResponseScenario.results.equals(results)
@@ -334,6 +408,15 @@ public final class ResponseScenario {
      */
     public Set<Set<ElectoralList>> getElectoralListSets() {
         return results.keySet();
+    }
+
+    /**
+     * Returns the share of excluded responses.
+     *
+     * @return The share of excluded responses.
+     */
+    public DecimalNumber getExcluded() {
+        return excluded;
     }
 
     /**
@@ -383,6 +466,15 @@ public final class ResponseScenario {
     }
 
     /**
+     * Returns the scale.
+     *
+     * @return The scale.
+     */
+    public Double getScale() {
+        return scale;
+    }
+
+    /**
      * Returns the scope.
      *
      * @return The scope.
@@ -393,6 +485,6 @@ public final class ResponseScenario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(area, noResponses, other, results, sampleSize, scope);
+        return Objects.hash(area, excluded, noResponses, other, results, sampleSize, scope);
     }
 }

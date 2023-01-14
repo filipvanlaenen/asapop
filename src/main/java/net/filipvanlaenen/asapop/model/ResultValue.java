@@ -1,6 +1,9 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -8,22 +11,39 @@ import java.util.Objects;
  */
 public final class ResultValue {
     /**
+     * The decimal format symbols for the US.
+     */
+    private static final DecimalFormatSymbols US_FORMAT_SYMBOLS = new DecimalFormatSymbols(Locale.US);
+    /**
+     * The decimal format for integers, i.e. no decimals.
+     */
+    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("0", US_FORMAT_SYMBOLS);
+    /**
+     * The decimal format for one decimal digit.
+     */
+    private static final DecimalFormat ONE_DECIMAL_FORMAT = new DecimalFormat("0.0", US_FORMAT_SYMBOLS);
+
+    /**
      * Enumeration with the precisions for result values.
      */
     public enum Precision {
         /**
          * A precision of 1.
          */
-        ONE("1", 1D),
+        ONE("1", 1D, INTEGER_FORMAT),
         /**
          * A precision of 0.5.
          */
-        HALF("0.5", 0.5D),
+        HALF("0.5", 0.5D, ONE_DECIMAL_FORMAT),
         /**
          * A precision of 0.1.
          */
-        TENTH("0.1", 0.1D);
+        TENTH("0.1", 0.1D, ONE_DECIMAL_FORMAT);
 
+        /**
+         * The decimal format of the precision.
+         */
+        private final DecimalFormat format;
         /**
          * The string representation of the precision.
          */
@@ -38,10 +58,21 @@ public final class ResultValue {
          *
          * @param stringValue The string representation of the precision.
          * @param value       The numerical value of the precision.
+         * @param format      The decimal format of the precision.
          */
-        Precision(final String stringValue, final double value) {
+        Precision(final String stringValue, final double value, final DecimalFormat format) {
             this.stringValue = stringValue;
             this.value = value;
+            this.format = format;
+        }
+
+        /**
+         * Returns the decimal format of the precision.
+         *
+         * @return The decimal format of the precision.
+         */
+        public DecimalFormat getFormat() {
+            return format;
         }
 
         /**
@@ -123,7 +154,7 @@ public final class ResultValue {
         try {
             return Double.parseDouble(getPrimitiveText());
         } catch (NumberFormatException nfe) {
-            return null;
+            return 0D;
         }
     }
 

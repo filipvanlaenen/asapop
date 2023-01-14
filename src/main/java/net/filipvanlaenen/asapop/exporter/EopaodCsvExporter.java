@@ -12,6 +12,7 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.model.ResultValue.Precision;
 import net.filipvanlaenen.asapop.model.Scope;
 
 /**
@@ -109,11 +110,13 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
             elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
             elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
-            elements.add(calculatePrecision(opinionPoll, electoralListKeySets) + "%");
+            Precision precision = calculatePrecision(opinionPoll, electoralListKeySets);
+            elements.add(precision + "%");
+            Double scale = opinionPoll.getScale();
             for (Set<String> electoralListKeySet : electoralListKeySets) {
-                elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListKeySet)));
+                elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListKeySet), precision, scale));
             }
-            elements.add(percentageOrNotAvailable(opinionPoll.getOther()));
+            elements.add(percentageOrNotAvailable(opinionPoll.getOther(), precision, scale));
             lines.add(String.join(",", elements));
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
@@ -152,12 +155,14 @@ public final class EopaodCsvExporter extends Exporter {
         String sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
         elements.add(notAvailableIfNull(sampleSize));
         elements.add(sampleSize == null ? "Not Available" : "Provided");
-        elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
-        elements.add(calculatePrecision(responseScenario, electoralListKeySets) + "%");
+        elements.add(notAvailableIfNull(exportParticipationRatePercentage(responseScenario, opinionPoll)));
+        Precision precision = calculatePrecision(responseScenario, electoralListKeySets);
+        elements.add(precision + "%");
+        Double scale = responseScenario.getScale();
         for (Set<String> electoralListKeySet : electoralListKeySets) {
-            elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListKeySet)));
+            elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListKeySet), precision, scale));
         }
-        elements.add(percentageOrNotAvailable(responseScenario.getOther()));
+        elements.add(percentageOrNotAvailable(responseScenario.getOther(), precision, scale));
         return String.join(",", elements);
     }
 
@@ -168,7 +173,24 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string representing the participation rate as a percentage.
      */
     private static String exportParticipationRatePercentage(final OpinionPoll opinionPoll) {
-        String participationRate = exportParticipationRate(opinionPoll);
+        String participationRate = exportParticipationRate(opinionPoll.getMainResponseScenario(), opinionPoll);
+        if (participationRate == null) {
+            return null;
+        } else {
+            return participationRate + "%";
+        }
+    }
+
+    /**
+     * Exports the participation rate of the response scenario as a percentage.
+     *
+     * @param responseScenario The response scenario for which to export the participation rate as a percentage.
+     * @param opinionPoll      The opinion poll for which to export the participation rate as a percentage.
+     * @return A string representing the participation rate as a percentage.
+     */
+    private static String exportParticipationRatePercentage(final ResponseScenario responseScenario,
+            final OpinionPoll opinionPoll) {
+        String participationRate = exportParticipationRate(responseScenario, opinionPoll);
         if (participationRate == null) {
             return null;
         } else {
@@ -197,12 +219,19 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
-     * Returns the string with a percentage sign added if it isn't null, and the string "Not Available" otherwise.
+     * Returns the result value with a percentage sign added if it isn't null, and the string "Not Available" otherwise.
      *
-     * @param s The string.
+     * @param resultValue The result value.
      * @return "Not Available" if the string is null, and otherwise the string with a percentage sign added.
      */
-    private static String percentageOrNotAvailable(final ResultValue s) {
-        return s == null ? "Not Available" : s.getPrimitiveText() + "%";
+    private static String percentageOrNotAvailable(final ResultValue resultValue, final Precision precision,
+            final Double scale) {
+        if (resultValue == null) {
+            return "Not Available";
+        } else if (scale == 1D) {
+            return resultValue.getPrimitiveText() + "%";
+        } else {
+            return precision.getFormat().format(resultValue.getNominalValue() / scale) + "%";
+        }
     }
 }

@@ -34,10 +34,6 @@ final class OpinionPollLine extends Line {
      */
     private static final Pattern DATE_OR_MONTH_PATTERN = Pattern.compile("^\\d{4}-\\d{2}(-\\d{2})?$");
     /**
-     * The pattern to match a decimal number.
-     */
-    private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
-    /**
      * The pattern to match an opinion poll line.
      */
     private static final Pattern OPINION_POLL_PATTERN = Pattern.compile("^\\s*" + METADATA_MARKER_PATTERN

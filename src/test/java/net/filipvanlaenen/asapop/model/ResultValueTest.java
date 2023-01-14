@@ -206,7 +206,7 @@ public final class ResultValueTest {
      * Verifies the calculation of the nominal value for a malformed number.
      */
     @Test
-    public void nominalValueOfMalformedNumberShouldBeNull() {
-        assertNull(new ResultValue("a").getNominalValue());
+    public void nominalValueOfMalformedNumberShouldBeZero() {
+        assertEquals(0D, new ResultValue("a").getNominalValue());
     }
 }

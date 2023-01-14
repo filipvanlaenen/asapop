@@ -719,6 +719,15 @@ public final class OpinionPoll {
     }
 
     /**
+     * Returns the scale.
+     *
+     * @return The scale.
+     */
+    public Double getScale() {
+        return mainResponseScenario.getScale();
+    }
+
+    /**
      * Returns the scope.
      *
      * @return The scope.

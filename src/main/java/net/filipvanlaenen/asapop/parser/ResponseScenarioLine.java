@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.Scope;
 
@@ -147,6 +148,16 @@ final class ResponseScenarioLine extends Line {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 builder.setArea(value);
+            }
+            break;
+        case "EX":
+            if (builder.hasExcluded()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+            } else if (textMatchesPattern(DECIMAL_NUMBER_PATTERN, value)) {
+                DecimalNumber excluded = DecimalNumber.parse(value);
+                builder.setExcluded(excluded);
+            } else {
+                warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
             }
             break;
         case "N":

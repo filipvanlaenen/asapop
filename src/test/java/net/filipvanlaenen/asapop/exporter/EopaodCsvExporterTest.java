@@ -195,7 +195,7 @@ public class EopaodCsvExporterTest {
      * Verifies the correct export of a simple opinion poll with excluded responses.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithExcludedResponsesCorrectly() {
+    public void shouldExportOpinionPollWithExcludedResponsesCorrectly() {
         OpinionPoll poll =
                 new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).addWellformedResult("A", "55")
                         .addWellformedResult("B", "43").setExcluded(DecimalNumber.parse("10")).build();
@@ -208,11 +208,24 @@ public class EopaodCsvExporterTest {
      * Verifies the correct export of a simple opinion poll with a result for other.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithOtherResultCorrectly() {
+    public void shouldExportOpinionPollWithOtherResultCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedOther("2").build();
         String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
                 + ",Not Available,1%,55%,43%,2%";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
+    }
+
+    /**
+     * Verifies the correct export of a simple opinion poll with a result for no responses and other.
+     */
+    @Test
+    public void shouldExportOpinionPollWithNoResponsesAndOtherResultCorrectly() {
+        OpinionPoll poll =
+                new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).addWellformedResult("A", "50")
+                        .addWellformedResult("B", "40").setWellformedNoResponses("8").setWellformedOther("2").build();
+        String expected =
+                "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available" + ",92%,1%,54%,43%,2%";
         assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
     }
 
@@ -318,7 +331,7 @@ public class EopaodCsvExporterTest {
      * Verifies the correct export of a simple response scenario for an opinion poll with a result for other.
      */
     @Test
-    public void shouldExportSimpleResponseScenarioWithOtherResultCorrectly() {
+    public void shouldExportResponseScenarioWithOtherResultCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).build();
         ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").setWellformedOther("2").build();
@@ -328,10 +341,23 @@ public class EopaodCsvExporterTest {
     }
 
     /**
+     * Verifies the correct export of a response scenario with a result for no responses and other.
+     */
+    @Test
+    public void shouldExportResponseScenarioWithNoResponsesAndOtherResultCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE).build();
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "50")
+                .addWellformedResult("B", "40").setWellformedNoResponses("8").setWellformedOther("2").build();
+        String expected =
+                "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available" + ",92%,1%,54%,43%,2%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B));
+    }
+
+    /**
      * Verifies the correct export of a simple response scenario for an opinion poll with excluded responses.
      */
     @Test
-    public void shouldExportSimpleResponseScenarioWithExcludedResponsesCorrectly() {
+    public void shouldExportResponseScenarioWithExcludedResponsesCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
                 .setExcluded(DecimalNumber.parse("10")).build();
         ResponseScenario responseScenario =
@@ -345,7 +371,7 @@ public class EopaodCsvExporterTest {
      * Verifies the correct export of a simple opinion poll with commas in the polling firm and the commissioner.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithCommasInPollingFirmAndCommissionerCorrectly() {
+    public void shouldExportOpinionPollWithCommasInPollingFirmAndCommissionerCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("AC,ME").addCommissioner("Times, The")
                 .setPublicationDate(DATE).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         String expected = "\"AC,ME\",\"Times, The\",2021-08-02,2021-08-02,Not Available,Not Available,Not Available"
@@ -357,7 +383,7 @@ public class EopaodCsvExporterTest {
      * Verifies the correct export of a simple response scenario with commas in the polling firm and the commissioner.
      */
     @Test
-    public void shouldExportSimpleResponseScenarioWithCommasInPollingFirmAndCommissionerCorrectly() {
+    public void shouldExportResponseScenarioWithCommasInPollingFirmAndCommissionerCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("AC,ME").addCommissioner("Times, The")
                 .setPublicationDate(DATE).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
         ResponseScenario responseScenario =

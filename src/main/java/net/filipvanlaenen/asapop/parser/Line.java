@@ -10,6 +10,10 @@ import net.filipvanlaenen.asapop.model.Scope;
  */
 abstract class Line {
     /**
+     * The pattern to match a decimal number.
+     */
+    static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
+    /**
      * The string for the pattern to match a metadata marker.
      */
     static final String METADATA_MARKER_PATTERN = "•";

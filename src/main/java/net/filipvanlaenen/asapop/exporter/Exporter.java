@@ -157,15 +157,21 @@ public abstract class Exporter {
     }
 
     /**
-     * Exports the participation rate.
+     * Exports the participation rate from a response scenario.
      *
-     * @param opinionPoll The opinion poll to export the participation rate for.
-     * @return A string representing the participation rate for the opinion poll.
+     * @param responseScenario The response scenario to export the participation rate for.
+     * @return A string representing the participation rate for the response scenario.
      */
-    static String exportParticipationRate(final OpinionPoll opinionPoll) {
-        DecimalNumber excluded = opinionPoll.getExcluded();
+    static String exportParticipationRate(final ResponseScenario responseScenario, final OpinionPoll opinionPoll) {
+        ResultValue noResponses = responseScenario.getNoResponses();
+        DecimalNumber excluded = responseScenario.getExcluded();
         if (excluded == null) {
+            excluded = opinionPoll.getExcluded();
+        }
+        if (noResponses == null && excluded == null) {
             return null;
+        } else if (noResponses != null) {
+            return noResponses.getPrecision().getFormat().format(ONE_HUNDRED - noResponses.getNominalValue());
         } else {
             return new DecimalNumber(ONE_HUNDRED - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
         }
