@@ -160,6 +160,7 @@ public abstract class Exporter {
      * Exports the participation rate from a response scenario.
      *
      * @param responseScenario The response scenario to export the participation rate for.
+     * @param opinionPoll      The opinion poll the response scenario belongs to.
      * @return A string representing the participation rate for the response scenario.
      */
     static String exportParticipationRate(final ResponseScenario responseScenario, final OpinionPoll opinionPoll) {

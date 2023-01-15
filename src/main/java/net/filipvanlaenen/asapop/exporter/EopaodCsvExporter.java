@@ -222,6 +222,8 @@ public final class EopaodCsvExporter extends Exporter {
      * Returns the result value with a percentage sign added if it isn't null, and the string "Not Available" otherwise.
      *
      * @param resultValue The result value.
+     * @param precision   The precision to be used.
+     * @param scale       The scale to be used.
      * @return "Not Available" if the string is null, and otherwise the string with a percentage sign added.
      */
     private static String percentageOrNotAvailable(final ResultValue resultValue, final Precision precision,

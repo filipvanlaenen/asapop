@@ -155,6 +155,8 @@ public final class EopaodPsvExporter extends Exporter {
      * Returns the result value's text if it isn't null, and the string "N/A" otherwise.
      *
      * @param resultValue The result value.
+     * @param precision   The precision to be used.
+     * @param scale       The scale to be used.
      * @return "N/A" if the string is null, and otherwise the string as provided.
      */
     private static String naIfNull(final ResultValue resultValue, final Precision precision, final Double scale) {
