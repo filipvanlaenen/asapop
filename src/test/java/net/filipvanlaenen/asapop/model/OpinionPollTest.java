@@ -18,6 +18,10 @@ import org.junit.jupiter.api.Test;
  */
 public class OpinionPollTest {
     /**
+     * The magic number 0.88.
+     */
+    private static final double SCALE088 = 0.88D;
+    /**
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
@@ -209,6 +213,25 @@ public class OpinionPollTest {
     @Test
     public void hasNoResponsesInBuilderShouldReturnTrueAfterNoResponsesIsAdded() {
         assertTrue(new OpinionPoll.Builder().setWellformedNoResponses("12").hasNoResponses());
+    }
+
+    /**
+     * Verifies that the scale is set to 1D when there are no other or no responses.
+     */
+    @Test
+    public void getScaleReturnsOneWhenNoOtherOrNoResponsesAreRegistered() {
+        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
+        assertEquals(1D, poll.getScale());
+    }
+
+    /**
+     * Verifies that the scale is set to 1D when there are no no responses.
+     */
+    @Test
+    public void getScaleReturnsMoreThanOneWhenNoResponsesAreRegistered() {
+        OpinionPoll poll =
+                new OpinionPoll.Builder().addWellformedResult("A", "55").setWellformedNoResponses("12").build();
+        assertEquals(SCALE088, poll.getScale());
     }
 
     /**
