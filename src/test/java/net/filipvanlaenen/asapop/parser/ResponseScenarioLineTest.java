@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.Scope;
 
@@ -150,6 +151,17 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that String with a single line containing a response scenario with a different excluded can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithExcluded() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •EX: 10 A:55 B:43", 1);
+        ResponseScenario expected = new ResponseScenario.Builder().setExcluded(DecimalNumber.parse("10"))
+                .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
      * Verifies that a wellformed line doesn't produce a warning while parsing.
      */
     @Test
@@ -205,6 +217,16 @@ public final class ResponseScenarioLineTest {
     public void shouldProduceAWarningForAnUnknownScopeValue() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", 1);
         Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line with a malformed decimal number for excluded produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse("& •SS: 999 •EX: X A:55 B:43", 1);
+        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
