@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -151,6 +154,15 @@ public final class ResultValueTest {
     @Test
     public void valueOfPrecisionHalfShouldBe05() {
         assertEquals(DOUBLE_0_5, ResultValue.Precision.HALF.getValue());
+    }
+
+    /**
+     * Verifies the format of a precision.
+     */
+    @Test
+    public void formatOfPrecisionHalfShouldBeOneDigit() {
+        DecimalFormat expected = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
+        assertEquals(expected, ResultValue.Precision.HALF.getFormat());
     }
 
     /**
