@@ -11,6 +11,7 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.ResultValue.Precision;
 
 /**
  * Exporter to the EOPAOD PSV file format.
@@ -77,11 +78,13 @@ public final class EopaodPsvExporter extends Exporter {
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
             elements.add(naIfNull(exportParticipationRate(opinionPoll.getMainResponseScenario(), opinionPoll)));
-            elements.add(calculatePrecision(opinionPoll, electoralListKeySets).toString());
+            Precision precision = calculatePrecision(opinionPoll, electoralListKeySets);
+            elements.add(precision.toString());
+            Double scale = opinionPoll.getScale();
             for (Set<String> electoralListKeySet : electoralListKeySets) {
-                elements.add(naIfNull(opinionPoll.getResult(electoralListKeySet)));
+                elements.add(naIfNull(opinionPoll.getResult(electoralListKeySet), precision, scale));
             }
-            elements.add(naIfNull(opinionPoll.getOther()));
+            elements.add(naIfNull(opinionPoll.getOther(), precision, scale));
             lines.add(String.join(" | ", elements));
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
@@ -118,11 +121,13 @@ public final class EopaodPsvExporter extends Exporter {
         elements.add(naIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
         elements.add(naIfNull(exportParticipationRate(responseScenario, opinionPoll)));
-        elements.add(calculatePrecision(responseScenario, electoralListKeySets).toString());
+        Precision precision = calculatePrecision(responseScenario, electoralListKeySets);
+        elements.add(precision.toString());
+        Double scale = responseScenario.getScale();
         for (Set<String> electoralListKeySet : electoralListKeySets) {
-            elements.add(naIfNull(responseScenario.getResult(electoralListKeySet)));
+            elements.add(naIfNull(responseScenario.getResult(electoralListKeySet), precision, scale));
         }
-        elements.add(naIfNull(responseScenario.getOther()));
+        elements.add(naIfNull(responseScenario.getOther(), precision, scale));
         return String.join(" | ", elements);
     }
 
@@ -149,10 +154,16 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Returns the result value's text if it isn't null, and the string "N/A" otherwise.
      *
-     * @param s The result value.
+     * @param resultValue The result value.
      * @return "N/A" if the string is null, and otherwise the string as provided.
      */
-    private static String naIfNull(final ResultValue s) {
-        return s == null ? "N/A" : s.getPrimitiveText();
+    private static String naIfNull(final ResultValue resultValue, final Precision precision, final Double scale) {
+        if (resultValue == null) {
+            return "N/A";
+        } else if (scale == 1D) {
+            return resultValue.getPrimitiveText();
+        } else {
+            return precision.getFormat().format(resultValue.getNominalValue() / scale);
+        }
     }
 }

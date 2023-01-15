@@ -99,50 +99,50 @@ public class ExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with a polling firm without a polling firm partner.
+     * Verifies the correct export of a opinion poll with a polling firm without a polling firm partner.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithPollingFirmWithoutPollingFirmPartner() {
+    public void shouldExportOpinionPollWithPollingFirmWithoutPollingFirmPartner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("ACME", Exporter.exportPollingFirms(poll));
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with a polling firm and a polling firm partner.
+     * Verifies the correct export of a opinion poll with a polling firm and a polling firm partner.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithPollingFirmAndPollingFirmPartner() {
+    public void shouldExportOpinionPollWithPollingFirmAndPollingFirmPartner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPollingFirmPartner("EMCA")
                 .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("ACME and EMCA", Exporter.exportPollingFirms(poll));
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with no commissioner.
+     * Verifies the correct export of a opinion poll with no commissioner.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithNoCommissioner() {
+    public void shouldExportOpinionPollWithNoCommissioner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertNull(Exporter.exportCommissioners(poll));
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with one commissioner.
+     * Verifies the correct export of a opinion poll with one commissioner.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithOneCommissioner() {
+    public void shouldExportOpinionPollWithOneCommissioner() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
                 .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
         assertEquals("The Times", Exporter.exportCommissioners(poll));
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with two commissioners.
+     * Verifies the correct export of a opinion poll with two commissioners.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithTwoCommissioners() {
+    public void shouldExportOpinionPollWithTwoCommissioners() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
                 .addCommissioner("The Post").setPublicationDate(DATE1).addWellformedResult("A", "55")
                 .addWellformedResult("B", "43").build();
@@ -150,10 +150,10 @@ public class ExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with three commissioners.
+     * Verifies the correct export of a opinion poll with three commissioners.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithThreeCommissioners() {
+    public void shouldExportOpinionPollWithThreeCommissioners() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
                 .addCommissioner("The Post").addCommissioner("The Mail").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
@@ -161,20 +161,20 @@ public class ExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with results having half of a percent for other.
+     * Verifies the correct export of a opinion poll with results having half of a percent for other.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithAResultWithHalfAPercentOther() {
+    public void shouldExportOpinionPollWithAResultWithHalfAPercentOther() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55.0").addWellformedResult("B", "43").setWellformedOther("0.5").build();
         assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(poll, A_AND_B));
     }
 
     /**
-     * Verifies the correct export of a simple opinion poll with results having a tenth of a percent.
+     * Verifies the correct export of a opinion poll with results having a tenth of a percent.
      */
     @Test
-    public void shouldExportSimpleOpinionPollWithAResultWithTenthOfAPercent() {
+    public void shouldExportOpinionPollWithAResultWithTenthOfAPercent() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
                 .addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(poll, A_AND_B));
@@ -201,10 +201,10 @@ public class ExporterTest {
     }
 
     /**
-     * Verifies the correct export of a simple response scenario with results having a tenth of a percent.
+     * Verifies the correct export of a response scenario with results having a tenth of a percent.
      */
     @Test
-    public void shouldExportSimpleResponseScenarioWithAResultWithTenthOfAPercent() {
+    public void shouldExportResponseScenarioWithAResultWithTenthOfAPercent() {
         ResponseScenario responseScenario =
                 new ResponseScenario.Builder().addWellformedResult("A", "55.4").addWellformedResult("B", "43").build();
         assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(responseScenario, A_AND_B));
