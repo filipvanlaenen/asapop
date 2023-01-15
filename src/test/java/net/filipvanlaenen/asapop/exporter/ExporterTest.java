@@ -372,4 +372,26 @@ public class ExporterTest {
                 .build();
         assertEquals("90", Exporter.exportParticipationRate(poll.getMainResponseScenario(), poll));
     }
+
+    /**
+     * Verifies that correct participation rate is exported according to no responses.
+     */
+    @Test
+    public void shouldExportParticipationRateCorrectlyForNoResponses() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
+                .addWellformedResult("A", "55").addWellformedResult("B", "43").setNoResponses(new ResultValue("10"))
+                .build();
+        assertEquals("90", Exporter.exportParticipationRate(poll.getMainResponseScenario(), poll));
+    }
+
+    /**
+     * Verifies that correct participation rate is exported according to no responses even if excluded is also present.
+     */
+    @Test
+    public void shouldExportParticipationRateCorrectlyForNoResponsesEvenIfExcludedIsPresent() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
+                .setExcluded(DecimalNumber.parse("15")).addWellformedResult("A", "55").addWellformedResult("B", "43")
+                .setNoResponses(new ResultValue("10")).build();
+        assertEquals("90", Exporter.exportParticipationRate(poll.getMainResponseScenario(), poll));
+    }
 }
