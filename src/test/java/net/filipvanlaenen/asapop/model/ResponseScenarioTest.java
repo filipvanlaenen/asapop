@@ -14,6 +14,11 @@ import org.junit.jupiter.api.Test;
  */
 public class ResponseScenarioTest {
     /**
+     * The magic number 0.88.
+     */
+    private static final double SCALE088 = 0.88D;
+
+    /**
      * Verifies that getElectoralLists returns the electoral lists of the response scenario.
      */
     @Test
@@ -111,6 +116,35 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that the scale is set to 1D when there are no other or no responses.
+     */
+    @Test
+    public void getScaleReturnsOneWhenNoOtherOrNoResponsesAreRegistered() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        assertEquals(1D, responseScenario.getScale());
+    }
+
+    /**
+     * Verifies that the scale is calculated correctly when there are no responses.
+     */
+    @Test
+    public void getScaleReturnsMoreThanOneWhenNoResponsesAreRegistered() {
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().addWellformedResult("A", "55").setWellformedNoResponses("12").build();
+        assertEquals(SCALE088, responseScenario.getScale());
+    }
+
+    /**
+     * Verifies that the scale is calculated correctly when the results don't add up.
+     */
+    @Test
+    public void getScaleReturnsMoreThanOneWhenResultsDoNotAddUp() {
+        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").setWellformedOther("33")
+                .setWellformedNoResponses("2").build();
+        assertEquals(SCALE088, poll.getScale());
+    }
+
+    /**
      * Verifies that the setArea method in the builder class is wired correctly to the getArea method.
      */
     @Test
@@ -158,6 +192,32 @@ public class ResponseScenarioTest {
     @Test
     public void hasScopeInBuilderShouldReturnTrueAfterScopeIsAdded() {
         assertTrue(new ResponseScenario.Builder().setScope(Scope.National).hasScope());
+    }
+
+    /**
+     * Verifies that the setExcluded method in the builder class is wired correctly to the getExcluded method.
+     */
+    @Test
+    public void setExcludedInBuilderShouldBeWiredCorrectlyToGetExcluded() {
+        DecimalNumber expected = DecimalNumber.parse("10");
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setExcluded(expected).build();
+        assertEquals(expected, responseScenario.getExcluded());
+    }
+
+    /**
+     * Verifies that before excluded has been added, the builder responds that excluded is missing.
+     */
+    @Test
+    public void hasExcludedInBuilderShouldReturnFalseBeforeExcludedIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasExcluded());
+    }
+
+    /**
+     * Verifies that after excluded has been added, the builder responds that excluded is present.
+     */
+    @Test
+    public void hasExcludedInBuilderShouldReturnTrueAfterExcludedIsAdded() {
+        assertTrue(new ResponseScenario.Builder().setExcluded(DecimalNumber.parse("12")).hasExcluded());
     }
 
     /**

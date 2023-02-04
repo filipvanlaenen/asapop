@@ -225,7 +225,7 @@ public class OpinionPollTest {
     }
 
     /**
-     * Verifies that the scale is set to 1D when there are no no responses.
+     * Verifies that the scale is calculated correctly when there are no responses.
      */
     @Test
     public void getScaleReturnsMoreThanOneWhenNoResponsesAreRegistered() {
