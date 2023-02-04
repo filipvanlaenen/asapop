@@ -195,13 +195,17 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     opinionPollRow.addElement(new TD(pollingFirm + " / " + commissionerText));
                 }
                 Double other = ONE_HUNDRED;
+                Double scale = opinionPoll.getScale();
+                ResultValue.Precision precision =
+                        ResultValue.Precision.getHighestPrecision(opinionPoll.getMainResponseScenario().getResults());
                 for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
                     ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
                     if (resultValue == null) {
                         opinionPollRow.addElement(new TD("—").clazz("result-value-td"));
                     } else {
                         other -= resultValue.getNominalValue();
-                        String text = resultValue.getText();
+                        String text = (scale == 1D) ? resultValue.getText()
+                                : precision.getFormat().format(resultValue.getNominalValue() / scale);
                         int decimalPointIndex = text.indexOf(".");
                         if (decimalPointIndex == -1) {
                             opinionPollRow.addElement(new TD(text + "%").clazz("result-value-td"));
@@ -214,9 +218,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                         }
                     }
                 }
-                ResultValue.Precision precision =
-                        ResultValue.Precision.getHighestPrecision(opinionPoll.getMainResponseScenario().getResults());
-                String otherText = precision.getFormat().format(other);
+                String otherText = precision.getFormat().format(other / scale);
                 if (otherText.equals("-0")) {
                     otherText = "0";
                 }

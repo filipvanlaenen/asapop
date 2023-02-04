@@ -93,8 +93,8 @@ public class AreaIndexPagesBuilderTest {
                 "•C: The Times •FS: 2022-10-16 •PD: 2022-10-26 A:55 B:40 D:4",
                 "•PF: ACME •FE: 2022-10-17 A:55 B:42.1 D:2.9",
                 "•PF: ACME •C: The Times •C: The Post •C: The Independent •FS: 2022-11-12 •FE: 2022-11-16 A:55 B:40.1",
-                "A: •A:AP", "B: •A:BL", "C: •A:C", "D: •A:D", "E: •A:E", "F: •A:F", "G: •A:G", "H: •A:H", "I: •A:I",
-                "J: •A:J", "K: •A:K").getOpinionPolls();
+                "•PF: ACME •FE: 2023-02-04 A:55 B:20 D:3 •N:13", "A: •A:AP", "B: •A:BL", "C: •A:C", "D: •A:D",
+                "E: •A:E", "F: •A:F", "G: •A:G", "H: •A:H", "I: •A:I", "J: •A:J", "K: •A:K").getOpinionPolls();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -210,6 +210,18 @@ public class AreaIndexPagesBuilderTest {
         expected.append("          </tr>\n");
         expected.append("        </thead>\n");
         expected.append("        <tbody>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td> – 2023-02-04</td>\n");
+        expected.append("            <td>ACME</td>\n");
+        expected.append("            <td class=\"result-value-td\">63%</td>\n");
+        expected.append("            <td class=\"result-value-td\">23%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">3%</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">—</td>\n");
+        expected.append("            <td class=\"result-value-td\">(25%)</td>\n");
+        expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>2022-11-12 – 2022-11-16</td>\n");
         expected.append("            <td>ACME / The Independent–The Post–The Times</td>\n");
