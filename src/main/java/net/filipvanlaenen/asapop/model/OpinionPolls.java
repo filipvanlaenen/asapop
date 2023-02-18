@@ -1,10 +1,13 @@
 package net.filipvanlaenen.asapop.model;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Class representing a list of opinion polls.
@@ -39,14 +42,19 @@ public final class OpinionPolls {
      * @return The lowest effective sample size.
      */
     private Integer calculateLowestEffectiveSampleSize() {
-        Integer result = null;
-        for (OpinionPoll opinionPoll : opinionPolls) {
-            Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
-            if (result == null || effectiveSampleSize != null && effectiveSampleSize < result) {
-                result = effectiveSampleSize;
-            }
-        }
-        return result;
+        return calculateLowestEffectiveSampleSize(opinionPolls);
+    }
+
+    /**
+     * Calculates the overall lowest effective sample size for a collection of opinion polls.
+     *
+     * @param collection A collection of opinion polls.
+     * @return The lowest effective sample size.
+     */
+    private Integer calculateLowestEffectiveSampleSize(final Collection<OpinionPoll> collection) {
+        Set<Integer> sampleSizes = collection.stream().map(ol -> ol.getEffectiveSampleSize()).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        return sampleSizes.isEmpty() ? null : Collections.min(sampleSizes);
     }
 
     /**
@@ -55,16 +63,8 @@ public final class OpinionPolls {
      * @param pollingFirm The polling firm.
      */
     private void calculateLowestEffectiveSampleSize(final String pollingFirm) {
-        Integer result = null;
-        for (OpinionPoll opinionPoll : opinionPolls) {
-            if (opinionPoll.getPollingFirm().equals(pollingFirm)) {
-                Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
-                if (result == null || effectiveSampleSize != null && effectiveSampleSize < result) {
-                    result = effectiveSampleSize;
-                }
-            }
-        }
-        lowestEffectiveSampleSizes.put(pollingFirm, result);
+        lowestEffectiveSampleSizes.put(pollingFirm, calculateLowestEffectiveSampleSize(opinionPolls.stream()
+                .filter(ol -> pollingFirm.equals(ol.getPollingFirm())).collect(Collectors.toSet())));
     }
 
     /**

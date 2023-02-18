@@ -31,6 +31,14 @@ public class OpinionPollsTest {
      */
     private static final int SIX = 6;
     /**
+     * The magic number eight hundred.
+     */
+    private static final int EIGHT_HUNDRED = 800;
+    /**
+     * The magic number thousand.
+     */
+    private static final int THOUSAND = 1000;
+    /**
      * A date to run the unit tests on.
      */
     private static final LocalDate DATE1 = LocalDate.parse("2022-12-28");
@@ -48,16 +56,16 @@ public class OpinionPollsTest {
      */
     @BeforeAll
     public static void createOpinionPollsInstance() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().addCommissioner("The Times").setPublicationDate(DATE1)
-                .addWellformedResult("A", "55").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
+                .setPublicationDate(DATE1).setSampleSize("1000").addWellformedResult("A", "55").build();
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
         poll1.addAlternativeResponseScenario(responseScenario1);
-        OpinionPoll poll2 = new OpinionPoll.Builder().addCommissioner("The Post").setPublicationDate(DATE2)
-                .addWellformedResult("A", "57").addWellformedResult("B", "56").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").addCommissioner("The Post")
+                .setPublicationDate(DATE2).addWellformedResult("A", "57").addWellformedResult("B", "56").build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
         poll2.addAlternativeResponseScenario(responseScenario2);
         OpinionPoll poll3 = new OpinionPoll.Builder().addCommissioner("The Times").setPublicationDate(DATE2)
-                .addWellformedResult("A", "55").build();
+                .setSampleSize("800").addWellformedResult("A", "55").build();
         opinionPolls = new OpinionPolls(Set.of(poll1, poll2, poll3));
     }
 
@@ -138,5 +146,22 @@ public class OpinionPollsTest {
     @Test
     public void getMostRecentDateShouldBeCorrect() {
         assertEquals(DATE2, opinionPolls.getMostRecentDate());
+    }
+
+    /**
+     * Verifies that the lowest effective sample size for a polling firm is calculated correctly.
+     */
+    @Test
+    public void lowestEffectiveSampleSizeIsCalculatedCorrectlyForAPollingFirm() {
+        assertEquals(THOUSAND, opinionPolls.getLowestEffectiveSampleSize("ACME"));
+    }
+
+    /**
+     * Verifies that the lowest effective sample size for a polling firm that has no sample sizes at all is the overall
+     * lowest effective sample size.
+     */
+    @Test
+    public void lowestEffectiveSampleSizeIsCalculatedCorrectlyForAPollingFirmWithoutSampleSize() {
+        assertEquals(EIGHT_HUNDRED, opinionPolls.getLowestEffectiveSampleSize("BCME"));
     }
 }
