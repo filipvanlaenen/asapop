@@ -65,11 +65,16 @@ public class SaporExporter extends Exporter {
     /**
      * Appends the SAPOR body for an opinion poll to a StringBuilder.
      *
-     * @param content     The StringBuilder to append the SAPOR body to.
-     * @param opinionPoll The opinion poll.
+     * @param content                   The StringBuilder to append the SAPOR body to.
+     * @param lowestEffectiveSampleSize The lowest effective sample size for the polling firm of this opinion poll.
+     * @param opinionPoll               The opinion poll.
      */
-    void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll) {
-        int effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
+    void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll,
+            final Integer lowestEffectiveSampleSize) {
+        Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
+        if (effectiveSampleSize == null) {
+            effectiveSampleSize = lowestEffectiveSampleSize;
+        }
         ResponseScenario responseScenario = opinionPoll.getMainResponseScenario();
         double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
         Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
@@ -170,7 +175,8 @@ public class SaporExporter extends Exporter {
         SaporDirectory result = new SaporDirectory();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             if (lastElectionDate.isBefore(opinionPoll.getEndDate())) {
-                result.put(getSaporFilePath(opinionPoll), getSaporContent(opinionPoll));
+                result.put(getSaporFilePath(opinionPoll), getSaporContent(opinionPoll,
+                        opinionPolls.getLowestEffectiveSampleSize(opinionPoll.getPollingFirm())));
                 result.addWarnings(getSaporWarnings(opinionPoll));
             }
         }
@@ -197,14 +203,15 @@ public class SaporExporter extends Exporter {
     /**
      * Returns the content of the SAPOR file for an opinion poll.
      *
-     * @param opinionPoll The opinion poll.
+     * @param opinionPoll               The opinion poll.
+     * @param lowestEffectiveSampleSize The lowest effective sample size for the polling firm of this opinion poll.
      * @return The content of the SAPOR file.
      */
-    String getSaporContent(final OpinionPoll opinionPoll) {
+    String getSaporContent(final OpinionPoll opinionPoll, final Integer lowestEffectiveSampleSize) {
         StringBuilder content = new StringBuilder();
         appendSaporHeader(content, opinionPoll);
         content.append("==\n");
-        appendSaporBody(content, opinionPoll);
+        appendSaporBody(content, opinionPoll, lowestEffectiveSampleSize);
         return content.toString();
     }
 

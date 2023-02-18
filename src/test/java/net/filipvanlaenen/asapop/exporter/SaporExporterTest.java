@@ -24,6 +24,10 @@ import net.filipvanlaenen.asapop.yaml.SaporMapping;
  */
 public class SaporExporterTest {
     /**
+     * The magic number thousand.
+     */
+    private static final int THOUSAND = 1000;
+    /**
      * A date for the unit tests.
      */
     private static final LocalDate DATE = LocalDate.parse("2021-08-02");
@@ -67,12 +71,13 @@ public class SaporExporterTest {
     /**
      * Returns the SAPOR body for an opinion poll with the lines sorted.
      *
-     * @param poll The opinion poll.
+     * @param poll                      The opinion poll.
+     * @param lowestEffectiveSampleSize The lowest effective sample size.
      * @return The SAPOR body with the lines sorted.
      */
-    private String getSortedSaporBody(final OpinionPoll poll) {
+    private String getSortedSaporBody(final OpinionPoll poll, final int lowestEffectiveSampleSize) {
         StringBuilder sb = new StringBuilder();
-        saporExporter.appendSaporBody(sb, poll);
+        saporExporter.appendSaporBody(sb, poll, lowestEffectiveSampleSize);
         String[] lines = sb.toString().split("\\n");
         Arrays.sort(lines);
         return String.join("\n", lines);
@@ -177,7 +182,7 @@ public class SaporExporterTest {
         expected.append("Other=20\n");
         expected.append("Party A=550\n");
         expected.append("Party B=430");
-        assertEquals(expected.toString(), getSortedSaporBody(poll));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
     }
 
     /**
@@ -192,7 +197,7 @@ public class SaporExporterTest {
         expected.append("Other=447\n");
         expected.append("Party A=550\n");
         expected.append("Party B=3");
-        assertEquals(expected.toString(), getSortedSaporBody(poll));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
     }
 
     /**
@@ -207,7 +212,21 @@ public class SaporExporterTest {
         expected.append("Other=9\n");
         expected.append("Party A=545\n");
         expected.append("Party B=446");
-        assertEquals(expected.toString(), getSortedSaporBody(poll));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll when the sample size is missing.
+     */
+    @Test
+    public void opinionPollWithoutSampleSizeShouldProduceBodyCorrectly() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=20\n");
+        expected.append("Party A=550\n");
+        expected.append("Party B=430");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, THOUSAND));
     }
 
     /**
@@ -233,7 +252,7 @@ public class SaporExporterTest {
         expected2.append("Party B=430\n");
         expected2.append("Party A=550\n");
         expected2.append("Other=20\n");
-        assertTrue(Set.of(expected1.toString(), expected2.toString()).contains(saporExporter.getSaporContent(poll)));
+        assertTrue(Set.of(expected1.toString(), expected2.toString()).contains(saporExporter.getSaporContent(poll, 1)));
     }
 
     /**
