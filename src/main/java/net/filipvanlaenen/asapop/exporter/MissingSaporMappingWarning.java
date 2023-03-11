@@ -43,8 +43,8 @@ class MissingSaporMappingWarning extends ExporterWarning {
 
     @Override
     public String toString() {
-        List<String> keys = new ArrayList<String>(ElectoralList.getKeys(missingElectoralListCombination));
-        Collections.sort(keys);
-        return "SAPOR mapping missing for “" + String.join("+", keys) + "”.";
+        List<String> ids = new ArrayList<String>(ElectoralList.getIds(missingElectoralListCombination));
+        Collections.sort(ids);
+        return "SAPOR mapping missing for “" + String.join("+", ids) + "”.";
     }
 }
