@@ -3,12 +3,15 @@ package net.filipvanlaenen.asapop.exporter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
@@ -52,13 +55,13 @@ public abstract class Exporter {
     /**
      * Calculates the precision of an opinion poll.
      *
-     * @param opinionPoll          The opinion poll.
-     * @param electoralListKeySets The sets of keys of the electoral lists to export.
+     * @param opinionPoll         The opinion poll.
+     * @param electoralListIdSets The sets of IDs of the electoral lists to export.
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll,
-            final List<Set<String>> electoralListKeySets) {
-        return ResultValue.Precision.getHighestPrecision(extractResults(opinionPoll, electoralListKeySets));
+            final List<Set<String>> electoralListIdSets) {
+        return ResultValue.Precision.getHighestPrecision(extractResults(opinionPoll, electoralListIdSets));
     }
 
     /**
@@ -79,13 +82,13 @@ public abstract class Exporter {
     /**
      * Calculates the precision of a response scenario.
      *
-     * @param responseScenario     The response scenario.
-     * @param electoralListKeySets The sets of keys of the electoral lists to export.
+     * @param responseScenario    The response scenario.
+     * @param electoralListIdSets The sets of IDs of the electoral lists to export.
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario,
-            final List<Set<String>> electoralListKeySets) {
-        return ResultValue.Precision.getHighestPrecision(extractResults(responseScenario, electoralListKeySets));
+            final List<Set<String>> electoralListIdSets) {
+        return ResultValue.Precision.getHighestPrecision(extractResults(responseScenario, electoralListIdSets));
     }
 
     /**
@@ -109,6 +112,24 @@ public abstract class Exporter {
         } else {
             return endDate2.compareTo(endDate1);
         }
+    }
+
+    /**
+     * Converts a set of IDs for electoral lists to a string with their abbreviations.
+     *
+     * @param electoralListIdSet The IDs for the electoral lists.
+     * @return A string with the abbreviations of the electoral lists.
+     */
+    static String electoralListIdsToAbbreviations(final Set<String> electoralListIdSet) {
+        Set<ElectoralList> electoralLists = ElectoralList.get(electoralListIdSet);
+        List<String> sortedAbbreviations =
+                new ArrayList<String>(electoralLists.stream()
+                        .map(electoralList -> electoralList.getRomanizedAbbreviation() == null
+                                ? electoralList.getAbbreviation()
+                                : electoralList.getRomanizedAbbreviation())
+                        .collect(Collectors.toList()));
+        Collections.sort(sortedAbbreviations);
+        return String.join("+", sortedAbbreviations);
     }
 
     /**
@@ -196,15 +217,15 @@ public abstract class Exporter {
     /**
      * Extracts all the results from an opinion poll.
      *
-     * @param opinionPoll          The opinion poll to extract the results from.
-     * @param electoralListKeySets The sets of keys of the electoral lists for which to extract the results.
+     * @param opinionPoll         The opinion poll to extract the results from.
+     * @param electoralListIdSets The sets of IDs of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll,
-            final List<Set<String>> electoralListKeySets) {
+            final List<Set<String>> electoralListIdSets) {
         Set<ResultValue> result = new HashSet<ResultValue>();
-        for (Set<String> electoralListKeySet : electoralListKeySets) {
-            addToSetUnlessNull(result, opinionPoll.getResult(electoralListKeySet));
+        for (Set<String> electoralListIdSet : electoralListIdSets) {
+            addToSetUnlessNull(result, opinionPoll.getResult(electoralListIdSet));
         }
         addToSetUnlessNull(result, opinionPoll.getOther());
         return result;
@@ -213,15 +234,15 @@ public abstract class Exporter {
     /**
      * Extracts all the results from a response scenario.
      *
-     * @param responseScenario     The response scenario to extract the results from.
-     * @param electoralListKeySets The sets of keys of the electoral lists for which to extract the results.
+     * @param responseScenario    The response scenario to extract the results from.
+     * @param electoralListIdSets The sets of IDs of the electoral lists for which to extract the results.
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
-            final List<Set<String>> electoralListKeySets) {
+            final List<Set<String>> electoralListIdSets) {
         Set<ResultValue> result = new HashSet<ResultValue>();
-        for (Set<String> electoralListKeySet : electoralListKeySets) {
-            addToSetUnlessNull(result, responseScenario.getResult(electoralListKeySet));
+        for (Set<String> electoralListIdSet : electoralListIdSets) {
+            addToSetUnlessNull(result, responseScenario.getResult(electoralListIdSet));
         }
         addToSetUnlessNull(result, responseScenario.getOther());
         return result;
