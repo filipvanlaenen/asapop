@@ -10,8 +10,10 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
@@ -82,16 +84,16 @@ public class StatisticsPageBuilderTest {
      * @return An opinion polls map.
      */
     private Map<String, OpinionPolls> createOpinionPollsMap() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().addCommissioner("The Times").setPublicationDate(DATE1)
-                .addWellformedResult("A", "55").build();
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").addCommissioner("The Times")
+                .setPublicationDate(DATE1).build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll1.addAlternativeResponseScenario(responseScenario1);
-        OpinionPoll poll2 = new OpinionPoll.Builder().addCommissioner("The Post").setPublicationDate(DATE2)
-                .addWellformedResult("A", "57").addWellformedResult("B", "56").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "57").addResult("B", "56")
+                .addCommissioner("The Post").setPublicationDate(DATE2).build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll2.addAlternativeResponseScenario(responseScenario2);
-        OpinionPoll poll3 = new OpinionPoll.Builder().addCommissioner("The Times").setPublicationDate(DATE2)
-                .addWellformedResult("A", "55").build();
+        OpinionPoll poll3 = new OpinionPollTestBuilder().addResult("A", "55").addCommissioner("The Times")
+                .setPublicationDate(DATE2).build();
         return Map.of("dk", new OpinionPolls(Set.of(poll1, poll2, poll3)), "ee",
                 new OpinionPolls(Set.of(poll1, poll3)));
     }
