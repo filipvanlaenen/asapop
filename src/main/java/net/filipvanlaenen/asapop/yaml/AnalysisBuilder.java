@@ -60,7 +60,7 @@ public class AnalysisBuilder {
      * Builds a first round analysis object based on a first round winners analysis.
      *
      * @param firstRoundWinnersAnalysis The first round analysis to build a first round analysis.
-     * @return A first round analysis ofor the first round winners analysis.
+     * @return A first round analysis for the first round winners analysis.
      */
     private FirstRoundAnalysis buildFirstRoundWinnersAnalysis(
             final FirstRoundWinnersAnalysis firstRoundWinnersAnalysis) {
@@ -69,11 +69,11 @@ public class AnalysisBuilder {
                 new HashSet<FirstRoundResultProbabilityMass>();
         for (Set<Set<ElectoralList>> electoralListSetSet : firstRoundWinnersAnalysis.getElectoralListSetSets()) {
             FirstRoundResultProbabilityMass firstRoundResultAnalysis = new FirstRoundResultProbabilityMass();
-            Set<Set<String>> electoralListKeySet = new HashSet<Set<String>>();
+            Set<Set<String>> electoralListIdSet = new HashSet<Set<String>>();
             for (Set<ElectoralList> electoralListSet : electoralListSetSet) {
-                electoralListKeySet.add(ElectoralList.getKeys(electoralListSet));
+                electoralListIdSet.add(ElectoralList.getIds(electoralListSet));
             }
-            firstRoundResultAnalysis.setElectoralListSets(electoralListKeySet);
+            firstRoundResultAnalysis.setElectoralListSets(electoralListIdSet);
             firstRoundResultAnalysis
                     .setProbabilityMass(firstRoundWinnersAnalysis.getProbabilityMass(electoralListSetSet) * HUNDRED);
             firstRoundProbabilityMassFunction.add(firstRoundResultAnalysis);
@@ -119,7 +119,7 @@ public class AnalysisBuilder {
         if (voteSharesAnalysis != null) {
             Map<Set<String>, ResultAnalysis> resultAnalyses = new HashMap<Set<String>, ResultAnalysis>();
             for (Set<ElectoralList> electoralListSet : poll.getElectoralListSets()) {
-                resultAnalyses.put(ElectoralList.getKeys(electoralListSet),
+                resultAnalyses.put(ElectoralList.getIds(electoralListSet),
                         buildResultAnalysis(voteSharesAnalysis, electoralListSet));
             }
             responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
@@ -139,7 +139,7 @@ public class AnalysisBuilder {
      * Builds the response scenario analysis for a response scenario.
      *
      * @param responseScenario The response scenario for which to build the response scenario analysis.
-     * @return The response scenarion analysis for the response scenario.
+     * @return The response scenario analysis for the response scenario.
      */
     private ResponseScenarioAnalysis buildResponseScenarioAnalysis(final ResponseScenario responseScenario) {
         ResponseScenarioAnalysis responseScenarioAnalysis = new ResponseScenarioAnalysis();
@@ -148,7 +148,7 @@ public class AnalysisBuilder {
         Map<Set<String>, ResultAnalysis> resultAnalyses = new HashMap<Set<String>, ResultAnalysis>();
         VoteSharesAnalysis voteSharesAnalysis = engine.getVoteSharesAnalysis(responseScenario);
         for (Set<ElectoralList> electoralListSet : responseScenario.getElectoralListSets()) {
-            resultAnalyses.put(ElectoralList.getKeys(electoralListSet),
+            resultAnalyses.put(ElectoralList.getIds(electoralListSet),
                     buildResultAnalysis(voteSharesAnalysis, electoralListSet));
         }
         responseScenarioAnalysis.setResultAnalyses(resultAnalyses);

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -68,6 +69,14 @@ public class AnalysisBuilderTest {
      * The name of the commissioner.
      */
     private static final String COMMISSIONER_NAME = "The Times";
+    /**
+     * Electoral list AA001.
+     */
+    private static final Set<ElectoralList> ELECTORAL_LIST_AA001 = Set.of(ElectoralList.get("AA001"));
+    /**
+     * Electoral list AA002.
+     */
+    private static final Set<ElectoralList> ELECTORAL_LIST_AA002 = Set.of(ElectoralList.get("AA002"));
     /**
      * The first fieldwork end date.
      */
@@ -132,7 +141,7 @@ public class AnalysisBuilderTest {
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
                 .setArea(AREA).setScope(Scope.National).setSampleSize("1000")
-                .addResult(Set.of("A"), new ResultValue("1")).setOther(new ResultValue("2")).build();
+                .addResult(ELECTORAL_LIST_AA001, new ResultValue("1")).setOther(new ResultValue("2")).build();
         opinionPoll.addAlternativeResponseScenario(
                 new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
         opinionPollSet.add(opinionPoll);
@@ -140,7 +149,8 @@ public class AnalysisBuilderTest {
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
                 .setScope(Scope.PresidentialFirstRound).setArea(AREA).setSampleSize("1000")
-                .addResult(Set.of("A"), new ResultValue("50")).addResult(Set.of("B"), new ResultValue("30")).build();
+                .addResult(ELECTORAL_LIST_AA001, new ResultValue("50"))
+                .addResult(ELECTORAL_LIST_AA002, new ResultValue("30")).build();
         opinionPollSet.add(opinionPoll);
         OpinionPolls opinionPolls = new OpinionPolls(opinionPollSet);
         ElectionData electionData = new ElectionData();
@@ -166,7 +176,7 @@ public class AnalysisBuilderTest {
                                     alternativeResponseScenarioAnalysis = rsa;
                                     mainResponseScenarioAnalysis = rsai.next();
                                 }
-                                resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get(Set.of("A"));
+                                resultAnalysis = mainResponseScenarioAnalysis.getResultAnalyses().get(Set.of("AA001"));
                             }
                         }
                     } else if (opa.getPollingFirm().equals(POLLING_FIRM_NAME_PRESIDENTIAL)
@@ -343,7 +353,7 @@ public class AnalysisBuilderTest {
     public void buildingAnAnalysisSetsTheProbabilityMassForADirectWinnerOfAFirstRound() {
         FirstRoundResultProbabilityMass directWinner = null;
         for (FirstRoundResultProbabilityMass pm : firstRoundAnalysis.getProbabilityMassFunction()) {
-            if (pm.getElectoralLists().equals(Set.of(Set.of("A")))) {
+            if (pm.getElectoralLists().equals(Set.of(Set.of("AA001")))) {
                 directWinner = pm;
             }
         }
@@ -358,7 +368,7 @@ public class AnalysisBuilderTest {
     public void buildingAnAnalysisSetsTheProbabilityMassForAWinnerPairOfAFirstRound() {
         FirstRoundResultProbabilityMass winnerPair = null;
         for (FirstRoundResultProbabilityMass pm : firstRoundAnalysis.getProbabilityMassFunction()) {
-            if (pm.getElectoralLists().equals(Set.of(Set.of("A"), Set.of("B")))) {
+            if (pm.getElectoralLists().equals(Set.of(Set.of("AA001"), Set.of("AA002")))) {
                 winnerPair = pm;
             }
         }
