@@ -13,26 +13,34 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
  */
 final class ElectoralListLine extends Line {
     /**
+     * The integer number three.
+     */
+    private static final int THREE = 3;
+    /**
      * The integer number four.
      */
     private static final int FOUR = 4;
     /**
      * The pattern to match an electoral list line.
      */
-    private static final Pattern ELECTORAL_LIST_PATTERN =
-            Pattern.compile("^\\s*" + ELECTORAL_LIST_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + "(\\s+"
-                    + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?)+$");
+    private static final Pattern ELECTORAL_LIST_PATTERN = Pattern.compile("^\\s*" + ELECTORAL_LIST_KEY_PATTERN
+            + KEY_VALUE_SEPARATOR_PATTERN + "\\s*" + ELECTORAL_LIST_ID_PATTERN + "(\\s+" + METADATA_MARKER_PATTERN
+            + METADATA_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?)+$");
     /**
      * The pattern to extract the key for the electoral list.
      */
-    private static final Pattern KEY_EXTRACTION_PATTERN =
-            Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN + ")" + KEY_VALUE_SEPARATOR_PATTERN + "((\\s+"
-                    + METADATA_MARKER_PATTERN + METADATA_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?)+)$");
+    private static final Pattern KEY_EXTRACTION_PATTERN = Pattern.compile("^\\s*(" + ELECTORAL_LIST_KEY_PATTERN + ")"
+            + KEY_VALUE_SEPARATOR_PATTERN + "\\s*(" + ELECTORAL_LIST_ID_PATTERN + ")((\\s+" + METADATA_MARKER_PATTERN
+            + METADATA_KEY_PATTERN + KEY_VALUE_SEPARATOR_PATTERN + ".+?)+)$");
 
     /**
      * The abbreviation for the electoral list.
      */
     private String abbreviation;
+    /**
+     * The ID for the electoral list.
+     */
+    private final String id;
     /**
      * The key for the electoral list.
      */
@@ -50,9 +58,29 @@ final class ElectoralListLine extends Line {
      * Private constructor taking the key for the electoral list as the parameter.
      *
      * @param key The key for the electoral list.
+     * @param id  The ID for the electoral list.
      */
-    private ElectoralListLine(final String key) {
+    private ElectoralListLine(final String key, final String id) {
         this.key = key;
+        this.id = id;
+    }
+
+    /**
+     * Returns the electoral list from this line.
+     *
+     * @return The electoral list from this line.
+     */
+    ElectoralList getElectoralList() {
+        return ElectoralList.get(id);
+    }
+
+    /**
+     * Returns the key for the electoral list in this line.
+     *
+     * @return The key for the electoral list in this line.
+     */
+    String getKey() {
+        return key;
     }
 
     /**
@@ -75,8 +103,9 @@ final class ElectoralListLine extends Line {
         Matcher electoralListKeyMatcher = KEY_EXTRACTION_PATTERN.matcher(line);
         electoralListKeyMatcher.find();
         String key = electoralListKeyMatcher.group(1);
-        String remainder = electoralListKeyMatcher.group(2);
-        ElectoralListLine electoralListLine = new ElectoralListLine(key);
+        String id = electoralListKeyMatcher.group(2);
+        String remainder = electoralListKeyMatcher.group(THREE);
+        ElectoralListLine electoralListLine = new ElectoralListLine(key, id);
         while (!remainder.isEmpty()) {
             remainder = electoralListLine.parseKeyValue(remainder);
         }
@@ -124,9 +153,10 @@ final class ElectoralListLine extends Line {
      * Updates the electoral list with the data in the line.
      */
     void updateElectoralList() {
-        ElectoralList electoralList = ElectoralList.get(key);
+        ElectoralList electoralList = ElectoralList.get(id);
         electoralList.setAbbreviation(abbreviation);
         electoralList.setRomanizedAbbreviation(romanizedAbbreviation);
         electoralList.setNames(names);
     }
+
 }

@@ -13,11 +13,16 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
  */
 public final class ElectoralListLineTest {
     /**
+     * A sample electoral list line.
+     */
+    private static final String SAMPLE_LINE = "A: AA001 •A: AP •EN: Apple Party";
+
+    /**
      * Verifies that the <code>isElecoralListLine</code> method can detect a line with an electoral list.
      */
     @Test
     public void isElectoralListLineShouldDetectElectoralListLine() {
-        assertTrue(ElectoralListLine.isElectoralListLine("A: •A: A •EN: Apple Party"));
+        assertTrue(ElectoralListLine.isElectoralListLine(SAMPLE_LINE));
     }
 
     /**
@@ -26,7 +31,7 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void isElectoralListLineShouldDetectElectoralListLineWithNamesInTwoLanguages() {
-        assertTrue(ElectoralListLine.isElectoralListLine("A: •A: A •EN: Apple Party •EO: Pomo Partio"));
+        assertTrue(ElectoralListLine.isElectoralListLine("A: AA001 •A: A •EN: Apple Party •EO: Pomo Partio"));
     }
 
     /**
@@ -39,13 +44,31 @@ public final class ElectoralListLineTest {
     }
 
     /**
+     * Verifies that the electoral list is returned.
+     */
+    @Test
+    public void shouldReturnTheElectoralList() {
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
+        assertEquals(ElectoralList.get("AA001"), electoralListLine.getElectoralList());
+    }
+
+    /**
+     * Verifies that the key is returned.
+     */
+    @Test
+    public void shouldReturnTheKey() {
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
+        assertEquals("A", electoralListLine.getKey());
+    }
+
+    /**
      * Verifies that the abbreviation of an electoral list is updated.
      */
     @Test
     public void shouldUpdateTheAbbreviationOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: •A: AP •EN: Apple Party");
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
         electoralListLine.updateElectoralList();
-        assertEquals("AP", ElectoralList.get("A").getAbbreviation());
+        assertEquals("AP", ElectoralList.get("AA001").getAbbreviation());
     }
 
     /**
@@ -53,9 +76,9 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldUpdateTheRomanizedAbbreviationOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: •A: ΑΠ •R:AP •EN: Apple Party");
+        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: AA001 •A: ΑΠ •R:AP •EN: Apple Party");
         electoralListLine.updateElectoralList();
-        assertEquals("AP", ElectoralList.get("A").getRomanizedAbbreviation());
+        assertEquals("AP", ElectoralList.get("AA001").getRomanizedAbbreviation());
     }
 
     /**
@@ -63,8 +86,8 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldUpdateTheNamesOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: •A: AP •EN: Apple Party");
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
         electoralListLine.updateElectoralList();
-        assertEquals("Apple Party", ElectoralList.get("A").getName("EN"));
+        assertEquals("Apple Party", ElectoralList.get("AA001").getName("EN"));
     }
 }
