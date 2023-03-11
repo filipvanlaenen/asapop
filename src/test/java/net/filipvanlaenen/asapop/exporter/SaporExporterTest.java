@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
@@ -101,8 +102,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithoutCommissionerShouldProduceHeaderCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
         StringBuilder sb = new StringBuilder();
         saporExporter.appendSaporHeader(sb, poll);
         StringBuilder expected = new StringBuilder();
@@ -119,9 +120,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithCommissionerShouldProduceHeaderCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").addCommissioner("The Times")
-                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55")
-                .addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
+                .addCommissioner("The Times").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
         StringBuilder sb = new StringBuilder();
         saporExporter.appendSaporHeader(sb, poll);
         StringBuilder expected = new StringBuilder();
@@ -139,8 +139,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithoutFieldworkStartShouldProduceHeaderCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
-                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
         StringBuilder sb = new StringBuilder();
         saporExporter.appendSaporHeader(sb, poll);
         StringBuilder expected = new StringBuilder();
@@ -157,8 +157,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithPublicationDateOnlyShouldProduceHeaderCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
-                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
+                .setPublicationDate(DATE).build();
         StringBuilder sb = new StringBuilder();
         saporExporter.appendSaporHeader(sb, poll);
         StringBuilder expected = new StringBuilder();
@@ -175,9 +175,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollShouldProduceBodyCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
         StringBuilder expected = new StringBuilder();
         expected.append("Other=20\n");
         expected.append("Party A=550\n");
@@ -190,9 +189,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithZeroValueShouldProduceBodyCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "0").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "0").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
         StringBuilder expected = new StringBuilder();
         expected.append("Other=447\n");
         expected.append("Party A=550\n");
@@ -205,9 +203,9 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithOtherAndOverflowingRoundingShouldProduceBodyCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "45").setWellformedOther("1").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setOther("1")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2)
+                .setSampleSize("1000").build();
         StringBuilder expected = new StringBuilder();
         expected.append("Other=9\n");
         expected.append("Party A=545\n");
@@ -220,8 +218,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollWithoutSampleSizeShouldProduceBodyCorrectly() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
         StringBuilder expected = new StringBuilder();
         expected.append("Other=20\n");
         expected.append("Party A=550\n");
@@ -234,9 +232,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollShouldProduceEntireContent() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
         StringBuilder expected1 = new StringBuilder();
         expected1.append("Type=Election\n");
         expected1.append("PollingFirm=ACME\n");
@@ -260,9 +257,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollShouldProduceFilePath() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
         assertEquals(Paths.get("2021-08-02-ACME.poll"), saporExporter.getSaporFilePath(poll));
     }
 
@@ -271,12 +267,12 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollsShouldProduceDirectory() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkStart(DATE_OR_MONTH3)
-                .setFieldworkEnd(DATE_OR_MONTH4).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("Z", "43").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2)
+                .setSampleSize("1000").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "55").addResult("Z", "43")
+                .setPollingFirm("BCME").setFieldworkStart(DATE_OR_MONTH3).setFieldworkEnd(DATE_OR_MONTH4)
+                .setSampleSize("1000").build();
         OpinionPolls polls = new OpinionPolls(Set.of(poll1, poll2));
         SaporDirectory saporDirectory = saporExporter.export(polls);
         String actual = saporDirectory.asMap().get(Paths.get("2021-08-02-ACME.poll"));
@@ -303,9 +299,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollShouldNotProduceWarnings() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("B", "43").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
         assertTrue(saporExporter.getSaporWarnings(poll).isEmpty());
     }
 
@@ -314,9 +309,8 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollShouldProduceMissingSaporMappingWarning() {
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("Z", "43").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("Z", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
         assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))),
                 saporExporter.getSaporWarnings(poll));
     }
@@ -326,12 +320,12 @@ public class SaporExporterTest {
      */
     @Test
     public void opinionPollsShouldProduceWarnings() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("Q", "43").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setPollingFirm("BCME").setFieldworkStart(DATE_OR_MONTH3)
-                .setFieldworkEnd(DATE_OR_MONTH4).setSampleSize("1000").addWellformedResult("A", "55")
-                .addWellformedResult("Z", "43").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").addResult("Q", "43")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2)
+                .setSampleSize("1000").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "55").addResult("Z", "43")
+                .setPollingFirm("BCME").setFieldworkStart(DATE_OR_MONTH3).setFieldworkEnd(DATE_OR_MONTH4)
+                .setSampleSize("1000").build();
         OpinionPolls polls = new OpinionPolls(Set.of(poll1, poll2));
         SaporDirectory saporDirectory = saporExporter.export(polls);
         assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Q"))),

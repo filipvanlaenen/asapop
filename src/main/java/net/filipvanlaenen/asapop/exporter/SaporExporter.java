@@ -80,8 +80,8 @@ public class SaporExporter extends Exporter {
         Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
         double sumOfActualValues = 0D;
         for (Set<ElectoralList> electoralLists : responseScenario.getElectoralListSets()) {
-            Set<String> electoralListKeys = ElectoralList.getKeys(electoralLists);
-            double value = responseScenario.getResult(electoralListKeys).getNominalValue();
+            Set<String> electoralListIds = ElectoralList.getIds(electoralLists);
+            double value = responseScenario.getResult(electoralListIds).getNominalValue();
             double actualValue = value == 0D ? zeroValue : value;
             sumOfActualValues += actualValue;
             actualValues.put(electoralLists, actualValue);
