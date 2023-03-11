@@ -199,7 +199,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 ResultValue.Precision precision =
                         ResultValue.Precision.getHighestPrecision(opinionPoll.getMainResponseScenario().getResults());
                 for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
-                    ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
+                    ResultValue resultValue = opinionPoll.getResult(ElectoralList.getIds(electoralListSet));
                     if (resultValue == null) {
                         opinionPollRow.addElement(new TD("—").clazz("result-value-td"));
                     } else {
@@ -323,7 +323,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
         Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
         for (OpinionPoll opinionPoll : latestOpinionPolls) {
             for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario().getElectoralListSets()) {
-                ResultValue resultValue = opinionPoll.getResult(ElectoralList.getKeys(electoralListSet));
+                ResultValue resultValue = opinionPoll.getResult(ElectoralList.getIds(electoralListSet));
                 Double nominalValue = resultValue.getNominalValue();
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 if (!electoralListSetMax.containsKey(electoralListSet)
