@@ -8,7 +8,7 @@ import java.util.Set;
  */
 public class FirstRoundResultProbabilityMass {
     /**
-     * A set of keys for the sets of electoral lists that make it to the second round.
+     * A set of IDs for the sets of electoral lists that make it to the second round.
      */
     private Set<Set<String>> electoralListSets;
     /**
@@ -17,9 +17,9 @@ public class FirstRoundResultProbabilityMass {
     private Double probabilityMass;
 
     /**
-     * Returns the set of keys for the sets of electoral lists that make it to the second round.
+     * Returns the set of IDs for the sets of electoral lists that make it to the second round.
      *
-     * @return The set of keys for the sets of electoral lists that make it to the second round.
+     * @return The set of IDs for the sets of electoral lists that make it to the second round.
      */
     public Set<Set<String>> getElectoralLists() {
         return electoralListSets;
@@ -35,9 +35,9 @@ public class FirstRoundResultProbabilityMass {
     }
 
     /**
-     * Sets the set of keys for the set of electoral lists that make it to the second round.
+     * Sets the set of IDs for the set of electoral lists that make it to the second round.
      *
-     * @param electoralListSets The set of keys for the sets of electoral lists that make it to the second round.
+     * @param electoralListSets The set of IDs for the sets of electoral lists that make it to the second round.
      */
     public void setElectoralListSets(final Set<Set<String>> electoralListSets) {
         this.electoralListSets = electoralListSets;
