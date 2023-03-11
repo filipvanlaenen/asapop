@@ -7,11 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
 
 /**
@@ -43,6 +46,12 @@ public final class OpinionPollLineTest {
      */
     private static final String OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS =
             "•PF: ACME •PD: 2021-07-27 A+C:55 B:45";
+    /**
+     * A map mapping keys to electoral lists.
+     */
+    private static final Map<String, ElectoralList> ELECTORAL_LIST_KEY_MAP = Map.of("A", ElectoralList.get("A"), "Ä",
+            ElectoralList.get("Ä"), "Æ", ElectoralList.get("Æ"), "B", ElectoralList.get("B"), "C",
+            ElectoralList.get("C"), "Б", ElectoralList.get("Б"), "Ω", ElectoralList.get("Ω"));
 
     /**
      * Verifies that the <code>isOpinionPollLine</code> method can detect an opinion poll line.
@@ -74,9 +83,9 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseSingleLineWithASimpleOpinionPoll() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE2)
-                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE2).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -85,9 +94,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseSingleLineWithAnOpinionPollWithCombinedElectoralLists() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse(OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS, 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addWellformedResult(Set.of("A", "C"), "55").addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse(OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS, ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "C", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -96,9 +106,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldAllowDiacriticsInTheKeysForTheElectoralLists() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 Ä:55 Æ:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addWellformedResult("Ä", "55").addWellformedResult("Æ", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 Ä:55 Æ:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("Ä", "55").addResult("Æ", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -107,9 +118,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldAllowGreekAndCyrillicLettersInTheKeysForTheElectoralLists() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 Б:55 Ω:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addWellformedResult("Б", "55").addWellformedResult("Ω", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 Б:55 Ω:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("Б", "55").addResult("Ω", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -118,9 +130,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAnArea() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: AB A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1).setArea("AB")
-                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: AB A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setArea("AB").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -129,9 +142,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithACommissioner() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •C: The Times •PD: 2021-07-27 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addCommissioner("The Times").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •C: The Times •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).addCommissioner("The Times").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -140,9 +154,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAPollingFirmPartner() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PFP: EMCA •PD: 2021-07-27 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .setPollingFirmPartner("EMCA").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PFP: EMCA •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setPollingFirmPartner("EMCA").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -152,10 +167,10 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldParseAnOpinionPollWithTwoCommissioners() {
         String line = "•PF: ACME •C: The Times •C: The Post •PD: 2021-07-27 A:55 B:45";
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addCommissioner("The Times").addCommissioner("The Post").addWellformedResult("A", "55")
-                .addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected =
+                new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
+                        .setPublicationDate(DATE1).addCommissioner("The Times").addCommissioner("The Post").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -164,9 +179,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithASampleSize() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .setSampleSize("1000").addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setSampleSize("1000").build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -175,10 +191,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithExcluded() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 10 A:55 B:45", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .setExcluded(DecimalNumber.parse("10")).addWellformedResult("A", "55").addWellformedResult("B", "45")
-                .build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 10 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setExcluded(DecimalNumber.parse("10")).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -187,9 +203,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAResultForOther() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •O:2", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedOther("2").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •O:2", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setOther("2")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -198,9 +215,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAResultForNoResponse() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •N:2", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").setWellformedNoResponses("2").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •N:2", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setNoResponses("2").setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -209,9 +227,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAFieldworkStart() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07-28 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH2)
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •FS: 2021-07-28 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH2).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -220,9 +239,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAYearMonthFieldworkStart() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •FS: 2021-07 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -231,9 +251,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAFieldworkEnd() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07-28 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2)
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •FE: 2021-07-28 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -242,9 +263,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAYearMonthFieldworkEnd() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07 A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH1)
-                .addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •FE: 2021-07 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -253,9 +275,10 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldParseAnOpinionPollWithAScope() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43", 1);
-        OpinionPoll expected = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .setScope(Scope.National).addWellformedResult("A", "55").addWellformedResult("B", "43").build();
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setScope(Scope.National).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -264,7 +287,7 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldNotProduceAWarningWhenParsingAWellformedLine() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse(SIMPLE_OPINION_POLL_LINE, ELECTORAL_LIST_KEY_MAP, 1);
         assertTrue(opinionPollLine.getWarnings().isEmpty());
     }
 
@@ -273,7 +296,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForAMalformedResultValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:Error B:43", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:Error B:43", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -284,7 +308,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedOtherValue() {
         OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", 1);
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -295,7 +319,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningForAMalformedNoResponsesValue() {
         OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error", 1);
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -305,7 +329,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForAnUnknownMetadataKey() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •XX: X •SC: N A:55 B:43", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •XX: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -315,7 +340,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForAnUnknownScopeValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -325,7 +351,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -335,7 +362,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForMissingResults() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new ResultsMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -345,7 +373,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForMissingDates() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new DatesMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -355,7 +384,7 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForMissingPollingFirmsAndCommissioner() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PD: 2021-07-27 A:55 B:45", 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new PollingFirmAndCommissionerMissingWarning(1));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -365,7 +394,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenAreaIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: A •A: A A:55 B:45", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: A •A: A A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "A"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -376,7 +406,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningWhenExcludedIsAddedTwice() {
         OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 12 •EX: 12 A:55 B:45", 1);
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 12 •EX: 12 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "EX"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -387,7 +417,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningWhenFieldworkEndIsAddedTwice() {
         OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 •FE: 2021-07-27 A:55 B:45", 1);
+                OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 •FE: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "FE"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -398,7 +428,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningWhenFieldworkStartIsAddedTwice() {
         OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 •FS: 2021-07-27 A:55 B:45", 1);
+                OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 •FS: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "FS"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -408,7 +438,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:53 B:35", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -418,7 +449,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenOtherIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:53 B:35", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -429,7 +461,7 @@ public final class OpinionPollLineTest {
     @Test
     public void shouldProduceAWarningWhenPublicationDateIsAddedTwice() {
         OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •PD: 2021-07-27 A:55 B:45", 1);
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PD"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -439,7 +471,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenPollingFirmIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PF: ACME •PD: 2021-07-27 A:55 B:45", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PF: ACME •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PF"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -449,8 +482,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenPollingFirmPartnerIsAddedTwice() {
-        OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PFP: BCME •PFP: BCME •PD: 2021-07-27 A:55 B:45", 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine
+                .parse("•PF: ACME •PFP: BCME •PFP: BCME •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PFP"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -460,7 +493,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenScopeIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N •SC: N A:55 B:45", 1);
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SC"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
@@ -470,8 +504,8 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningWhenSampleSizeIsAddedTwice() {
-        OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 •SS: 1000 A:55 B:45", 1);
+        OpinionPollLine opinionPollLine = OpinionPollLine
+                .parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SS"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
