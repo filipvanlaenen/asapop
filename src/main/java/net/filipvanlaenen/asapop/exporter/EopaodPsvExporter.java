@@ -1,7 +1,6 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +9,8 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
-import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.ResultValue.Precision;
+import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Exporter to the EOPAOD PSV file format.
@@ -32,25 +31,23 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the opinion polls.
      *
-     * @param opinionPolls         The opinion polls to export.
-     * @param area                 The area to filter opinion polls and response scenarios on.
-     * @param electoralListKeySets A list with the sets of keys for the electoral lists to be exported.
+     * @param opinionPolls        The opinion polls to export.
+     * @param area                The area to filter opinion polls and response scenarios on.
+     * @param electoralListIdSets A list with the IDs of keys for the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
     public static String export(final OpinionPolls opinionPolls, final String area,
-            final List<Set<String>> electoralListKeySets) {
+            final List<Set<String>> electoralListIdSets) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm | Commissioners | Fieldwork Start | Fieldwork End | Scope | Sample Size");
         sb.append(" | Participation | Precision");
-        for (Set<String> electoralListKeySet : electoralListKeySets) {
+        for (Set<String> electoralListIdSet : electoralListIdSets) {
             sb.append(" | ");
-            List<String> sortedKeys = new ArrayList<String>(electoralListKeySet);
-            Collections.sort(sortedKeys);
-            sb.append(String.join("+", sortedKeys));
+            sb.append(electoralListIdsToAbbreviations(electoralListIdSet));
         }
         sb.append(" | Other");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
-            String lines = export(opinionPoll, area, electoralListKeySets);
+            String lines = export(opinionPoll, area, electoralListIdSets);
             if (lines != null) {
                 sb.append("\n");
                 sb.append(lines);
