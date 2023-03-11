@@ -170,7 +170,7 @@ public class OpinionPollTest {
      */
     @Test
     public void setOtherInBuilderShouldBeWiredCorrectlyToGetOther() {
-        OpinionPoll poll = new OpinionPoll.Builder().setWellformedOther("2").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().setOther(new ResultValue("2")).build();
         assertEquals("2", poll.getOther().getText());
     }
 
@@ -187,7 +187,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasOtherInBuilderShouldReturnTrueAfterOtherIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setWellformedOther("12").hasOther());
+        assertTrue(new OpinionPollTestBuilder().setOther("12").hasOther());
     }
 
     /**
@@ -195,7 +195,7 @@ public class OpinionPollTest {
      */
     @Test
     public void setNoResponsesInBuilderShouldBeWiredCorrectlyToGetNoResponses() {
-        OpinionPoll poll = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().setNoResponses(new ResultValue("2")).build();
         assertEquals("2", poll.getNoResponses().getText());
     }
 
@@ -212,7 +212,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasNoResponsesInBuilderShouldReturnTrueAfterNoResponsesIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setWellformedNoResponses("12").hasNoResponses());
+        assertTrue(new OpinionPollTestBuilder().setNoResponses("12").hasNoResponses());
     }
 
     /**
@@ -220,7 +220,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getScaleReturnsOneWhenNoOtherOrNoResponsesAreRegistered() {
-        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").build();
         assertEquals(1D, poll.getScale());
     }
 
@@ -229,8 +229,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getScaleReturnsMoreThanOneWhenNoResponsesAreRegistered() {
-        OpinionPoll poll =
-                new OpinionPoll.Builder().addWellformedResult("A", "55").setWellformedNoResponses("12").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").setNoResponses("12").build();
         assertEquals(SCALE088, poll.getScale());
     }
 
@@ -303,7 +302,8 @@ public class OpinionPollTest {
      */
     @Test
     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
-        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
+        OpinionPoll poll =
+                new OpinionPollTestBuilder().addResult(Set.of(ElectoralList.get("A")), new ResultValue("55")).build();
         assertEquals("55", poll.getResult(Set.of("A")).getText());
     }
 
@@ -320,7 +320,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasResultsInBuilderShouldReturnTrueAfterResultsAreAdded() {
-        assertTrue(new OpinionPoll.Builder().addWellformedResult("A", "55").hasResults());
+        assertTrue(new OpinionPollTestBuilder().addResult("A", "55").hasResults());
     }
 
     /**
@@ -459,8 +459,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getNumberOfResultValuesShouldBeCorrect() {
-        OpinionPoll poll =
-                new OpinionPoll.Builder().addCommissioner("The Times").addWellformedResult("A", "54").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "54").addCommissioner("The Times").build();
         assertEquals(1, poll.getNumberOfResultValues());
     }
 
@@ -469,8 +468,8 @@ public class OpinionPollTest {
      */
     @Test
     public void getMainResponseScenarioReturnsTheSingleResponseScenario() {
-        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
-        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").build();
+        ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").build();
         assertEquals(expected, poll.getMainResponseScenario());
     }
 
@@ -479,10 +478,10 @@ public class OpinionPollTest {
      */
     @Test
     public void getMainResponseScenarioReturnsTheMainResponseScenario() {
-        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll.addAlternativeResponseScenario(responseScenario);
-        ResponseScenario expected = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").build();
         assertEquals(expected, poll.getMainResponseScenario());
     }
 
@@ -492,7 +491,7 @@ public class OpinionPollTest {
     @Test
     public void getAlternativeResponseScenariosShouldBeWiredCorrectlyToAddResponseScenario() {
         OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").build();
         poll.addAlternativeResponseScenario(responseScenario);
         List<ResponseScenario> expected = new ArrayList<ResponseScenario>();
         expected.add(responseScenario);
@@ -505,7 +504,7 @@ public class OpinionPollTest {
     @Test
     public void getNumberOfResponseScenariosShouldReturnTwoWhenAlternativeResponseScenarioIsAdded() {
         OpinionPoll poll = new OpinionPoll.Builder().addCommissioner("The Times").build();
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").build();
         poll.addAlternativeResponseScenario(responseScenario);
         assertEquals(2, poll.getNumberOfResponseScenarios());
     }
@@ -515,9 +514,8 @@ public class OpinionPollTest {
      */
     @Test
     public void getNumberOfResultValuesShouldIncludeThoseFromTheAlternativeResponseScenario() {
-        OpinionPoll poll =
-                new OpinionPoll.Builder().addCommissioner("The Times").addWellformedResult("A", "54").build();
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "54").addCommissioner("The Times").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").build();
         poll.addAlternativeResponseScenario(responseScenario);
         assertEquals(2, poll.getNumberOfResultValues());
     }
@@ -527,8 +525,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getElectoralListsReturnsTheElectoralListsOfTheMainResponseScenario() {
-        OpinionPoll poll =
-                new OpinionPoll.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").build();
         assertEquals(Set.of(ElectoralList.get(Set.of("A")), ElectoralList.get(Set.of("B"))),
                 poll.getElectoralListSets());
     }
@@ -682,8 +679,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentResultForOther() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedOther("2").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setWellformedOther("3").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setOther("2").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().setOther("3").build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -692,8 +689,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentResultForNoResponses() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setWellformedNoResponses("3").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().setNoResponses("3").build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -702,8 +699,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResultForOther() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedOther("2").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setWellformedOther("3").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setOther("2").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().setOther("3").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 
@@ -712,8 +709,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResultForNoResponses() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setWellformedNoResponses("3").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().setNoResponses("3").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 
@@ -722,7 +719,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForOther() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedOther("2").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setOther("2").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -732,7 +729,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForNoResponses() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setWellformedNoResponses("2").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setNoResponses("2").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -832,8 +829,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentResult() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().addWellformedResult("A", "56").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "56").build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -842,8 +839,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResult() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().addWellformedResult("A", "55").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().addWellformedResult("A", "56").build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "56").build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 
@@ -972,9 +969,8 @@ public class OpinionPollTest {
      */
     @Test
     public void resultsShouldAddUpForUpperBound() {
-        OpinionPoll.Builder opinionPollBuilder =
-                new OpinionPoll.Builder().addWellformedResult("A", "100").addWellformedResult("B", "1")
-                        .addWellformedResult("C", "1").setWellformedOther("0").setWellformedNoResponses("0");
+        OpinionPoll.Builder opinionPollBuilder = new OpinionPollTestBuilder().addResult("A", "100").addResult("B", "1")
+                .addResult("C", "1").setOther("0").setNoResponses("0");
         assertTrue(opinionPollBuilder.resultsAddUp());
     }
 
@@ -983,9 +979,8 @@ public class OpinionPollTest {
      */
     @Test
     public void resultsShouldNotAddUpAboveUpperBound() {
-        OpinionPoll.Builder opinionPollBuilder =
-                new OpinionPoll.Builder().addWellformedResult("A", "100").addWellformedResult("B", "0.1")
-                        .addWellformedResult("C", "0").setWellformedOther("0.1").setWellformedNoResponses("0.1");
+        OpinionPoll.Builder opinionPollBuilder = new OpinionPollTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setOther("0.1").setNoResponses("0.1");
         assertFalse(opinionPollBuilder.resultsAddUp());
     }
 }

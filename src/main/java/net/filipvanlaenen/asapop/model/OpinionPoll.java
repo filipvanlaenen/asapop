@@ -170,35 +170,13 @@ public final class OpinionPoll {
         /**
          * Adds a result value to the response scenario builder.
          *
-         * @param electoralListKeys The keys of a set of electoral lists.
-         * @param resultValue       The result value.
+         * @param electoralLists The set of electoral lists.
+         * @param resultValue    The result value.
          * @return This builder instance.
          */
-        public Builder addResult(final Set<String> electoralListKeys, final ResultValue resultValue) {
-            responseScenarioBuilder.addResult(electoralListKeys, resultValue);
+        public Builder addResult(final Set<ElectoralList> electoralLists, final ResultValue resultValue) {
+            responseScenarioBuilder.addResult(electoralLists, resultValue);
             return this;
-        }
-
-        /**
-         * Adds a result to the response scenario builder.
-         *
-         * @param electoralListKey The key of an electoral list.
-         * @param wellformedResult The result value as a text, assumed to be well-formed.
-         * @return This builder instance.
-         */
-        public Builder addWellformedResult(final String electoralListKey, final String wellformedResult) {
-            return addWellformedResult(Set.of(electoralListKey), wellformedResult);
-        }
-
-        /**
-         * Adds a result to the response scenario builder.
-         *
-         * @param electoralListKeys The keys of a set of electoral lists.
-         * @param wellformedResult  The result value as a text, assumed to be well-formed.
-         * @return This builder instance.
-         */
-        public Builder addWellformedResult(final Set<String> electoralListKeys, final String wellformedResult) {
-            return addResult(electoralListKeys, new ResultValue(wellformedResult));
         }
 
         /**
@@ -466,26 +444,6 @@ public final class OpinionPoll {
             this.scope = theScope;
             return this;
         }
-
-        /**
-         * Sets the result for no responses.
-         *
-         * @param noResponsesString The result for no responses, assumed to be well-formed.
-         * @return This builder instance.
-         */
-        public Builder setWellformedNoResponses(final String noResponsesString) {
-            return setNoResponses(new ResultValue(noResponsesString));
-        }
-
-        /**
-         * Sets the result for other.
-         *
-         * @param otherString The result for other, assumed to be well-formed.
-         * @return This builder instance.
-         */
-        public Builder setWellformedOther(final String otherString) {
-            return setOther(new ResultValue(otherString));
-        }
     }
 
     /**
@@ -693,11 +651,11 @@ public final class OpinionPoll {
     /**
      * Returns the result for a set of electoral lists.
      *
-     * @param electoralListKeys The keys of a set of electoral lists.
+     * @param electoralListIds The IDs of a set of electoral lists.
      * @return The result for the set of electoral lists.
      */
-    public ResultValue getResult(final Set<String> electoralListKeys) {
-        return mainResponseScenario.getResult(electoralListKeys);
+    public ResultValue getResult(final Set<String> electoralListIds) {
+        return mainResponseScenario.getResult(electoralListIds);
     }
 
     /**
