@@ -15,26 +15,26 @@ import org.junit.jupiter.api.Test;
  */
 public class ElectoralListTest {
     /**
-     * Verifies that an electoral list with a given key can be retrieved, or is created upon requesting it.
+     * Verifies that an electoral list with a given ID can be retrieved, or is created upon requesting it.
      */
     @Test
-    public void getShouldReturnAnElectoralListWithTheCorrectKey() {
-        String key = "ElectoralListTestGetNew" + new Random().nextInt();
-        assertEquals(key, ElectoralList.get(key).getKey());
+    public void getShouldReturnAnElectoralListWithTheCorrectId() {
+        String id = "ElectoralListTestGetNew" + new Random().nextInt();
+        assertEquals(id, ElectoralList.get(id).getId());
     }
 
     /**
-     * Verifies that the same electoral list is returned when the same key is being used. A key is used with high
+     * Verifies that the same electoral list is returned when the same ID is being used. An ID is used with high
      * probability of never being used before.
      */
     @Test
-    public void getShouldReturnTheSameElectoralListForTheSameKey() {
+    public void getShouldReturnTheSameElectoralListForTheSameId() {
         ElectoralList expected = ElectoralList.get("ElectoralListTestGetSame");
         assertSame(expected, ElectoralList.get("ElectoralListTestGetSame"));
     }
 
     /**
-     * Verifies that a set with the electoral lists can be retrieved by providing a set of keys.
+     * Verifies that a set with the electoral lists can be retrieved by providing a set of IDs.
      */
     @Test
     public void getShouldReturnSetOfElectoralLists() {
@@ -43,11 +43,11 @@ public class ElectoralListTest {
     }
 
     /**
-     * Verifies the conversion from a set of electoral lists to a set of their keys.
+     * Verifies the conversion from a set of electoral lists to a set of their IDs.
      */
     @Test
-    public void shouldConvertSetOfElectoraListToASetOfKeys() {
-        assertEquals(Set.of("A", "B"), ElectoralList.getKeys(Set.of(ElectoralList.get("A"), ElectoralList.get("B"))));
+    public void shouldConvertSetOfElectoraListToASetOfIds() {
+        assertEquals(Set.of("A", "B"), ElectoralList.getIds(Set.of(ElectoralList.get("A"), ElectoralList.get("B"))));
     }
 
     /**

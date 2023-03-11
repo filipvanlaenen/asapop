@@ -18,9 +18,9 @@ public final class ElectoralList {
      */
     private String abbreviation;
     /**
-     * The key of the electoral list.
+     * The ID of the electoral list.
      */
-    private final String key;
+    private final String id;
     /**
      * The map with the names for the electoral list.
      */
@@ -31,48 +31,48 @@ public final class ElectoralList {
     private String romanizedAbbreviation;
 
     /**
-     * Returns the electoral list with the given key if it already exists, or creates a new one otherwise.
+     * Returns the electoral list with the given ID if it already exists, or creates a new one otherwise.
      *
-     * @param key Key of the electoral list.
-     * @return The electoral list with that key, or a new instance.
+     * @param id ID of the electoral list.
+     * @return The electoral list with that ID, or a new instance.
      */
-    public static ElectoralList get(final String key) {
-        if (instances.containsKey(key)) {
-            return instances.get(key);
+    public static ElectoralList get(final String id) {
+        if (instances.containsKey(id)) {
+            return instances.get(id);
         }
-        ElectoralList newInstance = new ElectoralList(key);
-        instances.put(key, newInstance);
+        ElectoralList newInstance = new ElectoralList(id);
+        instances.put(id, newInstance);
         return newInstance;
     }
 
     /**
-     * Returns the set of electoral lists with the given keys. New electoral lists will be created for the keys for
-     * which an electoral list didn't already exist.
+     * Returns the set of electoral lists with the given IDs. New electoral lists will be created for the IDs for which
+     * an electoral list didn't already exist.
      *
-     * @param keys Keys of the electoral lists.
-     * @return A set with the electoral list with the keys.
+     * @param ids IDs of the electoral lists.
+     * @return A set with the electoral list with the IDs.
      */
-    public static Set<ElectoralList> get(final Set<String> keys) {
-        return keys.stream().map(key -> get(key)).collect(Collectors.toSet());
+    public static Set<ElectoralList> get(final Set<String> ids) {
+        return ids.stream().map(id -> get(id)).collect(Collectors.toSet());
     }
 
     /**
-     * Returns the keys for a set of electoral lists.
+     * Returns the IDs for a set of electoral lists.
      *
      * @param electoralListSet The set of electoral lists.
-     * @return The keys for a set of the electoral lists.
+     * @return The IDs for a set of the electoral lists.
      */
-    public static Set<String> getKeys(final Set<ElectoralList> electoralListSet) {
-        return electoralListSet.stream().map(electoralList -> electoralList.getKey()).collect(Collectors.toSet());
+    public static Set<String> getIds(final Set<ElectoralList> electoralListSet) {
+        return electoralListSet.stream().map(electoralList -> electoralList.getId()).collect(Collectors.toSet());
     }
 
     /**
-     * Constructor using the electoral list's key as the parameter.
+     * Constructor using the electoral list's ID as the parameter.
      *
-     * @param key The key for the electoral list.
+     * @param id The ID for the electoral list.
      */
-    private ElectoralList(final String key) {
-        this.key = key;
+    private ElectoralList(final String id) {
+        this.id = id;
     }
 
     /**
@@ -85,12 +85,12 @@ public final class ElectoralList {
     }
 
     /**
-     * Returns the key of the electoral list.
+     * Returns the ID of the electoral list.
      *
-     * @return The key of the electoral list.
+     * @return The ID of the electoral list.
      */
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
     /**
