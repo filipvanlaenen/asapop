@@ -1,8 +1,11 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 
@@ -57,27 +60,34 @@ public final class RichOpinionPollsFile {
     public static RichOpinionPollsFile parse(final String... lines) {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
+        Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
         OpinionPoll lastOpinionPoll = null;
+        for (String line : lines) {
+            if (ElectoralListLine.isElectoralListLine(line)) {
+                ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
+                electoralListLine.updateElectoralList();
+                electoralListKeyMap.put(electoralListLine.getKey(), electoralListLine.getElectoralList());
+            }
+        }
         int lineNumber = 0;
         for (String line : lines) {
             lineNumber++;
             if (OpinionPollLine.isOpinionPollLine(line)) {
-                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, lineNumber);
+                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, lineNumber);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(opinionPollLine.getWarnings());
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
-                ResponseScenarioLine responseScenarioLine = ResponseScenarioLine.parse(line, lineNumber);
+                ResponseScenarioLine responseScenarioLine =
+                        ResponseScenarioLine.parse(line, electoralListKeyMap, lineNumber);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
                 // set before the change is made, and added again afterwards.
                 opinionPolls.remove(lastOpinionPoll);
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(responseScenarioLine.getWarnings());
-            } else if (ElectoralListLine.isElectoralListLine(line)) {
-                ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
-                electoralListLine.updateElectoralList();
-            } else if (!EmptyLine.isEmptyLine(line) && !CommentLine.isCommentLine(line)) {
+            } else if (!ElectoralListLine.isElectoralListLine(line) && !EmptyLine.isEmptyLine(line)
+                    && !CommentLine.isCommentLine(line)) {
                 warnings.add(new UnrecognizedLineFormatWarning(lineNumber));
             }
         }

@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 
 /**
  * Unit tests on the <code>RichOpinionPollsFile</code> class.
@@ -32,8 +34,8 @@ public final class RichOpinionPollsFileTest {
     /**
      * Sample poll corresponding to the sample poll line.
      */
-    private static final OpinionPoll SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("ACME")
-            .setPublicationDate(DATE1).addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+    private static final OpinionPoll SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA001", "55")
+            .addResult("AA002", "45").setPollingFirm("ACME").setPublicationDate(DATE1).build();
     /**
      * Other sample poll line.
      */
@@ -41,8 +43,20 @@ public final class RichOpinionPollsFileTest {
     /**
      * Sample poll corresponding to the other sample poll line.
      */
-    private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPoll.Builder().setPollingFirm("BCME")
-            .setPublicationDate(DATE2).addWellformedResult("A", "56").addWellformedResult("C", "43").build();
+    private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA001", "56")
+            .addResult("AA003", "43").setPollingFirm("BCME").setPublicationDate(DATE2).build();
+    /**
+     * Line for electoral list A.
+     */
+    private static final String ELECTORAL_LIST_A_LINE = "A: AA001 •A: A";
+    /**
+     * Line for electoral list B.
+     */
+    private static final String ELECTORAL_LIST_B_LINE = "B: AA002 •A: B";
+    /**
+     * Line for electoral list C.
+     */
+    private static final String ELECTORAL_LIST_C_LINE = "C: AA003 •A: C";
 
     /**
      * Verifies that a single line containing a simple opinion poll can be parsed.
@@ -51,7 +65,8 @@ public final class RichOpinionPollsFileTest {
     public void shouldParseSingleLineWithASimpleOpinionPoll() {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                .getOpinionPolls().getOpinionPolls());
     }
 
     /**
@@ -59,7 +74,8 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPolls() {
-        String[] content = new String[] {SAMPLE_POLL_LINE, OTHER_SAMPLE_POLL_LINE};
+        String[] content = new String[] {SAMPLE_POLL_LINE, OTHER_SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE,
+                ELECTORAL_LIST_B_LINE, ELECTORAL_LIST_C_LINE};
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -71,7 +87,8 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPollsWithEmptyLineInBetween() {
-        String[] content = new String[] {SAMPLE_POLL_LINE, "", OTHER_SAMPLE_POLL_LINE};
+        String[] content = new String[] {SAMPLE_POLL_LINE, "", OTHER_SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE,
+                ELECTORAL_LIST_B_LINE, ELECTORAL_LIST_C_LINE};
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -83,7 +100,8 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithSimpleOpinionPollsWithCommentLineInBetween() {
-        String[] content = new String[] {SAMPLE_POLL_LINE, "‡", OTHER_SAMPLE_POLL_LINE};
+        String[] content = new String[] {SAMPLE_POLL_LINE, "‡", OTHER_SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE,
+                ELECTORAL_LIST_B_LINE, ELECTORAL_LIST_C_LINE};
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
@@ -95,11 +113,12 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
-        String[] content = new String[] {SAMPLE_POLL_LINE, "& A:50 B:40 C:10"};
-        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE1)
-                .addWellformedResult("A", "55").addWellformedResult("B", "45").build();
-        ResponseScenario scenario = new ResponseScenario.Builder().addWellformedResult("A", "50")
-                .addWellformedResult("B", "40").addWellformedResult("C", "10").build();
+        String[] content = new String[] {SAMPLE_POLL_LINE, "& A:50 B:40 C:10", ELECTORAL_LIST_A_LINE,
+                ELECTORAL_LIST_B_LINE, ELECTORAL_LIST_C_LINE};
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("AA001", "55").addResult("AA002", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
+        ResponseScenario scenario = new ResponseScenarioTestBuilder().addResult("AA001", "50").addResult("AA002", "40")
+                .addResult("AA003", "10").build();
         poll.addAlternativeResponseScenario(scenario);
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);
@@ -111,8 +130,8 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseALineWithAnElectoralListDefinitionAndAddAbbreviation() {
-        RichOpinionPollsFile.parse("A: •A: AP •EN: Apple Party");
-        assertEquals("AP", ElectoralList.get("A").getAbbreviation());
+        RichOpinionPollsFile.parse("A: AA001 •A: AP •EN: Apple Party");
+        assertEquals("AP", ElectoralList.get("AA001").getAbbreviation());
     }
 
     /**
