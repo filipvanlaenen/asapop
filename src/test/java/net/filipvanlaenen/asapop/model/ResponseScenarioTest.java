@@ -24,7 +24,7 @@ public class ResponseScenarioTest {
     @Test
     public void getElectoralListsReturnsTheElectoralLists() {
         ResponseScenario responseScenario =
-                new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+                new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "45").build();
         assertEquals(Set.of(ElectoralList.get(Set.of("A")), ElectoralList.get(Set.of("B"))),
                 responseScenario.getElectoralListSets());
     }
@@ -35,7 +35,7 @@ public class ResponseScenarioTest {
     @Test
     public void getResultsReturnsTheResults() {
         ResponseScenario responseScenario =
-                new ResponseScenario.Builder().addWellformedResult("A", "55").addWellformedResult("B", "45").build();
+                new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "45").build();
         assertEquals(Set.of(new ResultValue("55"), new ResultValue("45")),
                 new HashSet<ResultValue>(responseScenario.getResults()));
     }
@@ -45,7 +45,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void addResultInBuilderShouldBeWiredCorrectlyToGetResult() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder()
+                .addResult(Set.of(ElectoralList.get("A")), new ResultValue("55")).build();
         assertEquals("55", responseScenario.getResult(Set.of("A")).getText());
     }
 
@@ -62,7 +63,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void hasResultsInBuilderShouldReturnTrueAfterResultsAreAdded() {
-        assertTrue(new ResponseScenario.Builder().addWellformedResult("A", "55").hasResults());
+        assertTrue(new ResponseScenarioTestBuilder().addResult("A", "55").hasResults());
     }
 
     /**
@@ -70,7 +71,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void setOtherInBuilderShouldBeWiredCorrectlyToGetOther() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().setWellformedOther("5").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().setOther(new ResultValue("5")).build();
         assertEquals("5", responseScenario.getOther().getText());
     }
 
@@ -87,7 +88,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void hasOtherInBuilderShouldReturnTrueAfterOtherIsAdded() {
-        assertTrue(new ResponseScenario.Builder().setWellformedOther("12").hasOther());
+        assertTrue(new ResponseScenarioTestBuilder().setOther("12").hasOther());
     }
 
     /**
@@ -95,7 +96,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void setNoResponsesInBuilderShouldBeWiredCorrectlyToGetNoResponses() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        ResponseScenario responseScenario =
+                new ResponseScenarioTestBuilder().setNoResponses(new ResultValue("5")).build();
         assertEquals("5", responseScenario.getNoResponses().getText());
     }
 
@@ -112,7 +114,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void hasNoResponsesInBuilderShouldReturnTrueAfterNoResponsesIsAdded() {
-        assertTrue(new ResponseScenario.Builder().setWellformedNoResponses("12").hasNoResponses());
+        assertTrue(new ResponseScenarioTestBuilder().setNoResponses("12").hasNoResponses());
     }
 
     /**
@@ -120,7 +122,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void getScaleReturnsOneWhenNoOtherOrNoResponsesAreRegistered() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").build();
         assertEquals(1D, responseScenario.getScale());
     }
 
@@ -130,7 +132,7 @@ public class ResponseScenarioTest {
     @Test
     public void getScaleReturnsMoreThanOneWhenNoResponsesAreRegistered() {
         ResponseScenario responseScenario =
-                new ResponseScenario.Builder().addWellformedResult("A", "55").setWellformedNoResponses("12").build();
+                new ResponseScenarioTestBuilder().addResult("A", "55").setNoResponses("12").build();
         assertEquals(SCALE088, responseScenario.getScale());
     }
 
@@ -139,8 +141,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void getScaleReturnsMoreThanOneWhenResultsDoNotAddUp() {
-        OpinionPoll poll = new OpinionPoll.Builder().addWellformedResult("A", "55").setWellformedOther("33")
-                .setWellformedNoResponses("2").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").setOther("33").setNoResponses("2").build();
         assertEquals(SCALE088, poll.getScale());
     }
 
@@ -304,8 +305,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().addResult("A", "55").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -314,8 +315,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().addWellformedResult("A", "55").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().addWellformedResult("A", "56").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().addResult("A", "55").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
 
@@ -324,8 +325,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentOtherResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("6").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setOther("6").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -335,8 +336,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentNoResponsesResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("6").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setNoResponses("6").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -345,8 +346,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentOtherResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("6").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setOther("6").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
 
@@ -355,8 +356,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentNoResponsesResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("6").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setNoResponses("6").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
 
@@ -365,7 +366,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheOtherResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedOther("5").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setOther("5").build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
@@ -375,7 +376,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheNoResponsesResult() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setNoResponses("5").build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
@@ -387,7 +388,7 @@ public class ResponseScenarioTest {
     @Test
     public void aResponseScenarioMissingOtherResultShouldNotBeEqualToAnotherResponseScenarioWithOtherResult() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedOther("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setOther("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -398,7 +399,7 @@ public class ResponseScenarioTest {
     @Test
     public void aResponseScenarioMissingNoResponsesShouldNotBeEqualToAnotherResponseScenarioWithNoResponses() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setWellformedNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setNoResponses("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -497,8 +498,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void lowerBoundForResultsToAddDoesNotApplyWhenNoNoResponses() {
-        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenario.Builder().addWellformedResult("A", "50")
-                .addWellformedResult("B", "0").addWellformedResult("C", "0").setWellformedOther("0");
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setOther("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -507,8 +508,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void lowerBoundForResultsToAddDoesNotApplyWhenNoOther() {
-        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenario.Builder().addWellformedResult("A", "50")
-                .addWellformedResult("B", "0").addWellformedResult("C", "0").setWellformedOther("0");
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setOther("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -517,9 +518,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void resultsShouldAddUpForLowerBound() {
-        ResponseScenario.Builder responseScenarioBuilder =
-                new ResponseScenario.Builder().addWellformedResult("A", "98").addWellformedResult("B", "0")
-                        .addWellformedResult("C", "0").setWellformedOther("0").setWellformedNoResponses("0");
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "98")
+                .addResult("B", "0").addResult("C", "0").setOther("0").setNoResponses("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -528,9 +528,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void resultsShouldNotAddUpBelowLowerBound() {
-        ResponseScenario.Builder responseScenarioBuilder =
-                new ResponseScenario.Builder().addWellformedResult("A", "97").addWellformedResult("B", "0")
-                        .addWellformedResult("C", "0").setWellformedOther("0").setWellformedNoResponses("0");
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "97")
+                .addResult("B", "0").addResult("C", "0").setOther("0").setNoResponses("0");
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -539,9 +538,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void resultsShouldAddUpForUpperBound() {
-        ResponseScenario.Builder responseScenarioBuilder =
-                new ResponseScenario.Builder().addWellformedResult("A", "100").addWellformedResult("B", "1")
-                        .addWellformedResult("C", "1").setWellformedOther("0").setWellformedNoResponses("0");
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "1").addResult("C", "1").setOther("0").setNoResponses("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -550,9 +548,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void resultsShouldNotAddUpAboveUpperBound() {
-        ResponseScenario.Builder responseScenarioBuilder =
-                new ResponseScenario.Builder().addWellformedResult("A", "100").addWellformedResult("B", "0.1")
-                        .addWellformedResult("C", "0").setWellformedOther("0.1").setWellformedNoResponses("0.1");
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setOther("0.1").setNoResponses("0.1");
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 }
