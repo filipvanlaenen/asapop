@@ -33,7 +33,7 @@ public final class EopaodPsvExporter extends Exporter {
      *
      * @param opinionPolls        The opinion polls to export.
      * @param area                The area to filter opinion polls and response scenarios on.
-     * @param electoralListIdSets A list with the IDs of keys for the electoral lists to be exported.
+     * @param electoralListIdSets A list with the IDs of the electoral lists to be exported.
      * @return A string containing the opinion polls in the PSV file format for EOPAOD.
      */
     public static String export(final OpinionPolls opinionPolls, final String area,
@@ -61,11 +61,11 @@ public final class EopaodPsvExporter extends Exporter {
      *
      * @param opinionPoll          The opinion poll to export.
      * @param area                 The area to filter opinion polls on.
-     * @param electoralListKeySets A list with the sets of keys of the electoral lists to be exported.
+     * @param electoralListIdSets A list with the sets of IDs of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
     static String export(final OpinionPoll opinionPoll, final String area,
-            final List<Set<String>> electoralListKeySets) {
+            final List<Set<String>> electoralListIdSets) {
         List<String> lines = new ArrayList<String>();
         if (areaMatches(area, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
@@ -75,17 +75,17 @@ public final class EopaodPsvExporter extends Exporter {
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             elements.add(naIfNull(opinionPoll.getSampleSize()));
             elements.add(naIfNull(exportParticipationRate(opinionPoll.getMainResponseScenario(), opinionPoll)));
-            Precision precision = calculatePrecision(opinionPoll, electoralListKeySets);
+            Precision precision = calculatePrecision(opinionPoll, electoralListIdSets);
             elements.add(precision.toString());
             Double scale = opinionPoll.getScale();
-            for (Set<String> electoralListKeySet : electoralListKeySets) {
-                elements.add(naIfNull(opinionPoll.getResult(electoralListKeySet), precision, scale));
+            for (Set<String> electoralListIdSet : electoralListIdSets) {
+                elements.add(naIfNull(opinionPoll.getResult(electoralListIdSet), precision, scale));
             }
             elements.add(naIfNull(opinionPoll.getOther(), precision, scale));
             lines.add(String.join(" | ", elements));
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListKeySets);
+            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListIdSets);
             if (responseScenarioLine != null) {
                 lines.add(responseScenarioLine);
             }
