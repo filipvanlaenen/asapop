@@ -394,8 +394,8 @@ public class ExporterTest {
      */
     @Test
     public void shouldConvertElectoralListIdToAbbreviation() {
-        ElectoralList.get("AA001").setAbbreviation("A");
-        assertEquals("A", Exporter.electoralListIdsToAbbreviations(Set.of("AA001")));
+        ElectoralList.get("AA011").setAbbreviation("A");
+        assertEquals("A", Exporter.electoralListIdsToAbbreviations(Set.of("AA011")));
     }
 
     /**
@@ -412,10 +412,10 @@ public class ExporterTest {
      */
     @Test
     public void shouldConvertElectoralListIdsToAbbreviations() {
-        ElectoralList.get("AA001").setAbbreviation("A");
-        ElectoralList.get("AA002").setAbbreviation("B");
-        ElectoralList.get("AA003").setAbbreviation("C");
-        ElectoralList.get("AA004").setAbbreviation("D");
-        assertEquals("A+B+C+D", Exporter.electoralListIdsToAbbreviations(Set.of("AA001", "AA002", "AA003", "AA004")));
+        ElectoralList.get("AA021").setAbbreviation("A");
+        ElectoralList.get("AA022").setAbbreviation("B");
+        ElectoralList.get("AA023").setAbbreviation("C");
+        ElectoralList.get("AA024").setAbbreviation("D");
+        assertEquals("A+B+C+D", Exporter.electoralListIdsToAbbreviations(Set.of("AA021", "AA022", "AA023", "AA024")));
     }
 }

@@ -30,9 +30,9 @@ public class SaporExporter extends Exporter {
      */
     private static final double ONE_HUNDRED = 100D;
     /**
-     * The string for the pattern to match the separator between electoral list keys.
+     * The string for the pattern to match the separator between electoral list IDs.
      */
-    static final String ELECTORAL_LIST_KEY_SEPARATOR = "\\+";
+    static final String ELECTORAL_LIST_ID_SEPARATOR = "\\+";
     /**
      * The area as it should be exported to the SAPOR files.
      */
@@ -97,9 +97,9 @@ public class SaporExporter extends Exporter {
         int remainder = effectiveSampleSize;
         for (SaporMapping map : mapping) {
             DirectSaporMapping directSaporMapping = map.getDirectMapping();
-            Set<String> keys = new HashSet<String>(
-                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_KEY_SEPARATOR)));
-            Set<ElectoralList> electoralLists = ElectoralList.get(keys);
+            Set<String> ids = new HashSet<String>(
+                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_ID_SEPARATOR)));
+            Set<ElectoralList> electoralLists = ElectoralList.get(ids);
             if (actualValues.containsKey(electoralLists)) {
                 int sample = (int) Math
                         .round(actualValues.get(electoralLists) * effectiveSampleSize * calibration / ONE_HUNDRED);
@@ -158,9 +158,9 @@ public class SaporExporter extends Exporter {
         Set<Set<ElectoralList>> result = new HashSet<Set<ElectoralList>>();
         for (SaporMapping saporMapping : mapping) {
             DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
-            Set<String> keys = new HashSet<String>(
-                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_KEY_SEPARATOR)));
-            result.add(ElectoralList.get(keys));
+            Set<String> ids = new HashSet<String>(
+                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_ID_SEPARATOR)));
+            result.add(ElectoralList.get(ids));
         }
         return result;
     }

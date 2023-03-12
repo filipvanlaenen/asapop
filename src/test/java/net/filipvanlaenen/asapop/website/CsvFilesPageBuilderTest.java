@@ -27,17 +27,17 @@ public class CsvFilesPageBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfigurationNorthMacedonia = new CsvConfiguration();
-        csvConfigurationNorthMacedonia.setElectoralListKeys(List.of("A", "B"));
+        csvConfigurationNorthMacedonia.setElectoralListIds(List.of("A", "B"));
         northMacedonia.setCsvConfiguration(csvConfigurationNorthMacedonia);
         AreaConfiguration greenland = new AreaConfiguration();
         greenland.setAreaCode("gl");
         CsvConfiguration csvConfigurationGreenland = new CsvConfiguration();
-        csvConfigurationGreenland.setElectoralListKeys(List.of("A", "B"));
+        csvConfigurationGreenland.setElectoralListIds(List.of("A", "B"));
         greenland.setCsvConfiguration(csvConfigurationGreenland);
         AreaConfiguration serbia = new AreaConfiguration();
         serbia.setAreaCode("rs");
         CsvConfiguration csvConfigurationSerbia = new CsvConfiguration();
-        csvConfigurationSerbia.setElectoralListKeys(List.of("A", "B"));
+        csvConfigurationSerbia.setElectoralListIds(List.of("A", "B"));
         serbia.setCsvConfiguration(csvConfigurationSerbia);
         websiteConfiguration
                 .setAreaConfigurations(Set.of(northMacedonia, greenland, serbia, sweden, new AreaConfiguration()));

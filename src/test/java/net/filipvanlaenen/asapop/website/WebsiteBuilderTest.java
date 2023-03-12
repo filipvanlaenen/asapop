@@ -79,7 +79,7 @@ public class WebsiteBuilderTest {
         northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfiguration = new CsvConfiguration();
-        csvConfiguration.setElectoralListKeys(List.of("A", "B"));
+        csvConfiguration.setElectoralListIds(List.of("A", "B"));
         northMacedonia.setCsvConfiguration(csvConfiguration);
         websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria, northMacedonia));
         return websiteConfiguration;

@@ -32,7 +32,7 @@ public class CsvFilesBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfiguration = new CsvConfiguration();
-        csvConfiguration.setElectoralListKeys(List.of("A", "B"));
+        csvConfiguration.setElectoralListIds(List.of("A", "B"));
         northMacedonia.setCsvConfiguration(csvConfiguration);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, new AreaConfiguration()));
         return websiteConfiguration;

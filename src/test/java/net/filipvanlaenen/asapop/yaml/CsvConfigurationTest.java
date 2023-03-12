@@ -17,7 +17,7 @@ public class CsvConfigurationTest {
     @Test
     public void getElectoralListKeysShouldBeWiredCorrectlyToSetElectoralListKeys() {
         CsvConfiguration csvConfiguration = new CsvConfiguration();
-        csvConfiguration.setElectoralListKeys(List.of("A", "B"));
-        assertEquals(List.of("A", "B"), csvConfiguration.getElectoralListKeys());
+        csvConfiguration.setElectoralListIds(List.of("A", "B"));
+        assertEquals(List.of("A", "B"), csvConfiguration.getElectoralListIds());
     }
 }

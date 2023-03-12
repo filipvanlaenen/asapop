@@ -7,25 +7,25 @@ import java.util.List;
  */
 public class CsvConfiguration {
     /**
-     * The list with the keys for the electoral lists.
+     * The list with the IDs for the electoral lists.
      */
-    private List<String> electoralListKeys;
+    private List<String> electoralListIds;
 
     /**
-     * Returns the list with the keys for the electoral lists.
+     * Returns the list with the IDs for the electoral lists.
      *
-     * @return The list with the keys for the electoral lists.
+     * @return The list with the IDs for the electoral lists.
      */
-    public List<String> getElectoralListKeys() {
-        return electoralListKeys;
+    public List<String> getElectoralListIds() {
+        return electoralListIds;
     }
 
     /**
-     * Sets the list with the keys for the electoral lists.
+     * Sets the list with the IDs for the electoral lists.
      *
-     * @param electoralListKeys The list with the keys for the electoral lists.
+     * @param electoralListIds The list with the IDs for the electoral lists.
      */
-    public void setElectoralListKeys(final List<String> electoralListKeys) {
-        this.electoralListKeys = electoralListKeys;
+    public void setElectoralListIds(final List<String> electoralListIds) {
+        this.electoralListIds = electoralListIds;
     }
 }
