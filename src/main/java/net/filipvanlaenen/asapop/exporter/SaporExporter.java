@@ -114,9 +114,11 @@ public class SaporExporter extends Exporter {
         }
         double actualTotalSum = sumOfActualValues + actualOtherValue + actualNoResponsesValue;
         double scale = 1D;
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         if (actualTotalSum > ONE_HUNDRED) {
             scale = ONE_HUNDRED / actualTotalSum;
         }
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         if (hasOther && hasNoResponses && actualTotalSum < ONE_HUNDRED) {
             scale = ONE_HUNDRED / actualTotalSum;
         }
@@ -126,8 +128,8 @@ public class SaporExporter extends Exporter {
                 remainder = (int) Math
                         .round(calculationSampleSize * (sumOfActualValues + actualOtherValue) * scale / ONE_HUNDRED);
             } else {
-                remainder = (int) Math
-                        .round(calculationSampleSize * (ONE_HUNDRED - actualNoResponsesValue * scale) / ONE_HUNDRED);
+                remainder =
+                        (int) Math.round(calculationSampleSize * (ONE_HUNDRED - actualNoResponsesValue) / ONE_HUNDRED);
             }
         }
         for (SaporMapping map : mapping) {
