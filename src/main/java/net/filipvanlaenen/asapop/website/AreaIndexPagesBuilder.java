@@ -203,9 +203,10 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     if (resultValue == null) {
                         opinionPollRow.addElement(new TD("—").clazz("result-value-td"));
                     } else {
-                        other -= resultValue.getNominalValue();
-                        String text = (scale == 1D) ? resultValue.getText()
-                                : precision.getFormat().format(resultValue.getNominalValue() / scale);
+                        double displayValue = resultValue.getNominalValue() / scale;
+                        String text =
+                                (scale == 1D) ? resultValue.getText() : precision.getFormat().format(displayValue);
+                        other -= displayValue;
                         int decimalPointIndex = text.indexOf(".");
                         if (decimalPointIndex == -1) {
                             opinionPollRow.addElement(new TD(text + "%").clazz("result-value-td"));
@@ -218,7 +219,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                         }
                     }
                 }
-                String otherText = precision.getFormat().format(other / scale);
+                String otherText = precision.getFormat().format(other);
                 if (otherText.equals("-0")) {
                     otherText = "0";
                 }

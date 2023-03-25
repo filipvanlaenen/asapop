@@ -222,7 +222,7 @@ public class AreaIndexPagesBuilderTest {
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
         expected.append("            <td class=\"result-value-td\">—</td>\n");
-        expected.append("            <td class=\"result-value-td\">(25%)</td>\n");
+        expected.append("            <td class=\"result-value-td\">(10%)</td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>2022-11-12 – 2022-11-16</td>\n");
