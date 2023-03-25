@@ -14,9 +14,17 @@ import net.filipvanlaenen.asapop.model.ResultValue.Precision;
  */
 public final class ResponseScenario {
     /**
+     * The magic number hundred.
+     */
+    private static final float HUNDRED = 100F;
+    /**
      * The area.
      */
     private String area;
+    /**
+     * The effective sample size.
+     */
+    private Integer effectiveSampleSize;
     /**
      * The share of excluded responses.
      */
@@ -38,6 +46,10 @@ public final class ResponseScenario {
      */
     private String sampleSize;
     /**
+     * The sample size value.
+     */
+    private int sampleSizeValue;
+    /**
      * The scale.
      */
     private double scale;
@@ -58,6 +70,14 @@ public final class ResponseScenario {
         other = builder.other;
         results = Collections.unmodifiableMap(builder.results);
         sampleSize = builder.sampleSize;
+        sampleSizeValue = sampleSize == null ? 0 : Integer.parseInt(sampleSize);
+        if (sampleSize != null) {
+            if (excluded == null) {
+                effectiveSampleSize = sampleSizeValue;
+            } else {
+                effectiveSampleSize = Math.round(sampleSizeValue * (1F - excluded.getValue() / HUNDRED));
+            }
+        }
         scale = builder.calculateScale();
         scope = builder.scope;
     }
@@ -360,6 +380,15 @@ public final class ResponseScenario {
     }
 
     /**
+     * Returns the effective sample size. The effective sample size is the sample size minus the excluded responses.
+     *
+     * @return The effective sample size.
+     */
+    public Integer getEffectiveSampleSize() {
+        return effectiveSampleSize;
+    }
+
+    /**
      * Returns the sets of electoral lists.
      *
      * @return The sets of electoral lists.
@@ -421,6 +450,15 @@ public final class ResponseScenario {
      */
     public String getSampleSize() {
         return sampleSize;
+    }
+
+    /**
+     * Returns the sample size value.
+     *
+     * @return The sample size value.
+     */
+    public int getSampleSizeValue() {
+        return sampleSizeValue;
     }
 
     /**

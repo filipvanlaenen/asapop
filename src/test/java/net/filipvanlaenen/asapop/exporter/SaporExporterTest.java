@@ -173,7 +173,7 @@ public class SaporExporterTest {
 
     /**
      * Verifies that the body can be created for an opinion poll when the sample size and result values are given.
-     * 
+     *
      * <code>•SS: 1000 A: 40 B: 30 C: 20</code>
      */
     @Test
@@ -192,7 +192,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded and result values
      * are given.
-     * 
+     *
      * <code>•SS: 1250 •EX: 20 A: 40 B: 30 C: 20</code>
      */
     @Test
@@ -211,7 +211,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values and others are
      * given.
-     * 
+     *
      * <code>•SS: 1000 A: 40 B: 30 C: 20 •O: 10</code>
      */
     @Test
@@ -230,7 +230,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values and
      * others are given.
-     * 
+     *
      * <code>•SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10</code>
      */
     @Test
@@ -249,7 +249,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values and others are
      * given with an implicit number of no responses.
-     * 
+     *
      * <code>•SS: 1250 A: 32 B: 24 C: 16 •O: 8</code>
      */
     @Test
@@ -268,7 +268,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values and
      * others are given with an implicit number of no responses.
-     * 
+     *
      * <code>•SS: 1250 •EX: 30 A: 32 B: 24 C: 16 •O: 8</code>
      */
     @Test
@@ -287,7 +287,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values, others and no
      * responses are given.
-     * 
+     *
      * <code>•SS: 1250 A: 32 B: 24 C: 16 •O: 8 •N: 20</code>
      */
     @Test
@@ -306,7 +306,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values,
      * others and no responses are given.
-     * 
+     *
      * <code>•SS: 1250 •EX: 30 A: 32 B: 24 C: 16 •O: 8 •N: 20</code>
      */
     @Test
@@ -325,7 +325,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values and no responses
      * are given.
-     * 
+     *
      * <code>•SS: 1250 A: 32 B: 24 C: 16 •N: 20</code>
      */
     @Test
@@ -344,7 +344,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values and
      * no responses are given.
-     * 
+     *
      * <code>•SS: 1250 •EX: 30 A: 32 B: 24 C: 16 •N: 20</code>
      */
     @Test
@@ -363,7 +363,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values, others and no
      * responses are given but underflowing.
-     * 
+     *
      * <code>•SS: 1250 A: 8 B: 6 C: 4 •O: 2 •N: 5</code>
      */
     @Test
@@ -382,7 +382,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values,
      * others and no responses are given but underflowing.
-     * 
+     *
      * <code>•SS: 1250 •EX: 30 A: 8 B: 6 C: 4 •O: 2 •N: 5</code>
      */
     @Test
@@ -401,7 +401,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values, others and no
      * responses are given but overflowing.
-     * 
+     *
      * <code>•SS: 1250 A: 40 B: 30 C: 20 •O: 10 •N: 25</code>
      */
     @Test
@@ -420,7 +420,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values,
      * others and no responses are given but overflowing.
-     * 
+     *
      * <code>•SS: 1250 •EX: 30 A: 40 B: 30 C: 20 •O: 10 •N: 25</code>
      */
     @Test
@@ -439,7 +439,7 @@ public class SaporExporterTest {
     /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values and others are
      * given but overflowing.
-     * 
+     *
      * <code>•SS: 1000 A: 80 B: 60 C: 40 •O: 20</code>
      */
     @Test

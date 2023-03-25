@@ -13,10 +13,6 @@ import java.util.Set;
  */
 public final class OpinionPoll {
     /**
-     * The magic number hundred.
-     */
-    private static final float HUNDRED = 100F;
-    /**
      * The list with alternative response scenarios.
      */
     private final List<ResponseScenario> alternativeResponseScenarios = new ArrayList<ResponseScenario>();
@@ -29,10 +25,6 @@ public final class OpinionPoll {
      */
     private final Set<String> commissioners;
     /**
-     * The share of excluded responses.
-     */
-    private DecimalNumber excluded;
-    /**
      * The fieldwork end.
      */
     private DateOrMonth fieldworkEnd;
@@ -40,10 +32,6 @@ public final class OpinionPoll {
      * The fieldwork start.
      */
     private DateOrMonth fieldworkStart;
-    /**
-     * The effective sample size.
-     */
-    private Integer effectiveSampleSize;
     /**
      * The main response scenario.
      */
@@ -61,14 +49,6 @@ public final class OpinionPoll {
      */
     private LocalDate publicationDate;
     /**
-     * The sample size.
-     */
-    private String sampleSize;
-    /**
-     * The sample size value.
-     */
-    private int sampleSizeValue;
-    /**
      * The scope.
      */
     private Scope scope;
@@ -81,22 +61,12 @@ public final class OpinionPoll {
     private OpinionPoll(final Builder builder) {
         area = builder.area;
         commissioners = Collections.unmodifiableSet(builder.commissioners);
-        excluded = builder.excluded;
         fieldworkEnd = builder.fieldworkEnd;
         fieldworkStart = builder.fieldworkStart;
         mainResponseScenario = builder.responseScenarioBuilder.build();
         pollingFirm = builder.pollingFirm;
         pollingFirmPartner = builder.pollingFirmPartner;
         publicationDate = builder.publicationDate;
-        sampleSize = builder.sampleSize;
-        sampleSizeValue = sampleSize == null ? 0 : Integer.parseInt(sampleSize);
-        if (sampleSize != null) {
-            if (excluded == null) {
-                effectiveSampleSize = sampleSizeValue;
-            } else {
-                effectiveSampleSize = Math.round(sampleSizeValue * (1F - excluded.getValue() / HUNDRED));
-            }
-        }
         scope = builder.scope;
     }
 
@@ -112,10 +82,6 @@ public final class OpinionPoll {
          * The commissioners.
          */
         private final Set<String> commissioners = new HashSet<String>();
-        /**
-         * The share of excluded responses.
-         */
-        private DecimalNumber excluded;
         /**
          * The fieldwork end.
          */
@@ -140,10 +106,6 @@ public final class OpinionPoll {
          * The builder for the response scenario.
          */
         private ResponseScenario.Builder responseScenarioBuilder;
-        /**
-         * The sample size.
-         */
-        private String sampleSize;
         /**
          * The scope.
          */
@@ -212,7 +174,7 @@ public final class OpinionPoll {
          * @return True if excluded has been registered in this builder instance.
          */
         public boolean hasExcluded() {
-            return excluded != null;
+            return responseScenarioBuilder.hasExcluded();
         }
 
         /**
@@ -302,7 +264,7 @@ public final class OpinionPoll {
          * @return True if a sample size has been registered in this builder instance.
          */
         public boolean hasSampleSize() {
-            return sampleSize != null;
+            return responseScenarioBuilder.hasSampleSize();
         }
 
         /**
@@ -342,7 +304,7 @@ public final class OpinionPoll {
          * @return This build instance.
          */
         public Builder setExcluded(final DecimalNumber excludedShare) {
-            this.excluded = excludedShare;
+            responseScenarioBuilder.setExcluded(excludedShare);
             return this;
         }
 
@@ -430,7 +392,7 @@ public final class OpinionPoll {
          * @return This builder instance.
          */
         public Builder setSampleSize(final String sampleSizeString) {
-            this.sampleSize = sampleSizeString;
+            responseScenarioBuilder.setSampleSize(sampleSizeString);
             return this;
         }
 
@@ -462,14 +424,12 @@ public final class OpinionPoll {
             return otherOpinionPoll.alternativeResponseScenarios.equals(alternativeResponseScenarios)
                     && equalsOrBothNull(area, otherOpinionPoll.area)
                     && otherOpinionPoll.commissioners.equals(commissioners)
-                    && equalsOrBothNull(excluded, otherOpinionPoll.excluded)
                     && equalsOrBothNull(fieldworkEnd, otherOpinionPoll.fieldworkEnd)
                     && equalsOrBothNull(fieldworkStart, otherOpinionPoll.fieldworkStart)
                     && otherOpinionPoll.mainResponseScenario.equals(mainResponseScenario)
                     && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                     && equalsOrBothNull(pollingFirmPartner, otherOpinionPoll.pollingFirmPartner)
                     && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
-                    && equalsOrBothNull(sampleSize, otherOpinionPoll.sampleSize)
                     && equalsOrBothNull(scope, otherOpinionPoll.scope);
         } else {
             return false;
@@ -520,7 +480,7 @@ public final class OpinionPoll {
      * @return The effective sample size.
      */
     public Integer getEffectiveSampleSize() {
-        return effectiveSampleSize;
+        return mainResponseScenario.getEffectiveSampleSize();
     }
 
     /**
@@ -551,7 +511,7 @@ public final class OpinionPoll {
      * @return The share of excluded responses.
      */
     public DecimalNumber getExcluded() {
-        return excluded;
+        return mainResponseScenario.getExcluded();
     }
 
     /**
@@ -664,7 +624,7 @@ public final class OpinionPoll {
      * @return The sample size.
      */
     public String getSampleSize() {
-        return sampleSize;
+        return mainResponseScenario.getSampleSize();
     }
 
     /**
@@ -673,7 +633,7 @@ public final class OpinionPoll {
      * @return The sample size value.
      */
     public int getSampleSizeValue() {
-        return sampleSizeValue;
+        return mainResponseScenario.getSampleSizeValue();
     }
 
     /**
@@ -696,7 +656,7 @@ public final class OpinionPoll {
 
     @Override
     public int hashCode() {
-        return Objects.hash(alternativeResponseScenarios, area, commissioners, excluded, fieldworkEnd, fieldworkStart,
-                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, sampleSize, scope);
+        return Objects.hash(alternativeResponseScenarios, area, commissioners, fieldworkEnd, fieldworkStart,
+                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, scope);
     }
 }

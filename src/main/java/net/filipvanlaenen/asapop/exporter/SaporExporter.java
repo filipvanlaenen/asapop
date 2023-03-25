@@ -71,14 +71,14 @@ public class SaporExporter extends Exporter {
      */
     void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll,
             final Integer lowestEffectiveSampleSize) {
-        Integer effectiveSampleSize = opinionPoll.getEffectiveSampleSize();
-        if (effectiveSampleSize == null) {
-            effectiveSampleSize = lowestEffectiveSampleSize;
-        }
         ResponseScenario responseScenario = opinionPoll.getMainResponseScenario();
-        double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
-        Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
+        int calculationSampleSize = responseScenario.getSampleSizeValue();
+        boolean hasNoResponses = responseScenario.getNoResponses() != null;
+        boolean hasExcluded = responseScenario.getExcluded() != null;
+        boolean hasOther = responseScenario.getOther() != null;
         double sumOfActualValues = 0D;
+        Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
+        double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
         for (Set<ElectoralList> electoralLists : responseScenario.getElectoralListSets()) {
             Set<String> electoralListIds = ElectoralList.getIds(electoralLists);
             double value = responseScenario.getResult(electoralListIds).getNominalValue();
@@ -87,14 +87,49 @@ public class SaporExporter extends Exporter {
             actualValues.put(electoralLists, actualValue);
         }
         double actualOtherValue = 0D;
-        double calibration = 1D;
-        boolean hasOther = responseScenario.getOther() != null;
         if (hasOther) {
             double otherValue = responseScenario.getOther().getNominalValue();
             actualOtherValue = otherValue == 0D ? zeroValue : otherValue;
-            calibration = ONE_HUNDRED / (sumOfActualValues + actualOtherValue);
         }
-        int remainder = effectiveSampleSize;
+        boolean hasImplicitlyNoResponses =
+                !hasNoResponses && hasOther && sumOfActualValues + actualOtherValue < ONE_HUNDRED;
+        if (calculationSampleSize == 0) {
+            if (hasNoResponses) {
+                // TODO: calculationSampleSize = lowestSampleSize;
+            }
+            if (hasExcluded) {
+                // TODO: calculationSampleSize = (int) Math .round(lowestSampleSize * (1F -
+                // responseScenario.getExcluded().getValue() / ONE_HUNDRED));
+            } else {
+                calculationSampleSize = lowestEffectiveSampleSize;
+            }
+        } else if (!hasNoResponses && !hasImplicitlyNoResponses && hasExcluded) {
+            calculationSampleSize = (int) Math
+                    .round(calculationSampleSize * (1F - responseScenario.getExcluded().getValue() / ONE_HUNDRED));
+        }
+        double actualNoResponsesValue = 0D;
+        if (hasNoResponses) {
+            double noResponsesValue = responseScenario.getNoResponses().getNominalValue();
+            actualNoResponsesValue = noResponsesValue == 0D ? zeroValue : noResponsesValue;
+        }
+        double actualTotalSum = sumOfActualValues + actualOtherValue + actualNoResponsesValue;
+        double scale = 1D;
+        if (actualTotalSum > ONE_HUNDRED) {
+            scale = ONE_HUNDRED / actualTotalSum;
+        }
+        if (hasOther && hasNoResponses && actualTotalSum < ONE_HUNDRED) {
+            scale = ONE_HUNDRED / actualTotalSum;
+        }
+        int remainder = calculationSampleSize;
+        if (hasNoResponses || hasImplicitlyNoResponses) {
+            if (hasOther) {
+                remainder = (int) Math
+                        .round(calculationSampleSize * (sumOfActualValues + actualOtherValue) * scale / ONE_HUNDRED);
+            } else {
+                remainder = (int) Math
+                        .round(calculationSampleSize * (ONE_HUNDRED - actualNoResponsesValue * scale) / ONE_HUNDRED);
+            }
+        }
         for (SaporMapping map : mapping) {
             DirectSaporMapping directSaporMapping = map.getDirectMapping();
             Set<String> ids = new HashSet<String>(
@@ -102,7 +137,7 @@ public class SaporExporter extends Exporter {
             Set<ElectoralList> electoralLists = ElectoralList.get(ids);
             if (actualValues.containsKey(electoralLists)) {
                 int sample = (int) Math
-                        .round(actualValues.get(electoralLists) * effectiveSampleSize * calibration / ONE_HUNDRED);
+                        .round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
                 content.append(directSaporMapping.getTarget());
                 content.append("=");
                 content.append(sample);
