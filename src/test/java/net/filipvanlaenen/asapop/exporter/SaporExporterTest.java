@@ -490,6 +490,21 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that the body can be created for an opinion poll when the sample size is missing but no responses is
+     * present.
+     */
+    @Test
+    public void opinionPollWithNoResponsesWithoutSampleSizeShouldProduceBodyCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "50").addResult("B", "20").setNoResponses("10")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=400\n");
+        expected.append("Party A=1000\n");
+        expected.append("Party B=400");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, TWO_THOUSAND, THOUSAND));
+    }
+
+    /**
      * Verifies that the body can be created for an opinion poll when the sample size is missing but excluded present.
      */
     @Test

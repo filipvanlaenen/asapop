@@ -100,8 +100,7 @@ public class SaporExporter extends Exporter {
         if (calculationSampleSize == null) {
             if (hasNoResponses) {
                 calculationSampleSize = lowestSampleSize;
-            }
-            if (hasExcluded) {
+            } else if (hasExcluded) {
                 calculationSampleSize = (int) Math
                         .round(lowestSampleSize * (1F - responseScenario.getExcluded().getValue() / ONE_HUNDRED));
             } else {
