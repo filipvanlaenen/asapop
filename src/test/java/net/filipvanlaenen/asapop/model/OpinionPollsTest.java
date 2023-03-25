@@ -35,6 +35,14 @@ public class OpinionPollsTest {
      */
     private static final int EIGHT_HUNDRED = 800;
     /**
+     * The magic number eight hundred seventy.
+     */
+    private static final int EIGHT_HUNDRED_SEVENTY = 870;
+    /**
+     * The magic number nine hundred.
+     */
+    private static final int NINE_HUNDRED = 900;
+    /**
      * The magic number thousand.
      */
     private static final int THOUSAND = 1000;
@@ -56,8 +64,9 @@ public class OpinionPollsTest {
      */
     @BeforeAll
     public static void createOpinionPollsInstance() {
-        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").setPollingFirm("ACME")
-                .addCommissioner("The Times").setPublicationDate(DATE1).setSampleSize("1000").build();
+        OpinionPoll poll1 =
+                new OpinionPollTestBuilder().addResult("A", "55").setPollingFirm("ACME").addCommissioner("The Times")
+                        .setPublicationDate(DATE1).setSampleSize("1000").setExcluded(DecimalNumber.parse("10")).build();
         ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll1.addAlternativeResponseScenario(responseScenario1);
         OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "57").addResult("B", "56")
@@ -65,7 +74,7 @@ public class OpinionPollsTest {
         ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll2.addAlternativeResponseScenario(responseScenario2);
         OpinionPoll poll3 = new OpinionPollTestBuilder().addResult("A", "55").addCommissioner("The Times")
-                .setPublicationDate(DATE2).setSampleSize("800").build();
+                .setPublicationDate(DATE2).setSampleSize("870").setExcluded(DecimalNumber.parse("8")).build();
         opinionPolls = new OpinionPolls(Set.of(poll1, poll2, poll3));
     }
 
@@ -149,11 +158,28 @@ public class OpinionPollsTest {
     }
 
     /**
+     * Verifies that the lowest sample size for a polling firm is calculated correctly.
+     */
+    @Test
+    public void lowestSampleSizeIsCalculatedCorrectlyForAPollingFirm() {
+        assertEquals(THOUSAND, opinionPolls.getLowestSampleSize("ACME"));
+    }
+
+    /**
      * Verifies that the lowest effective sample size for a polling firm is calculated correctly.
      */
     @Test
     public void lowestEffectiveSampleSizeIsCalculatedCorrectlyForAPollingFirm() {
-        assertEquals(THOUSAND, opinionPolls.getLowestEffectiveSampleSize("ACME"));
+        assertEquals(NINE_HUNDRED, opinionPolls.getLowestEffectiveSampleSize("ACME"));
+    }
+
+    /**
+     * Verifies that the lowest sample size for a polling firm that has no sample sizes at all is the overall lowest
+     * sample size.
+     */
+    @Test
+    public void lowestSampleSizeIsCalculatedCorrectlyForAPollingFirmWithoutSampleSize() {
+        assertEquals(EIGHT_HUNDRED_SEVENTY, opinionPolls.getLowestSampleSize("BCME"));
     }
 
     /**

@@ -48,6 +48,7 @@ public final class OpinionPolls {
     /**
      * Calculates the overall lowest sample size.
      *
+     * @param effective Whether the sample sizes should be effective or not.
      * @return The lowest sample size.
      */
     private Integer calculateLowestSampleSize(final boolean effective) {
@@ -58,6 +59,7 @@ public final class OpinionPolls {
      * Calculates the overall lowest sample size for a collection of opinion polls.
      *
      * @param collection A collection of opinion polls.
+     * @param effective  Whether the sample sizes should be effective or not.
      * @return The lowest sample size.
      */
     private Integer calculateLowestSampleSize(final Collection<OpinionPoll> collection, final boolean effective) {
