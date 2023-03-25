@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
@@ -17,6 +18,10 @@ public class ResponseScenarioTest {
      * The magic number 0.88.
      */
     private static final double SCALE088 = 0.88D;
+    /**
+     * The magic number 1000.
+     */
+    private static final int ONE_THOUSAND = 1000;
 
     /**
      * Verifies that getElectoralLists returns the electoral lists of the response scenario.
@@ -231,6 +236,16 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that the setSampleSize method in the builder class is wired correctly to the getSampleSizeValue method.
+     */
+    @Test
+    public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSizeValue() {
+        ResponseScenario setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize =
+                new ResponseScenario.Builder().setSampleSize("1000").build();
+        assertEquals(ONE_THOUSAND, setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize.getSampleSizeValue());
+    }
+
+    /**
      * Verifies that before a sample size has been added, the builder responds that a sample size is missing.
      */
     @Test
@@ -244,6 +259,34 @@ public class ResponseScenarioTest {
     @Test
     public void hasSampleSizeInBuilderShouldReturnTrueAfterSampleSizeIsAdded() {
         assertTrue(new ResponseScenario.Builder().setSampleSize("12").hasSampleSize());
+    }
+
+    /**
+     * Verifies that the getEffectiveSampleSize returns <code>null</code> when no sample size has been specified.
+     */
+    @Test
+    public void getEffectiveSampleSizeShouldBeNullWhenNoSampleSizeHasBeenSpecified() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().build();
+        assertNull(responseScenario.getEffectiveSampleSize());
+    }
+
+    /**
+     * Verifies that the getEffectiveSampleSize returns the specified sample size when there are no excluded responses.
+     */
+    @Test
+    public void getEffectiveSampleSizeShouldReturnTheSampleSizeWhenThereAreNoExcludedResponses() {
+        ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("1000").build();
+        assertEquals(ONE_THOUSAND, responseScenario.getEffectiveSampleSize());
+    }
+
+    /**
+     * Verifies that the getEffectiveSampleSize returns the specified sample size minus the excluded responses.
+     */
+    @Test
+    public void getEffectiveSampleSizeShouldReturnTheSampleSizeMinusTheExcludedResponses() {
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+        assertEquals(ONE_THOUSAND, responseScenario.getEffectiveSampleSize());
     }
 
     /**
