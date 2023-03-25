@@ -277,6 +277,7 @@ public final class ResponseScenario {
          * errors, defined as 100 ± floor((n - 1) / 2) × precision. If they don't need to add strictly up, the sum can
          * be below 100 if other or no responses is missing.
          *
+         * @param strictly True if the results should add up strictly.
          * @return True if the sum of results is within the interval of rounding errors.
          */
         private boolean resultsAddUp(final boolean strictly) {

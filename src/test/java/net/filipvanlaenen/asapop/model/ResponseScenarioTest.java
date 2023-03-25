@@ -537,6 +537,26 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies the lower bound of results adding strictly up.
+     */
+    @Test
+    public void shouldBeStrictlyWithinRoundingErrorForLowerBound() {
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "98").addResult("B", "0")
+                .addResult("C", "0").setOther("0").setNoResponses("0").build();
+        assertTrue(responseScenario.isStrictlyWithinRoundingError());
+    }
+
+    /**
+     * Verifies the lower bound of results not adding strictly up.
+     */
+    @Test
+    public void shouldNotBeStrictlyWithinRoundingErrorBelowLowerBound() {
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "97").addResult("B", "0")
+                .addResult("C", "0").setOther("0").setNoResponses("0").build();
+        assertFalse(responseScenario.isStrictlyWithinRoundingError());
+    }
+
+    /**
      * Verifies that the lower bound for the results to add up doesn't apply when no responses have been registered.
      */
     @Test
