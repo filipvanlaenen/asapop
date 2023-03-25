@@ -30,6 +30,10 @@ public class SaporExporterTest {
      */
     private static final int THOUSAND = 1000;
     /**
+     * The magic number two thousand.
+     */
+    private static final int TWO_THOUSAND = 2000;
+    /**
      * A date for the unit tests.
      */
     private static final LocalDate DATE = LocalDate.parse("2021-08-02");
@@ -482,7 +486,22 @@ public class SaporExporterTest {
         expected.append("Other=20\n");
         expected.append("Party A=550\n");
         expected.append("Party B=430");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, THOUSAND, THOUSAND));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, TWO_THOUSAND, THOUSAND));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll when the sample size is missing but excluded present.
+     */
+    @Test
+    public void opinionPollWithExcludedWithoutSampleSizeShouldProduceBodyCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2)
+                .setExcluded(DecimalNumber.parse("25")).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=30\n");
+        expected.append("Party A=825\n");
+        expected.append("Party B=645");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, TWO_THOUSAND, THOUSAND));
     }
 
     /**
