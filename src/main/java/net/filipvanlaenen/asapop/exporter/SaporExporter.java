@@ -76,6 +76,7 @@ public class SaporExporter extends Exporter {
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
         boolean hasExcluded = responseScenario.getExcluded() != null;
         boolean hasOther = responseScenario.getOther() != null;
+        boolean resultsAddUp = responseScenario.isStrictlyWithinRoundingError();
         double sumOfActualValues = 0D;
         Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
         double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
@@ -92,14 +93,16 @@ public class SaporExporter extends Exporter {
             actualOtherValue = otherValue == 0D ? zeroValue : otherValue;
         }
         boolean hasImplicitlyNoResponses =
-                !hasNoResponses && hasOther && sumOfActualValues + actualOtherValue < ONE_HUNDRED;
+                !hasNoResponses && hasOther && !resultsAddUp && sumOfActualValues + actualOtherValue < ONE_HUNDRED;
         if (calculationSampleSize == 0) {
             if (hasNoResponses) {
                 // TODO: calculationSampleSize = lowestSampleSize;
+                calculationSampleSize = lowestEffectiveSampleSize;
             }
             if (hasExcluded) {
                 // TODO: calculationSampleSize = (int) Math .round(lowestSampleSize * (1F -
                 // responseScenario.getExcluded().getValue() / ONE_HUNDRED));
+                calculationSampleSize = lowestEffectiveSampleSize;
             } else {
                 calculationSampleSize = lowestEffectiveSampleSize;
             }

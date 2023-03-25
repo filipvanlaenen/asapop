@@ -57,6 +57,10 @@ public final class ResponseScenario {
      * The scope.
      */
     private Scope scope;
+    /**
+     * Whether the results add up to 100 percent within rounding error.
+     */
+    private boolean strictlyWithinRoundingError;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -80,6 +84,7 @@ public final class ResponseScenario {
         }
         scale = builder.calculateScale();
         scope = builder.scope;
+        strictlyWithinRoundingError = builder.resultsAddStrictlyUp();
     }
 
     /**
@@ -258,11 +263,23 @@ public final class ResponseScenario {
 
         /**
          * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
-         * errors, defined as 100 ± floor((n - 1) / 2) × precision..
+         * errors, defined as 100 ± floor((n - 1) / 2) × precision, or the sum is below 100 and either other or no
+         * responses is missing.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */
         public boolean resultsAddUp() {
+            return resultsAddUp(false);
+        }
+
+        /**
+         * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
+         * errors, defined as 100 ± floor((n - 1) / 2) × precision. If they don't need to add strictly up, the sum can
+         * be below 100 if other or no responses is missing.
+         *
+         * @return True if the sum of results is within the interval of rounding errors.
+         */
+        private boolean resultsAddUp(final boolean strictly) {
             int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
             Precision precision = Precision.getHighestPrecision(results.values());
             if (hasOther()) {
@@ -273,7 +290,18 @@ public final class ResponseScenario {
             }
             double sum = calculateSum();
             double epsilon = ((n - 1) / 2) * precision.getValue();
-            return (ONE_HUNDRED - epsilon <= sum || !hasOther() || !hasNoResponses()) && sum <= ONE_HUNDRED + epsilon;
+            return (ONE_HUNDRED - epsilon <= sum || !strictly && (!hasOther() || !hasNoResponses()))
+                    && sum <= ONE_HUNDRED + epsilon;
+        }
+
+        /**
+         * Verifies whether the results add strictly up. The results add up if their sum is within the interval of
+         * rounding errors, defined as 100 ± floor((n - 1) / 2) × precision.
+         *
+         * @return True if the sum of results is within the interval of rounding errors.
+         */
+        public boolean resultsAddStrictlyUp() {
+            return resultsAddUp(true);
         }
 
         /**
@@ -482,5 +510,14 @@ public final class ResponseScenario {
     @Override
     public int hashCode() {
         return Objects.hash(area, excluded, noResponses, other, results, sampleSize, scope);
+    }
+
+    /**
+     * Returns true if the results add up to 100 percent within rounding error.
+     *
+     * @return True if the results add up to 100 percent within rounding error.
+     */
+    public boolean isStrictlyWithinRoundingError() {
+        return strictlyWithinRoundingError;
     }
 }
