@@ -76,7 +76,7 @@ public class SaporExporter extends Exporter {
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
         boolean hasExcluded = responseScenario.getExcluded() != null;
         boolean hasOther = responseScenario.getOther() != null;
-        boolean resultsAddUp = responseScenario.isStrictlyWithinRoundingError();
+        boolean strictlyWithinRoundingError = responseScenario.isStrictlyWithinRoundingError();
         double sumOfActualValues = 0D;
         Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
         double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
@@ -92,8 +92,10 @@ public class SaporExporter extends Exporter {
             double otherValue = responseScenario.getOther().getNominalValue();
             actualOtherValue = otherValue == 0D ? zeroValue : otherValue;
         }
+        double sumOfOtherAndActualValues = sumOfActualValues + actualOtherValue;
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         boolean hasImplicitlyNoResponses =
-                !hasNoResponses && hasOther && !resultsAddUp && sumOfActualValues + actualOtherValue < ONE_HUNDRED;
+                !hasNoResponses && hasOther && !strictlyWithinRoundingError && sumOfOtherAndActualValues < ONE_HUNDRED;
         if (calculationSampleSize == 0) {
             if (hasNoResponses) {
                 // TODO: calculationSampleSize = lowestSampleSize;
@@ -115,7 +117,7 @@ public class SaporExporter extends Exporter {
             double noResponsesValue = responseScenario.getNoResponses().getNominalValue();
             actualNoResponsesValue = noResponsesValue == 0D ? zeroValue : noResponsesValue;
         }
-        double actualTotalSum = sumOfActualValues + actualOtherValue + actualNoResponsesValue;
+        double actualTotalSum = sumOfOtherAndActualValues + actualNoResponsesValue;
         double scale = 1D;
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         if (actualTotalSum > ONE_HUNDRED) {
@@ -128,8 +130,7 @@ public class SaporExporter extends Exporter {
         int remainder = calculationSampleSize;
         if (hasNoResponses || hasImplicitlyNoResponses) {
             if (hasOther) {
-                remainder = (int) Math
-                        .round(calculationSampleSize * (sumOfActualValues + actualOtherValue) * scale / ONE_HUNDRED);
+                remainder = (int) Math.round(calculationSampleSize * sumOfOtherAndActualValues * scale / ONE_HUNDRED);
             } else {
                 remainder =
                         (int) Math.round(calculationSampleSize * (ONE_HUNDRED - actualNoResponsesValue) / ONE_HUNDRED);
