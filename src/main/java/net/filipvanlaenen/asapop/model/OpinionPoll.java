@@ -632,7 +632,7 @@ public final class OpinionPoll {
      *
      * @return The sample size value.
      */
-    public int getSampleSizeValue() {
+    public Integer getSampleSizeValue() {
         return mainResponseScenario.getSampleSizeValue();
     }
 

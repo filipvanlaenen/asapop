@@ -74,12 +74,14 @@ public class SaporExporterTest {
      * Returns the SAPOR body for an opinion poll with the lines sorted.
      *
      * @param poll                      The opinion poll.
+     * @param lowestSampleSize          The lowest sample size.
      * @param lowestEffectiveSampleSize The lowest effective sample size.
      * @return The SAPOR body with the lines sorted.
      */
-    private String getSortedSaporBody(final OpinionPoll poll, final int lowestEffectiveSampleSize) {
+    private String getSortedSaporBody(final OpinionPoll poll, final int lowestSampleSize,
+            final int lowestEffectiveSampleSize) {
         StringBuilder sb = new StringBuilder();
-        saporExporter.appendSaporBody(sb, poll, lowestEffectiveSampleSize);
+        saporExporter.appendSaporBody(sb, poll, lowestSampleSize, lowestEffectiveSampleSize);
         String[] lines = sb.toString().split("\\n");
         Arrays.sort(lines);
         return String.join("\n", lines);
@@ -186,7 +188,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -205,7 +207,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -224,7 +226,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -243,7 +245,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -262,7 +264,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -281,7 +283,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -300,7 +302,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -319,7 +321,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -338,7 +340,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -357,7 +359,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -376,7 +378,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -395,7 +397,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -414,7 +416,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -433,7 +435,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -452,7 +454,7 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -466,7 +468,7 @@ public class SaporExporterTest {
         expected.append("Other=447\n");
         expected.append("Party A=550\n");
         expected.append("Party B=3");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, 1));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
     /**
@@ -480,7 +482,7 @@ public class SaporExporterTest {
         expected.append("Other=20\n");
         expected.append("Party A=550\n");
         expected.append("Party B=430");
-        assertEquals(expected.toString(), getSortedSaporBody(poll, THOUSAND));
+        assertEquals(expected.toString(), getSortedSaporBody(poll, THOUSAND, THOUSAND));
     }
 
     /**
@@ -505,7 +507,8 @@ public class SaporExporterTest {
         expected2.append("Party B=430\n");
         expected2.append("Party A=550\n");
         expected2.append("Other=20\n");
-        assertTrue(Set.of(expected1.toString(), expected2.toString()).contains(saporExporter.getSaporContent(poll, 1)));
+        assertTrue(
+                Set.of(expected1.toString(), expected2.toString()).contains(saporExporter.getSaporContent(poll, 1, 1)));
     }
 
     /**

@@ -48,7 +48,7 @@ public final class ResponseScenario {
     /**
      * The sample size value.
      */
-    private int sampleSizeValue;
+    private Integer sampleSizeValue;
     /**
      * The scale.
      */
@@ -74,7 +74,7 @@ public final class ResponseScenario {
         other = builder.other;
         results = Collections.unmodifiableMap(builder.results);
         sampleSize = builder.sampleSize;
-        sampleSizeValue = sampleSize == null ? 0 : Integer.parseInt(sampleSize);
+        sampleSizeValue = sampleSize == null ? null : Integer.parseInt(sampleSize);
         if (sampleSize != null) {
             if (excluded == null) {
                 effectiveSampleSize = sampleSizeValue;
@@ -486,7 +486,7 @@ public final class ResponseScenario {
      *
      * @return The sample size value.
      */
-    public int getSampleSizeValue() {
+    public Integer getSampleSizeValue() {
         return sampleSizeValue;
     }
 
