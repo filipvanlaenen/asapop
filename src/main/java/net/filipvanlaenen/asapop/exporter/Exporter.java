@@ -190,16 +190,20 @@ public abstract class Exporter {
      */
     static String exportParticipationRate(final ResponseScenario responseScenario, final OpinionPoll opinionPoll) {
         ResultValue noResponses = responseScenario.getNoResponses();
+        if (noResponses == null) {
+            noResponses = opinionPoll.getNoResponses();
+        }
+        if (noResponses != null) {
+            return noResponses.getPrecision().getFormat().format(ONE_HUNDRED - noResponses.getNominalValue());
+        }
         DecimalNumber excluded = responseScenario.getExcluded();
         if (excluded == null) {
             excluded = opinionPoll.getExcluded();
         }
-        if (noResponses == null && excluded == null) {
-            return null;
-        } else if (noResponses != null) {
-            return noResponses.getPrecision().getFormat().format(ONE_HUNDRED - noResponses.getNominalValue());
-        } else {
+        if (excluded != null) {
             return new DecimalNumber(ONE_HUNDRED - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
+        } else {
+            return null;
         }
     }
 

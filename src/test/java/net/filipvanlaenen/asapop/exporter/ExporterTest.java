@@ -370,6 +370,19 @@ public class ExporterTest {
     }
 
     /**
+     * Verifies that participation rate from the opinion poll is exported if the response scenario doesn't have
+     * excluded.
+     */
+    @Test
+    public void shouldExportParticipationRateFromOpinionPollForExcluded() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
+                .setPublicationDate(DATE1).setExcluded(DecimalNumber.parse("10")).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "45").build();
+        poll.addAlternativeResponseScenario(responseScenario);
+        assertEquals("90", Exporter.exportParticipationRate(responseScenario, poll));
+    }
+
+    /**
      * Verifies that correct participation rate is exported according to no responses.
      */
     @Test
@@ -377,6 +390,18 @@ public class ExporterTest {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setNoResponses("10")
                 .setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals("90", Exporter.exportParticipationRate(poll.getMainResponseScenario(), poll));
+    }
+
+    /**
+     * Verifies that correct participation rate is exported according to no responses from the opinion poll.
+     */
+    @Test
+    public void shouldExportParticipationRateFromOpinionPollForNoResponses() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setNoResponses("10")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "45").build();
+        poll.addAlternativeResponseScenario(responseScenario);
+        assertEquals("90", Exporter.exportParticipationRate(responseScenario, poll));
     }
 
     /**
