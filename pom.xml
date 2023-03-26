@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <project.build.javaVersion>${java.version}</project.build.javaVersion>
     <maven.compile.sourceLevel>${java.version}</maven.compile.sourceLevel>
     <maven.compile.targetLevel>${java.version}</maven.compile.targetLevel>
@@ -61,7 +61,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>3.16.0</version>
         <configuration>
           <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
           <targetJdk>${project.build.javaVersion}</targetJdk>
@@ -71,7 +71,7 @@
       <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
-        <version>1.5.2</version>
+        <version>1.7.4</version>
         <dependencies>
           <dependency>
             <groupId>org.pitest</groupId>
