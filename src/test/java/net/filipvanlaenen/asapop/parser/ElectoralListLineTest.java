@@ -26,6 +26,24 @@ public final class ElectoralListLineTest {
     }
 
     /**
+     * Verifies that the <code>isElecoralListLine</code> method can detect a line with an electoral list with a digit in
+     * its key.
+     */
+    @Test
+    public void isElectoralListLineShouldDetectElectoralListLineWithDigitInKey() {
+        assertTrue(ElectoralListLine.isElectoralListLine("A1: AA001 •A: A1 •EN: Apple One Party"));
+    }
+
+    /**
+     * Verifies that the <code>isElecoralListLine</code> method rejects a line with an electoral list with a digit at
+     * the start of the key.
+     */
+    @Test
+    public void isElectoralListLineShouldRejectElectoralListLineWithDigitAtTheStartOfAKey() {
+        assertFalse(ElectoralListLine.isElectoralListLine("1A: AA001 •A: A1 •EN: Apple One Party"));
+    }
+
+    /**
      * Verifies that the <code>isElecoralListLine</code> method can detect a line with an electoral list with the name
      * in more than one language.
      */
@@ -86,8 +104,9 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldUpdateTheNamesOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
+        ElectoralListLine electoralListLine =
+                ElectoralListLine.parse("A: AA001 •A: AP •EN: Apple Party •NL: Appelpartij");
         electoralListLine.updateElectoralList();
-        assertEquals("Apple Party", ElectoralList.get("AA001").getName("EN"));
+        assertEquals("Appelpartij", ElectoralList.get("AA001").getName("NL"));
     }
 }

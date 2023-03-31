@@ -28,7 +28,7 @@ abstract class Line {
     /**
      * The string for the pattern to match the key of an electoral list.
      */
-    static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}+";
+    static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}[\\p{javaUpperCase}\\p{Digit}]*";
     /**
      * The string for the pattern to match the separator between electoral list keys.
      */

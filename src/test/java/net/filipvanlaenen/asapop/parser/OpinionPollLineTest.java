@@ -49,9 +49,10 @@ public final class OpinionPollLineTest {
     /**
      * A map mapping keys to electoral lists.
      */
-    private static final Map<String, ElectoralList> ELECTORAL_LIST_KEY_MAP = Map.of("A", ElectoralList.get("A"), "Ä",
-            ElectoralList.get("Ä"), "Æ", ElectoralList.get("Æ"), "B", ElectoralList.get("B"), "C",
-            ElectoralList.get("C"), "Б", ElectoralList.get("Б"), "Ω", ElectoralList.get("Ω"));
+    private static final Map<String, ElectoralList> ELECTORAL_LIST_KEY_MAP =
+            Map.of("A", ElectoralList.get("A"), "Ä", ElectoralList.get("Ä"), "Æ", ElectoralList.get("Æ"), "A1",
+                    ElectoralList.get("A1"), "B", ElectoralList.get("B"), "C", ElectoralList.get("C"), "Б",
+                    ElectoralList.get("Б"), "Ω", ElectoralList.get("Ω"));
 
     /**
      * Verifies that the <code>isOpinionPollLine</code> method can detect an opinion poll line.
@@ -97,6 +98,18 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse(OPINION_POLL_LINE_WITH_COMBINED_ELECTORAL_LISTS, ELECTORAL_LIST_KEY_MAP, 1);
         OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "C", "55").addResult("B", "45")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that digits can be used in the keys for the electoral lists.
+     */
+    @Test
+    public void shouldAllowDigitsInTheKeysForTheElectoralLists() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A1:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A1", "55").addResult("B", "45")
                 .setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
