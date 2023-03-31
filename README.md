@@ -70,9 +70,10 @@ The following example shows how the all the metadata fields can be used:
 •PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:40 •O:2 •N:3
 ```
 
-Result fields consist of an electoral list key, a colon (":"), and a value. The electoral list key can only contain
-uppercase letters, but diacritics (e.g. "Ä"), letters from other languages (e.g. "Æ") and other alphabets (e.g. Greek
-"Ω" or Cyrillic "Б") are allowed. Electoral list key can also be combined using the plus sign ("+") in cases where
+Result fields consist of an electoral list key, a colon (":"), and a value. The electoral list key should start with an
+uppercase letter, but diacritics (e.g. "Ä"), letters from other languages (e.g. "Æ") and other alphabets (e.g. Greek
+"Ω" or Cyrillic "Б") are allowed. The rest of the key can be a combination of the same set of uppercase letters and
+digits. Electoral list key can also be combined using the plus sign ("+") in cases where
 electoral lists where polled together, as illustrated in the following example:
 
 ```
