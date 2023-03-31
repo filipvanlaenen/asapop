@@ -161,8 +161,8 @@ public abstract class SortableProbabilityMassFunction<SK extends Comparable<SK>>
      */
     public List<SK> getConfidenceIntervalKeyList(final double level) {
         ConfidenceInterval<SK> confidenceInterval = getConfidenceInterval(level);
-        int fromIndex = sortedKeys.indexOf(confidenceInterval.getLowerBound());
-        int toIndex = sortedKeys.indexOf(confidenceInterval.getUpperBound());
+        int fromIndex = sortedKeys.indexOf(confidenceInterval.lowerBound());
+        int toIndex = sortedKeys.indexOf(confidenceInterval.upperBound());
         return sortedKeys.subList(fromIndex, toIndex + 1);
     }
 

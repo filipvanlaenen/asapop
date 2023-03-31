@@ -390,7 +390,7 @@ class SampledMultivariateHypergeometricDistribution {
             List<Long> lowerBounds = new ArrayList<Long>();
             for (SampledHypergeometricDistribution probabilityMassFunction : probabilityMassFunctions) {
                 lowerBounds
-                        .add(probabilityMassFunction.getConfidenceInterval(SIX_NINES).getLowerBound().getLowerBound());
+                        .add(probabilityMassFunction.getConfidenceInterval(SIX_NINES).lowerBound().getLowerBound());
             }
             Collections.sort(lowerBounds);
             Collections.reverse(lowerBounds);
@@ -492,7 +492,7 @@ class SampledMultivariateHypergeometricDistribution {
      * @return True if the lower bound of the confidence interval is above the threshold, false otherwise.
      */
     static boolean isConfidenceIntervalAbove(final ConfidenceInterval<Range> confidenceInterval, final long threshold) {
-        return confidenceInterval.getLowerBound().getLowerBound() > threshold;
+        return confidenceInterval.lowerBound().getLowerBound() > threshold;
     }
 
     /**
@@ -503,7 +503,7 @@ class SampledMultivariateHypergeometricDistribution {
      * @return True if the upper bound of the confidence interval is below the threshold, false otherwise.
      */
     static boolean isConfidenceIntervalBelow(final ConfidenceInterval<Range> confidenceInterval, final long threshold) {
-        return confidenceInterval.getUpperBound().getUpperBound() < threshold;
+        return confidenceInterval.upperBound().getUpperBound() < threshold;
     }
 
     /**
