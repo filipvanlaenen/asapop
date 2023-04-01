@@ -17,6 +17,7 @@
 
 See [Milestones Closed](https://github.com/filipvanlaenen/asapop/milestones?direction=desc&sort=title&state=closed) for an up-to-date list of completed milestones.
 
+* [M15 – Handle “No Responses” properly](https://github.com/filipvanlaenen/asapop/milestone/8)
 * [M14 – Produce a landing page for an area](https://github.com/filipvanlaenen/asapop/milestone/24)
 * [M13 – Produce a page with an electoral calendar](https://github.com/filipvanlaenen/asapop/milestone/22)
 * [M12 – Allow combinations of electoral lists in opinion polls](https://github.com/filipvanlaenen/asapop/milestone/29)
