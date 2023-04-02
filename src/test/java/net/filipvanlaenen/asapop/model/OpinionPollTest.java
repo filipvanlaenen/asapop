@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.SampleSize.ExactSampleSize;
+
 /**
  * Unit tests on the class <code>OpinionPoll</code>.
  */
@@ -25,6 +27,10 @@ public class OpinionPollTest {
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
+    /**
+     * The magic number 1250.
+     */
+    private static final int ONE_THOUSAND_TWO_HUNDRED_FIFTY = 1250;
     /**
      * A date for the unit tests.
      */
@@ -41,6 +47,14 @@ public class OpinionPollTest {
      * Another date or month for the unit tests.
      */
     private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
+    /**
+     * A sample size of 800.
+     */
+    private static final ExactSampleSize SAMPLE_SIZE_EIGHT_HUNDRED = new ExactSampleSize(800);
+    /**
+     * A sample size of 1000.
+     */
+    private static final ExactSampleSize SAMPLE_SIZE_ONE_THOUSAND = new ExactSampleSize(1000);
 
     /**
      * Verifies that the addCommissioner method in the builder class is wired correctly to the getCommissioners method.
@@ -328,8 +342,8 @@ public class OpinionPollTest {
      */
     @Test
     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize() {
-        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
-        assertEquals("1000", poll.getSampleSize());
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
+        assertEquals(SAMPLE_SIZE_ONE_THOUSAND, poll.getSampleSize());
     }
 
     /**
@@ -337,7 +351,7 @@ public class OpinionPollTest {
      */
     @Test
     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSizeValue() {
-        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
         assertEquals(ONE_THOUSAND, poll.getSampleSizeValue());
     }
 
@@ -354,7 +368,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasSampleSizeInBuilderShouldReturnTrueAfterSampleSizeIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setSampleSize("12").hasSampleSize());
+        assertTrue(new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).hasSampleSize());
     }
 
     /**
@@ -371,7 +385,7 @@ public class OpinionPollTest {
      */
     @Test
     public void getEffectiveSampleSizeShouldReturnTheSampleSizeWhenThereAreNoExcludedResponses() {
-        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize("1000").build();
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
         assertEquals(ONE_THOUSAND, poll.getEffectiveSampleSize());
     }
 
@@ -380,8 +394,8 @@ public class OpinionPollTest {
      */
     @Test
     public void getEffectiveSampleSizeShouldReturnTheSampleSizeMinusTheExcludedResponses() {
-        OpinionPoll poll =
-                new OpinionPoll.Builder().setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+        OpinionPoll poll = new OpinionPoll.Builder().setSampleSize(new ExactSampleSize(ONE_THOUSAND_TWO_HUNDRED_FIFTY))
+                .setExcluded(DecimalNumber.parse("20")).build();
         assertEquals(ONE_THOUSAND, poll.getEffectiveSampleSize());
     }
 
@@ -849,8 +863,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentSampleSize() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize("800").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_EIGHT_HUNDRED).build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -859,7 +873,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheSampleSize() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -869,8 +883,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentSampleSize() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize("1000").build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize("800").build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setSampleSize(SAMPLE_SIZE_EIGHT_HUNDRED).build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 

@@ -388,11 +388,11 @@ public final class OpinionPoll {
         /**
          * Sets the sample size.
          *
-         * @param sampleSizeString The sample size as a string.
+         * @param sampleSize The sample size.
          * @return This builder instance.
          */
-        public Builder setSampleSize(final String sampleSizeString) {
-            responseScenarioBuilder.setSampleSize(sampleSizeString);
+        public Builder setSampleSize(final SampleSize sampleSize) {
+            responseScenarioBuilder.setSampleSize(sampleSize);
             return this;
         }
 
@@ -623,7 +623,7 @@ public final class OpinionPoll {
      *
      * @return The sample size.
      */
-    public String getSampleSize() {
+    public SampleSize getSampleSize() {
         return mainResponseScenario.getSampleSize();
     }
 
