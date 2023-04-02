@@ -2,6 +2,9 @@ package net.filipvanlaenen.asapop.parser;
 
 import java.util.Objects;
 
+/**
+ * A warning about a malformed sample size.
+ */
 class MalformedSampleSizeWarning extends ParserWarning {
     /**
      * The malformed sample size.
