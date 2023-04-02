@@ -53,6 +53,10 @@ public class ExporterTest {
      */
     private static final DateOrMonth DATE_OR_MONTH4 = DateOrMonth.parse("2021-08-05");
     /**
+     * A fifth date or month for the unit tests.
+     */
+    private static final DateOrMonth DATE_OR_MONTH5 = DateOrMonth.parse("2021-08-06");
+    /**
      * A list with the electoral lists A and B.
      */
     private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
@@ -268,9 +272,9 @@ public class ExporterTest {
     @Test
     public void shouldUseSampleSizeValueForComparisonOfOpinionPollsWhenStartAndEndDatesAreEqual() {
         OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
-                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("1000").build();
+                .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
         OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
-                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).setSampleSize("999").build();
+                .setSampleSize("999").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
         assertTrue(Exporter.compareOpinionPolls(poll1, poll2) < 0);
     }
 
@@ -286,11 +290,13 @@ public class ExporterTest {
         OpinionPoll poll3 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
                 .setPollingFirm("ACME").setPublicationDate(DATE3).build();
         OpinionPoll poll4 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
-                .setPollingFirm("ACME").setSampleSize("800").setFieldworkEnd(DATE_OR_MONTH4).build();
+                .setSampleSize("800").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH4).build();
         OpinionPoll poll5 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
-                .setPollingFirm("BCME").setSampleSize("1000").setFieldworkEnd(DATE_OR_MONTH4).build();
-        List<OpinionPoll> expected = List.of(poll5, poll4, poll3, poll2, poll1);
-        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4, poll5)));
+                .setSampleSize("1000").setPollingFirm("BCME").setFieldworkEnd(DATE_OR_MONTH4).build();
+        OpinionPoll poll6 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
+                .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH5).build();
+        List<OpinionPoll> expected = List.of(poll6, poll5, poll4, poll3, poll2, poll1);
+        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4, poll5, poll6)));
     }
 
     /**
@@ -441,6 +447,9 @@ public class ExporterTest {
         ElectoralList.get("AA022").setAbbreviation("B");
         ElectoralList.get("AA023").setAbbreviation("C");
         ElectoralList.get("AA024").setAbbreviation("D");
-        assertEquals("A+B+C+D", Exporter.electoralListIdsToAbbreviations(Set.of("AA021", "AA022", "AA023", "AA024")));
+        ElectoralList.get("AA025").setAbbreviation("E");
+        ElectoralList.get("AA026").setAbbreviation("F");
+        assertEquals("A+B+C+D+E+F",
+                Exporter.electoralListIdsToAbbreviations(Set.of("AA021", "AA022", "AA023", "AA024", "AA025", "AA026")));
     }
 }
