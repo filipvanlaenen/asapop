@@ -124,14 +124,14 @@ scenario if absent.
 
 The table below gives an informal overview over the field types:
 
-| Type           | Definition | Examples             |
-|----------------|------------|----------------------|
-| Date           | ####-##-## | 2021-12-09           |
-| Decimal Number | #(.#)      | 1, 1.1               |
-| Month          | ####-##    | 2021-12              |
-| Result Value   | (<)#(.#)   | 1, 1.1, <0.5         |
-| Sample Size    | (≥)# ∨ #–# | 1000, ≥1000, 600–700 |
-| Text           | *          | a, 1                 |
+| Type           | Definition  | Examples             |
+|----------------|-------------|----------------------|
+| Date           | ####-##-##  | 2021-12-09           |
+| Decimal Number | #(.#)       | 1, 1.1               |
+| Month          | ####-##     | 2021-12              |
+| Result Value   | (<)#(.#)    | 1, 1.1, <0.5         |
+| Sample Size    | (≥)# or #–# | 1000, ≥1000, 600–700 |
+| Text           | *           | a, 1                 |
 
 The type `Scope` accepts the values as in the table below:
 
