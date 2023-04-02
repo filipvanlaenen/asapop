@@ -52,4 +52,15 @@ public class OpinionPollTestBuilder extends OpinionPoll.Builder {
         setOther(new ResultValue(otherString));
         return this;
     }
+
+    /**
+     * Sets the sample size.
+     *
+     * @param string The sample size, assumed to be well-formed.
+     * @return The builder instance.
+     */
+    public OpinionPollTestBuilder setSampleSize(final String string) {
+        setSampleSize(SampleSize.parse(string));
+        return this;
+    }
 }
