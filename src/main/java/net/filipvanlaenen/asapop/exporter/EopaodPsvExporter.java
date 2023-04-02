@@ -9,6 +9,7 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.ResultValue.Precision;
 import net.filipvanlaenen.asapop.model.Scope;
 
@@ -59,8 +60,8 @@ public final class EopaodPsvExporter extends Exporter {
     /**
      * Exports the opinion poll.
      *
-     * @param opinionPoll          The opinion poll to export.
-     * @param area                 The area to filter opinion polls on.
+     * @param opinionPoll         The opinion poll to export.
+     * @param area                The area to filter opinion polls on.
      * @param electoralListIdSets A list with the sets of IDs of the electoral lists to be exported.
      * @return A string containing the opinion poll in the PSV file format for EOPAOD.
      */
@@ -73,7 +74,8 @@ public final class EopaodPsvExporter extends Exporter {
             elements.add(naIfNull(exportCommissioners(opinionPoll)));
             elements.addAll(exportDates(opinionPoll));
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
-            elements.add(naIfNull(opinionPoll.getSampleSize()));
+            SampleSize sampleSize = opinionPoll.getSampleSize();
+            elements.add(sampleSize == null ? "N/A" : sampleSize.getText());
             elements.add(naIfNull(exportParticipationRate(opinionPoll.getMainResponseScenario(), opinionPoll)));
             Precision precision = calculatePrecision(opinionPoll, electoralListIdSets);
             elements.add(precision.toString());
@@ -116,7 +118,8 @@ public final class EopaodPsvExporter extends Exporter {
         elements.add(naIfNull(exportCommissioners(opinionPoll)));
         elements.addAll(exportDates(opinionPoll));
         elements.add(naIfNull(exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
-        elements.add(naIfNull(secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize())));
+        SampleSize sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
+        elements.add(sampleSize == null ? "N/A" : Integer.toString(sampleSize.getMinimalValue()));
         elements.add(naIfNull(exportParticipationRate(responseScenario, opinionPoll)));
         Precision precision = calculatePrecision(responseScenario, electoralListKeySets);
         elements.add(precision.toString());
@@ -139,13 +142,13 @@ public final class EopaodPsvExporter extends Exporter {
     }
 
     /**
-     * Returns the string if it isn't null, and the string "N/A" otherwise.
+     * Returns the string representation of the object if it isn't null, and the string "N/A" otherwise.
      *
-     * @param s The string.
-     * @return "N/A" if the string is null, and otherwise the string as provided.
+     * @param object The object.
+     * @return "N/A" if the object is null, and otherwise the object's string representation as provided.
      */
-    private static String naIfNull(final String s) {
-        return s == null ? "N/A" : s;
+    private static String naIfNull(final Object object) {
+        return object == null ? "N/A" : object.toString();
     }
 
     /**
