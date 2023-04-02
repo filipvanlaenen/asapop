@@ -196,8 +196,8 @@ public class EopaodCsvExporterTest {
      */
     @Test
     public void shouldExportOpinionPollWithSampleSizeCorrectly() {
-        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setPollingFirm("ACME")
-                .setPublicationDate(DATE).setSampleSize("1000").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setSampleSize("1000")
+                .setPollingFirm("ACME").setPublicationDate(DATE).build();
         String expected =
                 "ACME,,2021-08-02,2021-08-02,Not Available,1000,Provided" + ",Not Available,1%,55%,43%,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
@@ -433,8 +433,8 @@ public class EopaodCsvExporterTest {
      */
     @Test
     public void shouldExportAResponseScenarioWithADifferentSampleSizeCorrectly() {
-        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
-                .setPublicationDate(DATE).setSampleSize("1000").build();
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setSampleSize("1000")
+                .setPollingFirm("ACME").setPublicationDate(DATE).build();
         ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setSampleSize("999").build();
         String expected =

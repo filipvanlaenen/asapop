@@ -10,6 +10,7 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.model.ResultValue.Precision;
+import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
 
 /**
@@ -80,7 +81,6 @@ public final class EopaodCsvExporter extends Exporter {
         return sb.toString();
     }
 
-
     /**
      * Exports the opinion poll.
      *
@@ -98,8 +98,8 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
             elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
-            elements.add(notAvailableIfNull(opinionPoll.getSampleSize()));
-            elements.add(opinionPoll.getSampleSize() == null ? "Not Available" : "Provided");
+            elements.add(notAvailableIfNull(opinionPoll.getSampleSizeValue()));
+            elements.add(opinionPoll.getSampleSizeValue() == null ? "Not Available" : "Provided");
             elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
             Precision precision = calculatePrecision(opinionPoll, electoralListIdSets);
             elements.add(precision + "%");
@@ -143,8 +143,8 @@ public final class EopaodCsvExporter extends Exporter {
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(
                 exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
-        String sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
-        elements.add(notAvailableIfNull(sampleSize));
+        SampleSize sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
+        elements.add(sampleSize == null ? "Not Available" : Integer.toString(sampleSize.getMinimalValue()));
         elements.add(sampleSize == null ? "Not Available" : "Provided");
         elements.add(notAvailableIfNull(exportParticipationRatePercentage(responseScenario, opinionPoll)));
         Precision precision = calculatePrecision(responseScenario, electoralListIdSets);
@@ -200,13 +200,13 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
-     * Returns the string if it isn't null, and the string "Not Available" otherwise.
+     * Returns the string representation of the object if it isn't null, and the string "Not Available" otherwise.
      *
-     * @param s The string.
-     * @return "Not Available" if the string is null, and otherwise the string as provided.
+     * @param object The object.
+     * @return "Not Available" if the object is null, and otherwise its string representation.
      */
-    private static String notAvailableIfNull(final String s) {
-        return s == null ? "Not Available" : s;
+    private static String notAvailableIfNull(final Object object) {
+        return object == null ? "Not Available" : object.toString();
     }
 
     /**
