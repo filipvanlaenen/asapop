@@ -64,17 +64,17 @@ public class OpinionPollsTest {
      */
     @BeforeAll
     public static void createOpinionPollsInstance() {
-        OpinionPoll poll1 =
-                new OpinionPollTestBuilder().addResult("A", "55").setPollingFirm("ACME").addCommissioner("The Times")
-                        .setPublicationDate(DATE1).setSampleSize("1000").setExcluded(DecimalNumber.parse("10")).build();
+        OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").setSampleSize("1000")
+                .setPollingFirm("ACME").addCommissioner("The Times").setPublicationDate(DATE1)
+                .setExcluded(DecimalNumber.parse("10")).build();
         ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll1.addAlternativeResponseScenario(responseScenario1);
         OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "57").addResult("B", "56")
                 .setPollingFirm("BCME").addCommissioner("The Post").setPublicationDate(DATE2).build();
         ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().addResult("A", "56").build();
         poll2.addAlternativeResponseScenario(responseScenario2);
-        OpinionPoll poll3 = new OpinionPollTestBuilder().addResult("A", "55").addCommissioner("The Times")
-                .setPublicationDate(DATE2).setSampleSize("870").setExcluded(DecimalNumber.parse("8")).build();
+        OpinionPoll poll3 = new OpinionPollTestBuilder().addResult("A", "55").setSampleSize("870")
+                .addCommissioner("The Times").setPublicationDate(DATE2).setExcluded(DecimalNumber.parse("8")).build();
         opinionPolls = new OpinionPolls(Set.of(poll1, poll2, poll3));
     }
 
