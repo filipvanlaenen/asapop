@@ -16,6 +16,7 @@ import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.model.DateOrMonth;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
@@ -137,18 +138,18 @@ public class AnalysisBuilderTest {
     @BeforeAll
     public static void createAnalysisObject() {
         Set<OpinionPoll> opinionPollSet = new HashSet<OpinionPoll>();
-        OpinionPoll opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME_PARLIAMENT)
-                .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
-                .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
-                .setArea(AREA).setScope(Scope.National).setSampleSize("1000")
+        OpinionPoll opinionPoll = new OpinionPollTestBuilder().setSampleSize("1000")
+                .setPollingFirm(POLLING_FIRM_NAME_PARLIAMENT).setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME)
+                .addCommissioner(COMMISSIONER_NAME).setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END)
+                .setPublicationDate(PUBLICATION_DATE).setArea(AREA).setScope(Scope.National)
                 .addResult(ELECTORAL_LIST_AA001, new ResultValue("1")).setOther(new ResultValue("2")).build();
         opinionPoll.addAlternativeResponseScenario(
                 new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
         opinionPollSet.add(opinionPoll);
-        opinionPoll = new OpinionPoll.Builder().setPollingFirm(POLLING_FIRM_NAME_PRESIDENTIAL)
+        opinionPoll = new OpinionPollTestBuilder().setSampleSize("1000").setPollingFirm(POLLING_FIRM_NAME_PRESIDENTIAL)
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
-                .setScope(Scope.PresidentialFirstRound).setArea(AREA).setSampleSize("1000")
+                .setScope(Scope.PresidentialFirstRound).setArea(AREA)
                 .addResult(ELECTORAL_LIST_AA001, new ResultValue("50"))
                 .addResult(ELECTORAL_LIST_AA002, new ResultValue("30")).build();
         opinionPollSet.add(opinionPoll);

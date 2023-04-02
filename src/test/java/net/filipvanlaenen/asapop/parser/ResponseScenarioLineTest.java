@@ -163,6 +163,32 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that String with a single line containing a response scenario with a different greater-than-or-equal-to
+     * sample size can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithADifferentGreaterThanOrEqualToSampleSize() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse("& •SS: ≥999 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setSampleSize("≥999").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
+     * Verifies that String with a single line containing a response scenario with a different sample size range can be
+     * parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSizeRange() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse("& •SS: 600–700 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setSampleSize("600–700").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
      * Verifies that String with a single line containing a response scenario with a different excluded can be parsed.
      */
     @Test

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
 
 /**
@@ -199,8 +200,11 @@ final class ResponseScenarioLine extends Line {
         case "SS":
             if (builder.hasSampleSize()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+            } else if (textMatchesPattern(SAMPLE_SIZE_PATTERN, value)) {
+                SampleSize sampleSize = SampleSize.parse(value);
+                builder.setSampleSize(sampleSize);
             } else {
-                builder.setSampleSize(value);
+                warnings.add(new MalformedSampleSizeWarning(lineNumber, value));
             }
             break;
         default:

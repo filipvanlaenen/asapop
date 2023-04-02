@@ -195,7 +195,31 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
-                .setPollingFirm("ACME").setPublicationDate(DATE1).setSampleSize("1000").build();
+                .setSampleSize("1000").setPollingFirm("ACME").setPublicationDate(DATE1).build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that an opinion poll with a greather-than-or-equal-to sample size can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithGreaterThanOrEqualToSampleSize() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: ≥1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setSampleSize("≥1000").setPollingFirm("ACME").setPublicationDate(DATE1).build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that an opinion poll with a sample size range can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithSampleSizeRange() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 600–700 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45")
+                .setSampleSize("600–700").setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
