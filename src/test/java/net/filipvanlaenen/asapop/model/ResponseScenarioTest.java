@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.SampleSize.ExactSampleSize;
+
 /**
  * Unit tests on the class <code>ResponseScenario</code>.
  */
@@ -22,6 +24,14 @@ public class ResponseScenarioTest {
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
+    /**
+     * The sample size 1000.
+     */
+    private static final ExactSampleSize SAMPLE_SIZE_ONE_THOUSAND = new ExactSampleSize(1000);
+    /**
+     * The sample size 1250.
+     */
+    private static final ExactSampleSize SAMPLE_SIZE_ONE_THOUSAND_TWO_HUNDRED_FIFTY = new ExactSampleSize(1250);
 
     /**
      * Verifies that getElectoralLists returns the electoral lists of the response scenario.
@@ -231,8 +241,9 @@ public class ResponseScenarioTest {
      */
     @Test
     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("999").build();
-        assertEquals("999", responseScenario.getSampleSize());
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
+        assertEquals(SAMPLE_SIZE_ONE_THOUSAND, responseScenario.getSampleSize());
     }
 
     /**
@@ -241,7 +252,7 @@ public class ResponseScenarioTest {
     @Test
     public void setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSizeValue() {
         ResponseScenario setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize =
-                new ResponseScenario.Builder().setSampleSize("1000").build();
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
         assertEquals(ONE_THOUSAND, setSampleSizeInBuilderShouldBeWiredCorrectlyToGetSampleSize.getSampleSizeValue());
     }
 
@@ -258,7 +269,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void hasSampleSizeInBuilderShouldReturnTrueAfterSampleSizeIsAdded() {
-        assertTrue(new ResponseScenario.Builder().setSampleSize("12").hasSampleSize());
+        assertTrue(new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).hasSampleSize());
     }
 
     /**
@@ -275,7 +286,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void getEffectiveSampleSizeShouldReturnTheSampleSizeWhenThereAreNoExcludedResponses() {
-        ResponseScenario responseScenario = new ResponseScenario.Builder().setSampleSize("1000").build();
+        ResponseScenario responseScenario =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
         assertEquals(ONE_THOUSAND, responseScenario.getEffectiveSampleSize());
     }
 
@@ -285,7 +297,8 @@ public class ResponseScenarioTest {
     @Test
     public void getEffectiveSampleSizeShouldReturnTheSampleSizeMinusTheExcludedResponses() {
         ResponseScenario responseScenario =
-                new ResponseScenario.Builder().setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND_TWO_HUNDRED_FIFTY)
+                        .setExcluded(DecimalNumber.parse("20")).build();
         assertEquals(ONE_THOUSAND, responseScenario.getEffectiveSampleSize());
     }
 
@@ -481,8 +494,10 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentSampleSize() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setSampleSize("999").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setSampleSize("998").build();
+        ResponseScenario responseScenario1 =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
+        ResponseScenario responseScenario2 =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND_TWO_HUNDRED_FIFTY).build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -491,7 +506,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheSampleSize() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setSampleSize("999").build();
+        ResponseScenario responseScenario1 =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
         ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
@@ -501,8 +517,10 @@ public class ResponseScenarioTest {
      */
     @Test
     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentSampleSize() {
-        ResponseScenario responseScenario1 = new ResponseScenario.Builder().setSampleSize("999").build();
-        ResponseScenario responseScenario2 = new ResponseScenario.Builder().setSampleSize("998").build();
+        ResponseScenario responseScenario1 =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND).build();
+        ResponseScenario responseScenario2 =
+                new ResponseScenario.Builder().setSampleSize(SAMPLE_SIZE_ONE_THOUSAND_TWO_HUNDRED_FIFTY).build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
 

@@ -44,7 +44,7 @@ public final class ResponseScenario {
     /**
      * The sample size.
      */
-    private String sampleSize;
+    private SampleSize sampleSize;
     /**
      * The sample size value.
      */
@@ -74,7 +74,7 @@ public final class ResponseScenario {
         other = builder.other;
         results = Collections.unmodifiableMap(builder.results);
         sampleSize = builder.sampleSize;
-        sampleSizeValue = sampleSize == null ? null : Integer.parseInt(sampleSize);
+        sampleSizeValue = sampleSize == null ? null : sampleSize.getMinimalValue();
         if (sampleSize != null) {
             if (excluded == null) {
                 effectiveSampleSize = sampleSizeValue;
@@ -118,7 +118,7 @@ public final class ResponseScenario {
         /**
          * The sample size.
          */
-        private String sampleSize;
+        private SampleSize sampleSize;
         /**
          * The scope.
          */
@@ -352,11 +352,11 @@ public final class ResponseScenario {
         /**
          * Sets the sample size.
          *
-         * @param sampleSizeString The sample size as a string.
+         * @param theSampleSize The sample size.
          * @return This builder instance.
          */
-        public Builder setSampleSize(final String sampleSizeString) {
-            this.sampleSize = sampleSizeString;
+        public Builder setSampleSize(final SampleSize theSampleSize) {
+            this.sampleSize = theSampleSize;
             return this;
         }
 
@@ -477,7 +477,7 @@ public final class ResponseScenario {
      *
      * @return The sample size.
      */
-    public String getSampleSize() {
+    public SampleSize getSampleSize() {
         return sampleSize;
     }
 
