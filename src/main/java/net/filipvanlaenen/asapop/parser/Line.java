@@ -67,6 +67,10 @@ abstract class Line {
     static final Pattern RESULT_KEY_VALUE_PATTERN = Pattern
             .compile("^\\s*(" + ELECTORAL_LIST_KEY_SET_PATTERN + ")" + KEY_VALUE_SEPARATOR_PATTERN + "\\s*(.+?)\\s*$");
     /**
+     * The pattern to match a sample size.
+     */
+    static final Pattern SAMPLE_SIZE_PATTERN = Pattern.compile("^((≥?\\d+)|(\\d+–\\d+))$");
+    /**
      * A map mapping string values as they can appear in the ROPF file to the scopes.
      */
     static final Map<String, Scope> STRING_VALUE_TO_SCOPE =
