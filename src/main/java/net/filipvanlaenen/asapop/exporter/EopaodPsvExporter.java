@@ -75,7 +75,7 @@ public final class EopaodPsvExporter extends Exporter {
             elements.addAll(exportDates(opinionPoll));
             elements.add(naIfNull(exportScope(opinionPoll.getScope())));
             SampleSize sampleSize = opinionPoll.getSampleSize();
-            elements.add(sampleSize == null ? "N/A" : sampleSize.getText());
+            elements.add(sampleSize == null ? "N/A" : Integer.toString(sampleSize.getMinimalValue()));
             elements.add(naIfNull(exportParticipationRate(opinionPoll.getMainResponseScenario(), opinionPoll)));
             Precision precision = calculatePrecision(opinionPoll, electoralListIdSets);
             elements.add(precision.toString());
