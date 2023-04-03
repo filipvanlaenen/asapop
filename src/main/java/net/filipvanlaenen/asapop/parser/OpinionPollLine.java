@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -288,6 +289,8 @@ final class OpinionPollLine extends Line {
                 keys.stream().map(key -> electoralListKeyMap.get(key)).collect(Collectors.toSet());
         ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), lineNumber);
         warnings.addAll(value.getWarnings());
+        warnings.addAll(keys.stream().filter(Predicate.not(electoralListKeyMap::containsKey))
+                .map(key -> new UnknownElectoralListKeyWarning(lineNumber, key)).collect(Collectors.toSet()));
         builder.addResult(electoralLists, value.getValue());
     }
 }

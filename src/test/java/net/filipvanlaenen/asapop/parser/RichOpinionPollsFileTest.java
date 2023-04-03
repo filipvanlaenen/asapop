@@ -139,7 +139,8 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseSingleLineWithASimpleOpinionPollWithoutWarnings() {
-        assertTrue(RichOpinionPollsFile.parse(SAMPLE_POLL_LINE).getWarnings().isEmpty());
+        assertTrue(RichOpinionPollsFile.parse(SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                .getWarnings().isEmpty());
     }
 
     /**
@@ -148,7 +149,9 @@ public final class RichOpinionPollsFileTest {
     @Test
     public void shouldProduceAWarningForALineWithAMalformedResultValue() {
         assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
-                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:x B:45").getWarnings());
+                RichOpinionPollsFile
+                        .parse("•PF: ACME •PD: 2021-07-27 A:x B:45", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                        .getWarnings());
     }
 
     /**
@@ -157,7 +160,9 @@ public final class RichOpinionPollsFileTest {
     @Test
     public void shouldProduceAWarningForALineWithAMalformedOtherResultValue() {
         assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
-                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x").getWarnings());
+                RichOpinionPollsFile
+                        .parse("•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                        .getWarnings());
     }
 
     /**
