@@ -288,6 +288,17 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that a line with an unknown electoral list key produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAnUnknownElectoralListKey() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse("& •SS: 999 •SC: N A:55 B:43 XX:2", ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new UnknownElectoralListKeyWarning(1, "XX"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
      * Verifies that a line adding the area twice produces a warning.
      */
     @Test
