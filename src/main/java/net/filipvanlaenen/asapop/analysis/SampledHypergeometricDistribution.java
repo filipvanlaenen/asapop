@@ -83,9 +83,8 @@ public final class SampledHypergeometricDistribution extends SortableProbability
             // EQMU: Changing the conditional boundary below produces a mutant that is equivalent because the
             // calculation in the clause will add zero if the upper bound is equal to the threshold.
             if (r.upperBound() > threshold) {
-                accumulated =
-                        accumulated.add(getProbabilityMass(r).multiply(new BigDecimal(r.upperBound() - threshold),
-                                MathContext.DECIMAL128), MathContext.DECIMAL128);
+                accumulated = accumulated.add(getProbabilityMass(r).multiply(new BigDecimal(r.upperBound() - threshold),
+                        MathContext.DECIMAL128), MathContext.DECIMAL128);
             }
         }
         return accumulated.divide(getProbabilityMassSum(), MathContext.DECIMAL128);

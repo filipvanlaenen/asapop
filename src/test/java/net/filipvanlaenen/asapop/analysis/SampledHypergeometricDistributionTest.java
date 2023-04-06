@@ -48,18 +48,22 @@ public class SampledHypergeometricDistributionTest {
      * The magic number one hundred five.
      */
     private static final long ONE_HUNDRED_FIVE = 105L;
+
     /**
-     * A hypergeometric distribution to run the tests on.
+     * Another hypergeometric distribution to run the tests on.
      */
     private static final SampledHypergeometricDistribution DISTRIBUTION_1_4_5_9 =
             new SampledHypergeometricDistribution(1L, FOUR, FIVE, NINE);
 
     /**
-     * Verifies that the number of samples is returned correctly.
+     * Verifies that the number of samples is correct, i.e. when five samples are requested, five samples are
+     * calculated.
+     *
+     * Note: in order to kill a mutant, a new distribution has to be created when running this unit test.
      */
     @Test
-    public void numberOfSamplesShouldBeReturnedCorrectly() {
-        assertEquals(FIVE, DISTRIBUTION_1_4_5_9.getNumberOfSamples());
+    public void numberOfSamplesShouldBeCorrect() {
+        assertEquals(FIVE, new SampledHypergeometricDistribution(1L, FOUR, FIVE, NINE).getNumberOfSamples());
     }
 
     /**
