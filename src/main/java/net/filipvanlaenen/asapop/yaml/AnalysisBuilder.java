@@ -173,10 +173,10 @@ public class AnalysisBuilder {
         for (Integer level : CONFIDENCE_INTERVAL_LEVELS) {
             Float[] confidenceInterval = new Float[2];
             confidenceInterval[0] =
-                    probabilityMassFunction.getConfidenceInterval(level / HUNDRED).lowerBound().getLowerBound()
+                    probabilityMassFunction.getConfidenceInterval(level / HUNDRED).lowerBound().lowerBound()
                             * HUNDRED / populationSize;
             confidenceInterval[1] =
-                    probabilityMassFunction.getConfidenceInterval(level / HUNDRED).upperBound().getUpperBound()
+                    probabilityMassFunction.getConfidenceInterval(level / HUNDRED).upperBound().upperBound()
                             * HUNDRED / populationSize;
             confidenceIntervals.put(level, confidenceInterval);
         }

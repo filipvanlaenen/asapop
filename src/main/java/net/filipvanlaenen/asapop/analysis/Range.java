@@ -3,35 +3,18 @@ package net.filipvanlaenen.asapop.analysis;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Class implementing a range. A range has a lower and an upper bound.
+ *
+ * @param lowerBound The lower bound of the range.
+ * @param upperBound The upper bound of the range.
  */
-public final class Range implements Comparable<Range> {
+public record Range(long lowerBound, long upperBound) implements Comparable<Range> {
     /**
      * A map caching all the ranges created in the <code>get</code> method.
      */
     private static final Map<List<Long>, Range> CACHE = new HashMap<List<Long>, Range>();
-    /**
-     * The lower bound of the range.
-     */
-    private final long lowerBound;
-    /**
-     * The upper bound of the range.
-     */
-    private final long upperBound;
-
-    /**
-     * Constructor taking the lower and the upper bound of the range as its parameters.
-     *
-     * @param lowerBound The lower bound of the range.
-     * @param upperBound The upper bound of the range.
-     */
-    private Range(final long lowerBound, final long upperBound) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-    }
 
     @Override
     public int compareTo(final Range other) {
@@ -54,16 +37,6 @@ public final class Range implements Comparable<Range> {
         return CACHE.get(key);
     }
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof Range) {
-            Range other = (Range) obj;
-            return other.lowerBound == lowerBound && other.upperBound == upperBound;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * Returns the midpoint of the range.
      *
@@ -80,28 +53,5 @@ public final class Range implements Comparable<Range> {
      */
     long getLength() {
         return 1L + upperBound - lowerBound;
-    }
-
-    /**
-     * Returns the lower bound of the range.
-     *
-     * @return The lower bound of the range.
-     */
-    public long getLowerBound() {
-        return lowerBound;
-    }
-
-    /**
-     * Returns the upper bound of the range.
-     *
-     * @return The upper bound of the range.
-     */
-    public long getUpperBound() {
-        return upperBound;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(lowerBound, upperBound);
     }
 }

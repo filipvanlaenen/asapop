@@ -41,8 +41,8 @@ public class SampledHypergeometricDistributionDataBuilder {
         Set<RangeProbabilityMass> rangeProbabilityMasses = new HashSet<RangeProbabilityMass>();
         for (Range range : pmf.getKeys()) {
             RangeProbabilityMass rangeProbabilityMass = new RangeProbabilityMass();
-            rangeProbabilityMass.setLowerBound(range.getLowerBound());
-            rangeProbabilityMass.setUpperBound(range.getUpperBound());
+            rangeProbabilityMass.setLowerBound(range.lowerBound());
+            rangeProbabilityMass.setUpperBound(range.upperBound());
             rangeProbabilityMass.setProbabilityMass(pmf.getProbabilityMass(range));
             rangeProbabilityMasses.add(rangeProbabilityMass);
         }
