@@ -7,13 +7,13 @@ public enum Scope {
     /**
      * Opinion polls for the election of the European Parliament.
      */
-    European,
+    EUROPEAN,
     /**
      * Opinion polls for the election of the national parliament.
      */
-    National,
+    NATIONAL,
     /**
      * Opinion polls for the first round of the presidential election.
      */
-    PresidentialFirstRound;
+    PRESIDENTIAL_FIRST_ROUND;
 }
