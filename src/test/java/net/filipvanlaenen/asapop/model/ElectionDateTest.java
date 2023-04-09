@@ -1,4 +1,4 @@
-package net.filipvanlaenen.asapop.website;
+package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -10,9 +10,9 @@ import java.time.Month;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests on the <code>ExpectedDate</code> class.
+ * Unit tests on the <code>ElectionDate</code> class.
  */
-public class ExpectedDateTest {
+public class ElectionDateTest {
     /**
      * The magic number sixteen.
      */
@@ -27,30 +27,30 @@ public class ExpectedDateTest {
     private static final int TWENTY_TWENTY_TWO = 2022;
 
     /**
-     * Verifies that the end date of an expected date is equal to the date if a full date is given.
+     * Verifies that the end date of an election date is equal to the date if a full date is given.
      */
     @Test
     public void endDateShouldBeEqualToDateForFullDate() {
         assertEquals(LocalDate.of(TWENTY_TWENTY_TWO, Month.OCTOBER, SIXTEEN),
-                ExpectedDate.parse("2022-10-16").getEndDate());
+                ElectionDate.parse("2022-10-16").getEndDate());
     }
 
     /**
-     * Verifies that the end date of an expected date is equal to the last day of the month if a month is given.
+     * Verifies that the end date of an election date is equal to the last day of the month if a month is given.
      */
     @Test
     public void endDateShouldBeLastDayOfMonth() {
         assertEquals(LocalDate.of(TWENTY_TWENTY_TWO, Month.OCTOBER, THIRTY_ONE),
-                ExpectedDate.parse("2022-10").getEndDate());
+                ElectionDate.parse("2022-10").getEndDate());
     }
 
     /**
-     * Verifies that the end date of an expected date is equal to the last day of the year if a year is given.
+     * Verifies that the end date of an election date is equal to the last day of the year if a year is given.
      */
     @Test
     public void endDateShouldBeLastDayOfYear() {
         assertEquals(LocalDate.of(TWENTY_TWENTY_TWO, Month.DECEMBER, THIRTY_ONE),
-                ExpectedDate.parse("2022").getEndDate());
+                ElectionDate.parse("2022").getEndDate());
     }
 
     /**
@@ -58,7 +58,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void dateStringForFullDateShouldBeCorrect() {
-        assertEquals("2022-10-16", ExpectedDate.parse("2022-10-16").getDateString());
+        assertEquals("2022-10-16", ElectionDate.parse("2022-10-16").getDateString());
     }
 
     /**
@@ -66,7 +66,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void dateStringForMonthShouldBeCorrect() {
-        assertEquals("2022-10", ExpectedDate.parse("2022-10").getDateString());
+        assertEquals("2022-10", ElectionDate.parse("2022-10").getDateString());
     }
 
     /**
@@ -74,7 +74,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void dateStringForYearShouldBeCorrect() {
-        assertEquals("2022", ExpectedDate.parse("2022").getDateString());
+        assertEquals("2022", ElectionDate.parse("2022").getDateString());
     }
 
     /**
@@ -82,7 +82,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void exactDateShouldNotHaveQualifierTermKey() {
-        assertNull(ExpectedDate.parse("2022-10-16").getQualifierTermKey());
+        assertNull(ElectionDate.parse("2022-10-16").getQualifierTermKey());
     }
 
     /**
@@ -90,7 +90,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDateShouldHaveQualifierTermKeyAround() {
-        assertEquals("around", ExpectedDate.parse("≈2022-10-16").getQualifierTermKey());
+        assertEquals("around", ElectionDate.parse("≈2022-10-16").getQualifierTermKey());
     }
 
     /**
@@ -98,7 +98,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void deadlineShouldHaveQualifierTermKeyNoLaterThan() {
-        assertEquals("no-later-than", ExpectedDate.parse("≤2022-10-16").getQualifierTermKey());
+        assertEquals("no-later-than", ElectionDate.parse("≤2022-10-16").getQualifierTermKey());
     }
 
     /**
@@ -106,7 +106,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDeadlineShouldHaveQualifierTermKeyNoLaterThanAround() {
-        assertEquals("no-later-than-around", ExpectedDate.parse("⪅2022-10-16").getQualifierTermKey());
+        assertEquals("no-later-than-around", ElectionDate.parse("⪅2022-10-16").getQualifierTermKey());
     }
 
     /**
@@ -114,7 +114,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void earlierDateShouldBeLess() {
-        assertTrue(ExpectedDate.parse("2022-10-15").compareTo(ExpectedDate.parse("2022-10-16")) < 0);
+        assertTrue(ElectionDate.parse("2022-10-15").compareTo(ElectionDate.parse("2022-10-16")) < 0);
     }
 
     /**
@@ -122,7 +122,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void equalDateShouldBeEqual() {
-        assertTrue(ExpectedDate.parse("2022-10-16").compareTo(ExpectedDate.parse("2022-10-16")) == 0);
+        assertTrue(ElectionDate.parse("2022-10-16").compareTo(ElectionDate.parse("2022-10-16")) == 0);
     }
 
     /**
@@ -130,7 +130,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void laterDateShouldBeGreater() {
-        assertTrue(ExpectedDate.parse("2022-10-17").compareTo(ExpectedDate.parse("2022-10-16")) > 0);
+        assertTrue(ElectionDate.parse("2022-10-17").compareTo(ElectionDate.parse("2022-10-16")) > 0);
     }
 
     /**
@@ -138,7 +138,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void earlierDateShouldBeLessThanMonth() {
-        assertTrue(ExpectedDate.parse("2022-10-15").compareTo(ExpectedDate.parse("2022-10")) < 0);
+        assertTrue(ElectionDate.parse("2022-10-15").compareTo(ElectionDate.parse("2022-10")) < 0);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void lastDayOfMonthShouldBeLessThanMonth() {
-        assertTrue(ExpectedDate.parse("2022-10-31").compareTo(ExpectedDate.parse("2022-10")) < 0);
+        assertTrue(ElectionDate.parse("2022-10-31").compareTo(ElectionDate.parse("2022-10")) < 0);
     }
 
     /**
@@ -154,7 +154,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void monthShouldBeGreaterThanLastDayOfMonth() {
-        assertTrue(ExpectedDate.parse("2022-10").compareTo(ExpectedDate.parse("2022-10-31")) > 0);
+        assertTrue(ElectionDate.parse("2022-10").compareTo(ElectionDate.parse("2022-10-31")) > 0);
     }
 
     /**
@@ -162,7 +162,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void laterDateShouldBeGreaterThanMonth() {
-        assertTrue(ExpectedDate.parse("2022-11-01").compareTo(ExpectedDate.parse("2022-10")) > 0);
+        assertTrue(ElectionDate.parse("2022-11-01").compareTo(ElectionDate.parse("2022-10")) > 0);
     }
 
     /**
@@ -170,7 +170,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void earlierMonthShouldBeLessThanYear() {
-        assertTrue(ExpectedDate.parse("2022-10").compareTo(ExpectedDate.parse("2022")) < 0);
+        assertTrue(ElectionDate.parse("2022-10").compareTo(ElectionDate.parse("2022")) < 0);
     }
 
     /**
@@ -178,7 +178,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void lastMonthOfYearShouldBeLessThanYear() {
-        assertTrue(ExpectedDate.parse("2022-12").compareTo(ExpectedDate.parse("2022")) < 0);
+        assertTrue(ElectionDate.parse("2022-12").compareTo(ElectionDate.parse("2022")) < 0);
     }
 
     /**
@@ -186,7 +186,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void yearShouldBeGreaterThanLastMonthOfYear() {
-        assertTrue(ExpectedDate.parse("2022").compareTo(ExpectedDate.parse("2022-12")) > 0);
+        assertTrue(ElectionDate.parse("2022").compareTo(ElectionDate.parse("2022-12")) > 0);
     }
 
     /**
@@ -194,7 +194,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void laterMonthShouldBeGreaterThanYear() {
-        assertTrue(ExpectedDate.parse("2023-01").compareTo(ExpectedDate.parse("2022")) > 0);
+        assertTrue(ElectionDate.parse("2023-01").compareTo(ElectionDate.parse("2022")) > 0);
     }
 
     /**
@@ -202,7 +202,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void exactDateShouldBeLessThanADeadline() {
-        assertTrue(ExpectedDate.parse("2022-10-16").compareTo(ExpectedDate.parse("≤2022-10-16")) < 0);
+        assertTrue(ElectionDate.parse("2022-10-16").compareTo(ElectionDate.parse("≤2022-10-16")) < 0);
     }
 
     /**
@@ -210,7 +210,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void deadlineShouldBeGreaterThanExactDate() {
-        assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("2022-10-16")) > 0);
+        assertTrue(ElectionDate.parse("≤2022-10-16").compareTo(ElectionDate.parse("2022-10-16")) > 0);
     }
 
     /**
@@ -218,7 +218,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDateShouldBeGreaterThanADeadline() {
-        assertTrue(ExpectedDate.parse("≈2022-10-16").compareTo(ExpectedDate.parse("≤2022-10-16")) > 0);
+        assertTrue(ElectionDate.parse("≈2022-10-16").compareTo(ElectionDate.parse("≤2022-10-16")) > 0);
     }
 
     /**
@@ -226,7 +226,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void deadlineShouldBeLessThanApproximateDate() {
-        assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("≈2022-10-16")) < 0);
+        assertTrue(ElectionDate.parse("≤2022-10-16").compareTo(ElectionDate.parse("≈2022-10-16")) < 0);
     }
 
     /**
@@ -234,7 +234,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void exactDateShouldBeLessThanApproximateDeadline() {
-        assertTrue(ExpectedDate.parse("2022-10-16").compareTo(ExpectedDate.parse("⪅2022-10-16")) < 0);
+        assertTrue(ElectionDate.parse("2022-10-16").compareTo(ElectionDate.parse("⪅2022-10-16")) < 0);
     }
 
     /**
@@ -242,7 +242,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDeadlineShouldBeGreaterThanExactDate() {
-        assertTrue(ExpectedDate.parse("⪅2022-10-16").compareTo(ExpectedDate.parse("2022-10-16")) > 0);
+        assertTrue(ElectionDate.parse("⪅2022-10-16").compareTo(ElectionDate.parse("2022-10-16")) > 0);
     }
 
     /**
@@ -250,7 +250,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDeadlineShouldBeGreaterThanADeadline() {
-        assertTrue(ExpectedDate.parse("⪅2022-10-16").compareTo(ExpectedDate.parse("≤2022-10-16")) > 0);
+        assertTrue(ElectionDate.parse("⪅2022-10-16").compareTo(ElectionDate.parse("≤2022-10-16")) > 0);
     }
 
     /**
@@ -258,7 +258,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void deadlineShouldBeLessThanApproximateDeadline() {
-        assertTrue(ExpectedDate.parse("≤2022-10-16").compareTo(ExpectedDate.parse("⪅2022-10-16")) < 0);
+        assertTrue(ElectionDate.parse("≤2022-10-16").compareTo(ElectionDate.parse("⪅2022-10-16")) < 0);
     }
 
     /**
@@ -266,7 +266,7 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDateShouldBeGreaterThanApproximateDeadline() {
-        assertTrue(ExpectedDate.parse("≈2022-10-16").compareTo(ExpectedDate.parse("⪅2022-10-16")) > 0);
+        assertTrue(ElectionDate.parse("≈2022-10-16").compareTo(ElectionDate.parse("⪅2022-10-16")) > 0);
     }
 
     /**
@@ -274,6 +274,6 @@ public class ExpectedDateTest {
      */
     @Test
     public void approximateDeadlineShouldBeLessThanApproximateDate() {
-        assertTrue(ExpectedDate.parse("⪅2022-10-16").compareTo(ExpectedDate.parse("≈2022-10-16")) < 0);
+        assertTrue(ElectionDate.parse("⪅2022-10-16").compareTo(ElectionDate.parse("≈2022-10-16")) < 0);
     }
 }

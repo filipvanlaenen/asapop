@@ -1,4 +1,4 @@
-package net.filipvanlaenen.asapop.website;
+package net.filipvanlaenen.asapop.model;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -7,10 +7,10 @@ import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 
 /**
- * Class modeling an expected date, which can be a date (<code>LocalDate</code>), a month (<code>YearMonth</code>) or a
+ * Class modeling an election date, which can be a date (<code>LocalDate</code>), a month (<code>YearMonth</code>) or a
  * year (<code>Year</code>), with a qualifier.
  */
-abstract class ExpectedDate {
+public abstract class ElectionDate {
     /**
      * Enumeration modeling the qualifier for the date.
      */
@@ -57,9 +57,9 @@ abstract class ExpectedDate {
     }
 
     /**
-     * Class modeling a day as an expected date.
+     * Class modeling a day as an election date.
      */
-    private static final class ExpectedDay extends ExpectedDate {
+    private static final class ExpectedDay extends ElectionDate {
         /**
          * The date.
          */
@@ -77,7 +77,7 @@ abstract class ExpectedDate {
         }
 
         @Override
-        protected LocalDate getEndDate() {
+        public LocalDate getEndDate() {
             return date;
         }
 
@@ -88,9 +88,9 @@ abstract class ExpectedDate {
     }
 
     /**
-     * Class modeling a month as an expected date.
+     * Class modeling a month as an election date.
      */
-    private static final class ExpectedMonth extends ExpectedDate {
+    private static final class ExpectedMonth extends ElectionDate {
         /**
          * The month.
          */
@@ -108,7 +108,7 @@ abstract class ExpectedDate {
         }
 
         @Override
-        protected LocalDate getEndDate() {
+        public LocalDate getEndDate() {
             return month.atEndOfMonth();
         }
 
@@ -119,9 +119,9 @@ abstract class ExpectedDate {
     }
 
     /**
-     * Class modeling a year as an expected date.
+     * Class modeling a year as an election date.
      */
-    private static final class ExpectedYear extends ExpectedDate {
+    private static final class ExpectedYear extends ElectionDate {
         /**
          * The year.
          */
@@ -139,7 +139,7 @@ abstract class ExpectedDate {
         }
 
         @Override
-        protected LocalDate getEndDate() {
+        public LocalDate getEndDate() {
             return year.atMonth(Month.DECEMBER).atEndOfMonth();
         }
 
@@ -159,17 +159,17 @@ abstract class ExpectedDate {
      *
      * @param qualifier The qualifier for the date.
      */
-    private ExpectedDate(final Qualifier qualifier) {
+    private ElectionDate(final Qualifier qualifier) {
         this.qualifier = qualifier;
     }
 
     /**
-     * Parses a text into an expected date.
+     * Parses a text into an election date.
      *
      * @param text The text to be parse.
-     * @return An expected date parsed from the text.
+     * @return An election date parsed from the text.
      */
-    static ExpectedDate parse(final String text) {
+    public static ElectionDate parse(final String text) {
         if (text.startsWith("≈")) {
             return parseDate(text.substring(1), Qualifier.APPROXIMATE_DATE);
         } else if (text.startsWith("≤")) {
@@ -188,7 +188,7 @@ abstract class ExpectedDate {
      * @param qualifier The qualifier for the date.
      * @return An instance of the appropriate subclass.
      */
-    private static ExpectedDate parseDate(final String text, final Qualifier qualifier) {
+    private static ElectionDate parseDate(final String text, final Qualifier qualifier) {
         try {
             return new ExpectedDay(LocalDate.parse(text), qualifier);
         } catch (DateTimeParseException dtpe) {
@@ -201,16 +201,16 @@ abstract class ExpectedDate {
     }
 
     /**
-     * Compares this expected date to another expected date. In principle, the end date decides which date is greater
+     * Compares this election date to another election date. In principle, the end date decides which date is greater
      * than the other. If the end dates are equal, days are less than months, and months less than years. Within the
      * same subclass, exact dates are less than deadlines, deadlines less than approximate deadlines, and approximate
      * deadlines are less than approximate dates.
      *
-     * @param other The expected date to compare this expected date to.
+     * @param other The election date to compare this election date to.
      * @return A negative number if this instance is less than the other instance, a positive number if it is greater,
      *         and zero if both instances are equal.
      */
-    int compareTo(final ExpectedDate other) {
+    public int compareTo(final ElectionDate other) {
         int endDateResult = getEndDate().compareTo(other.getEndDate());
         if (endDateResult != 0) {
             return endDateResult;
@@ -231,11 +231,11 @@ abstract class ExpectedDate {
     }
 
     /**
-     * Returns the date as a string.
+     * Returns the election date as a string.
      *
      * @return A string representing the date.
      */
-    protected abstract String getDateString();
+    public abstract String getDateString();
 
     /**
      * Returns the end date. For days, this is the same as the day; for months, it is the last day of the month; for
@@ -243,14 +243,14 @@ abstract class ExpectedDate {
      *
      * @return The end date.
      */
-    protected abstract LocalDate getEndDate();
+    public abstract LocalDate getEndDate();
 
     /**
      * Returns the term key according to the qualifier, or <code>null</code> for exact dates.
      *
      * @return The term key according to the qualifier, or <code>null</code> for exact dates.
      */
-    String getQualifierTermKey() {
+    public String getQualifierTermKey() {
         return qualifier.getTermKey();
     }
 }
