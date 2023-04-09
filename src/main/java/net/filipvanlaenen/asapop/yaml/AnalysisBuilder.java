@@ -124,7 +124,7 @@ public class AnalysisBuilder {
             }
             responseScenarioAnalysis.setResultAnalyses(resultAnalyses);
         }
-        if (poll.getScope() == Scope.PresidentialFirstRound) {
+        if (poll.getScope() == Scope.PRESIDENTIAL_FIRST_ROUND) {
             FirstRoundWinnersAnalysis firstRoundWinnersAnalysis =
                     engine.getFirstRoundWinnersAnalysis(poll.getMainResponseScenario());
             if (firstRoundWinnersAnalysis != null) {

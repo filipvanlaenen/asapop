@@ -141,15 +141,15 @@ public class AnalysisBuilderTest {
         OpinionPoll opinionPoll = new OpinionPollTestBuilder().setSampleSize("1000")
                 .setPollingFirm(POLLING_FIRM_NAME_PARLIAMENT).setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME)
                 .addCommissioner(COMMISSIONER_NAME).setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END)
-                .setPublicationDate(PUBLICATION_DATE).setArea(AREA).setScope(Scope.National)
+                .setPublicationDate(PUBLICATION_DATE).setArea(AREA).setScope(Scope.NATIONAL)
                 .addResult(ELECTORAL_LIST_AA001, new ResultValue("1")).setOther(new ResultValue("2")).build();
         opinionPoll.addAlternativeResponseScenario(
-                new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.European).build());
+                new ResponseScenario.Builder().setArea(ALTERNATIVE_AREA).setScope(Scope.EUROPEAN).build());
         opinionPollSet.add(opinionPoll);
         opinionPoll = new OpinionPollTestBuilder().setSampleSize("1000").setPollingFirm(POLLING_FIRM_NAME_PRESIDENTIAL)
                 .setPollingFirmPartner(POLLING_FIRM_PARTNER_NAME).addCommissioner(COMMISSIONER_NAME)
                 .setFieldworkStart(FIELDWORK_START).setFieldworkEnd(FIELDWORK_END).setPublicationDate(PUBLICATION_DATE)
-                .setScope(Scope.PresidentialFirstRound).setArea(AREA)
+                .setScope(Scope.PRESIDENTIAL_FIRST_ROUND).setArea(AREA)
                 .addResult(ELECTORAL_LIST_AA001, new ResultValue("50"))
                 .addResult(ELECTORAL_LIST_AA002, new ResultValue("30")).build();
         opinionPollSet.add(opinionPoll);
@@ -170,7 +170,7 @@ public class AnalysisBuilderTest {
                                     opinionPollAnalysis.getResponseScenarioAnalyses().iterator();
                             ResponseScenarioAnalysis rsa = rsai.next();
                             if (rsa != null) {
-                                if (Scope.National.toString().equals(rsa.getScope())) {
+                                if (Scope.NATIONAL.toString().equals(rsa.getScope())) {
                                     mainResponseScenarioAnalysis = rsa;
                                     alternativeResponseScenarioAnalysis = rsai.next();
                                 } else {
@@ -335,7 +335,7 @@ public class AnalysisBuilderTest {
     @Test
     public void buildingAnAnalysisShouldSetTheScopeOfAnOpinionPoll() {
         assertNotNull(mainResponseScenarioAnalysis);
-        assertEquals(Scope.National.toString(), mainResponseScenarioAnalysis.getScope());
+        assertEquals(Scope.NATIONAL.toString(), mainResponseScenarioAnalysis.getScope());
     }
 
     /**
@@ -344,7 +344,7 @@ public class AnalysisBuilderTest {
     @Test
     public void buildingAnAnalysisShouldSetTheScopeOfAnAlternativeResponseScenario() {
         assertNotNull(alternativeResponseScenarioAnalysis);
-        assertEquals(Scope.European.toString(), alternativeResponseScenarioAnalysis.getScope());
+        assertEquals(Scope.EUROPEAN.toString(), alternativeResponseScenarioAnalysis.getScope());
     }
 
     /**
