@@ -197,7 +197,7 @@ public class AnalysisEngine {
             if (effectiveSampleSize != null) {
                 VoteSharesAnalysis voteShareAnalysis = calculateVoteSharesAnalysis(opinionPoll, numberOfSamples);
                 voteSharesAnalyses.put(opinionPoll.getMainResponseScenario(), voteShareAnalysis);
-                if (opinionPoll.getScope() == Scope.PresidentialFirstRound) {
+                if (opinionPoll.getScope() == Scope.PRESIDENTIAL_FIRST_ROUND) {
                     firstRoundWinnersAnalyses.put(opinionPoll.getMainResponseScenario(),
                             calculateFirstRoundWinnersAnalysis(voteShareAnalysis, effectiveSampleSize,
                                     numberOfMultivariateIterations));

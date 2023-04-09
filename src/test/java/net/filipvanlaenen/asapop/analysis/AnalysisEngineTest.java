@@ -183,8 +183,8 @@ public class AnalysisEngineTest {
     @Test
     public void shouldCalculateFirstRoundWinnersAnalysisForFirstRoundOpinionPoll() {
         OpinionPoll opinionPoll = new OpinionPollTestBuilder().addResult("A", "30").addResult("B", "30")
-                .addResult("C", "30").setSampleSize("500").setPollingFirm("ACME").setScope(Scope.PresidentialFirstRound)
-                .setFieldworkEnd(FIELDWORK_END1).build();
+                .addResult("C", "30").setSampleSize("500").setPollingFirm("ACME")
+                .setScope(Scope.PRESIDENTIAL_FIRST_ROUND).setFieldworkEnd(FIELDWORK_END1).build();
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         electionData.setPopulationSize(POPULATION_SIZE);
