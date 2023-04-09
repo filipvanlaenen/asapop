@@ -144,7 +144,7 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportResponseScenarioWithSameScopeCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
-                .setScope(Scope.National).build();
+                .setScope(Scope.NATIONAL).build();
         ResponseScenario responseScenario =
                 new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | N | N/A | N/A | 1 | 55 | 43 | N/A";
@@ -170,9 +170,9 @@ public class EopaodPsvExporterTest {
     @Test
     public void shouldExportResponseScenarioWithDifferentScopeCorrectly() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setPublicationDate(DATE)
-                .setScope(Scope.National).build();
+                .setScope(Scope.NATIONAL).build();
         ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
-                .setScope(Scope.European).build();
+                .setScope(Scope.EUROPEAN).build();
         String expected = "ACME | N/A | 2021-08-02 | 2021-08-02 | E | N/A | N/A | 1 | 55 | 43 | N/A";
         assertEquals(expected, EopaodPsvExporter.export(responseScenario, poll, null, A_AND_B));
     }

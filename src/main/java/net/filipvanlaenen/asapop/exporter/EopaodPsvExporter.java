@@ -21,7 +21,7 @@ public final class EopaodPsvExporter extends Exporter {
      * A map mapping scopes to PSV values.
      */
     static final Map<Scope, String> SCOPE_TO_PSV_STRING =
-            Map.of(Scope.European, "E", Scope.National, "N", Scope.PresidentialFirstRound, "P");
+            Map.of(Scope.EUROPEAN, "E", Scope.NATIONAL, "N", Scope.PRESIDENTIAL_FIRST_ROUND, "P");
 
     /**
      * Private constructor.
