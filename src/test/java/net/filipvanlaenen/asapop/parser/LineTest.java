@@ -34,7 +34,7 @@ public final class LineTest {
      */
     @Test
     public void parseScopeShouldReturnAScopeForAValidValue() {
-        assertEquals(Scope.European, Line.parseScope("E"));
+        assertEquals(Scope.EUROPEAN, Line.parseScope("E"));
     }
 
     /**
