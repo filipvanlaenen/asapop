@@ -107,7 +107,7 @@ class InternationalizationScriptBuilder {
                     sb.append(term.getTranslations().get(language.getId()));
                 } else {
                     sb.append("[");
-                    sb.append(term.getTranslations().get(Language.English.getId()));
+                    sb.append(term.getTranslations().get(Language.ENGLISH.getId()));
                     sb.append("]");
                 }
                 sb.append("\");\n");
