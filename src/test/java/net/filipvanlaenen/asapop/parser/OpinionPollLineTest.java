@@ -315,7 +315,7 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
-                .setPollingFirm("ACME").setPublicationDate(DATE1).setScope(Scope.National).build();
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setScope(Scope.NATIONAL).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 

@@ -145,7 +145,7 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine responseScenarioLine =
                 ResponseScenarioLine.parse("& •SC: E A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
-                .setScope(Scope.European).build();
+                .setScope(Scope.EUROPEAN).build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
