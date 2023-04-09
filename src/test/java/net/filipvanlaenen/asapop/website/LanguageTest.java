@@ -13,6 +13,6 @@ public class LanguageTest {
      */
     @Test
     public void getIdShouldBeWiredCorrectlyToConstructor() {
-        assertEquals("en", Language.English.getId());
+        assertEquals("en", Language.ENGLISH.getId());
     }
 }

@@ -7,27 +7,27 @@ public enum Language {
     /**
      * The language Dutch.
      */
-    Dutch("nl"),
+    DUTCH("nl"),
     /**
      * The language English.
      */
-    English("en"),
+    ENGLISH("en"),
     /**
      * The language Esperanto.
      */
-    Esperanto("eo"),
+    ESPERANTO("eo"),
     /**
      * The language French.
      */
-    French("fr"),
+    FRENCH("fr"),
     /**
      * The language German.
      */
-    German("de"),
+    GERMAN("de"),
     /**
      * The language Norwegian.
      */
-    Norwegian("no");
+    NORWEGIAN("no");
 
     /**
      * The identifier for the language.
