@@ -404,8 +404,8 @@ public class OpinionPollTest {
      */
     @Test
     public void setScopeInBuilderShouldBeWiredCorrectlyToGetScope() {
-        OpinionPoll poll = new OpinionPoll.Builder().setScope(Scope.National).build();
-        assertEquals(Scope.National, poll.getScope());
+        OpinionPoll poll = new OpinionPoll.Builder().setScope(Scope.NATIONAL).build();
+        assertEquals(Scope.NATIONAL, poll.getScope());
     }
 
     /**
@@ -421,7 +421,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasScopeInBuilderShouldReturnTrueAfterScopeIsAdded() {
-        assertTrue(new OpinionPoll.Builder().setScope(Scope.National).hasScope());
+        assertTrue(new OpinionPoll.Builder().setScope(Scope.NATIONAL).hasScope());
     }
 
     /**
@@ -893,8 +893,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentScope() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.National).build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setScope(Scope.European).build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.NATIONAL).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setScope(Scope.EUROPEAN).build();
         assertFalse(poll1.equals(poll2));
     }
 
@@ -903,7 +903,7 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheScope() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.National).build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.NATIONAL).build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }
@@ -913,8 +913,8 @@ public class OpinionPollTest {
      */
     @Test
     public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentScope() {
-        OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.National).build();
-        OpinionPoll poll2 = new OpinionPoll.Builder().setScope(Scope.European).build();
+        OpinionPoll poll1 = new OpinionPoll.Builder().setScope(Scope.NATIONAL).build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().setScope(Scope.EUROPEAN).build();
         assertFalse(poll1.hashCode() == poll2.hashCode());
     }
 
