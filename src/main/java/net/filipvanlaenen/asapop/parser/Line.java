@@ -74,7 +74,7 @@ abstract class Line {
      * A map mapping string values as they can appear in the ROPF file to the scopes.
      */
     static final Map<String, Scope> STRING_VALUE_TO_SCOPE =
-            Map.of("E", Scope.European, "N", Scope.National, "P1", Scope.PresidentialFirstRound);
+            Map.of("E", Scope.EUROPEAN, "N", Scope.NATIONAL, "P1", Scope.PRESIDENTIAL_FIRST_ROUND);
 
     /**
      * Parses the code for a scope into a scope.
