@@ -30,6 +30,7 @@ import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.exporter.SaporDirectory;
 import net.filipvanlaenen.asapop.exporter.SaporExporter;
 import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.website.Website;
@@ -38,6 +39,7 @@ import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
@@ -69,20 +71,10 @@ public final class CommandLineInterface {
         }
         SampledHypergeometricDistributionsFileCache.toggleOn();
         try {
-            Command.valueOf(capitalizeWord(args[0])).execute(args);
+            Command.valueOf(args[0].toUpperCase()).execute(args);
         } catch (IllegalArgumentException iae) {
             printUsage();
         }
-    }
-
-    /**
-     * Capitalizes a word.
-     *
-     * @param word A word to be capitalized.
-     * @return The word with the first letter capitalized.
-     */
-    static String capitalizeWord(final String word) {
-        return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
 
     /**
@@ -107,12 +99,12 @@ public final class CommandLineInterface {
     /**
      * Enumeration with the available commands.
      */
-    enum Command {
+    public enum Command {
         /**
          * Command to read a ROPF file and a YAML file with election specific data, analyze the opinion polls and write
          * the results to a YAML file.
          */
-        Analyze {
+        ANALYZE {
             @Override
             void execute(final String[] args) throws IOException {
                 String inputFileName = args[1];
@@ -133,7 +125,7 @@ public final class CommandLineInterface {
         /**
          * Command to build the website.
          */
-        Build {
+        BUILD {
             @Override
             void execute(final String[] args) throws IOException {
                 String siteDirName = args[1];
@@ -145,28 +137,23 @@ public final class CommandLineInterface {
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
-                for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
-                    if (areaConfiguration.getTranslations() != null) {
-                        Term term = new Term();
-                        term.setKey("_area_" + areaConfiguration.getAreaCode());
-                        term.setTranslations(areaConfiguration.getTranslations());
-                        terms.getTerms().add(term);
-                    }
-                }
+                addAreaTerms(terms, websiteConfiguration);
+                Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
                 Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
                 String navigationScriptContent = readResource("/navigation.js");
                 LocalDate now = LocalDate.now();
-                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap,
+                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, elections,
                         baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, now).build();
                 writeFiles(siteDirName, website.asMap());
             }
+
         },
         /**
          * Command to read an ROPF file and convert it to another format.
          */
-        Convert {
+        CONVERT {
             @Override
             void execute(final String[] args) throws IOException {
                 String inputFileName = args[1];
@@ -198,7 +185,7 @@ public final class CommandLineInterface {
         /**
          * Command to provide SAPOR files.
          */
-        Provide {
+        PROVIDE {
             @Override
             void execute(final String[] args) throws IOException {
                 String inputFileName = args[1];
@@ -218,6 +205,23 @@ public final class CommandLineInterface {
                 writeFiles(saporDirName, saporDirectory.asMap());
             }
         };
+
+        /**
+         * Adds the translations of all the areas to the terms.
+         *
+         * @param terms                The terms to add the translations to.
+         * @param websiteConfiguration The website configuration to extract the translations of the areas from.
+         */
+        static void addAreaTerms(final Terms terms, final WebsiteConfiguration websiteConfiguration) {
+            for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+                if (areaConfiguration.getTranslations() != null) {
+                    Term term = new Term();
+                    term.setKey("_area_" + areaConfiguration.getAreaCode());
+                    term.setTranslations(areaConfiguration.getTranslations());
+                    terms.getTerms().add(term);
+                }
+            }
+        }
 
         /**
          * Executes the command, passing the arguments from the command line.
