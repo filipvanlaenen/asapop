@@ -277,9 +277,17 @@ Below is an example of a valid website configuration file:
 ---
 areaConfigurations:
 - areaCode: "ad"
-  electionConfigurations:
-  - nextElectionDate: "≤2023-04"
-    type: Parliament
+  elections:
+    national:
+      dates:
+        3: "2001-03-04"
+        4: "2005-04-24"
+        5: "2009-04-26"
+        6: "2011-04-03"
+        7: "2015-03-01"
+        8: "2019-04-07"
+        9: "2023-04-02"
+        10: "≤2027-04"
   translations:
     de: "Andorra"
     en: "Andorra"
@@ -288,14 +296,31 @@ areaConfigurations:
     nl: "Andorra"
     no: "Andorra"
 - areaCode: "at"
-  electionConfigurations:
-  - nextElectionDate: "≈2024-05"
-    type: European Parliament
-  - gitHubWebsiteUrl: "https://filipvanlaenen.github.io/austrian_polls"
-    nextElectionDate: "≤2024-10-27"
-    type: Parliament
-  - nextElectionDate: "≈2028-10"
-    type: President
+  elections:
+    european:
+      dates:
+        3: "2004-06-13"
+        4: "2009-06-04"
+        5: "2014-05-25"
+        6: "2019-05-26"
+        7: "≈2024-06-09"
+    national:
+      dates:
+        22: "2002-11-24"
+        23: "2006-10-01"
+        24: "2008-09-28"
+        25: "2013-09-29"
+        26: "2017-10-15"
+        27: "2019-09-29"
+        28: "≤2024-10-27"
+      gitHubWebsiteUrl: "https://filipvanlaenen.github.io/austrian_polls"
+    presidential:
+      dates:
+        11: "2004-04-25"
+        12: "2010-04-25"
+        13: "2016-04-24+(2016-05-22)+2016-12-04"
+        14: "2022-10-09"
+        15: "≈2028-10"
   translations:
     de: "Österreich"
     en: "Austria"
@@ -313,9 +338,10 @@ areaConfigurations:
     - "GL005"
     - "GL006"
     - "GL007"
-  electionConfigurations:
-  - nextElectionDate: "⪅2025-04-06"
-    type: Parliament
+  elections:
+    national:
+      dates:
+        0: "⪅2025-04-06"
   translations:
     de: "Grönland"
     en: "Greenland"
