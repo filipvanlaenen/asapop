@@ -1,14 +1,17 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.Election;
+import net.filipvanlaenen.asapop.model.ElectionType;
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionList;
+import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
@@ -34,17 +37,29 @@ final class IndexPageBuilder extends PageBuilder {
      */
     private static final int SVG_CONTAINER_WIDTH = 500;
     /**
+     * The elections.
+     */
+    private final Elections elections;
+    /**
      * The list with GitHub website URLs, sorted by next election date.
      */
     private List<String> gitHubWebsiteUrlsByNextElectionDate;
+    /**
+     * Today's day.
+     */
+    private final LocalDate now;
 
     /**
      * Constructor taking the website configuration as its parameter.
      *
      * @param websiteConfiguration The website configuration.
+     * @param elections            The elections.
+     * @param now                  The today's day.
      */
-    IndexPageBuilder(final WebsiteConfiguration websiteConfiguration) {
+    IndexPageBuilder(final WebsiteConfiguration websiteConfiguration, final Elections elections, final LocalDate now) {
         super(websiteConfiguration);
+        this.elections = elections;
+        this.now = now;
     }
 
     /**
@@ -75,28 +90,39 @@ final class IndexPageBuilder extends PageBuilder {
      * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
      */
     private void calculateGitHubWebsiteUrlsSortedByNextElectionDate() {
-        List<ElectionConfiguration> electionConfigurations = new ArrayList<ElectionConfiguration>();
-        Map<ElectionConfiguration, ExpectedDate> expectedDates = new HashMap<ElectionConfiguration, ExpectedDate>();
-        for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
-            if (areaConfiguration.getElectionConfigurations() != null) {
-                for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
-                    if (electionConfiguration.getNextElectionDate() != null
-                            && electionConfiguration.getGitHubWebsiteUrl() != null) {
-                        electionConfigurations.add(electionConfiguration);
-                        expectedDates.put(electionConfiguration,
-                                ExpectedDate.parse(electionConfiguration.getNextElectionDate()));
+        List<Election> nextNationalElections = elections.getNextElections(now).stream()
+                .filter(ne -> ne.electionType() == ElectionType.NATIONAL).collect(Collectors.toList());
+        nextNationalElections.sort(new Comparator<Election>() {
+            @Override
+            public int compare(final Election e1, final Election e2) {
+                int dateResult = e1.getNextElectionDate(now).compareTo(e2.getNextElectionDate(now));
+                if (dateResult != 0) {
+                    return dateResult;
+                }
+                return e1.areaCode().compareTo(e2.areaCode());
+            }
+        });
+        gitHubWebsiteUrlsByNextElectionDate = new ArrayList<String>();
+        for (Election nextElection : nextNationalElections) {
+            for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
+                String areaCode = areaConfiguration.getAreaCode();
+                if (areaCode != null && areaCode.equals(nextElection.areaCode())) {
+                    ElectionLists electionLists = areaConfiguration.getElections();
+                    if (electionLists != null) {
+                        ElectionList nationalElectionList = electionLists.getNational();
+                        if (nationalElectionList != null) {
+                            String gitHubWebsiteUrl = nationalElectionList.getGitHubWebsiteUrl();
+                            if (gitHubWebsiteUrl != null) {
+                                gitHubWebsiteUrlsByNextElectionDate.add(gitHubWebsiteUrl);
+                            }
+                        }
                     }
                 }
             }
-        }
-        electionConfigurations.sort(new Comparator<ElectionConfiguration>() {
-            @Override
-            public int compare(final ElectionConfiguration ec1, final ElectionConfiguration ec2) {
-                return expectedDates.get(ec1).compareTo(expectedDates.get(ec2));
+            if (gitHubWebsiteUrlsByNextElectionDate.size() > 1) {
+                break;
             }
-        });
-        gitHubWebsiteUrlsByNextElectionDate = electionConfigurations.stream()
-                .map(electionConfiguration -> electionConfiguration.getGitHubWebsiteUrl()).collect(Collectors.toList());
+        }
     }
 
     /**
