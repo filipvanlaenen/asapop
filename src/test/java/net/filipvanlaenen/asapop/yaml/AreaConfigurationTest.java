@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,15 +35,15 @@ public class AreaConfigurationTest {
     }
 
     /**
-     * Verifies that the getter method <code>getElectionConfigurations</code> is wired correctly to the setter method
-     * <code>setElectionConfigurations</code>.
+     * Verifies that the getter method <code>getElections</code> is wired correctly to the setter method
+     * <code>setElections</code>.
      */
     @Test
-    public void getElectionConfigurationsShouldBeWiredCorrectlyToSetElectionConfigurations() {
+    public void getElectionsShouldBeWiredCorrectlyToSetElections() {
         AreaConfiguration areaConfiguration = new AreaConfiguration();
-        Set<ElectionConfiguration> electionConfigurations = Set.of(new ElectionConfiguration());
-        areaConfiguration.setElectionConfigurations(electionConfigurations);
-        assertEquals(electionConfigurations, areaConfiguration.getElectionConfigurations());
+        ElectionLists elections = new ElectionLists();
+        areaConfiguration.setElections(elections);
+        assertEquals(elections, areaConfiguration.getElections());
     }
 
     /**
@@ -55,6 +54,7 @@ public class AreaConfigurationTest {
     public void getTranslationsShouldBeWiredCorrectlyToSetTranslations() {
         AreaConfiguration areaConfiguration = new AreaConfiguration();
         Map<String, String> translations = new HashMap<String, String>();
+        translations.put("en", "Foo");
         areaConfiguration.setTranslations(translations);
         assertEquals(translations, areaConfiguration.getTranslations());
     }

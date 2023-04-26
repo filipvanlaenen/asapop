@@ -1,7 +1,6 @@
 package net.filipvanlaenen.asapop.yaml;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Class representing the area configuration element for the YAML file containing the website configuration.
@@ -16,9 +15,9 @@ public class AreaConfiguration {
      */
     private CsvConfiguration csvConfiguration;
     /**
-     * The set with the election configurations.
+     * The election configurations.
      */
-    private Set<ElectionConfiguration> electionConfigurations;
+    private ElectionLists electionLists;
     /**
      * A map with the translation of the term in a number of languages.
      */
@@ -43,12 +42,12 @@ public class AreaConfiguration {
     }
 
     /**
-     * Returns the election configurations.
+     * Returns the elections.
      *
-     * @return The election configurations.
+     * @return The elections.
      */
-    public Set<ElectionConfiguration> getElectionConfigurations() {
-        return electionConfigurations;
+    public ElectionLists getElections() {
+        return electionLists;
     }
 
     /**
@@ -79,12 +78,12 @@ public class AreaConfiguration {
     }
 
     /**
-     * Sets the election configurations.
+     * Sets the elections.
      *
-     * @param electionConfigurations The election configurations.
+     * @param elections The elections.
      */
-    public void setElectionConfigurations(final Set<ElectionConfiguration> electionConfigurations) {
-        this.electionConfigurations = electionConfigurations;
+    public void setElections(final ElectionLists elections) {
+        this.electionLists = elections;
     }
 
     /**
