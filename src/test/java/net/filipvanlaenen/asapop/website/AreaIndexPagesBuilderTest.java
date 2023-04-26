@@ -4,16 +4,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionList;
+import net.filipvanlaenen.asapop.yaml.ElectionLists;
+import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -21,17 +26,27 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  */
 public class AreaIndexPagesBuilderTest {
     /**
+     * The magic number three.
+     */
+    private static final int THREE = 3;
+    /**
+     * Today's date.
+     */
+    private static final LocalDate NOW = LocalDate.of(2022, Month.DECEMBER, 7);
+
+    /**
      * Verifies that the correct pages are built.
      */
     @Test
-    public void buildShouldBuilderTheCorrectPages() {
+    public void buildShouldBuildTheCorrectPages() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         AreaConfiguration serbia = new AreaConfiguration();
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, serbia));
         Map<String, OpinionPolls> opinionPollsMap = Collections.EMPTY_MAP;
-        AreaIndexPagesBuilder builder = new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap);
+        AreaIndexPagesBuilder builder =
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW);
         Map<Path, String> expected = Map.of(Paths.get("mk", "index.html"), builder.createAreaIndexPage(northMacedonia));
         assertEquals(expected, builder.build());
     }
@@ -47,7 +62,8 @@ public class AreaIndexPagesBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         assertEquals(createEmptyAreaIndexPage(false),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -59,10 +75,10 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createEmptyAreaIndexPage(true),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -77,10 +93,10 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithASmallOpinionPoll(),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -100,10 +116,10 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setElectionConfigurations(Collections.EMPTY_SET);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithManyAndLargeOpinionPolls(),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -115,25 +131,22 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        ElectionConfiguration parliament = new ElectionConfiguration();
-        parliament.setNextElectionDate("2023-03-05");
-        parliament.setType("Parliament");
-        ElectionConfiguration regional = new ElectionConfiguration();
-        regional.setNextElectionDate("2023-03-05");
-        regional.setType("Regional");
-        ElectionConfiguration local = new ElectionConfiguration();
-        local.setNextElectionDate("2023-03-05");
-        local.setType("Local");
-        ElectionConfiguration president = new ElectionConfiguration();
-        president.setNextElectionDate("≈2024-03");
-        president.setType("President");
-        ElectionConfiguration european = new ElectionConfiguration();
-        european.setNextElectionDate("≤2025-03");
-        european.setType("European");
-        northMacedonia.setElectionConfigurations(Set.of(local, parliament, regional, president, european));
+        ElectionLists electionLists = new ElectionLists();
+        ElectionList nationalElections = new ElectionList();
+        nationalElections.setDates(Map.of(1, "2023-03-05"));
+        electionLists.setNational(nationalElections);
+        ElectionList presidentialElections = new ElectionList();
+        presidentialElections.setDates(Map.of(2, "≈2024-03"));
+        electionLists.setPresidential(presidentialElections);
+        ElectionList europeanElections = new ElectionList();
+        europeanElections.setDates(Map.of(THREE, "≤2025-03"));
+        electionLists.setEuropean(europeanElections);
+        northMacedonia.setElections(electionLists);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
         assertEquals(createAreaIndexPageWithUpcomingElections(),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -295,13 +308,12 @@ public class AreaIndexPagesBuilderTest {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected, true);
         expected.append("      <ul>\n");
-        expected.append("        <li>2023-03-05: <span class=\"local\"> </span></li>\n");
-        expected.append("        <li>2023-03-05: <span class=\"parliament\"> </span></li>\n");
-        expected.append("        <li>2023-03-05: <span class=\"regional\"> </span></li>\n");
         expected.append(
                 "        <li><span class=\"around\"> </span> 2024-03: <span class=\"president\"> </span></li>\n");
+        expected.append("        <li>2023-03-05: <span class=\"parliament\"> </span></li>\n");
         expected.append(
-                "        <li><span class=\"no-later-than\"> </span> 2025-03: <span class=\"european\"> </span></li>\n");
+                "        <li><span class=\"no-later-than\"> </span> 2025-03: <span class=\"european-parliament\">"
+                        + " </span></li>\n");
         expected.append("      </ul>\n");
         addMiddlePart(expected);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");

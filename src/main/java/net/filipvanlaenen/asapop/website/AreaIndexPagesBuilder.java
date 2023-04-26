@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,12 +12,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.Election;
+import net.filipvanlaenen.asapop.model.ElectionDate;
+import net.filipvanlaenen.asapop.model.ElectionType;
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -41,48 +45,6 @@ import net.filipvanlaenen.txhtmlj.UL;
  */
 class AreaIndexPagesBuilder extends PageBuilder {
     /**
-     * Class representing an entry in the electoral calendar.
-     */
-    private final class Entry {
-        /**
-         * The election configuration for the entry.
-         */
-        private final ElectionConfiguration electionConfiguration;
-        /**
-         * The expected date.
-         */
-        private final ExpectedDate expectedDate;
-
-        /**
-         * Constructs an entry based on the election and area configuration.
-         *
-         * @param electionConfiguration The election configuration.
-         */
-        private Entry(final ElectionConfiguration electionConfiguration) {
-            this.electionConfiguration = electionConfiguration;
-            this.expectedDate = ExpectedDate.parse(electionConfiguration.getNextElectionDate());
-        }
-
-        /**
-         * Returns the next election date.
-         *
-         * @return The next election date.
-         */
-        private ExpectedDate getNextElectionDate() {
-            return expectedDate;
-        }
-
-        /**
-         * Returns the type of the election as a class attribute value.
-         *
-         * @return The type of the election as a class attribute value.
-         */
-        private String getTypeAsClass() {
-            return electionConfiguration.getType().toLowerCase().replaceAll(" ", "-");
-        }
-    }
-
-    /**
      * The magic number seven.
      */
     private static final int SEVEN = 7;
@@ -96,20 +58,32 @@ class AreaIndexPagesBuilder extends PageBuilder {
     private static final double ONE_HUNDRED = 100D;
 
     /**
+     * The elections.
+     */
+    private final Elections elections;
+    /**
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
+    /**
+     * Today's day.
+     */
+    private final LocalDate now;
 
     /**
      * Constructor taking the website configuration and the opinion polls map as its parameters.
      *
      * @param websiteConfiguration The website configuration.
      * @param opinionPollsMap      A map with all the opinion polls.
+     * @param elections            The elections.
+     * @param now                  Today's day.
      */
     AreaIndexPagesBuilder(final WebsiteConfiguration websiteConfiguration,
-            final Map<String, OpinionPolls> opinionPollsMap) {
+            final Map<String, OpinionPolls> opinionPollsMap, final Elections elections, final LocalDate now) {
         super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
+        this.elections = elections;
+        this.now = now;
     }
 
     /**
@@ -255,42 +229,44 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param areaConfiguration The configuration for the area.
      */
     private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration) {
-        Set<ElectionConfiguration> electionConfigurations = areaConfiguration.getElectionConfigurations();
-        if (electionConfigurations == null || electionConfigurations.isEmpty()) {
+        String areaCode = areaConfiguration.getAreaCode();
+        List<LI> upcomingElectionLIs = new ArrayList<LI>();
+        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.PRESIDENTIAL);
+        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.NATIONAL);
+        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.EUROPEAN);
+        if (upcomingElectionLIs.isEmpty()) {
             addNoneParagraph(section);
         } else {
             UL ul = new UL();
             section.addElement(ul);
-            List<Entry> entries = new ArrayList<Entry>();
-            for (ElectionConfiguration electionConfiguration : electionConfigurations) {
-                if (electionConfiguration.getNextElectionDate() != null) {
-                    entries.add(new Entry(electionConfiguration));
-                }
-            }
-            entries.sort(new Comparator<Entry>() {
-                @Override
-                public int compare(final Entry e1, final Entry e2) {
-                    int dateResult = e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
-                    if (dateResult != 0) {
-                        return dateResult;
-                    } else {
-                        return e1.getTypeAsClass().compareTo(e2.getTypeAsClass());
-                    }
-                }
-            });
-            for (Entry entry : entries) {
-                LI li = new LI();
+            for (LI li : upcomingElectionLIs) {
                 ul.addElement(li);
-                ExpectedDate nextElectionDate = entry.getNextElectionDate();
-                String qualifierClass = nextElectionDate.getQualifierTermKey();
-                if (qualifierClass != null) {
-                    li.addElement(new Span(" ").clazz(qualifierClass));
-                    li.addContent(" ");
-                }
-                li.addContent(nextElectionDate.getDateString());
-                li.addContent(": ");
-                li.addElement(new Span(" ").clazz(entry.getTypeAsClass()));
             }
+        }
+    }
+
+    /**
+     * Adds the upcoming elections of a given type for an area as LI elements to the provided list.
+     *
+     * @param upcomingElectionLIs The list to add the upcoming elections to as LI elements.
+     * @param areaCode            The area code.
+     * @param electionType        The election type.
+     */
+    private void addUpcomingElectionLI(final List<LI> upcomingElectionLIs, final String areaCode,
+            final ElectionType electionType) {
+        Election nextElection = elections.getNextElection(areaCode, electionType, now);
+        if (nextElection != null) {
+            LI li = new LI();
+            ElectionDate nextElectionDate = nextElection.getNextElectionDate(now);
+            String qualifierClass = nextElectionDate.getQualifierTermKey();
+            if (qualifierClass != null) {
+                li.addElement(new Span(" ").clazz(qualifierClass));
+                li.addContent(" ");
+            }
+            li.addContent(nextElectionDate.getDateString());
+            li.addContent(": ");
+            li.addElement(new Span(" ").clazz(electionType.getTermKey()));
+            upcomingElectionLIs.add(li);
         }
     }
 
