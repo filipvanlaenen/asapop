@@ -14,11 +14,14 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionList;
+import net.filipvanlaenen.asapop.yaml.ElectionLists;
+import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
@@ -30,15 +33,23 @@ public class WebsiteBuilderTest {
     /**
      * Today's date.
      */
-    private static final LocalDate NOW = LocalDate.of(2022, Month.DECEMBER, 7);
+    private static final LocalDate NOW = LocalDate.of(2022, Month.SEPTEMBER, 7);
     /**
      * The start of the year 2022.
      */
     private static final LocalDate START_OF_YEAR = NOW.withDayOfYear(1);
     /**
+     * The area configuration for Latvia.
+     */
+    private AreaConfiguration latvia;
+    /**
      * The area configuration for North Macedonia.
      */
     private AreaConfiguration northMacedonia;
+    /**
+     * The area configuration for Sweden.
+     */
+    private AreaConfiguration sweden;
 
     /**
      * Creates a set of terms for the internationalization script builder.
@@ -61,21 +72,29 @@ public class WebsiteBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
-        AreaConfiguration sweden = new AreaConfiguration();
-        ElectionConfiguration swedishElection = new ElectionConfiguration();
-        swedishElection.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
-        swedishElection.setNextElectionDate("2022-09-11");
-        sweden.setElectionConfigurations(Set.of(swedishElection));
-        AreaConfiguration latvia = new AreaConfiguration();
-        ElectionConfiguration latvianElection = new ElectionConfiguration();
-        latvianElection.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
-        latvianElection.setNextElectionDate("2022-10-01");
-        latvia.setElectionConfigurations(Set.of(latvianElection));
+        sweden = new AreaConfiguration();
+        sweden.setAreaCode("se");
+        ElectionLists electionListsForSweden = new ElectionLists();
+        ElectionList nationalElectionsInSweden = new ElectionList();
+        nationalElectionsInSweden.setDates(Map.of(1, "2022-09-11"));
+        nationalElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
+        electionListsForSweden.setNational(nationalElectionsInSweden);
+        sweden.setElections(electionListsForSweden);
+        latvia = new AreaConfiguration();
+        latvia.setAreaCode("lv");
+        ElectionLists electionListsForLatvia = new ElectionLists();
+        ElectionList nationalElectionsInLatvia = new ElectionList();
+        nationalElectionsInLatvia.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInLatvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
+        electionListsForLatvia.setNational(nationalElectionsInLatvia);
+        latvia.setElections(electionListsForLatvia);
         AreaConfiguration bulgaria = new AreaConfiguration();
-        ElectionConfiguration bulgarianElection = new ElectionConfiguration();
-        bulgarianElection.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
-        bulgarianElection.setNextElectionDate("2022-10-02");
-        bulgaria.setElectionConfigurations(Set.of(bulgarianElection));
+        ElectionLists electionListsForBulgaria = new ElectionLists();
+        ElectionList nationalElectionsInBulgaria = new ElectionList();
+        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-02"));
+        nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
+        electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
+        bulgaria.setElections(electionListsForBulgaria);
         northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         CsvConfiguration csvConfiguration = new CsvConfiguration();
@@ -92,17 +111,26 @@ public class WebsiteBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration).build().asString());
-        map.put(Paths.get("calendar.html"), new ElectoralCalendarPageBuilder(websiteConfiguration).build().asString());
+        map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+        map.put(Paths.get("calendar.html"),
+                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
                 new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, NOW, START_OF_YEAR).build()
                         .asString());
+        map.put(Paths.get("lv", "index.html"),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
+                        .createAreaIndexPage(latvia));
         map.put(Paths.get("mk", "index.html"),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap).createAreaIndexPage(northMacedonia));
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
+                        .createAreaIndexPage(northMacedonia));
+        map.put(Paths.get("se", "index.html"),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
+                        .createAreaIndexPage(sweden));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         String navigationScriptContent = "function moveToArea(level) {}";
@@ -115,7 +143,7 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
-                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, NOW);
+                elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, NOW);
         assertEquals(map, builder.build().asMap());
     }
 }
