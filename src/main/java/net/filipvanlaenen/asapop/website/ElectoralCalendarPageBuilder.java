@@ -1,11 +1,13 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
+import net.filipvanlaenen.asapop.model.Election;
+import net.filipvanlaenen.asapop.model.ElectionDate;
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
@@ -25,69 +27,26 @@ import net.filipvanlaenen.txhtmlj.Table;
  */
 final class ElectoralCalendarPageBuilder extends PageBuilder {
     /**
-     * Class representing an entry in the electoral calendar.
+     * The elections.
      */
-    private final class Entry {
-        /**
-         * The area configuration for the entry.
-         */
-        private final AreaConfiguration areaConfiguration;
-        /**
-         * The election configuration for the entry.
-         */
-        private final ElectionConfiguration electionConfiguration;
-        /**
-         * The expected date.
-         */
-        private final ExpectedDate expectedDate;
-
-        /**
-         * Constructs an entry based on the election and area configuration.
-         *
-         * @param electionConfiguration The election configuration.
-         * @param areaConfiguration     The area configuration.
-         */
-        private Entry(final ElectionConfiguration electionConfiguration, final AreaConfiguration areaConfiguration) {
-            this.electionConfiguration = electionConfiguration;
-            this.areaConfiguration = areaConfiguration;
-            this.expectedDate = ExpectedDate.parse(electionConfiguration.getNextElectionDate());
-        }
-
-        /**
-         * Returns the area code for the entry.
-         *
-         * @return The area code.
-         */
-        private String getAreaCode() {
-            return areaConfiguration.getAreaCode();
-        }
-
-        /**
-         * Returns the next election date.
-         *
-         * @return The next election date.
-         */
-        private ExpectedDate getNextElectionDate() {
-            return expectedDate;
-        }
-
-        /**
-         * Returns the type of the election as a class attribute value.
-         *
-         * @return The type of the election as a class attribute value.
-         */
-        private String getTypeAsClass() {
-            return electionConfiguration.getType().toLowerCase().replaceAll(" ", "-");
-        }
-    }
+    private final Elections elections;
+    /**
+     * Today's day.
+     */
+    private final LocalDate now;
 
     /**
      * Constructor taking the website configuration as its parameter.
      *
      * @param websiteConfiguration The website configuration.
+     * @param elections            The elections.
+     * @param now                  Today's day.
      */
-    ElectoralCalendarPageBuilder(final WebsiteConfiguration websiteConfiguration) {
+    ElectoralCalendarPageBuilder(final WebsiteConfiguration websiteConfiguration, final Elections elections,
+            final LocalDate now) {
         super(websiteConfiguration);
+        this.elections = elections;
+        this.now = now;
     }
 
     /**
@@ -115,35 +74,26 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         tr.addElement(new TH(" ").clazz("election-type"));
         TBody tBody = new TBody();
         table.addElement(tBody);
-        List<Entry> entries = new ArrayList<Entry>();
-        for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
-            if (areaConfiguration.getAreaCode() != null && areaConfiguration.getElectionConfigurations() != null) {
-                for (ElectionConfiguration electionConfiguration : areaConfiguration.getElectionConfigurations()) {
-                    if (electionConfiguration.getNextElectionDate() != null) {
-                        entries.add(new Entry(electionConfiguration, areaConfiguration));
-                    }
-                }
-            }
-        }
-        entries.sort(new Comparator<Entry>() {
+        List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now));
+        nextElections.sort(new Comparator<Election>() {
             @Override
-            public int compare(final Entry e1, final Entry e2) {
-                int dateResult = e1.getNextElectionDate().compareTo(e2.getNextElectionDate());
+            public int compare(final Election e1, final Election e2) {
+                int dateResult = e1.getNextElectionDate(now).compareTo(e2.getNextElectionDate(now));
                 if (dateResult != 0) {
                     return dateResult;
                 }
-                int areaResult = e1.getAreaCode().compareTo(e2.getAreaCode());
+                int areaResult = e1.areaCode().compareTo(e2.areaCode());
                 if (areaResult != 0) {
                     return areaResult;
                 } else {
-                    return e1.getTypeAsClass().compareTo(e2.getTypeAsClass());
+                    return e1.electionType().compareTo(e2.electionType());
                 }
             }
         });
-        for (Entry entry : entries) {
+        for (Election nextElection : nextElections) {
             TR areaTr = new TR();
             tBody.addElement(areaTr);
-            ExpectedDate nextElectionDate = entry.getNextElectionDate();
+            ElectionDate nextElectionDate = nextElection.getNextElectionDate(now);
             TD cell = new TD();
             areaTr.addElement(cell);
             String qualifierClass = nextElectionDate.getQualifierTermKey();
@@ -154,8 +104,9 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
             cell.addContent(nextElectionDate.getDateString());
             TD td = new TD();
             areaTr.addElement(td);
-            td.addElement(new A(" ").clazz("_area_" + entry.getAreaCode()).href(entry.getAreaCode() + "/index.html"));
-            areaTr.addElement(new TD(" ").clazz(entry.getTypeAsClass()));
+            td.addElement(
+                    new A(" ").clazz("_area_" + nextElection.areaCode()).href(nextElection.areaCode() + "/index.html"));
+            areaTr.addElement(new TD(" ").clazz(nextElection.electionType().getTermKey()));
         }
         body.addElement(createFooter());
         return html;

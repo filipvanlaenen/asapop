@@ -2,18 +2,29 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectionList;
+import net.filipvanlaenen.asapop.yaml.ElectionLists;
+import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
  * Unit tests on the <code>ElectoralCalendarPageBuilder</code> class.
  */
 public class ElectoralCalendarPageBuilderTest {
+    /**
+     * Today's date.
+     */
+    private static final LocalDate NOW = LocalDate.of(2022, Month.SEPTEMBER, 7);
+
     /**
      * Creates a website configuration.
      *
@@ -25,41 +36,44 @@ public class ElectoralCalendarPageBuilderTest {
         sweden.setAreaCode("se");
         AreaConfiguration denmark = new AreaConfiguration();
         denmark.setAreaCode("dk");
-        ElectionConfiguration danishElection = new ElectionConfiguration();
-        danishElection.setNextElectionDate("2022-11-01");
-        danishElection.setType("Parliament");
-        denmark.setElectionConfigurations(Set.of(danishElection));
+        ElectionLists electionListsForDenmark = new ElectionLists();
+        ElectionList nationalElectionsInDenmark = new ElectionList();
+        nationalElectionsInDenmark.setDates(Map.of(1, "2022-11-01"));
+        electionListsForDenmark.setNational(nationalElectionsInDenmark);
+        denmark.setElections(electionListsForDenmark);
         AreaConfiguration estonia = new AreaConfiguration();
         estonia.setAreaCode("ee");
-        ElectionConfiguration estonianElectionParliament = new ElectionConfiguration();
-        estonianElectionParliament.setNextElectionDate("2023-03-05");
-        estonianElectionParliament.setType("Parliament");
-        ElectionConfiguration estonianElectionPresident = new ElectionConfiguration();
-        estonianElectionPresident.setNextElectionDate("≈2024-03");
-        estonianElectionPresident.setType("President");
-        estonia.setElectionConfigurations(Set.of(estonianElectionParliament, estonianElectionPresident));
+        ElectionLists electionListsForEstonia = new ElectionLists();
+        ElectionList nationalElectionsInEstonia = new ElectionList();
+        nationalElectionsInEstonia.setDates(Map.of(1, "2023-03-05"));
+        electionListsForEstonia.setNational(nationalElectionsInEstonia);
+        ElectionList presidentialElectionsInEstonia = new ElectionList();
+        presidentialElectionsInEstonia.setDates(Map.of(1, "≈2024-03"));
+        electionListsForEstonia.setPresidential(presidentialElectionsInEstonia);
+        estonia.setElections(electionListsForEstonia);
         AreaConfiguration france = new AreaConfiguration();
         france.setAreaCode("fr");
-        ElectionConfiguration frenchElectionParliament = new ElectionConfiguration();
-        frenchElectionParliament.setNextElectionDate("2023-03-05");
-        frenchElectionParliament.setType("Parliament");
-        ElectionConfiguration frenchElectionPresident = new ElectionConfiguration();
-        frenchElectionPresident.setNextElectionDate("2023-03-05");
-        frenchElectionPresident.setType("President");
-        ElectionConfiguration frenchElectionLocal = new ElectionConfiguration();
-        frenchElectionLocal.setNextElectionDate("2023-03-05");
-        frenchElectionLocal.setType("Local");
-        france.setElectionConfigurations(
-                Set.of(frenchElectionParliament, frenchElectionPresident, frenchElectionLocal));
+        ElectionLists electionListsForFrance = new ElectionLists();
+        ElectionList nationalElectionsInFrance = new ElectionList();
+        nationalElectionsInFrance.setDates(Map.of(1, "2023-03-05"));
+        electionListsForFrance.setNational(nationalElectionsInFrance);
+        ElectionList presidentialElectionsInFrance = new ElectionList();
+        presidentialElectionsInFrance.setDates(Map.of(1, "2023-03-05"));
+        electionListsForFrance.setPresidential(presidentialElectionsInFrance);
+        ElectionList europeanElectionsInFrance = new ElectionList();
+        europeanElectionsInFrance.setDates(Map.of(1, "2023-03-05"));
+        electionListsForFrance.setEuropean(europeanElectionsInFrance);
+        france.setElections(electionListsForFrance);
         AreaConfiguration greenland = new AreaConfiguration();
         greenland.setAreaCode("gl");
-        ElectionConfiguration greenlandElection = new ElectionConfiguration();
-        greenlandElection.setNextElectionDate("≤2025-04-06");
-        greenlandElection.setType("Parliament");
-        ElectionConfiguration greenlandElectionLocal = new ElectionConfiguration();
-        greenlandElectionLocal.setNextElectionDate("2023-03-05");
-        greenlandElectionLocal.setType("Local");
-        greenland.setElectionConfigurations(Set.of(greenlandElection, greenlandElectionLocal));
+        ElectionLists electionListsForGreenland = new ElectionLists();
+        ElectionList nationalElectionsInGreenland = new ElectionList();
+        nationalElectionsInGreenland.setDates(Map.of(1, "≤2025-04-06"));
+        electionListsForGreenland.setNational(nationalElectionsInGreenland);
+        ElectionList presidentialElectionsInGreenland = new ElectionList();
+        presidentialElectionsInGreenland.setDates(Map.of(1, "2023-03-05"));
+        electionListsForGreenland.setPresidential(presidentialElectionsInGreenland);
+        greenland.setElections(electionListsForGreenland);
         websiteConfiguration
                 .setAreaConfigurations(Set.of(denmark, estonia, france, greenland, sweden, new AreaConfiguration()));
         return websiteConfiguration;
@@ -137,7 +151,7 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_fr\" href=\"fr/index.html\"> </a>\n");
         expected.append("            </td>\n");
-        expected.append("            <td class=\"local\"> </td>\n");
+        expected.append("            <td class=\"president\"> </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>2023-03-05</td>\n");
@@ -151,14 +165,14 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_fr\" href=\"fr/index.html\"> </a>\n");
         expected.append("            </td>\n");
-        expected.append("            <td class=\"president\"> </td>\n");
+        expected.append("            <td class=\"european-parliament\"> </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td>2023-03-05</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_gl\" href=\"gl/index.html\"> </a>\n");
         expected.append("            </td>\n");
-        expected.append("            <td class=\"local\"> </td>\n");
+        expected.append("            <td class=\"president\"> </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
         expected.append("            <td><span class=\"around\"> </span> 2024-03</td>\n");
@@ -182,7 +196,9 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("    </footer>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
+        WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
         assertEquals(expected.toString(),
-                new ElectoralCalendarPageBuilder(createWebsiteConfiguration()).build().asString());
+                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
     }
 }
