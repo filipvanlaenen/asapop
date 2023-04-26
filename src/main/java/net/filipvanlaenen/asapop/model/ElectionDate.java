@@ -10,11 +10,11 @@ import java.time.format.DateTimeParseException;
  * Class modeling an election date, which can be a date (<code>LocalDate</code>), a month (<code>YearMonth</code>) or a
  * year (<code>Year</code>), with a qualifier.
  */
-public abstract class ElectionDate {
+public interface ElectionDate {
     /**
      * Enumeration modeling the qualifier for the date.
      */
-    private enum Qualifier {
+    enum Qualifier {
         /**
          * An exact date.
          */
@@ -57,25 +57,12 @@ public abstract class ElectionDate {
     }
 
     /**
-     * Class modeling a day as an election date.
+     * Record class modeling a day as an election date.
+     *
+     * @param date      The date.
+     * @param qualifier The qualifier.
      */
-    private static final class ExpectedDay extends ElectionDate {
-        /**
-         * The date.
-         */
-        private final LocalDate date;
-
-        /**
-         * Constructor taking the date as its parameter in addition to a qualifier.
-         *
-         * @param date      The date.
-         * @param qualifier The qualifier for the date.
-         */
-        private ExpectedDay(final LocalDate date, final Qualifier qualifier) {
-            super(qualifier);
-            this.date = date;
-        }
-
+    record ExpectedDay(LocalDate date, Qualifier qualifier) implements ElectionDate {
         @Override
         public LocalDate getEndDate() {
             return date;
@@ -88,25 +75,12 @@ public abstract class ElectionDate {
     }
 
     /**
-     * Class modeling a month as an election date.
+     * Record class modeling a month as an election date.
+     *
+     * @param month     The month.
+     * @param qualifier The qualifier.
      */
-    private static final class ExpectedMonth extends ElectionDate {
-        /**
-         * The month.
-         */
-        private final YearMonth month;
-
-        /**
-         * Constructor taking the month as its parameter in addition to a qualifier.
-         *
-         * @param month     The month.
-         * @param qualifier The qualifier for the date.
-         */
-        private ExpectedMonth(final YearMonth month, final Qualifier qualifier) {
-            super(qualifier);
-            this.month = month;
-        }
-
+    record ExpectedMonth(YearMonth month, Qualifier qualifier) implements ElectionDate {
         @Override
         public LocalDate getEndDate() {
             return month.atEndOfMonth();
@@ -119,25 +93,12 @@ public abstract class ElectionDate {
     }
 
     /**
-     * Class modeling a year as an election date.
+     * Record class modeling a year as an election date.
+     *
+     * @param year      The year.
+     * @param qualifier The qualifier.
      */
-    private static final class ExpectedYear extends ElectionDate {
-        /**
-         * The year.
-         */
-        private final Year year;
-
-        /**
-         * Constructor taking the year as its parameter in addition to a qualifier.
-         *
-         * @param year      The year.
-         * @param qualifier The qualifier for the date.
-         */
-        private ExpectedYear(final Year year, final Qualifier qualifier) {
-            super(qualifier);
-            this.year = year;
-        }
-
+    record ExpectedYear(Year year, Qualifier qualifier) implements ElectionDate {
         @Override
         public LocalDate getEndDate() {
             return year.atMonth(Month.DECEMBER).atEndOfMonth();
@@ -150,26 +111,12 @@ public abstract class ElectionDate {
     }
 
     /**
-     * The qualifier.
-     */
-    private final Qualifier qualifier;
-
-    /**
-     * Constructor taking a qualifier as its parameter.
-     *
-     * @param qualifier The qualifier for the date.
-     */
-    private ElectionDate(final Qualifier qualifier) {
-        this.qualifier = qualifier;
-    }
-
-    /**
      * Parses a text into an election date.
      *
      * @param text The text to be parse.
      * @return An election date parsed from the text.
      */
-    public static ElectionDate parse(final String text) {
+    static ElectionDate parse(final String text) {
         if (text.startsWith("≈")) {
             return parseDate(text.substring(1), Qualifier.APPROXIMATE_DATE);
         } else if (text.startsWith("≤")) {
@@ -210,7 +157,7 @@ public abstract class ElectionDate {
      * @return A negative number if this instance is less than the other instance, a positive number if it is greater,
      *         and zero if both instances are equal.
      */
-    public int compareTo(final ElectionDate other) {
+    default int compareTo(final ElectionDate other) {
         int endDateResult = getEndDate().compareTo(other.getEndDate());
         if (endDateResult != 0) {
             return endDateResult;
@@ -227,7 +174,7 @@ public abstract class ElectionDate {
         if (!(this instanceof ExpectedYear) && other instanceof ExpectedYear) {
             return -1;
         }
-        return qualifier.ordinal() - other.qualifier.ordinal();
+        return qualifier().ordinal() - other.qualifier().ordinal();
     }
 
     /**
@@ -235,7 +182,7 @@ public abstract class ElectionDate {
      *
      * @return A string representing the date.
      */
-    public abstract String getDateString();
+    String getDateString();
 
     /**
      * Returns the end date. For days, this is the same as the day; for months, it is the last day of the month; for
@@ -243,14 +190,21 @@ public abstract class ElectionDate {
      *
      * @return The end date.
      */
-    public abstract LocalDate getEndDate();
+    LocalDate getEndDate();
 
     /**
      * Returns the term key according to the qualifier, or <code>null</code> for exact dates.
      *
      * @return The term key according to the qualifier, or <code>null</code> for exact dates.
      */
-    public String getQualifierTermKey() {
-        return qualifier.getTermKey();
+    default String getQualifierTermKey() {
+        return qualifier().getTermKey();
     }
+
+    /**
+     * Returns the qualifier.
+     *
+     * @return The qualifier.
+     */
+    Qualifier qualifier();
 }
