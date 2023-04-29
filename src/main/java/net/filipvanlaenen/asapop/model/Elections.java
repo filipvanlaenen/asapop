@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -85,6 +86,16 @@ public class Elections {
         return result;
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof Elections) {
+            Elections otherElections = (Elections) obj;
+            return map.equals(otherElections.map);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Returns the first election after a given date of a type in an area.
      *
@@ -135,5 +146,10 @@ public class Elections {
             }
         }
         return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(map);
     }
 }

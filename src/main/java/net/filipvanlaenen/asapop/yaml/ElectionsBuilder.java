@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
 import java.util.Map;
+import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
@@ -41,7 +42,11 @@ public final class ElectionsBuilder {
      */
     public static Elections extractElections(final WebsiteConfiguration websiteConfiguration) {
         Elections elections = new Elections();
-        for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+        Set<AreaConfiguration> areaConfigurations = websiteConfiguration.getAreaConfigurations();
+        if (areaConfigurations == null) {
+            return elections;
+        }
+        for (AreaConfiguration areaConfiguration : areaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             ElectionLists electionLists = areaConfiguration.getElections();
             if (electionLists != null) {
