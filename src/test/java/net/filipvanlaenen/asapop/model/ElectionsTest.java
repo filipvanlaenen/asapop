@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -132,5 +133,73 @@ public class ElectionsTest {
         Election expected = new Election("aa", ElectionType.NATIONAL, List.of(ElectionDate.parse("2023-04-15")),
                 List.of(List.of(ElectionDate.parse("2023-04-13"))));
         assertEquals(expected, elections.getNextElection("aa", ElectionType.NATIONAL, EARLY_NOW));
+    }
+
+    /**
+     * Verifies that an elections instance is not equal to null.
+     */
+    @Test
+    public void electionsShouldNotBeEqualToNull() {
+        assertFalse(EMPTY_ELECTIONS.equals(null));
+    }
+
+    /**
+     * Verifies that an elections instance is not equal to an object of another class, like a string.
+     */
+    @Test
+    public void electionsShouldNotBeEqualToAString() {
+        assertFalse(EMPTY_ELECTIONS.equals(""));
+    }
+
+    /**
+     * Verifies that an elections instance is equal to itself.
+     */
+    @Test
+    public void electionsShouldBeEqualToItself() {
+        assertTrue(EMPTY_ELECTIONS.equals(EMPTY_ELECTIONS));
+    }
+
+    /**
+     * Verifies that calling hashCode twice on an elections instance returns the same result.
+     */
+    @Test
+    public void callingHashCodeTwiceOnElectionsReturnsTheSameResult() {
+        assertEquals(EMPTY_ELECTIONS.hashCode(), EMPTY_ELECTIONS.hashCode());
+    }
+
+    /**
+     * Verifies that two elections instances constructed with the same parameter are equal.
+     */
+    @Test
+    public void twoElectionsInstancesConstructedWithTheSameParameterShouldBeEqual() {
+        assertEquals(EMPTY_ELECTIONS, new Elections());
+    }
+
+    /**
+     * Verifies that two elections instances constructed with the same parameters return the same hashCode.
+     */
+    @Test
+    public void twoElectionsInstancesConstructedWithTheSameParametersShouldHaveTheSameHashCode() {
+        assertEquals(EMPTY_ELECTIONS.hashCode(), new Elections().hashCode());
+    }
+
+    /**
+     * Verifies that two different elections instances with different values are not equal.
+     */
+    @Test
+    public void twoDifferentElectionsInstancesWithDifferentValuesShouldNotBeEqual() {
+        Elections elections = new Elections();
+        elections.addElection("aa", ElectionType.NATIONAL, "2023-04-15");
+        assertFalse(EMPTY_ELECTIONS.equals(elections));
+    }
+
+    /**
+     * Verifies that two different elections instances with different values have different hash codes.
+     */
+    @Test
+    public void twoDifferentElectionsInstancesWithDifferentValuesShouldHaveDifferentHashCodes() {
+        Elections elections = new Elections();
+        elections.addElection("aa", ElectionType.NATIONAL, "2023-04-15");
+        assertFalse(EMPTY_ELECTIONS.hashCode() == elections.hashCode());
     }
 }

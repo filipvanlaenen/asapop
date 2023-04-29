@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Class holding elections indexed by area and election type.
  */
-public class Elections {
+public final class Elections {
     /**
      * A map holding the elections indexed by area code and election type.
      */
