@@ -321,6 +321,9 @@ areaConfigurations:
         13: "2016-04-24+(2016-05-22)+2016-12-04"
         14: "2022-10-09"
         15: "≈2028-10"
+  pollingFirmsNotIncluded:
+    "ElectoPanel": notAPollingFirm
+    "Key Data": estimation
   translations:
     de: "Österreich"
     en: "Austria"
@@ -355,6 +358,10 @@ Notice that the field ``nextElectionDate`` doesn't need to contain a complete da
 (``YYYY-MM``) or a year (``YYYY``) already suffice. In addition, the date can be preceded by ``≤`` (no later than),
 ``≈`` (approximate date) or ``⪅`` (no later than approximate date) to indicate further uncertainty about when the next
 election will take place.
+
+The values in the ``pollingFirmsNotIncluded`` map need to match to a key in the internationalization file, after being
+converted from camel case to kebab case, and prefixed with ``polling-firm-not-included-reason-``. This means that in the
+example above, the reason ``notAPollingFirm`` maps to a key ``polling-firm-not-included-reason-not-a-polling-firm``.
 
 ## Conversion from ROPF to CSV
 
