@@ -47,6 +47,18 @@ public class AreaConfigurationTest {
     }
 
     /**
+     * Verifies that the getter method <code>getPollingFirmsNotIncluded</code> is wired correctly to the setter method
+     * <code>setPollingFirmsNotIncluded</code>.
+     */
+    @Test
+    public void getPollingFirmsNotIncludedShouldBeWiredCorrectlyToSetPollingFirmsNotIncluded() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        Map<String, String> pollingFirmsNotIncluded = Map.of("ACME", "notAPollingFirm");
+        areaConfiguration.setPollingFirmsNotIncluded(pollingFirmsNotIncluded);
+        assertEquals(pollingFirmsNotIncluded, areaConfiguration.getPollingFirmsNotIncluded());
+    }
+
+    /**
      * Verifies that the getter method <code>getTranslations</code> is wired correctly to the setter method
      * <code>setTranslations</code>.
      */

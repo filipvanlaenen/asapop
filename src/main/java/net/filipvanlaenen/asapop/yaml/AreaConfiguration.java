@@ -19,6 +19,10 @@ public class AreaConfiguration {
      */
     private ElectionLists electionLists;
     /**
+     * A map with the names of the polling firms not included and the keys for the reason why.
+     */
+    private Map<String, String> pollingFirmsNotIncluded;
+    /**
      * A map with the translation of the term in a number of languages.
      */
     private Map<String, String> translations;
@@ -48,6 +52,15 @@ public class AreaConfiguration {
      */
     public ElectionLists getElections() {
         return electionLists;
+    }
+
+    /**
+     * Returns the map with the names of the polling firms not included and the keys for the reasons why.
+     *
+     * @return The map with the names of the polling firms not included and the keys for the reasons why.
+     */
+    public Map<String, String> getPollingFirmsNotIncluded() {
+        return pollingFirmsNotIncluded;
     }
 
     /**
@@ -84,6 +97,16 @@ public class AreaConfiguration {
      */
     public void setElections(final ElectionLists elections) {
         this.electionLists = elections;
+    }
+
+    /**
+     * Sets the map with the names of the polling firms not included and the keys for the reasons why.
+     *
+     * @param pollingFirmsNotIncluded The map with the names of the polling firms not included and the keys for the
+     *                                reasons why.
+     */
+    public void setPollingFirmsNotIncluded(final Map<String, String> pollingFirmsNotIncluded) {
+        this.pollingFirmsNotIncluded = pollingFirmsNotIncluded;
     }
 
     /**
