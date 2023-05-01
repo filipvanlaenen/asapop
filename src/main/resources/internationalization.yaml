@@ -200,7 +200,7 @@ terms:
       fr: "L’agence de sondage suivante n’est pas incluse dans ces pages"
       nl: "Het volgende peilingsbureau is niet opgenomen in deze pagina’s"
       no: "Følgende meningsmålingsinstitutt er ikke tatt med på disse sider"
-  - key: "polling-firm-not-included-estimation"
+  - key: "polling-firm-not-included-reason-estimation"
     translations:
       de: "erstellt Schätzungen, nicht Meinungsumfragen"
       en: "produces estimations, not opinion polls"
@@ -208,7 +208,7 @@ terms:
       fr: "produit des estimations, pas des sondages d’opinion"
       nl: "produceert schattingen, geen opiniepeilingen"
       no: "produserer estimater, ikke meningsmålinger"
-  - key: "polling-firm-not-included-notAPollingFirm"
+  - key: "polling-firm-not-included-reason-not-a-polling-firm"
     translations:
       de: "kein Meinungsforschungsinstitut"
       en: "not a polling firm"
