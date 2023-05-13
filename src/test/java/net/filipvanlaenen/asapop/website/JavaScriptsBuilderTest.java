@@ -37,11 +37,14 @@ public class JavaScriptsBuilderTest {
     @Test
     public void shouldBuildTheJavaScriptFilesCorrectly() {
         String navigationScriptContent = "function moveToArea(level) {}";
-        JavaScriptsBuilder builder = new JavaScriptsBuilder(navigationScriptContent, createTerms());
+        String sortingScriptContent = "function sortTable(table) {}";
+        JavaScriptsBuilder builder =
+                new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, createTerms());
         Map<Path, String> map = new HashMap<Path, String>();
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
+        map.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         assertEquals(map, builder.build());
     }
 }

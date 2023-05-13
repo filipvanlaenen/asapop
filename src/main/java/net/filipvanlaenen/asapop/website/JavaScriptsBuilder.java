@@ -16,6 +16,10 @@ class JavaScriptsBuilder {
      */
     private final String navigationScriptContent;
     /**
+     * The content of the sorting script.
+     */
+    private final String sortingScriptContent;
+    /**
      * The internationalization terms.
      */
     private final Terms terms;
@@ -24,11 +28,13 @@ class JavaScriptsBuilder {
      * Constructor taking the internationalization terms as its parameter.
      *
      * @param navigationScriptContent The content of the navigation script.
+     * @param sortingScriptContent    The content of the sorting script.
      * @param terms                   The internationalization terms.
      */
-    JavaScriptsBuilder(final String navigationScriptContent, final Terms terms) {
-        this.terms = terms;
+    JavaScriptsBuilder(final String navigationScriptContent, final String sortingScriptContent, final Terms terms) {
         this.navigationScriptContent = navigationScriptContent;
+        this.sortingScriptContent = sortingScriptContent;
+        this.terms = terms;
     }
 
     /**
@@ -40,6 +46,7 @@ class JavaScriptsBuilder {
         Map<Path, String> result = new HashMap<Path, String>();
         result.put(Paths.get("_js", "internationalization.js"), new InternationalizationScriptBuilder(terms).build());
         result.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
+        result.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         return result;
     }
 }
