@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +17,8 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.Term;
+import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -118,6 +122,32 @@ public class StatisticsPageBuilderTest {
     }
 
     /**
+     * Creates a set of terms for the internationalization script builder.
+     *
+     * @return A set of terms for the internationalization script builder.
+     */
+    private Terms createTerms() {
+        Terms terms = new Terms();
+        terms.setTerms(createTerms("dk", "ee", "no", "se"));
+        return terms;
+    }
+
+    private Set<Term> createTerms(final String... areaCodes) {
+        Set<Term> terms = new HashSet<Term>();
+        for (String areaCode : areaCodes) {
+            Term term = new Term();
+            term.setKey("_area_" + areaCode);
+            Map<String, String> translations = new HashMap<String, String>();
+            for (Language language : Language.values()) {
+                translations.put(language.getId(), areaCode + "-" + language.getId());
+            }
+            term.setTranslations(translations);
+            terms.add(term);
+        }
+        return terms;
+    }
+
+    /**
      * Verifies that the electoral calendar page is built correctly.
      */
     @Test
@@ -134,8 +164,10 @@ public class StatisticsPageBuilderTest {
         expected.append(
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
+        expected.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
-        expected.append("  <body onload=\"initializeLanguage();\">\n");
+        expected.append("  <body onload=\"initializeLanguage(); sortTable('statistics-table', 2, 'area-name',"
+                + " 'alphanumeric-internationalized')\">\n");
         expected.append("    <header>\n");
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <a class=\"main-page\" href=\"index.html\"> </a>\n");
@@ -160,18 +192,28 @@ public class StatisticsPageBuilderTest {
         expected.append("    </header>\n");
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"statistics\"> </h1>\n");
-        expected.append("      <table class=\"statistics-table\">\n");
+        expected.append("      <table class=\"statistics-table\" id=\"statistics-table\">\n");
         expected.append("        <thead>\n");
         expected.append("          <tr>\n");
-        expected.append("            <th class=\"country\"> </th>\n");
-        expected.append("            <th class=\"number-of-opinion-polls-th\"><span class=\"number-of-opinion-polls\">"
-                + " </span> (<span class=\"year-to-date\"> </span>)</th>\n");
+        expected.append("            <th class=\"country\" onclick=\"sortTable('statistics-table', 2, 'area-name',"
+                + " 'alphanumeric-internationalized')\"> </th>\n");
+        expected.append("            <th class=\"number-of-opinion-polls-th\"><span class=\"number-of-opinion-polls\""
+                + " onclick=\"sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')\"> </span>"
+                + " (<span class=\"year-to-date\" onclick=\"sortTable('statistics-table', 2,"
+                + " 'number-of-opinion-polls-ytd', 'numeric')\"> </span>)</th>\n");
         expected.append("            <th class=\"number-of-response-scenarios-th\"><span"
-                + " class=\"number-of-response-scenarios\"> </span> (<span class=\"year-to-date\"> </span>)</th>\n");
+                + " class=\"number-of-response-scenarios\" onclick=\"sortTable('statistics-table', 2,"
+                + " 'number-of-response-scenarios', 'numeric')\"> </span> (<span class=\"year-to-date\""
+                + " onclick=\"sortTable('statistics-table', 2, 'number-of-response-scenarios-ytd', 'numeric')\">"
+                + " </span>)</th>\n");
         expected.append("            <th class=\"number-of-result-values-th\"><span"
-                + " class=\"number-of-result-values\"> </span> (<span class=\"year-to-date\"> </span>)</th>\n");
+                + " class=\"number-of-result-values\" onclick=\"sortTable('statistics-table', 2,"
+                + " 'number-of-result-values', 'numeric')\"> </span> (<span class=\"year-to-date\""
+                + " onclick=\"sortTable('statistics-table', 2, 'number-of-result-values-ytd', 'numeric')\">"
+                + " </span>)</th>\n");
         expected.append("            <th class=\"most-recent-date-th\">\n");
-        expected.append("              <span class=\"most-recent-date\"> </span>\n");
+        expected.append("              <span class=\"most-recent-date\" onclick=\"sortTable('statistics-table', 2,"
+                + " 'most-recent-date', 'alphanumeric')\"> </span>\n");
         expected.append("              <sup>\n");
         expected.append("                <a href=\"#footnote-1\">1</a>\n");
         expected.append("              </sup>\n");
@@ -186,7 +228,13 @@ public class StatisticsPageBuilderTest {
         expected.append("          </tr>\n");
         expected.append("        </thead>\n");
         expected.append("        <tbody>\n");
-        expected.append("          <tr>\n");
+        expected.append(
+                "          <tr data-area-name-de=\"dk-de\" data-area-name-en=\"dk-en\" data-area-name-eo=\"dk-eo\""
+                        + " data-area-name-fr=\"dk-fr\" data-area-name-nl=\"dk-nl\" data-area-name-no=\"dk-no\""
+                        + " data-most-recent-date=\"8-2022-06-29\" data-number-of-opinion-polls=\"3\""
+                        + " data-number-of-opinion-polls-ytd=\"2\" data-number-of-response-scenarios=\"5\""
+                        + " data-number-of-response-scenarios-ytd=\"3\" data-number-of-result-values=\"6\""
+                        + " data-number-of-result-values-ytd=\"4\">\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_dk\" href=\"dk/index.html\"> </a>\n");
         expected.append("            </td>\n");
@@ -196,7 +244,13 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\"><span"
                 + " class=\"probably-up-to-date-color\">●</span> 2022-06-29</td>\n");
         expected.append("          </tr>\n");
-        expected.append("          <tr>\n");
+        expected.append(
+                "          <tr data-area-name-de=\"ee-de\" data-area-name-en=\"ee-en\" data-area-name-eo=\"ee-eo\""
+                        + " data-area-name-fr=\"ee-fr\" data-area-name-nl=\"ee-nl\" data-area-name-no=\"ee-no\""
+                        + " data-most-recent-date=\"8-2022-06-29\" data-number-of-opinion-polls=\"2\""
+                        + " data-number-of-opinion-polls-ytd=\"1\" data-number-of-response-scenarios=\"3\""
+                        + " data-number-of-response-scenarios-ytd=\"1\" data-number-of-result-values=\"3\""
+                        + " data-number-of-result-values-ytd=\"1\">\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_ee\" href=\"ee/index.html\"> </a>\n");
         expected.append("            </td>\n");
@@ -206,7 +260,13 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\"><span"
                 + " class=\"probably-up-to-date-color\">●</span> 2022-06-29</td>\n");
         expected.append("          </tr>\n");
-        expected.append("          <tr>\n");
+        expected.append(
+                "          <tr data-area-name-de=\"no-de\" data-area-name-en=\"no-en\" data-area-name-eo=\"no-eo\""
+                        + " data-area-name-fr=\"no-fr\" data-area-name-nl=\"no-nl\" data-area-name-no=\"no-no\""
+                        + " data-most-recent-date=\"-1\" data-number-of-opinion-polls=\"-1\""
+                        + " data-number-of-opinion-polls-ytd=\"-1\" data-number-of-response-scenarios=\"-1\""
+                        + " data-number-of-response-scenarios-ytd=\"-1\" data-number-of-result-values=\"-1\""
+                        + " data-number-of-result-values-ytd=\"-1\">\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_no\" href=\"no/index.html\"> </a>\n");
         expected.append("            </td>\n");
@@ -215,7 +275,13 @@ public class StatisticsPageBuilderTest {
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("            <td class=\"statistics-value-td\">—</td>\n");
         expected.append("          </tr>\n");
-        expected.append("          <tr>\n");
+        expected.append(
+                "          <tr data-area-name-de=\"se-de\" data-area-name-en=\"se-en\" data-area-name-eo=\"se-eo\""
+                        + " data-area-name-fr=\"se-fr\" data-area-name-nl=\"se-nl\" data-area-name-no=\"se-no\""
+                        + " data-most-recent-date=\"-1\" data-number-of-opinion-polls=\"-1\""
+                        + " data-number-of-opinion-polls-ytd=\"-1\" data-number-of-response-scenarios=\"-1\""
+                        + " data-number-of-response-scenarios-ytd=\"-1\" data-number-of-result-values=\"-1\""
+                        + " data-number-of-result-values-ytd=\"-1\">\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_se\" href=\"se/index.html\"> </a>\n");
         expected.append("            </td>\n");
@@ -238,9 +304,8 @@ public class StatisticsPageBuilderTest {
         expected.append("    </footer>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
-        assertEquals(expected.toString(),
-                new StatisticsPageBuilder(createWebsiteConfiguration(), createOpinionPollsMap(), NOW, START_OF_YEAR)
-                        .build().asString());
+        assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(), createTerms(),
+                createOpinionPollsMap(), NOW, START_OF_YEAR).build().asString());
     }
 
     /**

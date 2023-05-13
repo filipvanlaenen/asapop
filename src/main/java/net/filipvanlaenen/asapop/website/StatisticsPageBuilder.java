@@ -8,10 +8,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.Term;
+import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
@@ -150,6 +153,7 @@ final class StatisticsPageBuilder extends PageBuilder {
      * The start of the year.
      */
     private final LocalDate startOfYear;
+    private final Terms terms;
 
     /**
      * Constructor taking the website configuration and the map with the opinion polls as its parameter.
@@ -159,10 +163,11 @@ final class StatisticsPageBuilder extends PageBuilder {
      * @param now                  Today's day.
      * @param startOfYear          The start of the year.
      */
-    StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
+    StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final LocalDate now, final LocalDate startOfYear) {
         super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
+        this.terms = terms;
         this.now = now;
         this.startOfYear = startOfYear;
     }
@@ -175,39 +180,48 @@ final class StatisticsPageBuilder extends PageBuilder {
     Html build() {
         Html html = new Html();
         html.addElement(createHead());
-        Body body = new Body().onload("initializeLanguage();");
+        Body body = new Body().onload(
+                "initializeLanguage(); sortTable('statistics-table', 2, 'area-name', 'alphanumeric-internationalized')");
         html.addElement(body);
         body.addElement(createHeader(PageBuilder.HeaderLink.STATISTICS));
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("statistics"));
-        Table table = new Table().clazz("statistics-table");
+        Table table = new Table().clazz("statistics-table").id("statistics-table");
         section.addElement(table);
         THead tHead = new THead();
         table.addElement(tHead);
         TR tr = new TR();
         tHead.addElement(tr);
-        tr.addElement(new TH(" ").clazz("country"));
+        tr.addElement(new TH(" ").clazz("country")
+                .onclick("sortTable('statistics-table', 2, 'area-name', 'alphanumeric-internationalized')"));
         TH thOpinionPolls = new TH().clazz("number-of-opinion-polls-th");
-        thOpinionPolls.addElement(new Span(" ").clazz("number-of-opinion-polls"));
+        thOpinionPolls.addElement(new Span(" ").clazz("number-of-opinion-polls")
+                .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
         thOpinionPolls.addContent(" (");
-        thOpinionPolls.addElement(new Span(" ").clazz("year-to-date"));
+        thOpinionPolls.addElement(new Span(" ").clazz("year-to-date")
+                .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls-ytd', 'numeric')"));
         thOpinionPolls.addContent(")");
         tr.addElement(thOpinionPolls);
         TH thResponseScenarios = new TH().clazz("number-of-response-scenarios-th");
-        thResponseScenarios.addElement(new Span(" ").clazz("number-of-response-scenarios"));
+        thResponseScenarios.addElement(new Span(" ").clazz("number-of-response-scenarios")
+                .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios', 'numeric')"));
         thResponseScenarios.addContent(" (");
-        thResponseScenarios.addElement(new Span(" ").clazz("year-to-date"));
+        thResponseScenarios.addElement(new Span(" ").clazz("year-to-date")
+                .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios-ytd', 'numeric')"));
         thResponseScenarios.addContent(")");
         tr.addElement(thResponseScenarios);
         TH thResultValue = new TH().clazz("number-of-result-values-th");
-        thResultValue.addElement(new Span(" ").clazz("number-of-result-values"));
+        thResultValue.addElement(new Span(" ").clazz("number-of-result-values")
+                .onclick("sortTable('statistics-table', 2, 'number-of-result-values', 'numeric')"));
         thResultValue.addContent(" (");
-        thResultValue.addElement(new Span(" ").clazz("year-to-date"));
+        thResultValue.addElement(new Span(" ").clazz("year-to-date")
+                .onclick("sortTable('statistics-table', 2, 'number-of-result-values-ytd', 'numeric')"));
         thResultValue.addContent(")");
         tr.addElement(thResultValue);
         TH thMostRecentDate = new TH().clazz("most-recent-date-th");
-        thMostRecentDate.addElement(new Span(" ").clazz("most-recent-date"));
+        thMostRecentDate.addElement(new Span(" ").clazz("most-recent-date")
+                .onclick("sortTable('statistics-table', 2, 'most-recent-date', 'alphanumeric')"));
         Sup footnoteLink = new Sup();
         footnoteLink.addElement(new A("1").href("#footnote-1"));
         thMostRecentDate.addElement(footnoteLink);
@@ -234,6 +248,15 @@ final class StatisticsPageBuilder extends PageBuilder {
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
+            String areaKey = "_area_" + areaCode;
+            Optional<Term> term = terms.getTerms().stream().filter(t -> t.getKey().equals(areaKey)).findFirst();
+            if (term.isPresent()) {
+                Map<String, String> translations = term.get().getTranslations();
+                for (Language language : Language.values()) {
+                    String languageId = language.getId();
+                    areaTr.data("area-name-" + languageId, translations.get(languageId));
+                }
+            }
             tBody.addElement(areaTr);
             TD tdAreaName = new TD();
             areaTr.addElement(tdAreaName);
@@ -241,11 +264,17 @@ final class StatisticsPageBuilder extends PageBuilder {
             if (opinionPollsMap.containsKey(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
+                areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
                 int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
+                areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
+                areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
+                areaTr.data("number-of-response-scenarios-ytd", Integer.toString(numberOfResponseScenariosYtd));
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
+                areaTr.data("number-of-result-values", Integer.toString(numberOfResultValues));
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
+                areaTr.data("number-of-result-values-ytd", Integer.toString(numberOfResultValuesYtd));
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
@@ -271,12 +300,21 @@ final class StatisticsPageBuilder extends PageBuilder {
                 TD mostRecentDateTd = new TD().clazz("statistics-value-td");
                 mostRecentDateTd.addElement(currencyQualification.createSpan());
                 mostRecentDateTd.addContent(" " + mostRecentDate.toString());
+                areaTr.data("most-recent-date",
+                        Integer.toString(9 - currencyQualification.ordinal()) + "-" + mostRecentDate.toString());
                 areaTr.addElement(mostRecentDateTd);
             } else {
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+                areaTr.data("number-of-opinion-polls", "-1");
+                areaTr.data("number-of-opinion-polls-ytd", "-1");
+                areaTr.data("number-of-response-scenarios", "-1");
+                areaTr.data("number-of-response-scenarios-ytd", "-1");
+                areaTr.data("number-of-result-values", "-1");
+                areaTr.data("number-of-result-values-ytd", "-1");
+                areaTr.data("most-recent-date", "-1");
             }
         }
         totalTr.addElement(new TD(" ").clazz("total"));
