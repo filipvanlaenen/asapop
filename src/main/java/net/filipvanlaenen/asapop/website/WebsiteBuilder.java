@@ -37,6 +37,10 @@ public class WebsiteBuilder {
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
     /**
+     * The content of the sorting script.
+     */
+    private final String sortingScriptContent;
+    /**
      * The start of the year.
      */
     private final LocalDate startOfYear;
@@ -60,12 +64,13 @@ public class WebsiteBuilder {
      * @param baseStyleSheetContent   The base style sheet content.
      * @param customStyleSheetContent The custom style sheet content.
      * @param navigationScriptContent The content of the navigation script.
+     * @param sortingScriptContent    The content of the sorrting script.
      * @param now                     Today's date.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final Elections elections,
             final String baseStyleSheetContent, final String customStyleSheetContent,
-            final String navigationScriptContent, final LocalDate now) {
+            final String navigationScriptContent, final String sortingScriptContent, final LocalDate now) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
@@ -73,6 +78,7 @@ public class WebsiteBuilder {
         this.baseStyleSheetContent = baseStyleSheetContent;
         this.customStyleSheetContent = customStyleSheetContent;
         this.navigationScriptContent = navigationScriptContent;
+        this.sortingScriptContent = sortingScriptContent;
         this.now = now;
         this.startOfYear = now.withDayOfYear(1);
     }
@@ -84,14 +90,15 @@ public class WebsiteBuilder {
      */
     public Website build() {
         Website website = new Website();
-        JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(navigationScriptContent, terms);
+        JavaScriptsBuilder javaScriptsBuilder =
+                new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, terms);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
         website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build());
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.put("statistics.html",
-                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, now, startOfYear).build());
+                new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, now, startOfYear).build());
         website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
         website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, now).build());
         return website;

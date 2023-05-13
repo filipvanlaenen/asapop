@@ -111,6 +111,7 @@ public class WebsiteBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        Terms terms = createTerms();
         Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
@@ -120,7 +121,7 @@ public class WebsiteBuilderTest {
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
-                new StatisticsPageBuilder(websiteConfiguration, opinionPollsMap, NOW, START_OF_YEAR).build()
+                new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, NOW, START_OF_YEAR).build()
                         .asString());
         map.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
@@ -135,6 +136,8 @@ public class WebsiteBuilderTest {
                 new InternationalizationScriptBuilder(createTerms()).build());
         String navigationScriptContent = "function moveToArea(level) {}";
         map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
+        String sortingScriptContent = "function sortTable(table) {}";
+        map.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
@@ -142,8 +145,8 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
-        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), createTerms(), opinionPollsMap,
-                elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, NOW);
+        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), terms, opinionPollsMap, elections,
+                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, sortingScriptContent, NOW);
         assertEquals(map, builder.build().asMap());
     }
 }
