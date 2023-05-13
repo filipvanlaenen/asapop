@@ -61,6 +61,7 @@ public class CsvFilesPageBuilderTest {
         expected.append(
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
+        expected.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
         expected.append("  <body onload=\"initializeLanguage();\">\n");
         expected.append("    <header>\n");
