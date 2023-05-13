@@ -143,9 +143,11 @@ public final class CommandLineInterface {
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
                 String navigationScriptContent = readResource("/navigation.js");
+                String sortingScriptContent = readResource("/sorting.js");
                 LocalDate now = LocalDate.now();
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, elections,
-                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, now).build();
+                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, sortingScriptContent,
+                        now).build();
                 writeFiles(siteDirName, website.asMap());
             }
 
