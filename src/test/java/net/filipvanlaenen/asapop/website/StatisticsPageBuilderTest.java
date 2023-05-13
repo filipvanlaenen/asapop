@@ -122,9 +122,9 @@ public class StatisticsPageBuilderTest {
     }
 
     /**
-     * Creates a set of terms for the internationalization script builder.
+     * Creates a set of terms for the statistics page builder.
      *
-     * @return A set of terms for the internationalization script builder.
+     * @return A set of terms for the statistics page builder.
      */
     private Terms createTerms() {
         Terms terms = new Terms();
@@ -132,6 +132,12 @@ public class StatisticsPageBuilderTest {
         return terms;
     }
 
+    /**
+     * Creates a set of terms for the statistics page builder for the provided area codes.
+     *
+     * @param areaCodes The area codes for which to create terms.
+     * @return A set of terms for the statistics page builder.
+     */
     private Set<Term> createTerms(final String... areaCodes) {
         Set<Term> terms = new HashSet<Term>();
         for (String areaCode : areaCodes) {
