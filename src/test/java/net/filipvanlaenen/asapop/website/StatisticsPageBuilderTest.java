@@ -237,7 +237,7 @@ public class StatisticsPageBuilderTest {
         expected.append(
                 "          <tr data-area-name-de=\"dk-de\" data-area-name-en=\"dk-en\" data-area-name-eo=\"dk-eo\""
                         + " data-area-name-fr=\"dk-fr\" data-area-name-nl=\"dk-nl\" data-area-name-no=\"dk-no\""
-                        + " data-most-recent-date=\"8-2022-06-29\" data-number-of-opinion-polls=\"3\""
+                        + " data-most-recent-date=\"4-2022-06-29\" data-number-of-opinion-polls=\"3\""
                         + " data-number-of-opinion-polls-ytd=\"2\" data-number-of-response-scenarios=\"5\""
                         + " data-number-of-response-scenarios-ytd=\"3\" data-number-of-result-values=\"6\""
                         + " data-number-of-result-values-ytd=\"4\">\n");
@@ -253,7 +253,7 @@ public class StatisticsPageBuilderTest {
         expected.append(
                 "          <tr data-area-name-de=\"ee-de\" data-area-name-en=\"ee-en\" data-area-name-eo=\"ee-eo\""
                         + " data-area-name-fr=\"ee-fr\" data-area-name-nl=\"ee-nl\" data-area-name-no=\"ee-no\""
-                        + " data-most-recent-date=\"8-2022-06-29\" data-number-of-opinion-polls=\"2\""
+                        + " data-most-recent-date=\"4-2022-06-29\" data-number-of-opinion-polls=\"2\""
                         + " data-number-of-opinion-polls-ytd=\"1\" data-number-of-response-scenarios=\"3\""
                         + " data-number-of-response-scenarios-ytd=\"1\" data-number-of-result-values=\"3\""
                         + " data-number-of-result-values-ytd=\"1\">\n");
