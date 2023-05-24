@@ -1,32 +1,14 @@
 package net.filipvanlaenen.asapop.model;
 
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Class representing a decimal number. A decimal number has a value and a number of decimals.
+ *
+ * @param value            The value of the decimal number.
+ * @param numberOfDecimals The number of decimals for the decimal number.
  */
-public final class DecimalNumber {
-    /**
-     * The value of the decimal number.
-     */
-    private final float value;
-    /**
-     * The number of decimals for the decimal number.
-     */
-    private final int numberOfDecimals;
-
-    /**
-     * Constructor using the value and the number of decimals as its parameters.
-     *
-     * @param value            The value of the decimal number.
-     * @param numberOfDecimals The number of decimals for the decimal number.
-     */
-    public DecimalNumber(final float value, final int numberOfDecimals) {
-        this.value = value;
-        this.numberOfDecimals = numberOfDecimals;
-    }
-
+public record DecimalNumber(float value, int numberOfDecimals) {
     /**
      * Parses a string into a decimal number.
      *
@@ -42,39 +24,6 @@ public final class DecimalNumber {
         } else {
             return new DecimalNumber(value, 0);
         }
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof DecimalNumber) {
-            DecimalNumber other = (DecimalNumber) obj;
-            return numberOfDecimals == other.numberOfDecimals && value == other.value;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Returns the number of decimals for the decimal number.
-     *
-     * @return The number of decimals for the decimal number.
-     */
-    public int getNumberOfDecimals() {
-        return numberOfDecimals;
-    }
-
-    /**
-     * Returns the value of the decimal number.
-     *
-     * @return The value of the decimal number.
-     */
-    public float getValue() {
-        return value;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(numberOfDecimals, value);
     }
 
     @Override

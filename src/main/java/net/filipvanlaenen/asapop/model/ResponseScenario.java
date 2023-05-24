@@ -79,7 +79,7 @@ public final class ResponseScenario {
             if (excluded == null) {
                 effectiveSampleSize = sampleSizeValue;
             } else {
-                effectiveSampleSize = Math.round(sampleSizeValue * (1F - excluded.getValue() / HUNDRED));
+                effectiveSampleSize = Math.round(sampleSizeValue * (1F - excluded.value() / HUNDRED));
             }
         }
         scale = builder.calculateScale();

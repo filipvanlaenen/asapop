@@ -102,13 +102,13 @@ public class SaporExporter extends Exporter {
                 calculationSampleSize = lowestSampleSize;
             } else if (hasExcluded) {
                 calculationSampleSize = (int) Math
-                        .round(lowestSampleSize * (1F - responseScenario.getExcluded().getValue() / ONE_HUNDRED));
+                        .round(lowestSampleSize * (1F - responseScenario.getExcluded().value() / ONE_HUNDRED));
             } else {
                 calculationSampleSize = lowestEffectiveSampleSize;
             }
         } else if (!hasNoResponses && !hasImplicitlyNoResponses && hasExcluded) {
             calculationSampleSize = (int) Math
-                    .round(calculationSampleSize * (1F - responseScenario.getExcluded().getValue() / ONE_HUNDRED));
+                    .round(calculationSampleSize * (1F - responseScenario.getExcluded().value() / ONE_HUNDRED));
         }
         double actualNoResponsesValue = 0D;
         if (hasNoResponses) {

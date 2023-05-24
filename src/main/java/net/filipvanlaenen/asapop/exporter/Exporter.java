@@ -201,7 +201,7 @@ public abstract class Exporter {
             excluded = opinionPoll.getExcluded();
         }
         if (excluded != null) {
-            return new DecimalNumber(ONE_HUNDRED - excluded.getValue(), excluded.getNumberOfDecimals()).toString();
+            return new DecimalNumber(ONE_HUNDRED - excluded.value(), excluded.numberOfDecimals()).toString();
         } else {
             return null;
         }
