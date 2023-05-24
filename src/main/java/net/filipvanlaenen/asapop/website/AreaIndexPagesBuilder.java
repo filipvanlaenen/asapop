@@ -223,6 +223,36 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
+     * If there are polling firms that are not included for this area configuration, adds a list of them to the section.
+     *
+     * @param section           The section to add the polling firms that are not included to.
+     * @param areaConfiguration The area configuration.
+     */
+    private void addPollingFirmsNotIncluded(final Section section, final AreaConfiguration areaConfiguration) {
+        Map<String, String> pollingFirmsNotIncluded = areaConfiguration.getPollingFirmsNotIncluded();
+        if (pollingFirmsNotIncluded == null || pollingFirmsNotIncluded.isEmpty()) {
+            return;
+        }
+        P p = new P();
+        p.addElement(new Span(" ").clazz(
+                pollingFirmsNotIncluded.size() == 1 ? "polling-firm-not-included" : "polling-firms-not-included"));
+        p.addContent(":");
+        section.addElement(p);
+        UL ul = new UL();
+        List<String> pollingFirmsNotIncludedSorted = new ArrayList<String>(pollingFirmsNotIncluded.keySet());
+        Collections.sort(pollingFirmsNotIncludedSorted);
+        for (String pollingFirmNotIncluded : pollingFirmsNotIncludedSorted) {
+            LI li = new LI();
+            li.addElement(new Span(pollingFirmNotIncluded));
+            li.addContent(": ");
+            li.addElement(new Span(" ").clazz("polling-firm-not-included-reason-"
+                    + camelCaseToKebabCase(pollingFirmsNotIncluded.get(pollingFirmNotIncluded))));
+            ul.addElement(li);
+        }
+        section.addElement(ul);
+    }
+
+    /**
      * Adds the upcoming elections as an unordered list to a section, or none if there are none.
      *
      * @param section           The section to add the upcoming election to.
@@ -352,6 +382,16 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
+     * Converts a string from camel case to kebab case.
+     *
+     * @param string The camel case string to be converted.
+     * @return The string converted to kebab case.
+     */
+    private String camelCaseToKebabCase(final String string) {
+        return string.replaceAll("([A-Z])", "-$1").toLowerCase();
+    }
+
+    /**
      * Creates the index page for an area.
      *
      * @param areaConfiguration The configuration for the area.
@@ -370,8 +410,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
         addUpcomingElections(section, areaConfiguration);
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
         addOpinionPolls(section, areaConfiguration);
+        addPollingFirmsNotIncluded(section, areaConfiguration);
         body.addElement(createFooter());
         return html.asString();
     }
-
 }

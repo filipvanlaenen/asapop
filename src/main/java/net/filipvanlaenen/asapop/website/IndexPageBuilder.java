@@ -156,6 +156,7 @@ final class IndexPageBuilder extends PageBuilder {
         if (gitHubWebsiteUrlsByNextElectionDate == null) {
             calculateGitHubWebsiteUrlsSortedByNextElectionDate();
         }
-        return gitHubWebsiteUrlsByNextElectionDate.get(index);
+        return gitHubWebsiteUrlsByNextElectionDate.size() <= index ? ""
+                : gitHubWebsiteUrlsByNextElectionDate.get(index);
     }
 }
