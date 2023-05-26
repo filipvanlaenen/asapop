@@ -21,9 +21,13 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
  */
 public class IndexPageBuilderTest {
     /**
-     * Today's date.
+     * First today's date.
      */
-    private static final LocalDate NOW = LocalDate.of(2022, Month.SEPTEMBER, 7);
+    private static final LocalDate NOW1 = LocalDate.of(2022, Month.SEPTEMBER, 7);
+    /**
+     * Second today's date.
+     */
+    private static final LocalDate NOW3 = LocalDate.of(2022, Month.OCTOBER, 2);
 
     /**
      * Creates a website configuration.
@@ -60,26 +64,102 @@ public class IndexPageBuilderTest {
         nationalElectionsInPoland.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/polish_polls");
         electionListsForPoland.setNational(nationalElectionsInPoland);
         poland.setElections(electionListsForPoland);
+        AreaConfiguration netherlands = new AreaConfiguration();
+        netherlands.setAreaCode("nl");
+        ElectionLists electionListsForNetherlands = new ElectionLists();
+        ElectionList nationalElectionsInNetherlands = new ElectionList();
+        nationalElectionsInNetherlands.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInNetherlands.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/dutch_polls");
+        electionListsForNetherlands.setNational(nationalElectionsInNetherlands);
+        netherlands.setElections(electionListsForNetherlands);
         AreaConfiguration bulgaria = new AreaConfiguration();
         bulgaria.setAreaCode("bg");
         ElectionLists electionListsForBulgaria = new ElectionLists();
         ElectionList nationalElectionsInBulgaria = new ElectionList();
-        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-02"));
+        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-03"));
         nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
         bulgaria.setElections(electionListsForBulgaria);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        websiteConfiguration.setAreaConfigurations(Set.of(sweden, latvia, bulgaria, northMacedonia, poland));
+        websiteConfiguration
+                .setAreaConfigurations(Set.of(sweden, latvia, bulgaria, netherlands, northMacedonia, poland));
         return websiteConfiguration;
     }
 
     /**
-     * Verifies that the index page is built correctly.
+     * Verifies that the index page is built correctly when there are two next elections with a GitHub reference.
      */
     @Test
-    public void indexPageContentShouldBeBuiltCorrectly() {
+    public void indexPageContentShouldBeBuiltCorrectlyForTwoNextElectionsWithGitHubReference() {
         StringBuilder expected = new StringBuilder();
+        addTop(expected);
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <a href=\"https://filipvanlaenen.github.io/swedish_polls\">\n");
+        expected.append("              <image height=\"250\""
+                + " href=\"https://filipvanlaenen.github.io/swedish_polls/average.png\" width=\"500\"/>\n");
+        expected.append("            </a>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <a href=\"https://filipvanlaenen.github.io/latvian_polls\">\n");
+        expected.append("              <image height=\"250\""
+                + " href=\"https://filipvanlaenen.github.io/latvian_polls/average.png\" width=\"500\"/>\n");
+        expected.append("            </a>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
+        addBottom(expected);
+        WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+        assertEquals(expected.toString(),
+                new IndexPageBuilder(websiteConfiguration, elections, NOW1).build().asString());
+    }
+
+    /**
+     * Verifies that the index page is built correctly when there is only one next election with a GitHub reference.
+     */
+    @Test
+    public void indexPageContentShouldBeBuiltCorrectlyForOneNextElectionWithGitHubReference() {
+        StringBuilder expected = new StringBuilder();
+        addTop(expected);
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <a href=\"https://filipvanlaenen.github.io/bulgarian_polls\">\n");
+        expected.append("              <image height=\"250\""
+                + " href=\"https://filipvanlaenen.github.io/bulgarian_polls/average.png\" width=\"500\"/>\n");
+        expected.append("            </a>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <a href=\"\">\n");
+        expected.append("              <image height=\"250\" href=\"/average.png\" width=\"500\"/>\n");
+        expected.append("            </a>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
+        addBottom(expected);
+        WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+        assertEquals(expected.toString(),
+                new IndexPageBuilder(websiteConfiguration, elections, NOW3).build().asString());
+    }
+
+    private void addBottom(StringBuilder expected) {
+        expected.append("    </section>\n");
+        expected.append("    <footer>\n");
+        expected.append("      <div class=\"privacy-statement\"> </div>\n");
+        expected.append("    </footer>\n");
+        expected.append("  </body>\n");
+        expected.append("</html>");
+    }
+
+    private void addTop(StringBuilder expected) {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
@@ -104,6 +184,7 @@ public class IndexPageBuilderTest {
         expected.append("  <option class=\"_area_bg\" value=\"bg\"> </option>\n");
         expected.append("  <option class=\"_area_lv\" value=\"lv\"> </option>\n");
         expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        expected.append("  <option class=\"_area_nl\" value=\"nl\"> </option>\n");
         expected.append("  <option class=\"_area_pl\" value=\"pl\"> </option>\n");
         expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
@@ -120,33 +201,5 @@ public class IndexPageBuilderTest {
         expected.append("    </header>\n");
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"upcoming-elections\"> </h1>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <a href=\"https://filipvanlaenen.github.io/swedish_polls\">\n");
-        expected.append("              <image height=\"250\""
-                + " href=\"https://filipvanlaenen.github.io/swedish_polls/average.png\" width=\"500\"/>\n");
-        expected.append("            </a>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <a href=\"https://filipvanlaenen.github.io/latvian_polls\">\n");
-        expected.append("              <image height=\"250\""
-                + " href=\"https://filipvanlaenen.github.io/latvian_polls/average.png\" width=\"500\"/>\n");
-        expected.append("            </a>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
-        expected.append("    </section>\n");
-        expected.append("    <footer>\n");
-        expected.append("      <div class=\"privacy-statement\"> </div>\n");
-        expected.append("    </footer>\n");
-        expected.append("  </body>\n");
-        expected.append("</html>");
-        WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
-        assertEquals(expected.toString(),
-                new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
     }
 }
