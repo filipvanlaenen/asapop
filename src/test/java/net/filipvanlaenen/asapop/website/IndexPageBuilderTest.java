@@ -150,56 +150,66 @@ public class IndexPageBuilderTest {
                 new IndexPageBuilder(websiteConfiguration, elections, NOW3).build().asString());
     }
 
-    private void addBottom(StringBuilder expected) {
-        expected.append("    </section>\n");
-        expected.append("    <footer>\n");
-        expected.append("      <div class=\"privacy-statement\"> </div>\n");
-        expected.append("    </footer>\n");
-        expected.append("  </body>\n");
-        expected.append("</html>");
+    /**
+     * Adds the bottom of the page to the StringBuilder.
+     *
+     * @param stringBuilder The StringBuilder to which the bottom of the page should be added.
+     */
+    private void addBottom(final StringBuilder stringBuilder) {
+        stringBuilder.append("    </section>\n");
+        stringBuilder.append("    <footer>\n");
+        stringBuilder.append("      <div class=\"privacy-statement\"> </div>\n");
+        stringBuilder.append("    </footer>\n");
+        stringBuilder.append("  </body>\n");
+        stringBuilder.append("</html>");
     }
 
-    private void addTop(StringBuilder expected) {
-        expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
-        expected.append("  <head>\n");
-        expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        expected.append("    <title>ASAPOP Website</title>\n");
-        expected.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
-        expected.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
-        expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
+    /**
+     * Adds the top of the page to the StringBuilder.
+     *
+     * @param stringBuilder The StringBuilder to which the top of the page should be added.
+     */
+    private void addTop(final StringBuilder stringBuilder) {
+        stringBuilder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+        stringBuilder.append("  <head>\n");
+        stringBuilder.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
+        stringBuilder.append("    <title>ASAPOP Website</title>\n");
+        stringBuilder.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
+        stringBuilder.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
+        stringBuilder.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
                 + " type=\"application/javascript\"> </script>\n");
-        expected.append(
+        stringBuilder.append(
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("  </head>\n");
-        expected.append("  <body onload=\"initializeLanguage();\">\n");
-        expected.append("    <header>\n");
-        expected.append("      <div class=\"header-left\">\n");
-        expected.append("        <span class=\"main-page\"> </span>\n");
-        expected.append("      </div>\n");
-        expected.append("      <div class=\"header-right\"><span class=\"go-to\"> </span>: <select"
+        stringBuilder.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
+        stringBuilder.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
+        stringBuilder.append("  </head>\n");
+        stringBuilder.append("  <body onload=\"initializeLanguage();\">\n");
+        stringBuilder.append("    <header>\n");
+        stringBuilder.append("      <div class=\"header-left\">\n");
+        stringBuilder.append("        <span class=\"main-page\"> </span>\n");
+        stringBuilder.append("      </div>\n");
+        stringBuilder.append("      <div class=\"header-right\"><span class=\"go-to\"> </span>: <select"
                 + " id=\"area-selector\" onchange=\"moveToArea(0);\">\n");
-        expected.append("  <option> </option>\n");
-        expected.append("  <option class=\"_area_bg\" value=\"bg\"> </option>\n");
-        expected.append("  <option class=\"_area_lv\" value=\"lv\"> </option>\n");
-        expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
-        expected.append("  <option class=\"_area_nl\" value=\"nl\"> </option>\n");
-        expected.append("  <option class=\"_area_pl\" value=\"pl\"> </option>\n");
-        expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
-        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
+        stringBuilder.append("  <option> </option>\n");
+        stringBuilder.append("  <option class=\"_area_bg\" value=\"bg\"> </option>\n");
+        stringBuilder.append("  <option class=\"_area_lv\" value=\"lv\"> </option>\n");
+        stringBuilder.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
+        stringBuilder.append("  <option class=\"_area_nl\" value=\"nl\"> </option>\n");
+        stringBuilder.append("  <option class=\"_area_pl\" value=\"pl\"> </option>\n");
+        stringBuilder.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
+        stringBuilder.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
                 + " class=\"csv-files\" href=\"csv.html\"> </a> · <a class=\"statistics-page\""
                 + " href=\"statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
                 + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
-        expected.append("  <option value=\"de\">Deutsch</option>\n");
-        expected.append("  <option value=\"en\">English</option>\n");
-        expected.append("  <option value=\"eo\">Esperanto</option>\n");
-        expected.append("  <option value=\"fr\">français</option>\n");
-        expected.append("  <option value=\"nl\">Nederlands</option>\n");
-        expected.append("  <option value=\"no\">norsk</option>\n");
-        expected.append("</select></div>\n");
-        expected.append("    </header>\n");
-        expected.append("    <section>\n");
-        expected.append("      <h1 class=\"upcoming-elections\"> </h1>\n");
+        stringBuilder.append("  <option value=\"de\">Deutsch</option>\n");
+        stringBuilder.append("  <option value=\"en\">English</option>\n");
+        stringBuilder.append("  <option value=\"eo\">Esperanto</option>\n");
+        stringBuilder.append("  <option value=\"fr\">français</option>\n");
+        stringBuilder.append("  <option value=\"nl\">Nederlands</option>\n");
+        stringBuilder.append("  <option value=\"no\">norsk</option>\n");
+        stringBuilder.append("</select></div>\n");
+        stringBuilder.append("    </header>\n");
+        stringBuilder.append("    <section>\n");
+        stringBuilder.append("      <h1 class=\"upcoming-elections\"> </h1>\n");
     }
 }
