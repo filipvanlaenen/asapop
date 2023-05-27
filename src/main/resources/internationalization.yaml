@@ -208,6 +208,14 @@ terms:
       fr: "produit des estimations, pas des sondages d’opinion"
       nl: "produceert schattingen, geen opiniepeilingen"
       no: "produserer estimater, ikke meningsmålinger"
+  - key: "polling-firm-not-included-reason-fraud-allegations"
+    translations:
+      de: "Betrugsvorwürfe"
+      en: "allegations of fraud"
+      eo: "akuzoj pri fraŭdo"
+      fr: "allégations de fraude"
+      nl: "beschuldigingen van fraude"
+      no: "anklager om svindel"
   - key: "polling-firm-not-included-reason-not-a-polling-firm"
     translations:
       de: "kein Meinungsforschungsinstitut"
