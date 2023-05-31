@@ -303,6 +303,7 @@ public final class ResponseScenario {
                 precision = Precision.highest(precision, noResponses.getPrecision());
             }
             if (hasVerifiedSum()) {
+                // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 return Math.abs(sum - verifiedSum) < precision.getValue() / HUNDRED;
             } else {
                 int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);

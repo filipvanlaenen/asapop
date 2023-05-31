@@ -133,6 +133,22 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that before verified sum has been added, the builder responds that verified sum is missing.
+     */
+    @Test
+    public void hasVerifiedSumInBuilderShouldReturnFalseBeforeVerifiedSumIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasVerifiedSum());
+    }
+
+    /**
+     * Verifies that after verified sum has been added, the builder responds that a verified sum is present.
+     */
+    @Test
+    public void hasVerifiedSumInBuilderShouldReturnTrueAfterVerifiedSumIsAdded() {
+        assertTrue(new ResponseScenarioTestBuilder().setVerifiedSum(80D).hasVerifiedSum());
+    }
+
+    /**
      * Verifies that the scale is set to 1D when there are no other or no responses.
      */
     @Test
@@ -631,6 +647,26 @@ public class ResponseScenarioTest {
     public void resultsShouldNotAddUpAboveUpperBound() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
                 .addResult("B", "0.1").addResult("C", "0").setOther("0.1").setNoResponses("0.1");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the results add up if the sum matches the verified sum.
+     */
+    @Test
+    public void resultShouldAddUpIfSumEqualsVerifiedSum() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenarioTestBuilder().addResult("A", "80").addResult("B", "30").setVerifiedSum(110D);
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the results don't add up if the sum doesn't match the verified sum.
+     */
+    @Test
+    public void resultsShouldNotAddUpIfSumDoesNotEqualVerifiedSum() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenarioTestBuilder().addResult("A", "50").addResult("B", "30").setVerifiedSum(110D);
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 }
