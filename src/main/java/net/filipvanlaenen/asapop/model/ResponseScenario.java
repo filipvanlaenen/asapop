@@ -123,6 +123,10 @@ public final class ResponseScenario {
          * The scope.
          */
         private Scope scope;
+        /**
+         * The verified sum.
+         */
+        private Double verifiedSum;
 
         /**
          * Adds a result.
@@ -262,9 +266,18 @@ public final class ResponseScenario {
         }
 
         /**
-         * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
-         * errors, defined as 100 ± floor((n - 1) / 2) × precision, or the sum is below 100 and either other or no
-         * responses is missing.
+         * Returns whether a verified sum has been registered in this builder instance.
+         *
+         * @return True if a verified sum has been registered in this builder instance.
+         */
+        public boolean hasVerifiedSum() {
+            return verifiedSum != null;
+        }
+
+        /**
+         * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
+         * provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) × precision, or the
+         * sum is below 100 and either other or no responses is missing.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */
@@ -273,15 +286,15 @@ public final class ResponseScenario {
         }
 
         /**
-         * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
-         * errors, defined as 100 ± floor((n - 1) / 2) × precision. If they don't need to add strictly up, the sum can
-         * be below 100 if other or no responses is missing.
+         * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
+         * provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) × precision. If they
+         * don't need to add strictly up, the sum can be below 100 if other or no responses is missing.
          *
          * @param strictly True if the results should add up strictly.
          * @return True if the sum of results is within the interval of rounding errors.
          */
         private boolean resultsAddUp(final boolean strictly) {
-            int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
+            double sum = calculateSum();
             Precision precision = Precision.getHighestPrecision(results.values());
             if (hasOther()) {
                 precision = Precision.highest(precision, other.getPrecision());
@@ -289,15 +302,20 @@ public final class ResponseScenario {
             if (hasNoResponses()) {
                 precision = Precision.highest(precision, noResponses.getPrecision());
             }
-            double sum = calculateSum();
-            double epsilon = ((n - 1) / 2) * precision.getValue();
-            return (ONE_HUNDRED - epsilon <= sum || !strictly && (!hasOther() || !hasNoResponses()))
-                    && sum <= ONE_HUNDRED + epsilon;
+            if (hasVerifiedSum()) {
+                return Math.abs(sum - verifiedSum) < precision.getValue() / HUNDRED;
+            } else {
+                int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
+                double epsilon = ((n - 1) / 2) * precision.getValue();
+                return (ONE_HUNDRED - epsilon <= sum || !strictly && (!hasOther() || !hasNoResponses()))
+                        && sum <= ONE_HUNDRED + epsilon;
+            }
         }
 
         /**
-         * Verifies whether the results add strictly up. The results add up if their sum is within the interval of
-         * rounding errors, defined as 100 ± floor((n - 1) / 2) × precision.
+         * Verifies whether the results add strictly up. The results add up if their sum is equal to the verified sum,
+         * if one is provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) ×
+         * precision.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */
@@ -368,6 +386,17 @@ public final class ResponseScenario {
          */
         public Builder setScope(final Scope theScope) {
             this.scope = theScope;
+            return this;
+        }
+
+        /**
+         * Sets the verified sum.
+         *
+         * @param theVerifiedSum The verified sum.
+         * @return This builder instance.
+         */
+        public Builder setVerifiedSum(final Double theVerifiedSum) {
+            this.verifiedSum = theVerifiedSum;
             return this;
         }
     }

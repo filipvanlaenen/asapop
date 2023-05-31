@@ -208,6 +208,16 @@ final class ResponseScenarioLine extends Line {
                 warnings.add(new MalformedSampleSizeWarning(lineNumber, value));
             }
             break;
+        case "VS":
+            if (builder.hasVerifiedSum()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+            } else {
+                try {
+                    builder.setVerifiedSum(Double.parseDouble(value));
+                } catch (NumberFormatException nfe) {
+                    warnings.add(new MalformedVerifiedSumWarning(lineNumber, value));
+                }
+            }
         default:
             warnings.add(new UnknownMetadataKeyWarning(lineNumber, key));
         }

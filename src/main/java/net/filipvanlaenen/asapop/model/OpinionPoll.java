@@ -277,8 +277,18 @@ public final class OpinionPoll {
         }
 
         /**
-         * Verifies whether the results add up. The results add up if their sum is within the interval of rounding
-         * errors, defined as 100 ± floor((n - 1) / 2) × precision..
+         * Returns whether a verified sum has been registered in this builder instance.
+         *
+         * @return True if a verified sum has been registered in this builder instance.
+         */
+        public boolean hasVerifiedSum() {
+            return responseScenarioBuilder.hasVerifiedSum();
+        }
+
+        /**
+         * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
+         * provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) × precision, or the
+         * sum is below 100 and either other or no responses is missing.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */
@@ -404,6 +414,17 @@ public final class OpinionPoll {
          */
         public Builder setScope(final Scope theScope) {
             this.scope = theScope;
+            return this;
+        }
+
+        /**
+         * Sets the verified sum.
+         *
+         * @param theVerifiedSum The verified sum.
+         * @return This builder instance.
+         */
+        public Builder setVerifiedSum(final Double theVerifiedSum) {
+            responseScenarioBuilder.setVerifiedSum(theVerifiedSum);
             return this;
         }
     }
