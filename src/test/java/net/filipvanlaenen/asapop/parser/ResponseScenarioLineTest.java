@@ -250,7 +250,7 @@ public final class ResponseScenarioLineTest {
     public void shouldProduceAWarningForAMalformedVerifiedSum() {
         ResponseScenarioLine responseScenarioLine =
                 ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1);
-        Set<ParserWarning> expected = Set.of(new MalformedVerifiedSumWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "VS", "Error"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 

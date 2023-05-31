@@ -215,7 +215,7 @@ final class ResponseScenarioLine extends Line {
                 try {
                     builder.setVerifiedSum(Double.parseDouble(value));
                 } catch (NumberFormatException nfe) {
-                    warnings.add(new MalformedVerifiedSumWarning(lineNumber, value));
+                    warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
                 }
             }
             break;

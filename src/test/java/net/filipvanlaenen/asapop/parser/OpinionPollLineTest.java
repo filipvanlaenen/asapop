@@ -368,7 +368,7 @@ public final class OpinionPollLineTest {
     public void shouldProduceAWarningForAMalformedVerifiedSum() {
         OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •VS:Error",
                 ELECTORAL_LIST_KEY_MAP, 1);
-        Set<ParserWarning> expected = Set.of(new MalformedVerifiedSumWarning(1, "Error"));
+        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "VS", "Error"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
