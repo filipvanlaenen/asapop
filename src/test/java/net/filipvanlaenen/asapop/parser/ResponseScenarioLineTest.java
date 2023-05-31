@@ -244,6 +244,17 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that a line with a malformed verified sum produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedVerifiedSum() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new MalformedVerifiedSumWarning(1, "Error"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
      * Verifies that a line with an unknown metadata key produces a warning.
      */
     @Test
@@ -328,6 +339,17 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine responseScenarioLine =
                 ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
+        assertEquals(expected, responseScenarioLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding verified sum twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenVerifiedSumIsAddedTwice() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse("& •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "VS"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 
