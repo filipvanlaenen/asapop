@@ -21,6 +21,14 @@ public class ResponseScenarioTest {
      */
     private static final double SCALE088 = 0.88D;
     /**
+     * The magic number 80.
+     */
+    private static final double EIGHTY = 80D;
+    /**
+     * The magic number 110.
+     */
+    private static final double ONE_HUNDRED_TEN = 110D;
+    /**
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
@@ -145,7 +153,7 @@ public class ResponseScenarioTest {
      */
     @Test
     public void hasVerifiedSumInBuilderShouldReturnTrueAfterVerifiedSumIsAdded() {
-        assertTrue(new ResponseScenarioTestBuilder().setVerifiedSum(80D).hasVerifiedSum());
+        assertTrue(new ResponseScenarioTestBuilder().setVerifiedSum(EIGHTY).hasVerifiedSum());
     }
 
     /**
@@ -655,8 +663,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void resultShouldAddUpIfSumEqualsVerifiedSum() {
-        ResponseScenario.Builder responseScenarioBuilder =
-                new ResponseScenarioTestBuilder().addResult("A", "80").addResult("B", "30").setVerifiedSum(110D);
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "80")
+                .addResult("B", "30").setVerifiedSum(ONE_HUNDRED_TEN);
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -665,8 +673,8 @@ public class ResponseScenarioTest {
      */
     @Test
     public void resultsShouldNotAddUpIfSumDoesNotEqualVerifiedSum() {
-        ResponseScenario.Builder responseScenarioBuilder =
-                new ResponseScenarioTestBuilder().addResult("A", "50").addResult("B", "30").setVerifiedSum(110D);
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "30").setVerifiedSum(ONE_HUNDRED_TEN);
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 }
