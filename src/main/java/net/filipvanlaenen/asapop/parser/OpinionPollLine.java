@@ -275,6 +275,7 @@ final class OpinionPollLine extends Line {
                     warnings.add(new MalformedVerifiedSumWarning(lineNumber, value));
                 }
             }
+            break;
         default:
             warnings.add(new UnknownMetadataKeyWarning(lineNumber, key));
         }

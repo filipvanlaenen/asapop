@@ -362,6 +362,17 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that a line with a malformed verified sum produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAMalformedVerifiedSum() {
+        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •VS:Error",
+                ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new MalformedVerifiedSumWarning(1, "Error"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
      * Verifies that a line with an unknown metadata key produces a warning.
      */
     @Test
@@ -500,6 +511,17 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding a verified sum twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenVerifiedSumIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "VS"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
