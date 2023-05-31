@@ -1,42 +1,19 @@
 package net.filipvanlaenen.asapop.model;
 
-import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Objects;
+import java.time.format.DateTimeParseException;
 
 /**
  * Class wrapping around either a date (<code>LocalDate</code>) or a month (<code>YearMonth</code>).
  */
-public abstract class DateOrMonth {
+public interface DateOrMonth {
     /**
-     * Subclass wrapping around a date.
+     * Record class wrapping around a date.
+     *
+     * @param date The date to wrap around.
      */
-    private static final class Date extends DateOrMonth {
-        /**
-         * The date.
-         */
-        private LocalDate date;
-
-        /**
-         * Constructor taking the date as its parameter.
-         *
-         * @param date The date to wrap around.
-         */
-        private Date(final LocalDate date) {
-            this.date = date;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj instanceof Date) {
-                Date otherDate = (Date) obj;
-                return otherDate.date.equals(date);
-            } else {
-                return false;
-            }
-        }
-
+    record Date(LocalDate date) implements DateOrMonth {
         /**
          * Returns the end date, which is identical to the date.
          *
@@ -58,44 +35,17 @@ public abstract class DateOrMonth {
         }
 
         @Override
-        public int hashCode() {
-            return Objects.hash(date);
-        }
-
-        @Override
         public String toString() {
             return date.toString();
         }
     }
 
     /**
-     * Subclass wrapping around a month.
+     * Record class wrapping around a month.
+     *
+     * @param month The month to wrap around.
      */
-    private static final class Month extends DateOrMonth {
-        /**
-         * The month.
-         */
-        private YearMonth month;
-
-        /**
-         * Constructor taking the month as its parameter.
-         *
-         * @param month The month to wrap around.
-         */
-        private Month(final YearMonth month) {
-            this.month = month;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (obj instanceof Month) {
-                Month otherMonth = (Month) obj;
-                return otherMonth.month.equals(month);
-            } else {
-                return false;
-            }
-        }
-
+    record Month(YearMonth month) implements DateOrMonth {
         /**
          * Returns the end date, which is the last day of the month.
          *
@@ -117,11 +67,6 @@ public abstract class DateOrMonth {
         }
 
         @Override
-        public int hashCode() {
-            return Objects.hash(month);
-        }
-
-        @Override
         public String toString() {
             return month.toString();
         }
@@ -133,7 +78,7 @@ public abstract class DateOrMonth {
      * @param text The text to parse.
      * @return A date or month wrapped in a DateOrMonth instance.
      */
-    public static DateOrMonth parse(final String text) {
+    static DateOrMonth parse(final String text) {
         try {
             return new Date(LocalDate.parse(text));
         } catch (DateTimeParseException dtpe) {
@@ -146,12 +91,12 @@ public abstract class DateOrMonth {
      *
      * @return The end of the date or month.
      */
-    public abstract LocalDate getEnd();
+    LocalDate getEnd();
 
     /**
      * Returns the start of the date or month.
      *
      * @return The start of the date or month.
      */
-    public abstract LocalDate getStart();
+    LocalDate getStart();
 }
