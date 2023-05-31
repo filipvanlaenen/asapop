@@ -230,6 +230,22 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before verified sum has been added, the builder responds that verified sum is missing.
+     */
+    @Test
+    public void hasVerifiedSumInBuilderShouldReturnFalseBeforeVerifiedSumIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasVerifiedSum());
+    }
+
+    /**
+     * Verifies that after verified sum has been added, the builder responds that a verified sum is present.
+     */
+    @Test
+    public void hasVerifiedSumInBuilderShouldReturnTrueAfterVerifiedSumIsAdded() {
+        assertTrue(new OpinionPollTestBuilder().setVerifiedSum(80D).hasVerifiedSum());
+    }
+
+    /**
      * Verifies that the scale is set to 1D when there are no other or no responses.
      */
     @Test
