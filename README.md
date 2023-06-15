@@ -11,7 +11,8 @@
 - [Build a Website](#build-a-website)
 - [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
 - [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
-- [Provide SAPOR files](#provide-sapor-files)
+- [Format ROPF Files](#format-ropf-files)
+- [Provide SAPOR Files](#provide-sapor-files)
 
 ## Getting Started
 
@@ -442,7 +443,23 @@ Use `--` to indicate that only opinion polls and response scenarios not related 
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI -a=--
 ```
 
-## Provide SAPOR files
+## Format ROPF Files
+
+An ROPF file can be formated using the following command:
+
+```
+format <ropf-file-name>
+```
+
+Assume the opinion polls have been stored in a file called `nn.ropf`, then you can use the following command to format
+the file:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar format nn.ropf
+```
+
+
+## Provide SAPOR Files
 
 An ROPF file can be converted to a directory with SAPOR files using the following command:
 
