@@ -445,7 +445,7 @@ java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv A
 
 ## Format ROPF Files
 
-An ROPF file can be formated using the following command:
+An ROPF file can be formatted using the following command:
 
 ```
 format <ropf-file-name>
