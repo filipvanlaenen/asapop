@@ -100,6 +100,49 @@ public class AreaIndexPagesBuilderTest {
     }
 
     /**
+     * Verifies that the index page for an area with a small opinion poll and one polling firm not included is built
+     * correctly.
+     */
+    @Test
+    public void areaIndexPageWithASmallOpinionPollAndOnePollingFirmNotIncludedShouldBeBuiltCorrectly() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        OpinionPolls opinionPolls = RichOpinionPollsFile
+                .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
+                .getOpinionPolls();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        northMacedonia.setPollingFirmsNotIncluded(Map.of("BCME", "foo"));
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        assertEquals(createAreaIndexPageWithASmallOpinionPoll("BCME", "foo"),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
+    }
+
+    /**
+     * Verifies that the index page for an area with a small opinion poll and many polling firms not included is built
+     * correctly.
+     */
+    @Test
+    public void areaIndexPageWithASmallOpinionPollAndManyPollingFirmsNotIncludedShouldBeBuiltCorrectly() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        OpinionPolls opinionPolls = RichOpinionPollsFile
+                .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
+                .getOpinionPolls();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        northMacedonia.setPollingFirmsNotIncluded(
+                Map.of("FCME", "foo-bar", "ECME", "qux", "DCME", "bar", "CCME", "foo-bar", "BCME", "foo"));
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        assertEquals(
+                createAreaIndexPageWithASmallOpinionPoll("BCME", "foo", "CCME", "foo-bar", "DCME", "bar", "ECME", "qux",
+                        "FCME", "foo-bar"),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
+    }
+
+    /**
      * Verifies that the index page for an area with many and large opinion polls is built correctly.
      */
     @Test
@@ -168,9 +211,11 @@ public class AreaIndexPagesBuilderTest {
     /**
      * Creates an index page for an area with only one small opinion poll.
      *
+     * @param pollingFirmsNotIncluded A string array with key/value pairs representing polling firm names and reasons
+     *                                for why they're not included.
      * @return An index page for an area with only one small opinion poll.
      */
-    private String createAreaIndexPageWithASmallOpinionPoll() {
+    private String createAreaIndexPageWithASmallOpinionPoll(final String... pollingFirmsNotIncluded) {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected, true);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
@@ -195,6 +240,22 @@ public class AreaIndexPagesBuilderTest {
         expected.append("          </tr>\n");
         expected.append("        </tbody>\n");
         expected.append("      </table>\n");
+        if (pollingFirmsNotIncluded.length > 0) {
+            if (pollingFirmsNotIncluded.length > 2) {
+                expected.append("      <p><span class=\"polling-firms-not-included\"> </span>:</p>\n");
+            } else {
+                expected.append("      <p><span class=\"polling-firm-not-included\"> </span>:</p>\n");
+            }
+            expected.append("      <ul>\n");
+            for (int i = 0; i < pollingFirmsNotIncluded.length / 2; i++) {
+                expected.append("        <li><span>");
+                expected.append(pollingFirmsNotIncluded[i * 2]);
+                expected.append("</span>: <span class=\"polling-firm-not-included-reason-");
+                expected.append(pollingFirmsNotIncluded[i * 2 + 1]);
+                expected.append("\"> </span></li>\n");
+            }
+            expected.append("      </ul>\n");
+        }
         addBottomPart(expected);
         return expected.toString();
     }
