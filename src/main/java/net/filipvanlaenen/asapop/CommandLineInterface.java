@@ -27,6 +27,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
+import net.filipvanlaenen.asapop.exporter.RopfExporter;
 import net.filipvanlaenen.asapop.exporter.SaporDirectory;
 import net.filipvanlaenen.asapop.exporter.SaporExporter;
 import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
@@ -87,6 +88,7 @@ public final class CommandLineInterface {
                 "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
+        System.out.println("  format <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
     }
 
@@ -182,6 +184,19 @@ public final class CommandLineInterface {
                     outputContent = EopaodPsvExporter.export(opinionPolls, area, electoralListKeySets);
                 }
                 writeFile(outputFileName, outputContent);
+            }
+        },
+        /**
+         * Command to format an ROPF file.
+         */
+        FORMAT {
+            @Override
+            void execute(final String[] args) throws IOException {
+                String ropfFileName = args[1];
+                String[] ropfContent = readFile(ropfFileName);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                printWarnings(richOpinionPollsFile.getWarnings());
+                writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile));
             }
         },
         /**
