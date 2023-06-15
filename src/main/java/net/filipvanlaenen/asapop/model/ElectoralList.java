@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -101,6 +102,10 @@ public final class ElectoralList {
      */
     public String getName(final String languageCode) {
         return names.get(languageCode);
+    }
+
+    public Set<String> getLanguageCodes() {
+        return names.keySet();
     }
 
     /**

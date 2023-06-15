@@ -1,7 +1,10 @@
 package net.filipvanlaenen.asapop.exporter;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -27,15 +30,27 @@ public final class RopfExporter extends Exporter {
         StringBuffer sb = new StringBuffer();
         Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
         for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
-            sb.append(export(opinionPoll));
-            sb.append("\n");
             electoralLists.addAll(getElectoralLists(opinionPoll));
+        }
+        Map<String, String> idsToKeysMap = createIdsToKeys(electoralLists);
+        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
+            sb.append(export(opinionPoll, idsToKeysMap));
+            sb.append("\n");
         }
         for (ElectoralList electoralList : electoralLists) {
             sb.append("\n");
-            sb.append(export(electoralList));
+            sb.append(export(electoralList, idsToKeysMap));
         }
         return sb.toString();
+    }
+
+    private static Map<String, String> createIdsToKeys(Set<ElectoralList> electoralLists) {
+        Map<String, String> result = new HashMap<String, String>();
+        for (ElectoralList electoralList : electoralLists) {
+            result.put(electoralList.getId(), electoralList.getAbbreviation()
+                    .replaceAll("[^\\p{javaUpperCase}\\p{javaLowerCase}\\p{Digit}]", "").toUpperCase());
+        }
+        return result;
     }
 
     /**
@@ -44,12 +59,20 @@ public final class RopfExporter extends Exporter {
      * @param electoralList The electoral list to export.
      * @return A string representation of the election list.
      */
-    private static String export(ElectoralList electoralList) {
+    private static String export(final ElectoralList electoralList, final Map<String, String> idsToKeysMap) {
         StringBuffer sb = new StringBuffer();
+        String id = electoralList.getId();
+        sb.append(idsToKeysMap.get(id));
         sb.append(": ");
-        sb.append(electoralList.getId());
+        sb.append(id);
         sb.append(" •A: ");
         sb.append(electoralList.getAbbreviation());
+        for (String languageCode : electoralList.getLanguageCodes()) {
+            sb.append(" •");
+            sb.append(languageCode);
+            sb.append(": ");
+            sb.append(electoralList.getName(languageCode));
+        }
         return sb.toString();
     }
 
@@ -59,10 +82,20 @@ public final class RopfExporter extends Exporter {
      * @param opinionPoll The opinion poll to export.
      * @return A string representation of the opinion poll.
      */
-    private static String export(final OpinionPoll opinionPoll) {
+    private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap) {
         StringBuffer sb = new StringBuffer();
         sb.append("•PF: ");
         sb.append(opinionPoll.getPollingFirm());
+        sb.append(" •PD: ");
+        sb.append(opinionPoll.getPublicationDate());
+        for (Set<ElectoralList> electoralListCombination : opinionPoll.getMainResponseScenario()
+                .getElectoralListSets()) {
+            sb.append(" ");
+            sb.append(String.join("+", electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId()))
+                    .collect(Collectors.toList())));
+            sb.append(": ");
+            sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination)).getText());
+        }
         return sb.toString();
     }
 
