@@ -21,7 +21,7 @@ public class RopfExporterTest {
         expected.append("•PF: ACME •PD: 2021-07-27 AP: 55 BL: 45\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
-        expected.append("BL: AA002 •A: Bl");
+        expected.append("BL: AA002 •A: Bl\n");
         assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
     }
 }

@@ -1,7 +1,10 @@
 package net.filipvanlaenen.asapop.exporter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,9 +40,14 @@ public final class RopfExporter extends Exporter {
             sb.append(export(opinionPoll, idsToKeysMap));
             sb.append("\n");
         }
-        for (ElectoralList electoralList : electoralLists) {
+        sb.append("\n");
+        Map<String, String> keysToIdsMap =
+                idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        List<String> keys = new ArrayList<String>(keysToIdsMap.keySet());
+        Collections.sort(keys);
+        for (String key : keys) {
+            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap));
             sb.append("\n");
-            sb.append(export(electoralList, idsToKeysMap));
         }
         return sb.toString();
     }
@@ -94,7 +102,8 @@ public final class RopfExporter extends Exporter {
             sb.append(String.join("+", electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId()))
                     .collect(Collectors.toList())));
             sb.append(": ");
-            sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination)).getText());
+            sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination))
+                    .getText());
         }
         return sb.toString();
     }
