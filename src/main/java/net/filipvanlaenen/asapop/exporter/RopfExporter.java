@@ -17,6 +17,9 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  * Exporter to the ROPF file format.
  */
 public final class RopfExporter extends Exporter {
+    private record ElectoralListWidths(int key, int id, int abbreviation, Map<String, Integer> languageWidth) {
+    }
+
     /**
      * Private constructor.
      */
@@ -45,11 +48,36 @@ public final class RopfExporter extends Exporter {
                 idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         List<String> keys = new ArrayList<String>(keysToIdsMap.keySet());
         Collections.sort(keys);
+        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, keys);
         for (String key : keys) {
-            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap));
+            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private static ElectoralListWidths calculateElectoralListWidths(final Set<ElectoralList> electoralLists,
+            final List<String> keys) {
+        int keyWidth = 0;
+        for (String key : keys) {
+            keyWidth = Math.max(keyWidth, key.length());
+        }
+        int idWidth = 0;
+        int abbreviationWidth = 0;
+        Map<String, Integer> languageWidth = new HashMap<String, Integer>();
+        for (ElectoralList electoralList : electoralLists) {
+            idWidth = Math.max(idWidth, electoralList.getId().length());
+            abbreviationWidth = Math.max(abbreviationWidth, electoralList.getAbbreviation().length());
+            for (String languageCode : electoralList.getLanguageCodes()) {
+                if (languageWidth.containsKey(languageCode)) {
+                    languageWidth.put(languageCode,
+                            Math.max(languageWidth.get(languageCode), electoralList.getName(languageCode).length()));
+                } else {
+                    languageWidth.put(languageCode, electoralList.getName(languageCode).length());
+                }
+            }
+        }
+        return new ElectoralListWidths(keyWidth, idWidth, abbreviationWidth, languageWidth);
     }
 
     private static Map<String, String> createIdsToKeys(Set<ElectoralList> electoralLists) {
@@ -67,21 +95,31 @@ public final class RopfExporter extends Exporter {
      * @param electoralList The electoral list to export.
      * @return A string representation of the election list.
      */
-    private static String export(final ElectoralList electoralList, final Map<String, String> idsToKeysMap) {
+    private static String export(final ElectoralList electoralList, final Map<String, String> idsToKeysMap,
+            final ElectoralListWidths electoralListWidths) {
         StringBuffer sb = new StringBuffer();
         String id = electoralList.getId();
-        sb.append(idsToKeysMap.get(id));
-        sb.append(": ");
-        sb.append(id);
+        sb.append(String.format("%1$-" + (electoralListWidths.key + 1) + "s", idsToKeysMap.get(id) + ":"));
+        sb.append(" ");
+        sb.append(String.format("%1$-" + electoralListWidths.id + "s", id));
         sb.append(" •A: ");
-        sb.append(electoralList.getAbbreviation());
-        for (String languageCode : electoralList.getLanguageCodes()) {
-            sb.append(" •");
-            sb.append(languageCode);
-            sb.append(": ");
-            sb.append(electoralList.getName(languageCode));
+        sb.append(String.format("%1$-" + electoralListWidths.abbreviation + "s", electoralList.getAbbreviation()));
+        List<String> languageCodes = new ArrayList<String>(electoralListWidths.languageWidth.keySet());
+        Collections.sort(languageCodes);
+        for (String languageCode : languageCodes) {
+            if (electoralList.getName(languageCode) == null) {
+                sb.append(String.format("%1$-"
+                        + (electoralListWidths.languageWidth().get(languageCode) + languageCode.length() + 4) + "s",
+                        ""));
+            } else {
+                sb.append(" •");
+                sb.append(languageCode);
+                sb.append(": ");
+                sb.append(String.format("%1$-" + electoralListWidths.languageWidth().get(languageCode) + "s",
+                        electoralList.getName(languageCode)));
+            }
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     /**
