@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.exporter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -130,12 +131,29 @@ public final class RopfExporter extends Exporter {
      */
     private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap) {
         StringBuffer sb = new StringBuffer();
-        sb.append("•PF: ");
-        sb.append(opinionPoll.getPollingFirm());
-        sb.append(" •PD: ");
-        sb.append(opinionPoll.getPublicationDate());
-        for (Set<ElectoralList> electoralListCombination : opinionPoll.getMainResponseScenario()
-                .getElectoralListSets()) {
+        sb.append(export("PF", opinionPoll.getPollingFirm()));
+        sb.append(export("PFP", opinionPoll.getPollingFirmPartner()));
+        for (String commissioner : opinionPoll.getCommissioners()) {
+            sb.append(" •C: ");
+            sb.append(commissioner);
+        }
+        sb.append(export("FS", opinionPoll.getFieldworkStart()));
+        sb.append(export("FE", opinionPoll.getFieldworkEnd()));
+        sb.append(export("PD", opinionPoll.getPublicationDate()));
+        sb.append(export("SC", opinionPoll.getScope()));
+        sb.append(export("SS", opinionPoll.getSampleSize()));
+        sb.append(export("EX", opinionPoll.getExcluded()));
+        List<Set<ElectoralList>> electoralListCombinations =
+                new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
+        Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {
+            @Override
+            public int compare(Set<ElectoralList> arg0, Set<ElectoralList> arg1) {
+                double difference = opinionPoll.getResult(ElectoralList.getIds(arg1)).getNominalValue()
+                        - opinionPoll.getResult(ElectoralList.getIds(arg0)).getNominalValue();
+                return difference < 0 ? -1 : difference > 0 ? 1 : 0;
+            }
+        });
+        for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
             sb.append(" ");
             sb.append(String.join("+", electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId()))
                     .collect(Collectors.toList())));
@@ -143,7 +161,17 @@ public final class RopfExporter extends Exporter {
             sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination))
                     .getText());
         }
-        return sb.toString();
+        sb.append(export("O", opinionPoll.getOther()));
+        sb.append(export("N", opinionPoll.getNoResponses()));
+        return sb.toString().trim();
+    }
+
+    private static String export(final String key, final Object value) {
+        if (value != null) {
+            return " •" + key + ": " + value;
+        } else {
+            return "";
+        }
     }
 
     /**
