@@ -94,6 +94,15 @@ public final class ElectoralList {
     }
 
     /**
+     * Returns the language codes for which names are provided for this electoral list.
+     *
+     * @return A set with the language codes for which names are provided for this electoral list.
+     */
+    public Set<String> getLanguageCodes() {
+        return names.keySet();
+    }
+
+    /**
      * Returns the name for electoral list for the given language code.
      *
      * @param languageCode The language code.
@@ -101,10 +110,6 @@ public final class ElectoralList {
      */
     public String getName(final String languageCode) {
         return names.get(languageCode);
-    }
-
-    public Set<String> getLanguageCodes() {
-        return names.keySet();
     }
 
     /**

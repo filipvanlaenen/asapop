@@ -84,4 +84,16 @@ public class ElectoralListTest {
         electoralList.setNames(names);
         assertEquals("English Name", electoralList.getName("EN"));
     }
+
+    /**
+     * Verifies that the set of language codes is returned correctly.
+     */
+    @Test
+    public void shouldReturnTheLanguageCodes() {
+        ElectoralList electoralList = ElectoralList.get("ElectoralListTestGetLanguageCodes");
+        Map<String, String> names = new HashMap<String, String>();
+        names.put("EN", "English Name");
+        electoralList.setNames(names);
+        assertEquals(Set.of("EN"), electoralList.getLanguageCodes());
+    }
 }
