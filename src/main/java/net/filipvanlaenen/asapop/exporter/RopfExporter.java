@@ -27,34 +27,10 @@ public final class RopfExporter extends Exporter {
     private RopfExporter() {
     }
 
-    /**
-     * Exports the rich opinion polls file.
-     *
-     * @param richOpinionPollsFile The rich opinion polls file to export.
-     * @return A string representing of the rich opinion polls file.
-     */
-    public static String export(final RichOpinionPollsFile richOpinionPollsFile) {
-        StringBuffer sb = new StringBuffer();
-        Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
-        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
-            electoralLists.addAll(getElectoralLists(opinionPoll));
-        }
-        Map<String, String> idsToKeysMap = createIdsToKeys(electoralLists);
-        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
-            sb.append(export(opinionPoll, idsToKeysMap));
-            sb.append("\n");
-        }
-        sb.append("\n");
-        Map<String, String> keysToIdsMap =
-                idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-        List<String> keys = new ArrayList<String>(keysToIdsMap.keySet());
-        Collections.sort(keys);
-        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, keys);
-        for (String key : keys) {
-            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
-            sb.append("\n");
-        }
-        return sb.toString();
+    private static String asKeysString(final Map<String, String> idsToKeysMap,
+            final Set<ElectoralList> electoralListCombination) {
+        return String.join("+",
+                electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId())).collect(Collectors.toList()));
     }
 
     private static ElectoralListWidths calculateElectoralListWidths(final Set<ElectoralList> electoralLists,
@@ -91,6 +67,36 @@ public final class RopfExporter extends Exporter {
     }
 
     /**
+     * Exports the rich opinion polls file.
+     *
+     * @param richOpinionPollsFile The rich opinion polls file to export.
+     * @return A string representing of the rich opinion polls file.
+     */
+    public static String export(final RichOpinionPollsFile richOpinionPollsFile) {
+        StringBuffer sb = new StringBuffer();
+        Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
+        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
+            electoralLists.addAll(getElectoralLists(opinionPoll));
+        }
+        Map<String, String> idsToKeysMap = createIdsToKeys(electoralLists);
+        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
+            sb.append(export(opinionPoll, idsToKeysMap));
+            sb.append("\n");
+        }
+        sb.append("\n");
+        Map<String, String> keysToIdsMap =
+                idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        List<String> keys = new ArrayList<String>(keysToIdsMap.keySet());
+        Collections.sort(keys);
+        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, keys);
+        for (String key : keys) {
+            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
      * Exports an electoral list.
      *
      * @param electoralList The electoral list to export.
@@ -100,24 +106,22 @@ public final class RopfExporter extends Exporter {
             final ElectoralListWidths electoralListWidths) {
         StringBuffer sb = new StringBuffer();
         String id = electoralList.getId();
-        sb.append(String.format("%1$-" + (electoralListWidths.key + 1) + "s", idsToKeysMap.get(id) + ":"));
+        sb.append(pad(idsToKeysMap.get(id) + ":", electoralListWidths.key + 1));
         sb.append(" ");
-        sb.append(String.format("%1$-" + electoralListWidths.id + "s", id));
+        sb.append(pad(id, electoralListWidths.id));
         sb.append(" •A: ");
-        sb.append(String.format("%1$-" + electoralListWidths.abbreviation + "s", electoralList.getAbbreviation()));
+        sb.append(pad(electoralList.getAbbreviation(), electoralListWidths.abbreviation));
         List<String> languageCodes = new ArrayList<String>(electoralListWidths.languageWidth.keySet());
         Collections.sort(languageCodes);
         for (String languageCode : languageCodes) {
             if (electoralList.getName(languageCode) == null) {
-                sb.append(String.format("%1$-"
-                        + (electoralListWidths.languageWidth().get(languageCode) + languageCode.length() + 4) + "s",
-                        ""));
+                sb.append(pad("", electoralListWidths.languageWidth().get(languageCode) + languageCode.length() + 4));
             } else {
                 sb.append(" •");
                 sb.append(languageCode);
                 sb.append(": ");
-                sb.append(String.format("%1$-" + electoralListWidths.languageWidth().get(languageCode) + "s",
-                        electoralList.getName(languageCode)));
+                sb.append(pad(electoralList.getName(languageCode),
+                        electoralListWidths.languageWidth().get(languageCode)));
             }
         }
         return sb.toString().trim();
@@ -147,16 +151,17 @@ public final class RopfExporter extends Exporter {
                 new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
         Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {
             @Override
-            public int compare(Set<ElectoralList> arg0, Set<ElectoralList> arg1) {
+            public int compare(final Set<ElectoralList> arg0, final Set<ElectoralList> arg1) {
                 double difference = opinionPoll.getResult(ElectoralList.getIds(arg1)).getNominalValue()
                         - opinionPoll.getResult(ElectoralList.getIds(arg0)).getNominalValue();
-                return difference < 0 ? -1 : difference > 0 ? 1 : 0;
+                return difference < 0 ? -1
+                        : difference > 0 ? 1
+                                : asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1));
             }
         });
         for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
             sb.append(" ");
-            sb.append(String.join("+", electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId()))
-                    .collect(Collectors.toList())));
+            sb.append(asKeysString(idsToKeysMap, electoralListCombination));
             sb.append(": ");
             sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination))
                     .getText());
@@ -186,5 +191,9 @@ public final class RopfExporter extends Exporter {
             electoralLists.addAll(electoralListCombination);
         }
         return electoralLists;
+    }
+
+    private static String pad(final String text, final int width) {
+        return String.format("%1$-" + width + "s", text);
     }
 }
