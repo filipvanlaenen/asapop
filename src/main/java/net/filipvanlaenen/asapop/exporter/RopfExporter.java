@@ -18,7 +18,20 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  * Exporter to the ROPF file format.
  */
 public final class RopfExporter extends Exporter {
-    private record ElectoralListWidths(int key, int id, int abbreviation, Map<String, Integer> languageWidth) {
+    /**
+     * The magic number four.
+     */
+    private static final int FOUR = 4;
+
+    /**
+     * A record holding the widths of the electoral list fields.
+     *
+     * @param key          The width of the electoral list keys.
+     * @param id           The width of the electoral list IDs.
+     * @param abbreviation The width of the electoral list abbreviations.
+     * @param languageCode The widths of the electoral list language codes.
+     */
+    private record ElectoralListWidths(int key, int id, int abbreviation, Map<String, Integer> languageCode) {
     }
 
     /**
@@ -27,37 +40,57 @@ public final class RopfExporter extends Exporter {
     private RopfExporter() {
     }
 
+    /**
+     * Converts a set of electoral lists into a string with the keys.
+     *
+     * @param idsToKeysMap             A map mapping the electoral list IDs to keys.
+     * @param electoralListCombination A set of electoral lists.
+     * @return A string with the electoral list keys.
+     */
     private static String asKeysString(final Map<String, String> idsToKeysMap,
             final Set<ElectoralList> electoralListCombination) {
         return String.join("+",
                 electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId())).collect(Collectors.toList()));
     }
 
+    /**
+     * Calculates the widths of the fields of the electoral lists.
+     *
+     * @param electoralLists    A set of electoral lists.
+     * @param electoralListKeys The keys of the electoral lists.
+     * @return A record holding the widths of the electoral list fields.
+     */
     private static ElectoralListWidths calculateElectoralListWidths(final Set<ElectoralList> electoralLists,
-            final List<String> keys) {
-        int keyWidth = 0;
-        for (String key : keys) {
-            keyWidth = Math.max(keyWidth, key.length());
+            final List<String> electoralListKeys) {
+        int electoralListKeyWidth = 0;
+        for (String electoralListKey : electoralListKeys) {
+            electoralListKeyWidth = Math.max(electoralListKeyWidth, electoralListKey.length());
         }
         int idWidth = 0;
         int abbreviationWidth = 0;
-        Map<String, Integer> languageWidth = new HashMap<String, Integer>();
+        Map<String, Integer> languageCodeWidth = new HashMap<String, Integer>();
         for (ElectoralList electoralList : electoralLists) {
             idWidth = Math.max(idWidth, electoralList.getId().length());
             abbreviationWidth = Math.max(abbreviationWidth, electoralList.getAbbreviation().length());
             for (String languageCode : electoralList.getLanguageCodes()) {
-                if (languageWidth.containsKey(languageCode)) {
-                    languageWidth.put(languageCode,
-                            Math.max(languageWidth.get(languageCode), electoralList.getName(languageCode).length()));
+                if (languageCodeWidth.containsKey(languageCode)) {
+                    languageCodeWidth.put(languageCode, Math.max(languageCodeWidth.get(languageCode),
+                            electoralList.getName(languageCode).length()));
                 } else {
-                    languageWidth.put(languageCode, electoralList.getName(languageCode).length());
+                    languageCodeWidth.put(languageCode, electoralList.getName(languageCode).length());
                 }
             }
         }
-        return new ElectoralListWidths(keyWidth, idWidth, abbreviationWidth, languageWidth);
+        return new ElectoralListWidths(electoralListKeyWidth, idWidth, abbreviationWidth, languageCodeWidth);
     }
 
-    private static Map<String, String> createIdsToKeys(Set<ElectoralList> electoralLists) {
+    /**
+     * Calculates the map mapping the electoral list IDs to the keys.
+     *
+     * @param electoralLists A set of electoral lists.
+     * @return A map mapping the elector list IDs to the keys.
+     */
+    private static Map<String, String> calculateIdsToKeys(final Set<ElectoralList> electoralLists) {
         Map<String, String> result = new HashMap<String, String>();
         for (ElectoralList electoralList : electoralLists) {
             result.put(electoralList.getId(), electoralList.getAbbreviation()
@@ -78,7 +111,7 @@ public final class RopfExporter extends Exporter {
         for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
             electoralLists.addAll(getElectoralLists(opinionPoll));
         }
-        Map<String, String> idsToKeysMap = createIdsToKeys(electoralLists);
+        Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
         for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
             sb.append(export(opinionPoll, idsToKeysMap));
             sb.append("\n");
@@ -86,10 +119,10 @@ public final class RopfExporter extends Exporter {
         sb.append("\n");
         Map<String, String> keysToIdsMap =
                 idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-        List<String> keys = new ArrayList<String>(keysToIdsMap.keySet());
-        Collections.sort(keys);
-        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, keys);
-        for (String key : keys) {
+        List<String> electoralListKeys = new ArrayList<String>(keysToIdsMap.keySet());
+        Collections.sort(electoralListKeys);
+        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, electoralListKeys);
+        for (String key : electoralListKeys) {
             sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
             sb.append("\n");
         }
@@ -99,7 +132,9 @@ public final class RopfExporter extends Exporter {
     /**
      * Exports an electoral list.
      *
-     * @param electoralList The electoral list to export.
+     * @param electoralList       The electoral list to export.
+     * @param idsToKeysMap        A map mapping the electoral list IDs to keys.
+     * @param electoralListWidths The widths of the electoral list fields.
      * @return A string representation of the election list.
      */
     private static String export(final ElectoralList electoralList, final Map<String, String> idsToKeysMap,
@@ -111,17 +146,17 @@ public final class RopfExporter extends Exporter {
         sb.append(pad(id, electoralListWidths.id));
         sb.append(" •A: ");
         sb.append(pad(electoralList.getAbbreviation(), electoralListWidths.abbreviation));
-        List<String> languageCodes = new ArrayList<String>(electoralListWidths.languageWidth.keySet());
+        List<String> languageCodes = new ArrayList<String>(electoralListWidths.languageCode.keySet());
         Collections.sort(languageCodes);
         for (String languageCode : languageCodes) {
             if (electoralList.getName(languageCode) == null) {
-                sb.append(pad("", electoralListWidths.languageWidth().get(languageCode) + languageCode.length() + 4));
+                sb.append(pad("", electoralListWidths.languageCode().get(languageCode) + languageCode.length() + FOUR));
             } else {
                 sb.append(" •");
                 sb.append(languageCode);
                 sb.append(": ");
-                sb.append(pad(electoralList.getName(languageCode),
-                        electoralListWidths.languageWidth().get(languageCode)));
+                sb.append(
+                        pad(electoralList.getName(languageCode), electoralListWidths.languageCode().get(languageCode)));
             }
         }
         return sb.toString().trim();
@@ -130,7 +165,8 @@ public final class RopfExporter extends Exporter {
     /**
      * Exports an opinion poll.
      *
-     * @param opinionPoll The opinion poll to export.
+     * @param opinionPoll  The opinion poll to export.
+     * @param idsToKeysMap A map mapping the electoral list IDs to keys.
      * @return A string representation of the opinion poll.
      */
     private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap) {
@@ -171,6 +207,13 @@ public final class RopfExporter extends Exporter {
         return sb.toString().trim();
     }
 
+    /**
+     * Exports a key with a value, or an empty string if the value is null.
+     *
+     * @param key   The key.
+     * @param value The value.
+     * @return A key with a value exported to a string, or an empty string if the value is null.
+     */
     private static String export(final String key, final Object value) {
         if (value != null) {
             return " •" + key + ": " + value;
@@ -193,6 +236,13 @@ public final class RopfExporter extends Exporter {
         return electoralLists;
     }
 
+    /**
+     * Returns a string padded with spaces to the right.
+     *
+     * @param text  The text to be padded with spaces.
+     * @param width The width.
+     * @return A string containing the text padded with spaces to the right.
+     */
     private static String pad(final String text, final int width) {
         return String.format("%1$-" + width + "s", text);
     }
