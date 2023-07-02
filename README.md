@@ -480,18 +480,29 @@ Below is an example of a valid SAPOR configuration file:
 
 ```
 ---
-area: "LU"
+area: "RO"
 mapping:
 - directMapping:
-    source: "LU001"
-    target: "Alternativ Demokratesch Reformpartei"  
-- directMapping:
-    source: "LU002"
-    target: "Chrëschtlech-Sozial Vollekspartei"  
+    source: "RO001"
+    target: "Partidul Social Democrat"
 - additiveMapping:
     sources:
     - "RO002"
     - "RO007"
     target: "Alianța 2020 USR-PLUS"
+- directMapping:
+    source: "RO004"
+    target: "Partidul Alianța Liberalilor și Democraților (*)"
+  endDate: "2020-10-07"
+- directMapping:
+    source: "RO008"
+    target: "PRO România (S&D)"
+  endDate: "2020-10-07"
+- additiveMapping:
+    sources:
+    - "RO004"
+    - "RO008"
+    target: "PRO România (S&D)"
+  startDate: "2020-10-08"
 lastElectionDate: "2018-10-14"
 ```

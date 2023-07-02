@@ -12,6 +12,14 @@ public class SaporMapping {
      * A direct mapping from a result in an ROPF file to an entry in a SAPOR file.
      */
     private DirectSaporMapping directMapping;
+    /**
+     * The end date.
+     */
+    private String endDate;
+    /**
+     * The start date.
+     */
+    private String startDate;
 
     /**
      * Returns the additive mapping from two or more results in an ROPF file to an entry in a SAPOR file.
@@ -32,6 +40,24 @@ public class SaporMapping {
     }
 
     /**
+     * Returns the end date.
+     *
+     * @return The end date.
+     */
+    public String getEndDate() {
+        return endDate;
+    }
+
+    /**
+     * Returns the start date.
+     *
+     * @return The start date.
+     */
+    public String getStartDate() {
+        return startDate;
+    }
+
+    /**
      * Sets the additive mapping from two or more results in an ROPF file to an entry in a SAPOR file.
      *
      * @param additiveMapping The additive mapping from two or more results in an ROPF file to an entry in a SAPOR file.
@@ -47,5 +73,23 @@ public class SaporMapping {
      */
     public void setDirectMapping(final DirectSaporMapping directMapping) {
         this.directMapping = directMapping;
+    }
+
+    /**
+     * Sets the end date.
+     *
+     * @param endDate The end date.
+     */
+    public void setEndDate(final String endDate) {
+        this.endDate = endDate;
+    }
+
+    /**
+     * Sets the start date.
+     *
+     * @param startDate The start date.
+     */
+    public void setStartDate(final String startDate) {
+        this.startDate = startDate;
     }
 }

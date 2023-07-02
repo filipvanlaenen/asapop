@@ -136,10 +136,12 @@ public class SaporExporter extends Exporter {
             }
         }
         for (SaporMapping map : mapping) {
-            remainder = processDirectMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize,
-                    scale, remainder);
-            remainder = processAdditiveMapping(content, map.getAdditiveMapping(), actualValues, calculationSampleSize,
-                    scale, remainder);
+            if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
+                remainder = processDirectMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize,
+                        scale, remainder);
+                remainder = processAdditiveMapping(content, map.getAdditiveMapping(), actualValues,
+                        calculationSampleSize, scale, remainder);
+            }
         }
         content.append("Other=");
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
@@ -147,47 +149,9 @@ public class SaporExporter extends Exporter {
         content.append("\n");
     }
 
-    private int processAdditiveMapping(final StringBuilder content, AdditiveSaporMapping additiveSaporMapping,
-            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
-        if (additiveSaporMapping == null) {
-            return remainder;
-        }
-        double actualValue = 0D;
-        boolean termPresent = false;
-        for (String source : additiveSaporMapping.getSources()) {
-            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
-            if (actualValues.containsKey(electoralLists)) {
-                termPresent = true;
-                actualValue += actualValues.get(electoralLists);
-            }
-        }
-        if (termPresent) {
-            int sample = (int) Math.round(actualValue * calculationSampleSize * scale / ONE_HUNDRED);
-            content.append(additiveSaporMapping.getTarget());
-            content.append("=");
-            content.append(sample);
-            content.append("\n");
-            remainder -= sample;
-        }
-        return remainder;
-    }
-
-    private int processDirectMapping(final StringBuilder content, DirectSaporMapping directSaporMapping,
-            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
-        if (directSaporMapping == null) {
-            return remainder;
-        }
-        Set<ElectoralList> electoralLists = asElectoralListCombination(directSaporMapping.getSource());
-        if (actualValues.containsKey(electoralLists)) {
-            int sample =
-                    (int) Math.round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
-            content.append(directSaporMapping.getTarget());
-            content.append("=");
-            content.append(sample);
-            content.append("\n");
-            remainder -= sample;
-        }
-        return remainder;
+    private boolean dateIsInMappingValidityPeriod(final SaporMapping map, final LocalDate date) {
+        return (map.getStartDate() == null || !date.isBefore(LocalDate.parse(map.getStartDate())))
+                && (map.getEndDate() == null || !date.isAfter(LocalDate.parse(map.getEndDate())));
     }
 
     /**
@@ -321,5 +285,48 @@ public class SaporExporter extends Exporter {
                 exportPollingFirms(opinionPoll).replaceAll("[ !\"#%&'\\(\\)\\*\\+,\\./:<=>\\?@\\[\\\\\\]\\{\\}]", ""));
         sb.append(".poll");
         return Paths.get(sb.toString());
+    }
+
+    private int processAdditiveMapping(final StringBuilder content, AdditiveSaporMapping additiveSaporMapping,
+            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
+        if (additiveSaporMapping == null) {
+            return remainder;
+        }
+        double actualValue = 0D;
+        boolean termPresent = false;
+        for (String source : additiveSaporMapping.getSources()) {
+            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+            if (actualValues.containsKey(electoralLists)) {
+                termPresent = true;
+                actualValue += actualValues.get(electoralLists);
+            }
+        }
+        if (termPresent) {
+            int sample = (int) Math.round(actualValue * calculationSampleSize * scale / ONE_HUNDRED);
+            content.append(additiveSaporMapping.getTarget());
+            content.append("=");
+            content.append(sample);
+            content.append("\n");
+            remainder -= sample;
+        }
+        return remainder;
+    }
+
+    private int processDirectMapping(final StringBuilder content, DirectSaporMapping directSaporMapping,
+            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
+        if (directSaporMapping == null) {
+            return remainder;
+        }
+        Set<ElectoralList> electoralLists = asElectoralListCombination(directSaporMapping.getSource());
+        if (actualValues.containsKey(electoralLists)) {
+            int sample =
+                    (int) Math.round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
+            content.append(directSaporMapping.getTarget());
+            content.append("=");
+            content.append(sample);
+            content.append("\n");
+            remainder -= sample;
+        }
+        return remainder;
     }
 }
