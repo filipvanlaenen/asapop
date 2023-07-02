@@ -13,6 +13,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
@@ -135,24 +136,58 @@ public class SaporExporter extends Exporter {
             }
         }
         for (SaporMapping map : mapping) {
-            DirectSaporMapping directSaporMapping = map.getDirectMapping();
-            Set<String> ids = new HashSet<String>(
-                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_ID_SEPARATOR)));
-            Set<ElectoralList> electoralLists = ElectoralList.get(ids);
-            if (actualValues.containsKey(electoralLists)) {
-                int sample = (int) Math
-                        .round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
-                content.append(directSaporMapping.getTarget());
-                content.append("=");
-                content.append(sample);
-                content.append("\n");
-                remainder -= sample;
-            }
+            remainder = processDirectMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize,
+                    scale, remainder);
+            remainder = processAdditiveMapping(content, map.getAdditiveMapping(), actualValues, calculationSampleSize,
+                    scale, remainder);
         }
         content.append("Other=");
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         content.append(remainder < 0 ? 0 : remainder);
         content.append("\n");
+    }
+
+    private int processAdditiveMapping(final StringBuilder content, AdditiveSaporMapping additiveSaporMapping,
+            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
+        if (additiveSaporMapping == null) {
+            return remainder;
+        }
+        double actualValue = 0D;
+        boolean termPresent = false;
+        for (String source : additiveSaporMapping.getSources()) {
+            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+            if (actualValues.containsKey(electoralLists)) {
+                termPresent = true;
+                actualValue += actualValues.get(electoralLists);
+            }
+        }
+        if (termPresent) {
+            int sample = (int) Math.round(actualValue * calculationSampleSize * scale / ONE_HUNDRED);
+            content.append(additiveSaporMapping.getTarget());
+            content.append("=");
+            content.append(sample);
+            content.append("\n");
+            remainder -= sample;
+        }
+        return remainder;
+    }
+
+    private int processDirectMapping(final StringBuilder content, DirectSaporMapping directSaporMapping,
+            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
+        if (directSaporMapping == null) {
+            return remainder;
+        }
+        Set<ElectoralList> electoralLists = asElectoralListCombination(directSaporMapping.getSource());
+        if (actualValues.containsKey(electoralLists)) {
+            int sample =
+                    (int) Math.round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
+            content.append(directSaporMapping.getTarget());
+            content.append("=");
+            content.append(sample);
+            content.append("\n");
+            remainder -= sample;
+        }
+        return remainder;
     }
 
     /**
@@ -189,6 +224,14 @@ public class SaporExporter extends Exporter {
     }
 
     /**
+     * Converts a source string to an electoral list combination.
+     */
+    private Set<ElectoralList> asElectoralListCombination(final String source) {
+        Set<String> ids = new HashSet<String>(Arrays.asList(source.split(ELECTORAL_LIST_ID_SEPARATOR)));
+        return ElectoralList.get(ids);
+    }
+
+    /**
      * Calculate the set of electoral list combinations covered by the SAPOR mapping.
      *
      * @return A set with the electoral list combinations covered by the SAPOR mapping.
@@ -197,9 +240,15 @@ public class SaporExporter extends Exporter {
         Set<Set<ElectoralList>> result = new HashSet<Set<ElectoralList>>();
         for (SaporMapping saporMapping : mapping) {
             DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
-            Set<String> ids = new HashSet<String>(
-                    Arrays.asList(directSaporMapping.getSource().split(ELECTORAL_LIST_ID_SEPARATOR)));
-            result.add(ElectoralList.get(ids));
+            if (directSaporMapping != null) {
+                result.add(asElectoralListCombination(directSaporMapping.getSource()));
+            }
+            AdditiveSaporMapping additiveSaporMapping = saporMapping.getAdditiveMapping();
+            if (additiveSaporMapping != null) {
+                for (String source : additiveSaporMapping.getSources()) {
+                    result.add(asElectoralListCombination(source));
+                }
+            }
         }
         return result;
     }

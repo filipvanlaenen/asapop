@@ -488,26 +488,10 @@ mapping:
 - directMapping:
     source: "LU002"
     target: "Chrëschtlech-Sozial Vollekspartei"  
-- directMapping:
-    source: "LU003"
-    target: "déi gréng"  
-- directMapping:
-    source: "LU004"
-    target: "déi Lénk"  
-- directMapping:
-    source: "LU005"
-    target: "Demokratesch Partei"  
-- directMapping:
-    source: "LU006"
-    target: "Kommunistesch Partei Lëtzebuerg"  
-- directMapping:
-    source: "LU007"
-    target: "Lëtzebuerger Sozialistesch Aarbechterpartei"  
-- directMapping:
-    source: "LU008"
-    target: "Partei fir Integral Demokratie"  
-- directMapping:
-    source: "LU009"
-    target: "Piratepartei Lëtzebuerg"  
+- additiveMapping:
+    sources:
+    - "RO002"
+    - "RO007"
+    target: "Alianța 2020 USR-PLUS"
 lastElectionDate: "2018-10-14"
 ```
