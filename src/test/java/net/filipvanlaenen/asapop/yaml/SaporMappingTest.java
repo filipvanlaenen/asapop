@@ -9,6 +9,18 @@ import org.junit.jupiter.api.Test;
  */
 public class SaporMappingTest {
     /**
+     * Verifies that the getter method <code>getAdditiveMapping</code> is wired correctly to the setter method
+     * <code>setAdditiveMapping</code>.
+     */
+    @Test
+    public void getAdditiveMappingShouldBeWiredCorrectlyToSetAdditiveMapping() {
+        SaporMapping saporMapping = new SaporMapping();
+        AdditiveSaporMapping additiveMapping = new AdditiveSaporMapping();
+        saporMapping.setAdditiveMapping(additiveMapping);
+        assertEquals(additiveMapping, saporMapping.getAdditiveMapping());
+    }
+
+    /**
      * Verifies that the getter method <code>getDirectMapping</code> is wired correctly to the setter method
      * <code>setDirectMapping</code>.
      */
