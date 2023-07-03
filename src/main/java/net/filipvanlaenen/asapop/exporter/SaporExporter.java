@@ -137,21 +137,16 @@ public class SaporExporter extends Exporter {
         }
         for (SaporMapping map : mapping) {
             if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                remainder = processDirectMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize,
+                remainder = processMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize, scale,
+                        remainder);
+                remainder = processMapping(content, map.getAdditiveMapping(), actualValues, calculationSampleSize,
                         scale, remainder);
-                remainder = processAdditiveMapping(content, map.getAdditiveMapping(), actualValues,
-                        calculationSampleSize, scale, remainder);
             }
         }
         content.append("Other=");
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         content.append(remainder < 0 ? 0 : remainder);
         content.append("\n");
-    }
-
-    private boolean dateIsInMappingValidityPeriod(final SaporMapping map, final LocalDate date) {
-        return (map.getStartDate() == null || !date.isBefore(LocalDate.parse(map.getStartDate())))
-                && (map.getEndDate() == null || !date.isAfter(LocalDate.parse(map.getEndDate())));
     }
 
     /**
@@ -189,6 +184,9 @@ public class SaporExporter extends Exporter {
 
     /**
      * Converts a source string to an electoral list combination.
+     *
+     * @param source The source string to convert.
+     * @return A set of electoral lists converted from the source string.
      */
     private Set<ElectoralList> asElectoralListCombination(final String source) {
         Set<String> ids = new HashSet<String>(Arrays.asList(source.split(ELECTORAL_LIST_ID_SEPARATOR)));
@@ -215,6 +213,18 @@ public class SaporExporter extends Exporter {
             }
         }
         return result;
+    }
+
+    /**
+     * Verifies that the date is within the validity period of the SAPOR mapping.
+     *
+     * @param map  The SAPOR mapping.
+     * @param date The date.
+     * @return True if the date is within the validity period of the SAPOR mapping.
+     */
+    private boolean dateIsInMappingValidityPeriod(final SaporMapping map, final LocalDate date) {
+        return (map.getStartDate() == null || !date.isBefore(LocalDate.parse(map.getStartDate())))
+                && (map.getEndDate() == null || !date.isAfter(LocalDate.parse(map.getEndDate())));
     }
 
     /**
@@ -287,8 +297,21 @@ public class SaporExporter extends Exporter {
         return Paths.get(sb.toString());
     }
 
-    private int processAdditiveMapping(final StringBuilder content, AdditiveSaporMapping additiveSaporMapping,
-            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
+    /**
+     * Processes an additive mapping, writing the result to the content and returning an updated remainder.
+     *
+     * @param content               The StringBuilder to append the result of the mapping to.
+     * @param additiveSaporMapping  The additive SAPOR mapping.
+     * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
+     *                              for zero values.
+     * @param calculationSampleSize The sample size to be used for the calculations.
+     * @param scale                 The scale.
+     * @param remainder             The remainder so far.
+     * @return The updated remainder.
+     */
+    private int processMapping(final StringBuilder content, final AdditiveSaporMapping additiveSaporMapping,
+            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final int remainder) {
         if (additiveSaporMapping == null) {
             return remainder;
         }
@@ -307,13 +330,27 @@ public class SaporExporter extends Exporter {
             content.append("=");
             content.append(sample);
             content.append("\n");
-            remainder -= sample;
+            return remainder - sample;
+        } else {
+            return remainder;
         }
-        return remainder;
     }
 
-    private int processDirectMapping(final StringBuilder content, DirectSaporMapping directSaporMapping,
-            Map<Set<ElectoralList>, Double> actualValues, Integer calculationSampleSize, double scale, int remainder) {
+    /**
+     * Processes a direct mapping, writing the result to the content and returning an updated remainder.
+     *
+     * @param content               The StringBuilder to append the result of the mapping to.
+     * @param directSaporMapping    The direct SAPOR mapping.
+     * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
+     *                              for zero values.
+     * @param calculationSampleSize The sample size to be used for the calculations.
+     * @param scale                 The scale.
+     * @param remainder             The remainder so far.
+     * @return The updated remainder.
+     */
+    private int processMapping(final StringBuilder content, final DirectSaporMapping directSaporMapping,
+            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final int remainder) {
         if (directSaporMapping == null) {
             return remainder;
         }
@@ -325,8 +362,9 @@ public class SaporExporter extends Exporter {
             content.append("=");
             content.append(sample);
             content.append("\n");
-            remainder -= sample;
+            return remainder - sample;
+        } else {
+            return remainder;
         }
-        return remainder;
     }
 }
