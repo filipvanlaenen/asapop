@@ -1,7 +1,7 @@
 package net.filipvanlaenen.asapop.analysis;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Utility class running allocations based on highest averages.
@@ -14,31 +14,30 @@ final class HighestAveragesAllocation {
     }
 
     /**
-     * Allocates a number of seats for a list of votes.
+     * Allocates a number of seats for a list of number of votes.
      *
-     * @param numberOfSeats The number of seats to allocate.
-     * @param numberOfVotes The number of votes for each list to allocate seats for.
+     * @param numberOfSeats  The number of seats to allocate.
+     * @param numbersOfVotes A list with the number of votes.
      * @return A list with the number of seats for each of the number of votes.
      */
-    static List<Integer> allocate(final int numberOfSeats, final List<Long> numberOfVotes) {
-        int n = numberOfVotes.size();
-        List<Integer> result = new ArrayList<Integer>(n);
-        List<Double> quotients = new ArrayList<Double>(n);
-        for (int i = 0; i < n; i++) {
-            result.add(0);
-            quotients.add((double) numberOfVotes.get(i));
-        }
+    static List<Integer> allocate(final int numberOfSeats, final List<Long> numbersOfVotes) {
+        int numberOfNumbersOfVotes = numbersOfVotes.size();
+        List<Integer> result = numbersOfVotes.stream().map(x -> 0).collect(Collectors.toList());
+        List<Double> quotients = numbersOfVotes.stream().map(x -> (double) x).collect(Collectors.toList());
         for (int s = 0; s < numberOfSeats; s++) {
-            int highestAverageAt = 0;
-            double highestAverage = 0D;
-            for (int i = 0; i < n; i++) {
+            int indexOfLargestQuotient = 0;
+            double largestQuotient = 0D;
+            for (int currentIndex = 0; currentIndex < numberOfNumbersOfVotes; currentIndex++) {
+                double currentQuotient = quotients.get(currentIndex);
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-                highestAverageAt = quotients.get(i) > highestAverage ? i : highestAverageAt;
-                highestAverage = quotients.get(i);
+                if (currentQuotient > largestQuotient) {
+                    indexOfLargestQuotient = currentIndex;
+                    largestQuotient = currentQuotient;
+                }
             }
-            result.set(highestAverageAt, result.get(highestAverageAt) + 1);
-            quotients.set(highestAverageAt,
-                    (double) numberOfVotes.get(highestAverageAt) / (double) (result.get(highestAverageAt) + 1));
+            result.set(indexOfLargestQuotient, result.get(indexOfLargestQuotient) + 1);
+            quotients.set(indexOfLargestQuotient, (double) numbersOfVotes.get(indexOfLargestQuotient)
+                    / (double) (result.get(indexOfLargestQuotient) + 1));
         }
         return result;
     }
