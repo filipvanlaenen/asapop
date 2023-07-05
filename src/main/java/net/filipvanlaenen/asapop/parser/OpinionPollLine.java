@@ -37,7 +37,7 @@ final class OpinionPollLine extends Line {
     /**
      * The pattern to match a date or month.
      */
-    private static final Pattern DATE_OR_MONTH_PATTERN = Pattern.compile("^\\d{4}-\\d{2}(-\\d{2})?$");
+    private static final Pattern DATE_MONTH_OR_YEAR_PATTERN = Pattern.compile("^\\d{4}(-\\d{2}(-\\d{2})?)?$");
     /**
      * The pattern to match an opinion poll line.
      */
@@ -184,7 +184,7 @@ final class OpinionPollLine extends Line {
         case "FE":
             if (builder.hasFieldworkEnd()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
-            } else if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
+            } else if (textMatchesPattern(DATE_MONTH_OR_YEAR_PATTERN, value)) {
                 DateMonthOrYear fieldworkEnd = DateMonthOrYear.parse(value);
                 builder.setFieldworkEnd(fieldworkEnd);
             } else {
@@ -194,7 +194,7 @@ final class OpinionPollLine extends Line {
         case "FS":
             if (builder.hasFieldworkStart()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
-            } else if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
+            } else if (textMatchesPattern(DATE_MONTH_OR_YEAR_PATTERN, value)) {
                 DateMonthOrYear fieldworkStart = DateMonthOrYear.parse(value);
                 builder.setFieldworkStart(fieldworkStart);
             } else {
