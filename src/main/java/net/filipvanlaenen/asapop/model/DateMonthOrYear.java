@@ -80,13 +80,18 @@ public interface DateMonthOrYear {
      */
     record Year(java.time.Year year) implements DateMonthOrYear {
         /**
+         * The magic number twelve.
+         */
+        private static final int TWELVE = 12;
+
+        /**
          * Returns the end date, which is the last day of the year.
          *
          * @return The end date.
          */
         @Override
         public LocalDate getEnd() {
-            return year.atMonth(12).atEndOfMonth();
+            return year.atMonth(TWELVE).atEndOfMonth();
         }
 
         /**

@@ -19,6 +19,10 @@ public class DateMonthOrYearTest {
      */
     private static final String SEPTEMBER_2021_TEXT = "2021-09";
     /**
+     * 2021 as a text.
+     */
+    private static final String TEXT_FOR_2021 = "2021";
+    /**
      * 2 September 2021 as a date.
      */
     private static final LocalDate SECOND_OF_SEPTEMBER_2021_DATE = LocalDate.of(2021, 9, 2);
@@ -42,6 +46,15 @@ public class DateMonthOrYearTest {
     }
 
     /**
+     * Verifies that for a year, the start is the first day of the year.
+     */
+    @Test
+    public void getStartShouldReturnTheFirstDayOfTheYear() {
+        DateMonthOrYear date = DateMonthOrYear.parse(TEXT_FOR_2021);
+        assertEquals(LocalDate.parse("2021-01-01"), date.getStart());
+    }
+
+    /**
      * Verifies that for a date, the end is the date itself.
      */
     @Test
@@ -60,6 +73,15 @@ public class DateMonthOrYearTest {
     }
 
     /**
+     * Verifies that for a year, the end is the last day of the year.
+     */
+    @Test
+    public void getEndShouldReturnTheLastDayOfTheYear() {
+        DateMonthOrYear date = DateMonthOrYear.parse(TEXT_FOR_2021);
+        assertEquals(LocalDate.parse("2021-12-31"), date.getEnd());
+    }
+
+    /**
      * Verifies that a date is converted correctly to a string.
      */
     @Test
@@ -73,5 +95,13 @@ public class DateMonthOrYearTest {
     @Test
     public void shouldConvertAMonthToAStringCorrectly() {
         assertEquals(SEPTEMBER_2021_TEXT, DateMonthOrYear.parse(SEPTEMBER_2021_TEXT).toString());
+    }
+
+    /**
+     * Verifies that a year is converted correctly to a string.
+     */
+    @Test
+    public void shouldConvertAYearToAStringCorrectly() {
+        assertEquals(TEXT_FOR_2021, DateMonthOrYear.parse(TEXT_FOR_2021).toString());
     }
 }
