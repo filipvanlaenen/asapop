@@ -66,16 +66,32 @@ public class SaporExporterTest {
      * @return A SAPOR mapping with a direct mapping from the source to the target.
      */
     private static SaporMapping createDirectSaporMapping(final String source, final String target) {
+        return createDirectSaporMapping(source, target, null, null);
+    }
+
+    /**
+     * Creates a direct SAPOR mapping.
+     *
+     * @param source    The source for the direct SAPOR mapping.
+     * @param target    The target for the direct SAPOR mapping.
+     * @param startDate The start date for the direct SAPOR mapping.
+     * @param endDate   The end date for the direct SAPOR mapping.
+     * @return A SAPOR mapping with a direct mapping from the source to the target.
+     */
+    private static SaporMapping createDirectSaporMapping(final String source, final String target,
+            final String startDate, final String endDate) {
         SaporMapping saporMapping = new SaporMapping();
         DirectSaporMapping directSaporMapping = new DirectSaporMapping();
         directSaporMapping.setSource(source);
         directSaporMapping.setTarget(target);
         saporMapping.setDirectMapping(directSaporMapping);
+        saporMapping.setStartDate(startDate);
+        saporMapping.setEndDate(endDate);
         return saporMapping;
     }
 
     /**
-     * Returns the SAPOR body for an opinion poll with the lines sorted.
+     * Returns the SAPOR body for an opinion poll with the lines sorted using the default SAPOR exporter.
      *
      * @param poll                      The opinion poll.
      * @param lowestSampleSize          The lowest sample size.
@@ -84,8 +100,22 @@ public class SaporExporterTest {
      */
     private String getSortedSaporBody(final OpinionPoll poll, final int lowestSampleSize,
             final int lowestEffectiveSampleSize) {
+        return getSortedSaporBody(poll, lowestSampleSize, lowestEffectiveSampleSize, saporExporter);
+    }
+
+    /**
+     * Returns the SAPOR body for an opinion poll with the lines sorted.
+     *
+     * @param poll                      The opinion poll.
+     * @param lowestSampleSize          The lowest sample size.
+     * @param lowestEffectiveSampleSize The lowest effective sample size.
+     * @param exporter                  The SAPOR exporter.
+     * @return The SAPOR body with the lines sorted.
+     */
+    private String getSortedSaporBody(final OpinionPoll poll, final int lowestSampleSize,
+            final int lowestEffectiveSampleSize, final SaporExporter exporter) {
         StringBuilder sb = new StringBuilder();
-        saporExporter.appendSaporBody(sb, poll, lowestSampleSize, lowestEffectiveSampleSize);
+        exporter.appendSaporBody(sb, poll, lowestSampleSize, lowestEffectiveSampleSize);
         String[] lines = sb.toString().split("\\n");
         Arrays.sort(lines);
         return String.join("\n", lines);
@@ -102,6 +132,21 @@ public class SaporExporterTest {
                 createDirectSaporMapping("B", "Party B"), createDirectSaporMapping("C", "Party C")));
         saporConfiguration.setArea("AR");
         saporExporter = new SaporExporter(saporConfiguration);
+    }
+
+    /**
+     * Creates a SAPOR exporter with different direct mappings in time.
+     *
+     * @return A SAPOR exporter with different direct mappings in time.
+     */
+    private static SaporExporter createShiftingSaporExporter() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setLastElectionDate("2020-12-06");
+        saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A1", null, "2021-08-01"),
+                createDirectSaporMapping("A", "Party A2", "2021-08-02", null),
+                createDirectSaporMapping("B", "Party B")));
+        saporConfiguration.setArea("AR");
+        return new SaporExporter(saporConfiguration);
     }
 
     /**
@@ -517,6 +562,34 @@ public class SaporExporterTest {
         expected.append("Party A=825\n");
         expected.append("Party B=645");
         assertEquals(expected.toString(), getSortedSaporBody(poll, TWO_THOUSAND, THOUSAND));
+    }
+
+    /**
+     * Verifies that a mapping with a start date after the opinion poll's reference dated isn't used.
+     */
+    @Test
+    public void mappingWithStartDateAfterOpinionPollShouldNotBeUsed() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").setSampleSize("1000")
+                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH1).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=300\n");
+        expected.append("Party A1=400\n");
+        expected.append("Party B=300");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createShiftingSaporExporter()));
+    }
+
+    /**
+     * Verifies that a mapping with an end date before the opinion poll's reference dated isn't used.
+     */
+    @Test
+    public void mappingWithEndDateBeforeOpinionPollShouldNotBeUsed() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").setSampleSize("1000")
+                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=300\n");
+        expected.append("Party A2=400\n");
+        expected.append("Party B=300");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createShiftingSaporExporter()));
     }
 
     /**
