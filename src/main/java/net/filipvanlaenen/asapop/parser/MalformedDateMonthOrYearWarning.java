@@ -3,9 +3,9 @@ package net.filipvanlaenen.asapop.parser;
 import java.util.Objects;
 
 /**
- * A warning about a metadata field containing a malformed date or month.
+ * A warning about a metadata field containing a malformed date, month or year.
  */
-class MalformedDateOrMonthWarning extends ParserWarning {
+class MalformedDateMonthOrYearWarning extends ParserWarning {
     /**
      * The key.
      */
@@ -20,9 +20,9 @@ class MalformedDateOrMonthWarning extends ParserWarning {
      *
      * @param lineNumber The line number where the warning was detected.
      * @param key        The key of the metadata field.
-     * @param value      The value of the metadata field containing a malformed decimal number.
+     * @param value      The value of the metadata field containing a malformed date, month or year.
      */
-    MalformedDateOrMonthWarning(final int lineNumber, final String key, final String value) {
+    MalformedDateMonthOrYearWarning(final int lineNumber, final String key, final String value) {
         super(lineNumber);
         this.key = key;
         this.value = value;
@@ -30,8 +30,8 @@ class MalformedDateOrMonthWarning extends ParserWarning {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof MalformedDateOrMonthWarning) {
-            MalformedDateOrMonthWarning otherWarning = (MalformedDateOrMonthWarning) obj;
+        if (obj instanceof MalformedDateMonthOrYearWarning) {
+            MalformedDateMonthOrYearWarning otherWarning = (MalformedDateMonthOrYearWarning) obj;
             return otherWarning.getLineNumber() == getLineNumber() && otherWarning.key.equals(key)
                     && otherWarning.value.equals(value);
         } else {
@@ -46,7 +46,7 @@ class MalformedDateOrMonthWarning extends ParserWarning {
 
     @Override
     public String toString() {
-        return "Malformed date or month (“" + value + "”) detected for metadata field “" + key + "” in line "
+        return "Malformed date, month or year (“" + value + "”) detected for metadata field “" + key + "” in line "
                 + getLineNumber() + ".";
     }
 }

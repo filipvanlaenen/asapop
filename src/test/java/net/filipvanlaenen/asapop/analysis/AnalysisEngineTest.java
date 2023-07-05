@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -45,11 +45,11 @@ public class AnalysisEngineTest {
     /**
      * A date or month to run the tests on.
      */
-    private static final DateOrMonth FIELDWORK_END1 = DateOrMonth.parse("2022-03-29");
+    private static final DateMonthOrYear FIELDWORK_END1 = DateMonthOrYear.parse("2022-03-29");
     /**
      * A second date or month to run the tests on.
      */
-    private static final DateOrMonth FIELDWORK_END2 = DateOrMonth.parse("2022-03-28");
+    private static final DateMonthOrYear FIELDWORK_END2 = DateMonthOrYear.parse("2022-03-28");
 
     /**
      * Verifies that the getter method <code>getOpinionPolls</code> is wired correctly to the constructor.

@@ -11,7 +11,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -41,19 +41,19 @@ public class SaporExporterTest {
     /**
      * A date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
+    private static final DateMonthOrYear DATE_OR_MONTH1 = DateMonthOrYear.parse("2021-08-01");
     /**
      * Another date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
+    private static final DateMonthOrYear DATE_OR_MONTH2 = DateMonthOrYear.parse("2021-08-02");
     /**
      * A third date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH3 = DateOrMonth.parse("2021-09-01");
+    private static final DateMonthOrYear DATE_OR_MONTH3 = DateMonthOrYear.parse("2021-09-01");
     /**
      * A fourth date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH4 = DateOrMonth.parse("2021-09-02");
+    private static final DateMonthOrYear DATE_OR_MONTH4 = DateMonthOrYear.parse("2021-09-02");
     /**
      * The SAPOR exporter to run the tests on.
      */

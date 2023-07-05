@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
@@ -81,11 +81,11 @@ public class AnalysisBuilderTest {
     /**
      * The first fieldwork end date.
      */
-    private static final DateOrMonth FIELDWORK_END = DateOrMonth.parse("2022-01-19");
+    private static final DateMonthOrYear FIELDWORK_END = DateMonthOrYear.parse("2022-01-19");
     /**
      * The fieldwork start date.
      */
-    private static final DateOrMonth FIELDWORK_START = DateOrMonth.parse("2022-01-18");
+    private static final DateMonthOrYear FIELDWORK_START = DateMonthOrYear.parse("2022-01-18");
     /**
      * The name of the polling firm for an opinion poll about a parliamentary election.
      */

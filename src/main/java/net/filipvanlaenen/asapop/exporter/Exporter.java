@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -158,8 +158,8 @@ public abstract class Exporter {
      */
     static List<String> exportDates(final OpinionPoll opinionPoll) {
         List<String> elements = new ArrayList<String>();
-        DateOrMonth fieldworkStart = opinionPoll.getFieldworkStart();
-        DateOrMonth fieldworkEnd = opinionPoll.getFieldworkEnd();
+        DateMonthOrYear fieldworkStart = opinionPoll.getFieldworkStart();
+        DateMonthOrYear fieldworkEnd = opinionPoll.getFieldworkEnd();
         LocalDate publicationDate = opinionPoll.getPublicationDate();
         if (fieldworkStart == null) {
             if (fieldworkEnd == null) {

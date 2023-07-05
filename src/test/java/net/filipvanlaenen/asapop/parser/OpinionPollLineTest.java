@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -32,11 +32,11 @@ public final class OpinionPollLineTest {
     /**
      * A date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-07");
+    private static final DateMonthOrYear DATE_OR_MONTH1 = DateMonthOrYear.parse("2021-07");
     /**
      * Another date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-07-28");
+    private static final DateMonthOrYear DATE_OR_MONTH2 = DateMonthOrYear.parse("2021-07-28");
     /**
      * Simple opinion poll line.
      */

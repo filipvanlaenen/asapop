@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests on the class <code>DateOrMonth</code>.
+ * Unit tests on the class <code>DateMonthOrYear</code>.
  */
-public class DateOrMonthTest {
+public class DateMonthOrYearTest {
     /**
      * 2 September 2021 as a text.
      */
@@ -26,37 +26,37 @@ public class DateOrMonthTest {
     /**
      * Verifies that for a date, the start is the date itself.
      */
-     @Test
-     public void getStartShouldReturnTheDateItself() {
-         DateOrMonth date = DateOrMonth.parse(SECOND_OF_SEPTEMBER_2021_TEXT);
-         assertEquals(SECOND_OF_SEPTEMBER_2021_DATE, date.getStart());
+    @Test
+    public void getStartShouldReturnTheDateItself() {
+        DateMonthOrYear date = DateMonthOrYear.parse(SECOND_OF_SEPTEMBER_2021_TEXT);
+        assertEquals(SECOND_OF_SEPTEMBER_2021_DATE, date.getStart());
     }
 
     /**
      * Verifies that for a month, the start is the first day of the month.
      */
-     @Test
-     public void getStartShouldReturnTheFirstDayOfTheMonth() {
-         DateOrMonth date = DateOrMonth.parse(SEPTEMBER_2021_TEXT);
-         assertEquals(LocalDate.parse("2021-09-01"), date.getStart());
+    @Test
+    public void getStartShouldReturnTheFirstDayOfTheMonth() {
+        DateMonthOrYear date = DateMonthOrYear.parse(SEPTEMBER_2021_TEXT);
+        assertEquals(LocalDate.parse("2021-09-01"), date.getStart());
     }
 
     /**
      * Verifies that for a date, the end is the date itself.
      */
-     @Test
-     public void getEndShouldReturnTheDateItself() {
-         DateOrMonth date = DateOrMonth.parse(SECOND_OF_SEPTEMBER_2021_TEXT);
-         assertEquals(SECOND_OF_SEPTEMBER_2021_DATE, date.getEnd());
+    @Test
+    public void getEndShouldReturnTheDateItself() {
+        DateMonthOrYear date = DateMonthOrYear.parse(SECOND_OF_SEPTEMBER_2021_TEXT);
+        assertEquals(SECOND_OF_SEPTEMBER_2021_DATE, date.getEnd());
     }
 
     /**
      * Verifies that for a month, the end is the last day of the month.
      */
-     @Test
-     public void getEndShouldReturnTheLastDayOfTheMonth() {
-         DateOrMonth date = DateOrMonth.parse(SEPTEMBER_2021_TEXT);
-         assertEquals(LocalDate.parse("2021-09-30"), date.getEnd());
+    @Test
+    public void getEndShouldReturnTheLastDayOfTheMonth() {
+        DateMonthOrYear date = DateMonthOrYear.parse(SEPTEMBER_2021_TEXT);
+        assertEquals(LocalDate.parse("2021-09-30"), date.getEnd());
     }
 
     /**
@@ -64,7 +64,7 @@ public class DateOrMonthTest {
      */
     @Test
     public void shouldConvertADateToAStringCorrectly() {
-        assertEquals(SECOND_OF_SEPTEMBER_2021_TEXT, DateOrMonth.parse(SECOND_OF_SEPTEMBER_2021_TEXT).toString());
+        assertEquals(SECOND_OF_SEPTEMBER_2021_TEXT, DateMonthOrYear.parse(SECOND_OF_SEPTEMBER_2021_TEXT).toString());
     }
 
     /**
@@ -72,6 +72,6 @@ public class DateOrMonthTest {
      */
     @Test
     public void shouldConvertAMonthToAStringCorrectly() {
-        assertEquals(SEPTEMBER_2021_TEXT, DateOrMonth.parse(SEPTEMBER_2021_TEXT).toString());
+        assertEquals(SEPTEMBER_2021_TEXT, DateMonthOrYear.parse(SEPTEMBER_2021_TEXT).toString());
     }
 }

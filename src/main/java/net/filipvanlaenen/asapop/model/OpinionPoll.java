@@ -27,11 +27,11 @@ public final class OpinionPoll {
     /**
      * The fieldwork end.
      */
-    private DateOrMonth fieldworkEnd;
+    private DateMonthOrYear fieldworkEnd;
     /**
      * The fieldwork start.
      */
-    private DateOrMonth fieldworkStart;
+    private DateMonthOrYear fieldworkStart;
     /**
      * The main response scenario.
      */
@@ -85,11 +85,11 @@ public final class OpinionPoll {
         /**
          * The fieldwork end.
          */
-        private DateOrMonth fieldworkEnd;
+        private DateMonthOrYear fieldworkEnd;
         /**
          * The fieldwork start.
          */
-        private DateOrMonth fieldworkStart;
+        private DateMonthOrYear fieldworkStart;
         /**
          * The name of the polling firm.
          */
@@ -324,7 +324,7 @@ public final class OpinionPoll {
          * @param fieldworkEndDate The fieldwork end date.
          * @return This builder instance.
          */
-        public Builder setFieldworkEnd(final DateOrMonth fieldworkEndDate) {
+        public Builder setFieldworkEnd(final DateMonthOrYear fieldworkEndDate) {
             this.fieldworkEnd = fieldworkEndDate;
             return this;
         }
@@ -335,7 +335,7 @@ public final class OpinionPoll {
          * @param fieldworkStartDate The fieldwork start date.
          * @return This builder instance.
          */
-        public Builder setFieldworkStart(final DateOrMonth fieldworkStartDate) {
+        public Builder setFieldworkStart(final DateMonthOrYear fieldworkStartDate) {
             this.fieldworkStart = fieldworkStartDate;
             return this;
         }
@@ -540,7 +540,7 @@ public final class OpinionPoll {
      *
      * @return The fieldwork end date.
      */
-    public DateOrMonth getFieldworkEnd() {
+    public DateMonthOrYear getFieldworkEnd() {
         return fieldworkEnd;
     }
 
@@ -549,7 +549,7 @@ public final class OpinionPoll {
      *
      * @return The fieldwork start date.
      */
-    public DateOrMonth getFieldworkStart() {
+    public DateMonthOrYear getFieldworkStart() {
         return fieldworkStart;
     }
 

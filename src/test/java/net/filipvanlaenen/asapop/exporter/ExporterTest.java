@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -39,23 +39,23 @@ public class ExporterTest {
     /**
      * A date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH1 = DateOrMonth.parse("2021-08-01");
+    private static final DateMonthOrYear DATE_OR_MONTH1 = DateMonthOrYear.parse("2021-08-01");
     /**
      * Another date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH2 = DateOrMonth.parse("2021-08-02");
+    private static final DateMonthOrYear DATE_OR_MONTH2 = DateMonthOrYear.parse("2021-08-02");
     /**
      * A third date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH3 = DateOrMonth.parse("2021-08-03");
+    private static final DateMonthOrYear DATE_OR_MONTH3 = DateMonthOrYear.parse("2021-08-03");
     /**
      * A fourth date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH4 = DateOrMonth.parse("2021-08-05");
+    private static final DateMonthOrYear DATE_OR_MONTH4 = DateMonthOrYear.parse("2021-08-05");
     /**
      * A fifth date or month for the unit tests.
      */
-    private static final DateOrMonth DATE_OR_MONTH5 = DateOrMonth.parse("2021-08-06");
+    private static final DateMonthOrYear DATE_OR_MONTH5 = DateMonthOrYear.parse("2021-08-06");
     /**
      * A list with the electoral lists A and B.
      */

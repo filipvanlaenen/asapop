@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import net.filipvanlaenen.asapop.model.DateOrMonth;
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -185,20 +185,20 @@ final class OpinionPollLine extends Line {
             if (builder.hasFieldworkEnd()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
-                DateOrMonth fieldworkEnd = DateOrMonth.parse(value);
+                DateMonthOrYear fieldworkEnd = DateMonthOrYear.parse(value);
                 builder.setFieldworkEnd(fieldworkEnd);
             } else {
-                warnings.add(new MalformedDateOrMonthWarning(lineNumber, key, value));
+                warnings.add(new MalformedDateMonthOrYearWarning(lineNumber, key, value));
             }
             break;
         case "FS":
             if (builder.hasFieldworkStart()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else if (textMatchesPattern(DATE_OR_MONTH_PATTERN, value)) {
-                DateOrMonth fieldworkStart = DateOrMonth.parse(value);
+                DateMonthOrYear fieldworkStart = DateMonthOrYear.parse(value);
                 builder.setFieldworkStart(fieldworkStart);
             } else {
-                warnings.add(new MalformedDateOrMonthWarning(lineNumber, key, value));
+                warnings.add(new MalformedDateMonthOrYearWarning(lineNumber, key, value));
             }
             break;
         case "N":
