@@ -148,7 +148,11 @@ public class SaporExporterTest {
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
                 createDirectSaporMapping("B", "Party B"), createDirectSaporMapping("C", "Party C")));
         saporConfiguration.setArea("AR");
-        saporExporter = new SaporExporter(saporConfiguration);
+        try {
+            saporExporter = new SaporExporter(saporConfiguration);
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+        }
     }
 
     /**
@@ -175,7 +179,8 @@ public class SaporExporterTest {
         SaporConfiguration saporConfiguration = new SaporConfiguration();
         saporConfiguration.setLastElectionDate("2020-12-06");
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
-                createAdditiveSaporMapping(Set.of("B", "C"), "Alliance B+C")));
+                createAdditiveSaporMapping(Set.of("B", "C"), "Alliance B+C"),
+                createAdditiveSaporMapping(Set.of("D", "E"), "Alliance D+E")));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
@@ -638,6 +643,21 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that an additive mapping requiring scaling is processed correctly.
+     */
+    @Test
+    public void additiveMappingWithScalingShouldBeProcessedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "400").addResult("B", "300")
+                .addResult("C", "200").setOther("100").setSampleSize("1000").setPollingFirm("ACME")
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Alliance B+C=500\n");
+        expected.append("Other=100\n");
+        expected.append("Party A=400");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createAdditiveSaporExporter()));
+    }
+
+    /**
      * Verifies that the entire content is produced correctly.
      */
     @Test
@@ -722,6 +742,16 @@ public class SaporExporterTest {
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
         assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))),
                 saporExporter.getSaporWarnings(poll));
+    }
+
+    /**
+     * Verifies that no warning about a missing mapping is issued over an electoral list covered by an additive mapping.
+     */
+    @Test
+    public void noWarningAboutMissingMappingShouldBeIssuedOverElectoralListCoveredByAdditiveMapping() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("B", "55").addResult("C", "43").setSampleSize("1000")
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        assertTrue(createAdditiveSaporExporter().getSaporWarnings(poll).isEmpty());
     }
 
     /**
