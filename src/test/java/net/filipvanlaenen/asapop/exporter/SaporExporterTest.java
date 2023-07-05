@@ -17,6 +17,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
@@ -91,6 +92,22 @@ public class SaporExporterTest {
     }
 
     /**
+     * Creates an additive SAPOR mapping.
+     *
+     * @param sources The sources for the additive SAPOR mapping.
+     * @param target  The target for the additive SAPOR mapping.
+     * @return A SAPOR mapping with an additive mapping from the sources to the target.
+     */
+    private static SaporMapping createAdditiveSaporMapping(final Set<String> sources, final String target) {
+        SaporMapping saporMapping = new SaporMapping();
+        AdditiveSaporMapping additiveSaporMapping = new AdditiveSaporMapping();
+        additiveSaporMapping.setSources(sources);
+        additiveSaporMapping.setTarget(target);
+        saporMapping.setAdditiveMapping(additiveSaporMapping);
+        return saporMapping;
+    }
+
+    /**
      * Returns the SAPOR body for an opinion poll with the lines sorted using the default SAPOR exporter.
      *
      * @param poll                      The opinion poll.
@@ -145,6 +162,20 @@ public class SaporExporterTest {
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A1", null, "2021-08-01"),
                 createDirectSaporMapping("A", "Party A2", "2021-08-02", null),
                 createDirectSaporMapping("B", "Party B")));
+        saporConfiguration.setArea("AR");
+        return new SaporExporter(saporConfiguration);
+    }
+
+    /**
+     * Creates a SAPOR exporter with an additive mapping.
+     *
+     * @return A SAPOR exporter with an additive mapping.
+     */
+    private static SaporExporter createAdditiveSaporExporter() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setLastElectionDate("2020-12-06");
+        saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
+                createAdditiveSaporMapping(Set.of("B", "C"), "Alliance B+C")));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
@@ -590,6 +621,20 @@ public class SaporExporterTest {
         expected.append("Party A2=400\n");
         expected.append("Party B=300");
         assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createShiftingSaporExporter()));
+    }
+
+    /**
+     * Verifies that an additive mapping is processed correctly.
+     */
+    @Test
+    public void additiveMappingShouldBeProcessedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Alliance B+C=500\n");
+        expected.append("Other=100\n");
+        expected.append("Party A=400");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createAdditiveSaporExporter()));
     }
 
     /**
