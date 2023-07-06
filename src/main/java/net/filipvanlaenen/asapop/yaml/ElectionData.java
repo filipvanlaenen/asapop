@@ -6,9 +6,22 @@ package net.filipvanlaenen.asapop.yaml;
  */
 public class ElectionData {
     /**
+     * The electoral system.
+     */
+    private ElectoralSystem electoralSystem;
+    /**
      * The population size for the election.
      */
     private long populationSize;
+
+    /**
+     * Returns the electoral system.
+     *
+     * @return The electoral system.
+     */
+    public ElectoralSystem getElectoralSystem() {
+        return electoralSystem;
+    }
 
     /**
      * Returns the population size for the election.
@@ -17,6 +30,15 @@ public class ElectionData {
      */
     public long getPopulationSize() {
         return populationSize;
+    }
+
+    /**
+     * Sets the electoral system.
+     *
+     * @param electoralSystem The electoral system.
+     */
+    public void setElectoralSystem(final ElectoralSystem electoralSystem) {
+        this.electoralSystem = electoralSystem;
     }
 
     /**
