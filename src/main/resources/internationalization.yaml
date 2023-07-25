@@ -216,6 +216,14 @@ terms:
       fr: "produit des estimations, pas des sondages d’opinion"
       nl: "produceert schattingen, geen opiniepeilingen"
       no: "produserer estimater, ikke meningsmålinger"
+  - key: "polling-firm-not-included-reason-funded-by-an-authoritarian-government"
+    translations:
+      de: "(teilweise) finanziert von einer autoritären Regierung"
+      en: "(partially) funded by an authoritarian government"
+      eo: "(parte) financita de aŭtoritata registaro"
+      fr: "(partiellement) financé par un gouvernement autoritaire"
+      nl: "(gedeeltelijk) gefinancierd door een autoritaire regering"
+      no: "(delvis) finansiert av en autoritær regjering"
   - key: "polling-firm-not-included-reason-fraud-allegations"
     translations:
       de: "Betrugsvorwürfe"
