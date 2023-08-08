@@ -2,7 +2,9 @@ package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +22,26 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheFirstSeatToTheLargestNumberOfVotes() {
-        assertEquals(List.of(1, 0), HighestAveragesAllocation.allocate(1, List.of(1L, 0L)));
+        assertEquals(Map.of(1L, List.of(0), 2L, List.of(1)), HighestAveragesAllocation.allocate(1, List.of(2L, 1L)));
+    }
+
+    /**
+     * Verifies that if there are two equal largest numbers of votes, both get the two first seats.
+     */
+    @Test
+    public void shouldAllocateTheFirstTwoSeatsToTheTwoEqualLargestNumberOfVotes() {
+        assertEquals(Map.of(1L, List.of(0), 2L, List.of(1, 1)),
+                HighestAveragesAllocation.allocate(2, List.of(2L, 2L, 1L)));
+    }
+
+    /**
+     * Verifies that if there are two equal largest numbers of votes, one of them gets the first seat.
+     */
+    @Test
+    public void shouldAllocateTheFirstSeatToOneOfTheTwoEqualLargestNumberOfVotes() {
+        List<Integer> actual = HighestAveragesAllocation.allocate(1, List.of(2L, 2L)).get(2L);
+        Collections.sort(actual);
+        assertEquals(List.of(0, 1), actual);
     }
 
     /**
@@ -29,7 +50,8 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheSecondSeatToTheLargestNumberOfVotesIfMoreThanDoubleOfTheNext() {
-        assertEquals(List.of(2, 0), HighestAveragesAllocation.allocate(2, List.of(THREE, 1L)));
+        assertEquals(Map.of(1L, List.of(0), THREE, List.of(2)),
+                HighestAveragesAllocation.allocate(2, List.of(THREE, 1L)));
     }
 
     /**
@@ -38,6 +60,15 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheSecondSeatToTheSecondLargestNumberOfVotesIfMoreThanHalfOfTheLargest() {
-        assertEquals(List.of(1, 1), HighestAveragesAllocation.allocate(2, List.of(THREE, 2L)));
+        assertEquals(Map.of(2L, List.of(1), THREE, List.of(1)),
+                HighestAveragesAllocation.allocate(2, List.of(THREE, 2L)));
+    }
+
+    /**
+     * Verifies that in case of a toss-up, the second seat is also allocated to smallest number of seats.
+     */
+    @Test
+    public void shouldAllocateTheSecondSeatToTheSmallestNumberOfVotesInCaseOfATossUp() {
+        assertEquals(Map.of(1L, List.of(1), 2L, List.of(1)), HighestAveragesAllocation.allocate(2, List.of(1L, 2L)));
     }
 }
