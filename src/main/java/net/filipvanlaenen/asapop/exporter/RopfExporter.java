@@ -112,7 +112,7 @@ public final class RopfExporter extends Exporter {
             electoralLists.addAll(getElectoralLists(opinionPoll));
         }
         Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
-        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
+        for (OpinionPoll opinionPoll : sortOpinionPolls(richOpinionPollsFile.getOpinionPolls().getOpinionPolls())) {
             sb.append(export(opinionPoll, idsToKeysMap));
             sb.append("\n");
         }

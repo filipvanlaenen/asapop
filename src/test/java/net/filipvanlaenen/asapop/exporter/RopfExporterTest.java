@@ -44,4 +44,22 @@ public class RopfExporterTest {
         expected.append("E:  AA005 •A: E\n");
         assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
     }
+
+    /**
+     * Verifies that opinion polls are exported in chronological order.
+     */
+    @Test
+    public void shouldExportOpinionPollsInChronologicalOrder() {
+        RichOpinionPollsFile opinionPollsFile =
+                RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-07-28 A:56 B:44",
+                        "•PF: ACME •PD: 2021-07-29 A:57 B:43", "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl");
+        StringBuffer expected = new StringBuffer();
+        expected.append("•PF: ACME •PD: 2021-07-29 AP: 57 BL: 43\n");
+        expected.append("•PF: ACME •PD: 2021-07-28 AP: 56 BL: 44\n");
+        expected.append("•PF: ACME •PD: 2021-07-27 AP: 55 BL: 45\n");
+        expected.append("\n");
+        expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
+        expected.append("BL: AA002 •A: Bl\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+    }
 }
