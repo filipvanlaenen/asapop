@@ -100,6 +100,50 @@ public final class RopfExporter extends Exporter {
         return result;
     }
 
+    private static Map<String, Integer> calculateMetadataFieldWidths(final Set<OpinionPoll> opinionPolls) {
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            updateMetadataFieldWidth(result, "A", opinionPoll.getArea());
+            updateMetadataFieldWidth(result, "EX", opinionPoll.getExcluded());
+            updateMetadataFieldWidth(result, "FE", opinionPoll.getFieldworkEnd());
+            updateMetadataFieldWidth(result, "FS", opinionPoll.getFieldworkStart());
+            updateMetadataFieldWidth(result, "N", opinionPoll.getNoResponses());
+            updateMetadataFieldWidth(result, "O", opinionPoll.getOther());
+            updateMetadataFieldWidth(result, "PD", opinionPoll.getPublicationDate());
+            updateMetadataFieldWidth(result, "PF", opinionPoll.getPollingFirm());
+            updateMetadataFieldWidth(result, "PFP", opinionPoll.getPollingFirmPartner());
+            updateMetadataFieldWidth(result, "SC", opinionPoll.getScope());
+            updateMetadataFieldWidth(result, "SS", opinionPoll.getSampleSize());
+        }
+        return result;
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
+            Object value) {
+        if (value != null) {
+            updateMetadataFieldWidth(metadataFieldWidths, key, value.toString());
+        }
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
+            ResultValue value) {
+        if (value != null) {
+            updateMetadataFieldWidth(metadataFieldWidths, key, value.getText());
+        }
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
+            String value) {
+        if (value != null && value.length() > 0) {
+            int width = value.length();
+            if (metadataFieldWidths.containsKey(key)) {
+                metadataFieldWidths.put(key, Math.max(width, metadataFieldWidths.get(key)));
+            } else {
+                metadataFieldWidths.put(key, width);
+            }
+        }
+    }
+
     /**
      * Exports the rich opinion polls file.
      *
@@ -113,8 +157,10 @@ public final class RopfExporter extends Exporter {
             electoralLists.addAll(getElectoralLists(opinionPoll));
         }
         Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
-        for (OpinionPoll opinionPoll : sortOpinionPolls(richOpinionPollsFile.getOpinionPolls().getOpinionPolls())) {
-            sb.append(export(opinionPoll, idsToKeysMap));
+        Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPolls().getOpinionPolls();
+        Map<String, Integer> metadataFieldWidths = calculateMetadataFieldWidths(opinionPolls);
+        for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls)) {
+            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths));
             sb.append("\n");
         }
         sb.append("\n");
@@ -170,21 +216,22 @@ public final class RopfExporter extends Exporter {
      * @param idsToKeysMap A map mapping the electoral list IDs to keys.
      * @return A string representation of the opinion poll.
      */
-    private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap) {
+    private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap,
+            final Map<String, Integer> metadataFieldWidths) {
         StringBuffer sb = new StringBuffer();
-        sb.append(export("PF", opinionPoll.getPollingFirm()));
-        sb.append(export("PFP", opinionPoll.getPollingFirmPartner()));
+        sb.append(export("PF", metadataFieldWidths, opinionPoll.getPollingFirm()));
+        sb.append(export("PFP", metadataFieldWidths, opinionPoll.getPollingFirmPartner()));
         for (String commissioner : opinionPoll.getCommissioners()) {
             sb.append(" •C: ");
             sb.append(commissioner);
         }
-        sb.append(export("FS", opinionPoll.getFieldworkStart()));
-        sb.append(export("FE", opinionPoll.getFieldworkEnd()));
-        sb.append(export("PD", opinionPoll.getPublicationDate()));
-        sb.append(export("SC", opinionPoll.getScope()));
-        sb.append(export("A", opinionPoll.getArea()));
-        sb.append(export("SS", opinionPoll.getSampleSize()));
-        sb.append(export("EX", opinionPoll.getExcluded()));
+        sb.append(export("FS", metadataFieldWidths, opinionPoll.getFieldworkStart()));
+        sb.append(export("FE", metadataFieldWidths, opinionPoll.getFieldworkEnd()));
+        sb.append(export("PD", metadataFieldWidths, opinionPoll.getPublicationDate()));
+        sb.append(export("SC", metadataFieldWidths, opinionPoll.getScope()));
+        sb.append(export("A", metadataFieldWidths, opinionPoll.getArea()));
+        sb.append(export("SS", metadataFieldWidths, opinionPoll.getSampleSize()));
+        sb.append(export("EX", metadataFieldWidths, opinionPoll.getExcluded()));
         List<Set<ElectoralList>> electoralListCombinations =
                 new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
         Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {
@@ -204,8 +251,8 @@ public final class RopfExporter extends Exporter {
             sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination))
                     .getText());
         }
-        sb.append(export("O", opinionPoll.getOther()));
-        sb.append(export("N", opinionPoll.getNoResponses()));
+        sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
+        sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
         return sb.toString().trim();
     }
 
@@ -216,17 +263,28 @@ public final class RopfExporter extends Exporter {
      * @param value The value.
      * @return A key with a value exported to a string, or an empty string if the value is null.
      */
-    private static String export(final String key, final Object value) {
+    private static String export(final String key, final Map<String, Integer> metadataFieldWidths, final Object value) {
         if (value != null) {
-            return " •" + key + ": " + value;
+            return export(key, metadataFieldWidths, value.toString());
         } else {
-            return "";
+            return export(key, metadataFieldWidths, "");
         }
     }
 
-    private static String export(final String key, final ResultValue resultValue) {
+    private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
+            final ResultValue resultValue) {
         if (resultValue != null) {
-            return export(key, resultValue.getText());
+            return export(key, metadataFieldWidths, resultValue.getText());
+        } else {
+            return export(key, metadataFieldWidths, "");
+        }
+    }
+
+    private static String export(final String key, final Map<String, Integer> metadataFieldWidths, final String value) {
+        if (value != null && value.length() > 0) {
+            return " •" + key + ": " + pad(value, metadataFieldWidths.get(key));
+        } else if (metadataFieldWidths.containsKey(key)) {
+            return pad("", key.length() + metadataFieldWidths.get(key) + FOUR);
         } else {
             return "";
         }
