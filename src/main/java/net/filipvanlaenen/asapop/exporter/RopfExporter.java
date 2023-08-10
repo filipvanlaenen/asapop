@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
 /**
@@ -181,6 +182,7 @@ public final class RopfExporter extends Exporter {
         sb.append(export("FE", opinionPoll.getFieldworkEnd()));
         sb.append(export("PD", opinionPoll.getPublicationDate()));
         sb.append(export("SC", opinionPoll.getScope()));
+        sb.append(export("A", opinionPoll.getArea()));
         sb.append(export("SS", opinionPoll.getSampleSize()));
         sb.append(export("EX", opinionPoll.getExcluded()));
         List<Set<ElectoralList>> electoralListCombinations =
@@ -217,6 +219,14 @@ public final class RopfExporter extends Exporter {
     private static String export(final String key, final Object value) {
         if (value != null) {
             return " •" + key + ": " + value;
+        } else {
+            return "";
+        }
+    }
+
+    private static String export(final String key, final ResultValue resultValue) {
+        if (resultValue != null) {
+            return export(key, resultValue.getText());
         } else {
             return "";
         }

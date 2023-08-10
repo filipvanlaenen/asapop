@@ -14,6 +14,11 @@ public interface SampleSize {
         public int getMinimalValue() {
             return value;
         }
+
+        @Override
+        public String toString() {
+            return Integer.toString(value);
+        }
     }
 
     /**
