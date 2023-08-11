@@ -104,6 +104,7 @@ public final class RopfExporter extends Exporter {
         Map<String, Integer> result = new HashMap<String, Integer>();
         for (OpinionPoll opinionPoll : opinionPolls) {
             updateMetadataFieldWidth(result, "A", opinionPoll.getArea());
+            updateMetadataFieldWidth(result, "C", opinionPoll.getCommissioners());
             updateMetadataFieldWidth(result, "EX", opinionPoll.getExcluded());
             updateMetadataFieldWidth(result, "FE", opinionPoll.getFieldworkEnd());
             updateMetadataFieldWidth(result, "FS", opinionPoll.getFieldworkStart());
@@ -141,6 +142,13 @@ public final class RopfExporter extends Exporter {
             } else {
                 metadataFieldWidths.put(key, width);
             }
+        }
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
+            Set<String> values) {
+        if (values != null && !values.isEmpty()) {
+            updateMetadataFieldWidth(metadataFieldWidths, key, String.join(" •" + key + ": ", values));
         }
     }
 
@@ -221,10 +229,7 @@ public final class RopfExporter extends Exporter {
         StringBuffer sb = new StringBuffer();
         sb.append(export("PF", metadataFieldWidths, opinionPoll.getPollingFirm()));
         sb.append(export("PFP", metadataFieldWidths, opinionPoll.getPollingFirmPartner()));
-        for (String commissioner : opinionPoll.getCommissioners()) {
-            sb.append(" •C: ");
-            sb.append(commissioner);
-        }
+        sb.append(export("C", metadataFieldWidths, opinionPoll.getCommissioners()));
         sb.append(export("FS", metadataFieldWidths, opinionPoll.getFieldworkStart()));
         sb.append(export("FE", metadataFieldWidths, opinionPoll.getFieldworkEnd()));
         sb.append(export("PD", metadataFieldWidths, opinionPoll.getPublicationDate()));
@@ -287,6 +292,17 @@ public final class RopfExporter extends Exporter {
             return pad("", key.length() + metadataFieldWidths.get(key) + FOUR);
         } else {
             return "";
+        }
+    }
+
+    private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
+            final Set<String> values) {
+        if (values != null && !values.isEmpty()) {
+            List<String> sortedValues = new ArrayList<String>(values);
+            Collections.sort(sortedValues);
+            return export(key, metadataFieldWidths, String.join(" •" + key + ": ", sortedValues));
+        } else {
+            return export(key, metadataFieldWidths, "");
         }
     }
 

@@ -65,10 +65,10 @@ public class RopfExporterTest {
     }
 
     /**
-     * Verifies that the metadata fields are formatted correctly.
+     * Verifies that the metadata field widths are correct.
      */
     @Test
-    public void shouldFormatMetadataFieldsCorrectly() {
+    public void shouldPadMetadataFieldsCorrectly() {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
                 "•PF: ACME •FS: 2021-07-26 •FE: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-07-28 A:56 B:44",
                 "•PF: Opinion Research •PD: 2021-07-29 A:57 B:43", "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl");
@@ -76,6 +76,25 @@ public class RopfExporterTest {
         expected.append("•PF: Opinion Research                                 •PD: 2021-07-29 AP: 57 BL: 43\n");
         expected.append("•PF: ACME                                             •PD: 2021-07-28 AP: 56 BL: 44\n");
         expected.append("•PF: ACME             •FS: 2021-07-26 •FE: 2021-07-27                 AP: 55 BL: 45\n");
+        expected.append("\n");
+        expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
+        expected.append("BL: AA002 •A: Bl\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+    }
+
+    /**
+     * Verifies that the commissioners field width is correct.
+     */
+    @Test
+    public void shouldPadCommissionnersFieldCorrectly() {
+        RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
+                "•PF: ACME •C: The Times •PD: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-07-28 A:56 B:44",
+                "•PF: Opinion Research •C: The Times •C: The Post •PD: 2021-07-29 A:57 B:43",
+                "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl");
+        StringBuffer expected = new StringBuffer();
+        expected.append("•PF: Opinion Research •C: The Post •C: The Times •PD: 2021-07-29 AP: 57 BL: 43\n");
+        expected.append("•PF: ACME                                        •PD: 2021-07-28 AP: 56 BL: 44\n");
+        expected.append("•PF: ACME             •C: The Times              •PD: 2021-07-27 AP: 55 BL: 45\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
