@@ -121,6 +121,7 @@ public final class RopfExporter extends Exporter {
             updateMetadataFieldWidth(result, "PFP", opinionPoll.getPollingFirmPartner());
             updateMetadataFieldWidth(result, "SC", opinionPoll.getScope());
             updateMetadataFieldWidth(result, "SS", opinionPoll.getSampleSize());
+            // TODO: VS
         }
         return result;
     }
@@ -161,8 +162,9 @@ public final class RopfExporter extends Exporter {
     /**
      * Exports an opinion poll.
      *
-     * @param opinionPoll  The opinion poll to export.
-     * @param idsToKeysMap A map mapping the electoral list IDs to keys.
+     * @param opinionPoll         The opinion poll to export.
+     * @param idsToKeysMap        A map mapping the electoral list IDs to keys.
+     * @param metadataFieldWidths The map with the metadata field widths.
      * @return A string representation of the opinion poll.
      */
     private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap,
@@ -199,6 +201,7 @@ public final class RopfExporter extends Exporter {
         }
         sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
         sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
+        // TODO: VS
         return sb.toString().substring(1).stripTrailing();
     }
 
@@ -237,8 +240,9 @@ public final class RopfExporter extends Exporter {
     /**
      * Exports a key with an object as a value, or a padded empty string if the object is null.
      *
-     * @param key    The key.
-     * @param object The object.
+     * @param key                 The key.
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param object              The object.
      * @return A key with an object as a value exported to a string, or a padded empty string if the object is null.
      */
     private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
@@ -253,8 +257,9 @@ public final class RopfExporter extends Exporter {
     /**
      * Exports a key with a result value, or a padded empty string if the value is null.
      *
-     * @param key         The key.
-     * @param resultValue The result value.
+     * @param key                 The key.
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param resultValue         The result value.
      * @return A key with a result value exported to a string, or a padded empty string if the value is null.
      */
     private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
@@ -270,8 +275,9 @@ public final class RopfExporter extends Exporter {
      * Exports a key with a set of strings as its value, or a padded empty string if the set is null or empty. The
      * strings will be sorted before they are exported.
      *
-     * @param key   The key.
-     * @param texts The set of strings.
+     * @param key                 The key.
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param texts               The set of strings.
      * @return A key with a set of strings exported to a string, or a padded empty string if the set is null or empty.
      */
     private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
@@ -289,8 +295,9 @@ public final class RopfExporter extends Exporter {
      * Exports a key with a text, or a padded empty string if the text is null or empty but the key has a field width
      * registered, and an empty string otherwise.
      *
-     * @param key  The key.
-     * @param text The text.
+     * @param key                 The key.
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param text                The text.
      * @return A key with a text, or a padded empty string if the text is null or empty but the key has a field width,
      *         and an empty string otherwise.
      */
@@ -329,6 +336,14 @@ public final class RopfExporter extends Exporter {
         return String.format("%1$-" + width + "s", text);
     }
 
+    /**
+     * Updates the map with the metadata field widths with the width of an object value for a key, unless the object is
+     * null.
+     *
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param key                 The key.
+     * @param object              The object value.
+     */
     private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
             final Object object) {
         if (object != null) {
@@ -336,6 +351,14 @@ public final class RopfExporter extends Exporter {
         }
     }
 
+    /**
+     * Updates the map with the metadata field widths with the width of a result value for a key, unless the result
+     * value is null.
+     *
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param key                 The key.
+     * @param resultValue         The result value.
+     */
     private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
             final ResultValue resultValue) {
         if (resultValue != null) {
@@ -343,6 +366,14 @@ public final class RopfExporter extends Exporter {
         }
     }
 
+    /**
+     * Updates the map with the metadata field widths with the width of a set of texts for a key, unless the set is null
+     * or empty.
+     *
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param key                 The key.
+     * @param texts               The set of texts.
+     */
     private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
             final Set<String> texts) {
         if (texts != null && !texts.isEmpty()) {
@@ -350,6 +381,14 @@ public final class RopfExporter extends Exporter {
         }
     }
 
+    /**
+     * Updates the map with the metadata field widths with the width of a text for a key, unless the text is null or
+     * empty.
+     *
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @param key                 The key.
+     * @param text                The text.
+     */
     private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
             final String text) {
         if (text != null && text.length() > 0) {
