@@ -100,6 +100,12 @@ public final class RopfExporter extends Exporter {
         return result;
     }
 
+    /**
+     * Calculates the widths of all the metadata fields over a set of opinion polls.
+     *
+     * @param opinionPolls The opinion polls.
+     * @return A map with the widths of all the metadata fields.
+     */
     private static Map<String, Integer> calculateMetadataFieldWidths(final Set<OpinionPoll> opinionPolls) {
         Map<String, Integer> result = new HashMap<String, Integer>();
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -117,71 +123,6 @@ public final class RopfExporter extends Exporter {
             updateMetadataFieldWidth(result, "SS", opinionPoll.getSampleSize());
         }
         return result;
-    }
-
-    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
-            Object value) {
-        if (value != null) {
-            updateMetadataFieldWidth(metadataFieldWidths, key, value.toString());
-        }
-    }
-
-    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
-            ResultValue value) {
-        if (value != null) {
-            updateMetadataFieldWidth(metadataFieldWidths, key, value.getText());
-        }
-    }
-
-    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
-            String value) {
-        if (value != null && value.length() > 0) {
-            int width = value.length();
-            if (metadataFieldWidths.containsKey(key)) {
-                metadataFieldWidths.put(key, Math.max(width, metadataFieldWidths.get(key)));
-            } else {
-                metadataFieldWidths.put(key, width);
-            }
-        }
-    }
-
-    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, String key,
-            Set<String> values) {
-        if (values != null && !values.isEmpty()) {
-            updateMetadataFieldWidth(metadataFieldWidths, key, String.join(" •" + key + ": ", values));
-        }
-    }
-
-    /**
-     * Exports the rich opinion polls file.
-     *
-     * @param richOpinionPollsFile The rich opinion polls file to export.
-     * @return A string representing of the rich opinion polls file.
-     */
-    public static String export(final RichOpinionPollsFile richOpinionPollsFile) {
-        StringBuffer sb = new StringBuffer();
-        Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
-        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
-            electoralLists.addAll(getElectoralLists(opinionPoll));
-        }
-        Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
-        Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPolls().getOpinionPolls();
-        Map<String, Integer> metadataFieldWidths = calculateMetadataFieldWidths(opinionPolls);
-        for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls)) {
-            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths));
-            sb.append("\n");
-        }
-        sb.append("\n");
-        Map<String, String> keysToIdsMap =
-                idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-        List<String> electoralListKeys = new ArrayList<String>(keysToIdsMap.keySet());
-        Collections.sort(electoralListKeys);
-        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, electoralListKeys);
-        for (String key : electoralListKeys) {
-            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
-            sb.append("\n");
-        }
-        return sb.toString();
     }
 
     /**
@@ -262,20 +203,60 @@ public final class RopfExporter extends Exporter {
     }
 
     /**
-     * Exports a key with a value, or an empty string if the value is null.
+     * Exports the rich opinion polls file.
      *
-     * @param key   The key.
-     * @param value The value.
-     * @return A key with a value exported to a string, or an empty string if the value is null.
+     * @param richOpinionPollsFile The rich opinion polls file to export.
+     * @return A string representing of the rich opinion polls file.
      */
-    private static String export(final String key, final Map<String, Integer> metadataFieldWidths, final Object value) {
-        if (value != null) {
-            return export(key, metadataFieldWidths, value.toString());
+    public static String export(final RichOpinionPollsFile richOpinionPollsFile) {
+        StringBuffer sb = new StringBuffer();
+        Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
+        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
+            electoralLists.addAll(getElectoralLists(opinionPoll));
+        }
+        Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
+        Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPolls().getOpinionPolls();
+        Map<String, Integer> metadataFieldWidths = calculateMetadataFieldWidths(opinionPolls);
+        for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls)) {
+            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths));
+            sb.append("\n");
+        }
+        sb.append("\n");
+        Map<String, String> keysToIdsMap =
+                idsToKeysMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        List<String> electoralListKeys = new ArrayList<String>(keysToIdsMap.keySet());
+        Collections.sort(electoralListKeys);
+        ElectoralListWidths electoralListWidths = calculateElectoralListWidths(electoralLists, electoralListKeys);
+        for (String key : electoralListKeys) {
+            sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Exports a key with an object as a value, or a padded empty string if the object is null.
+     *
+     * @param key    The key.
+     * @param object The object.
+     * @return A key with an object as a value exported to a string, or a padded empty string if the object is null.
+     */
+    private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
+            final Object object) {
+        if (object != null) {
+            return export(key, metadataFieldWidths, object.toString());
         } else {
             return export(key, metadataFieldWidths, "");
         }
     }
 
+    /**
+     * Exports a key with a result value, or a padded empty string if the value is null.
+     *
+     * @param key         The key.
+     * @param resultValue The result value.
+     * @return A key with a result value exported to a string, or a padded empty string if the value is null.
+     */
     private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
             final ResultValue resultValue) {
         if (resultValue != null) {
@@ -285,24 +266,41 @@ public final class RopfExporter extends Exporter {
         }
     }
 
-    private static String export(final String key, final Map<String, Integer> metadataFieldWidths, final String value) {
-        if (value != null && value.length() > 0) {
-            return " •" + key + ": " + pad(value, metadataFieldWidths.get(key));
-        } else if (metadataFieldWidths.containsKey(key)) {
-            return pad("", key.length() + metadataFieldWidths.get(key) + FOUR);
-        } else {
-            return "";
-        }
-    }
-
+    /**
+     * Exports a key with a set of strings as its value, or a padded empty string if the set is null or empty. The
+     * strings will be sorted before they are exported.
+     *
+     * @param key   The key.
+     * @param texts The set of strings.
+     * @return A key with a set of strings exported to a string, or a padded empty string if the set is null or empty.
+     */
     private static String export(final String key, final Map<String, Integer> metadataFieldWidths,
-            final Set<String> values) {
-        if (values != null && !values.isEmpty()) {
-            List<String> sortedValues = new ArrayList<String>(values);
+            final Set<String> texts) {
+        if (texts != null && !texts.isEmpty()) {
+            List<String> sortedValues = new ArrayList<String>(texts);
             Collections.sort(sortedValues);
             return export(key, metadataFieldWidths, String.join(" •" + key + ": ", sortedValues));
         } else {
             return export(key, metadataFieldWidths, "");
+        }
+    }
+
+    /**
+     * Exports a key with a text, or a padded empty string if the text is null or empty but the key has a field width
+     * registered, and an empty string otherwise.
+     *
+     * @param key  The key.
+     * @param text The text.
+     * @return A key with a text, or a padded empty string if the text is null or empty but the key has a field width,
+     *         and an empty string otherwise.
+     */
+    private static String export(final String key, final Map<String, Integer> metadataFieldWidths, final String text) {
+        if (text != null && text.length() > 0) {
+            return " •" + key + ": " + pad(text, metadataFieldWidths.get(key));
+        } else if (metadataFieldWidths.containsKey(key)) {
+            return pad("", key.length() + metadataFieldWidths.get(key) + FOUR);
+        } else {
+            return "";
         }
     }
 
@@ -329,5 +327,38 @@ public final class RopfExporter extends Exporter {
      */
     private static String pad(final String text, final int width) {
         return String.format("%1$-" + width + "s", text);
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
+            final Object object) {
+        if (object != null) {
+            updateMetadataFieldWidth(metadataFieldWidths, key, object.toString());
+        }
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
+            final ResultValue resultValue) {
+        if (resultValue != null) {
+            updateMetadataFieldWidth(metadataFieldWidths, key, resultValue.getText());
+        }
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
+            final Set<String> texts) {
+        if (texts != null && !texts.isEmpty()) {
+            updateMetadataFieldWidth(metadataFieldWidths, key, String.join(" •" + key + ": ", texts));
+        }
+    }
+
+    private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
+            final String text) {
+        if (text != null && text.length() > 0) {
+            int width = text.length();
+            if (metadataFieldWidths.containsKey(key)) {
+                metadataFieldWidths.put(key, Math.max(width, metadataFieldWidths.get(key)));
+            } else {
+                metadataFieldWidths.put(key, width);
+            }
+        }
     }
 }
