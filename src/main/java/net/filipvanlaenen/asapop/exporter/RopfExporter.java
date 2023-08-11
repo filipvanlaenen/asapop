@@ -258,7 +258,7 @@ public final class RopfExporter extends Exporter {
         }
         sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
         sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
-        return sb.toString().trim();
+        return sb.toString().substring(1).stripTrailing();
     }
 
     /**
