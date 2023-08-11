@@ -31,6 +31,11 @@ public interface SampleSize {
         public int getMinimalValue() {
             return value;
         }
+
+        @Override
+        public String toString() {
+            return "≥" + value;
+        }
     }
 
     /**
@@ -43,6 +48,11 @@ public interface SampleSize {
         @Override
         public int getMinimalValue() {
             return lowerBound;
+        }
+
+        @Override
+        public String toString() {
+            return lowerBound + "–" + upperBound;
         }
     }
 
