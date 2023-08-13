@@ -134,7 +134,7 @@ public final class RopfExporter extends Exporter {
             updateMetadataFieldWidth(result, "PFP", opinionPoll.getPollingFirmPartner());
             updateMetadataFieldWidth(result, "SC", opinionPoll.getScope());
             updateMetadataFieldWidth(result, "SS", opinionPoll.getSampleSize());
-            // TODO: VS
+            updateMetadataFieldWidth(result, "VS", opinionPoll.getVerifiedSum());
             for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
                 updateMetadataFieldWidth(result, "A", responseScenario.getArea());
                 updateMetadataFieldWidth(result, "EX", responseScenario.getExcluded());
@@ -142,7 +142,7 @@ public final class RopfExporter extends Exporter {
                 updateMetadataFieldWidth(result, "O", responseScenario.getOther());
                 updateMetadataFieldWidth(result, "SC", responseScenario.getScope());
                 updateMetadataFieldWidth(result, "SS", responseScenario.getSampleSize());
-                // TODO: VS
+                updateMetadataFieldWidth(result, "VS", responseScenario.getVerifiedSum());
             }
         }
         return result;
@@ -229,7 +229,7 @@ public final class RopfExporter extends Exporter {
         }
         sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
         sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
-        // TODO: VS
+        sb.append(export("VS", metadataFieldWidths, opinionPoll.getVerifiedSum()));
         StringBuffer result = new StringBuffer();
         result.append(sb.toString().substring(1).stripTrailing());
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
@@ -280,7 +280,7 @@ public final class RopfExporter extends Exporter {
         }
         sb.append(export("O", metadataFieldWidths, responseScenario.getOther()));
         sb.append(export("N", metadataFieldWidths, responseScenario.getNoResponses()));
-        // TODO: VS
+        sb.append(export("VS", metadataFieldWidths, responseScenario.getVerifiedSum()));
         return "&" + sb.toString().substring(2).stripTrailing();
     }
 

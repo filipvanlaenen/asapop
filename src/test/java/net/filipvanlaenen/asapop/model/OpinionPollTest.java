@@ -24,10 +24,6 @@ public class OpinionPollTest {
      */
     private static final double SCALE088 = 0.88D;
     /**
-     * The magic number 80.
-     */
-    private static final double EIGHTY = 80D;
-    /**
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
@@ -246,7 +242,7 @@ public class OpinionPollTest {
      */
     @Test
     public void hasVerifiedSumInBuilderShouldReturnTrueAfterVerifiedSumIsAdded() {
-        assertTrue(new OpinionPollTestBuilder().setVerifiedSum(EIGHTY).hasVerifiedSum());
+        assertTrue(new OpinionPollTestBuilder().setVerifiedSum(DecimalNumber.parse("80")).hasVerifiedSum());
     }
 
     /**

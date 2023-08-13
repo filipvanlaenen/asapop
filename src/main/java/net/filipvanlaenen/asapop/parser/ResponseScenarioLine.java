@@ -213,7 +213,7 @@ final class ResponseScenarioLine extends Line {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
                 try {
-                    builder.setVerifiedSum(Double.parseDouble(value));
+                    builder.setVerifiedSum(DecimalNumber.parse(value));
                 } catch (NumberFormatException nfe) {
                     warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
                 }

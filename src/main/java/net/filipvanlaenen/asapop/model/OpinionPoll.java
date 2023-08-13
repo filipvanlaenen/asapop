@@ -423,7 +423,7 @@ public final class OpinionPoll {
          * @param theVerifiedSum The verified sum.
          * @return This builder instance.
          */
-        public Builder setVerifiedSum(final Double theVerifiedSum) {
+        public Builder setVerifiedSum(final DecimalNumber theVerifiedSum) {
             responseScenarioBuilder.setVerifiedSum(theVerifiedSum);
             return this;
         }
@@ -673,6 +673,15 @@ public final class OpinionPoll {
      */
     public Scope getScope() {
         return scope;
+    }
+
+    /**
+     * Returns the verified sum.
+     *
+     * @return The verified sum.
+     */
+    public DecimalNumber getVerifiedSum() {
+        return mainResponseScenario.getVerifiedSum();
     }
 
     @Override

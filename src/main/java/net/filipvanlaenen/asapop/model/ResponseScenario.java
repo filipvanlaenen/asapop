@@ -61,6 +61,10 @@ public final class ResponseScenario {
      * Whether the results add up to 100 percent within rounding error.
      */
     private boolean strictlyWithinRoundingError;
+    /**
+     * The verified sum.
+     */
+    private DecimalNumber verifiedSum;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -85,6 +89,7 @@ public final class ResponseScenario {
         scale = builder.calculateScale();
         scope = builder.scope;
         strictlyWithinRoundingError = builder.resultsAddStrictlyUp();
+        verifiedSum = builder.verifiedSum;
     }
 
     /**
@@ -126,7 +131,7 @@ public final class ResponseScenario {
         /**
          * The verified sum.
          */
-        private Double verifiedSum;
+        private DecimalNumber verifiedSum;
 
         /**
          * Adds a result.
@@ -304,7 +309,7 @@ public final class ResponseScenario {
             }
             if (hasVerifiedSum()) {
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-                return Math.abs(sum - verifiedSum) < precision.getValue() / HUNDRED;
+                return Math.abs(sum - verifiedSum.value()) < precision.getValue() / HUNDRED;
             } else {
                 int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
                 double epsilon = ((n - 1) / 2) * precision.getValue();
@@ -396,7 +401,7 @@ public final class ResponseScenario {
          * @param theVerifiedSum The verified sum.
          * @return This builder instance.
          */
-        public Builder setVerifiedSum(final Double theVerifiedSum) {
+        public Builder setVerifiedSum(final DecimalNumber theVerifiedSum) {
             this.verifiedSum = theVerifiedSum;
             return this;
         }
@@ -412,7 +417,8 @@ public final class ResponseScenario {
                     && equalsOrBothNull(other, otherResponseScenario.other)
                     && otherResponseScenario.results.equals(results)
                     && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
-                    && equalsOrBothNull(scope, otherResponseScenario.scope);
+                    && equalsOrBothNull(scope, otherResponseScenario.scope)
+                    && equalsOrBothNull(verifiedSum, otherResponseScenario.verifiedSum);
         } else {
             return false;
         }
@@ -538,9 +544,18 @@ public final class ResponseScenario {
         return scope;
     }
 
+    /**
+     * Returns the verified sum.
+     *
+     * @return The verified sum.
+     */
+    public DecimalNumber getVerifiedSum() {
+        return verifiedSum;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(area, excluded, noResponses, other, results, sampleSize, scope);
+        return Objects.hash(area, excluded, noResponses, other, results, sampleSize, scope, verifiedSum);
     }
 
     /**
