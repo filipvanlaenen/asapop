@@ -23,16 +23,22 @@ public final class RopfExporter extends Exporter {
      * The magic number four.
      */
     private static final int FOUR = 4;
+    /**
+     * The magic number five.
+     */
+    private static final int FIVE = 5;
 
     /**
      * A record holding the widths of the electoral list fields.
      *
-     * @param key          The width of the electoral list keys.
-     * @param id           The width of the electoral list IDs.
-     * @param abbreviation The width of the electoral list abbreviations.
-     * @param languageCode The widths of the electoral list language codes.
+     * @param key                   The width of the electoral list's keys.
+     * @param id                    The width of the electoral list's IDs.
+     * @param abbreviation          The width of the electoral list's abbreviations.
+     * @param romanizedAbbreviation The width of the electoral list's romanized abbreviations.
+     * @param languageCode          The widths of the electoral list's language codes.
      */
-    private record ElectoralListWidths(int key, int id, int abbreviation, Map<String, Integer> languageCode) {
+    private record ElectoralListWidths(int key, int id, int abbreviation, int romanizedAbbreviation,
+            Map<String, Integer> languageCode) {
     }
 
     /**
@@ -69,10 +75,15 @@ public final class RopfExporter extends Exporter {
         }
         int idWidth = 0;
         int abbreviationWidth = 0;
+        int romanizedAbbreviationWidth = 0;
         Map<String, Integer> languageCodeWidth = new HashMap<String, Integer>();
         for (ElectoralList electoralList : electoralLists) {
             idWidth = Math.max(idWidth, electoralList.getId().length());
             abbreviationWidth = Math.max(abbreviationWidth, electoralList.getAbbreviation().length());
+            if (electoralList.getRomanizedAbbreviation() != null) {
+                romanizedAbbreviationWidth =
+                        Math.max(romanizedAbbreviationWidth, electoralList.getRomanizedAbbreviation().length());
+            }
             for (String languageCode : electoralList.getLanguageCodes()) {
                 if (languageCodeWidth.containsKey(languageCode)) {
                     languageCodeWidth.put(languageCode, Math.max(languageCodeWidth.get(languageCode),
@@ -82,7 +93,8 @@ public final class RopfExporter extends Exporter {
                 }
             }
         }
-        return new ElectoralListWidths(electoralListKeyWidth, idWidth, abbreviationWidth, languageCodeWidth);
+        return new ElectoralListWidths(electoralListKeyWidth, idWidth, abbreviationWidth, romanizedAbbreviationWidth,
+                languageCodeWidth);
     }
 
     /**
@@ -143,6 +155,12 @@ public final class RopfExporter extends Exporter {
         sb.append(pad(id, electoralListWidths.id));
         sb.append(" •A: ");
         sb.append(pad(electoralList.getAbbreviation(), electoralListWidths.abbreviation));
+        if (electoralList.getRomanizedAbbreviation() != null) {
+            sb.append(" •R: ");
+            sb.append(pad(electoralList.getRomanizedAbbreviation(), electoralListWidths.romanizedAbbreviation));
+        } else if (electoralListWidths.romanizedAbbreviation > 0) {
+            sb.append(pad("", electoralListWidths.romanizedAbbreviation + FIVE));
+        }
         List<String> languageCodes = new ArrayList<String>(electoralListWidths.languageCode.keySet());
         Collections.sort(languageCodes);
         for (String languageCode : languageCodes) {
