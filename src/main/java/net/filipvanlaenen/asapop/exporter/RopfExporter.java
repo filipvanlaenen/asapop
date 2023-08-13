@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
@@ -134,6 +135,15 @@ public final class RopfExporter extends Exporter {
             updateMetadataFieldWidth(result, "SC", opinionPoll.getScope());
             updateMetadataFieldWidth(result, "SS", opinionPoll.getSampleSize());
             // TODO: VS
+            for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
+                updateMetadataFieldWidth(result, "A", responseScenario.getArea());
+                updateMetadataFieldWidth(result, "EX", responseScenario.getExcluded());
+                updateMetadataFieldWidth(result, "N", responseScenario.getNoResponses());
+                updateMetadataFieldWidth(result, "O", responseScenario.getOther());
+                updateMetadataFieldWidth(result, "SC", responseScenario.getScope());
+                updateMetadataFieldWidth(result, "SS", responseScenario.getSampleSize());
+                // TODO: VS
+            }
         }
         return result;
     }
@@ -220,7 +230,58 @@ public final class RopfExporter extends Exporter {
         sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
         sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
         // TODO: VS
-        return sb.toString().substring(1).stripTrailing();
+        StringBuffer result = new StringBuffer();
+        result.append(sb.toString().substring(1).stripTrailing());
+        for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
+            result.append("\n");
+            result.append(export(responseScenario, idsToKeysMap, metadataFieldWidths));
+        }
+        return result.toString();
+    }
+
+    /**
+     * Exports a response scenario.
+     *
+     * @param responseScenario    The response scenario to export.
+     * @param idsToKeysMap        A map mapping the electoral list IDs to keys.
+     * @param metadataFieldWidths The map with the metadata field widths.
+     * @return A string representation of the opinion poll.
+     */
+    private static String export(final ResponseScenario responseScenario, final Map<String, String> idsToKeysMap,
+            final Map<String, Integer> metadataFieldWidths) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(export("PF", metadataFieldWidths, ""));
+        sb.append(export("PFP", metadataFieldWidths, ""));
+        sb.append(export("C", metadataFieldWidths, ""));
+        sb.append(export("FS", metadataFieldWidths, ""));
+        sb.append(export("FE", metadataFieldWidths, ""));
+        sb.append(export("PD", metadataFieldWidths, ""));
+        sb.append(export("SC", metadataFieldWidths, responseScenario.getScope()));
+        sb.append(export("A", metadataFieldWidths, responseScenario.getArea()));
+        sb.append(export("SS", metadataFieldWidths, responseScenario.getSampleSize()));
+        sb.append(export("EX", metadataFieldWidths, responseScenario.getExcluded()));
+        List<Set<ElectoralList>> electoralListCombinations =
+                new ArrayList<Set<ElectoralList>>(responseScenario.getElectoralListSets());
+        Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {
+            @Override
+            public int compare(final Set<ElectoralList> arg0, final Set<ElectoralList> arg1) {
+                double difference = responseScenario.getResult(ElectoralList.getIds(arg1)).getNominalValue()
+                        - responseScenario.getResult(ElectoralList.getIds(arg0)).getNominalValue();
+                return difference < 0 ? -1
+                        : difference > 0 ? 1
+                                : asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1));
+            }
+        });
+        for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
+            sb.append(" ");
+            sb.append(asKeysString(idsToKeysMap, electoralListCombination));
+            sb.append(": ");
+            sb.append(responseScenario.getResult(ElectoralList.getIds(electoralListCombination)).getText());
+        }
+        sb.append(export("O", metadataFieldWidths, responseScenario.getOther()));
+        sb.append(export("N", metadataFieldWidths, responseScenario.getNoResponses()));
+        // TODO: VS
+        return "&" + sb.toString().substring(2).stripTrailing();
     }
 
     /**
@@ -339,6 +400,11 @@ public final class RopfExporter extends Exporter {
         Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
         for (Set<ElectoralList> electoralListCombination : opinionPoll.getElectoralListSets()) {
             electoralLists.addAll(electoralListCombination);
+        }
+        for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
+            for (Set<ElectoralList> electoralListCombination : responseScenario.getElectoralListSets()) {
+                electoralLists.addAll(electoralListCombination);
+            }
         }
         return electoralLists;
     }

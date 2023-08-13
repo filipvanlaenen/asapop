@@ -47,6 +47,27 @@ public class RopfExporterTest {
     }
 
     /**
+     * Verifies the correct export of an opinion poll with an alternative response scenario.
+     */
+    @Test
+    public void shouldExportOpinionPollsWithAlternativeResponse() {
+        RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
+                "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:45 •O: 2 •N: 3",
+                "& •SC: E •A: OUV •SS: 12000 •EX: 19.5 A:50 B:40 C:5.2 •O: 1.2 •N: 2.1",
+                "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C");
+        StringBuffer expected = new StringBuffer();
+        expected.append(
+                "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO  •SS: 1000  •EX: 10   AP: 55 BL: 45 •O: 2   •N: 3\n");
+        expected.append(
+                "&                                                       •SC: E •A: OUV •SS: 12000 •EX: 19.5 AP: 50 BL: 40 C: 5.2 •O: 1.2 •N: 2.1\n");
+        expected.append("\n");
+        expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
+        expected.append("BL: AA002 •A: Bl                  •NL: Blauw\n");
+        expected.append("C:  AA003 •A: C\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+    }
+
+    /**
      * Verifies that opinion polls are exported in chronological order.
      */
     @Test
