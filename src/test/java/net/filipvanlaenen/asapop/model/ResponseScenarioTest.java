@@ -133,6 +133,16 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that the setVerifiedSum method in the builder class is wired correctly to the getVerifiedSum method.
+     */
+    @Test
+    public void setVerifiedSumInBuilderShouldBeWiredCorrectlyToGetVerifiedSum() {
+        ResponseScenario responseScenario =
+                new ResponseScenarioTestBuilder().setVerifiedSum(DecimalNumber.parse("105")).build();
+        assertEquals("105", responseScenario.getVerifiedSum().toString());
+    }
+
+    /**
      * Verifies that before verified sum has been added, the builder responds that verified sum is missing.
      */
     @Test
