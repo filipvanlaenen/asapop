@@ -45,6 +45,14 @@ public class SampleSizeTest {
     }
 
     /**
+     * Verifies that an exact sample size is converted correctly to a string.
+     */
+    @Test
+    public void shouldConvertAnExactSampleSizeCorrectlyToString() {
+        assertEquals("1000", EXACT_SAMPLE_SIZE.toString());
+    }
+
+    /**
      * Verifies that a minimal sample size can be parsed.
      */
     @Test
@@ -61,6 +69,14 @@ public class SampleSizeTest {
     }
 
     /**
+     * Verifies that a minimal sample size is converted correctly to a string.
+     */
+    @Test
+    public void shouldConvertAMinimalSampleSizeCorrectlyToString() {
+        assertEquals("≥1000", MINIMAL_SAMPLE_SIZE.toString());
+    }
+
+    /**
      * Verifies that a sample size range can be parsed.
      */
     @Test
@@ -74,5 +90,13 @@ public class SampleSizeTest {
     @Test
     public void minimalValueOfSampleSizeRangeShouldBeItsLowerBound() {
         assertEquals(ONE_THOUSAND, SAMPLE_SIZE_RANGE.getMinimalValue());
+    }
+
+    /**
+     * Verifies that a sample size range is converted correctly to a string.
+     */
+    @Test
+    public void shouldConvertASampleSizeRangeCorrectlyToString() {
+        assertEquals("1000–1200", SAMPLE_SIZE_RANGE.toString());
     }
 }
