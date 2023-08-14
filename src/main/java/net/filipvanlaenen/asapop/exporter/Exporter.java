@@ -109,7 +109,15 @@ public abstract class Exporter {
                 sampleSizeValue1 = sampleSizeValue1 == null ? 0 : sampleSizeValue1;
                 Integer sampleSizeValue2 = op2.getSampleSizeValue();
                 sampleSizeValue2 = sampleSizeValue2 == null ? 0 : sampleSizeValue2;
-                return sampleSizeValue2 - sampleSizeValue1;
+                if (sampleSizeValue1.equals(sampleSizeValue2)) {
+                    if (op1.getPollingFirm() == null) {
+                        return -1;
+                    } else {
+                        return op1.getPollingFirm().compareTo(op2.getPollingFirm());
+                    }
+                } else {
+                    return sampleSizeValue2 - sampleSizeValue1;
+                }
             } else {
                 return startDate2.compareTo(startDate1);
             }
