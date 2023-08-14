@@ -148,6 +148,31 @@ public final class RopfExporter extends Exporter {
         return result;
     }
 
+    private static Integer calculateResultsWidth(Set<OpinionPoll> opinionPolls, Map<String, String> idsToKeysMap) {
+        int result = 0;
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            int width = 0;
+            List<Set<ElectoralList>> electoralListCombinations =
+                    new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
+            for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
+                width += 3 + asKeysString(idsToKeysMap, electoralListCombination).length()
+                        + opinionPoll.getMainResponseScenario()
+                                .getResult(ElectoralList.getIds(electoralListCombination)).getText().length();
+            }
+            result = Math.max(result, width);
+            for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
+                width = 0;
+                electoralListCombinations = new ArrayList<Set<ElectoralList>>(responseScenario.getElectoralListSets());
+                for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
+                    width += 3 + asKeysString(idsToKeysMap, electoralListCombination).length() + responseScenario
+                            .getResult(ElectoralList.getIds(electoralListCombination)).getText().length();
+                }
+                result = Math.max(result, width);
+            }
+        }
+        return result;
+    }
+
     /**
      * Exports an electoral list.
      *
@@ -196,7 +221,7 @@ public final class RopfExporter extends Exporter {
      * @return A string representation of the opinion poll.
      */
     private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap,
-            final Map<String, Integer> metadataFieldWidths) {
+            final Map<String, Integer> metadataFieldWidths, final int resultsWidth) {
         StringBuffer sb = new StringBuffer();
         sb.append(export("PF", metadataFieldWidths, opinionPoll.getPollingFirm()));
         sb.append(export("PFP", metadataFieldWidths, opinionPoll.getPollingFirmPartner()));
@@ -220,13 +245,15 @@ public final class RopfExporter extends Exporter {
                                 : asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1));
             }
         });
+        StringBuffer results = new StringBuffer();
         for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
-            sb.append(" ");
-            sb.append(asKeysString(idsToKeysMap, electoralListCombination));
-            sb.append(": ");
-            sb.append(opinionPoll.getMainResponseScenario().getResult(ElectoralList.getIds(electoralListCombination))
-                    .getText());
+            results.append(" ");
+            results.append(asKeysString(idsToKeysMap, electoralListCombination));
+            results.append(": ");
+            results.append(opinionPoll.getMainResponseScenario()
+                    .getResult(ElectoralList.getIds(electoralListCombination)).getText());
         }
+        sb.append(pad(results.toString(), resultsWidth));
         sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
         sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
         sb.append(export("VS", metadataFieldWidths, opinionPoll.getVerifiedSum()));
@@ -234,7 +261,7 @@ public final class RopfExporter extends Exporter {
         result.append(sb.toString().substring(1).stripTrailing());
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
             result.append("\n");
-            result.append(export(responseScenario, idsToKeysMap, metadataFieldWidths));
+            result.append(export(responseScenario, idsToKeysMap, metadataFieldWidths, resultsWidth));
         }
         return result.toString();
     }
@@ -248,7 +275,7 @@ public final class RopfExporter extends Exporter {
      * @return A string representation of the opinion poll.
      */
     private static String export(final ResponseScenario responseScenario, final Map<String, String> idsToKeysMap,
-            final Map<String, Integer> metadataFieldWidths) {
+            final Map<String, Integer> metadataFieldWidths, final int resultsWidth) {
         StringBuffer sb = new StringBuffer();
         sb.append(export("PF", metadataFieldWidths, ""));
         sb.append(export("PFP", metadataFieldWidths, ""));
@@ -272,12 +299,14 @@ public final class RopfExporter extends Exporter {
                                 : asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1));
             }
         });
+        StringBuffer results = new StringBuffer();
         for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
-            sb.append(" ");
-            sb.append(asKeysString(idsToKeysMap, electoralListCombination));
-            sb.append(": ");
-            sb.append(responseScenario.getResult(ElectoralList.getIds(electoralListCombination)).getText());
+            results.append(" ");
+            results.append(asKeysString(idsToKeysMap, electoralListCombination));
+            results.append(": ");
+            results.append(responseScenario.getResult(ElectoralList.getIds(electoralListCombination)).getText());
         }
+        sb.append(pad(results.toString(), resultsWidth));
         sb.append(export("O", metadataFieldWidths, responseScenario.getOther()));
         sb.append(export("N", metadataFieldWidths, responseScenario.getNoResponses()));
         sb.append(export("VS", metadataFieldWidths, responseScenario.getVerifiedSum()));
@@ -299,8 +328,9 @@ public final class RopfExporter extends Exporter {
         Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
         Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPolls().getOpinionPolls();
         Map<String, Integer> metadataFieldWidths = calculateMetadataFieldWidths(opinionPolls);
+        Integer resultsWidth = calculateResultsWidth(opinionPolls, idsToKeysMap);
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls)) {
-            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths));
+            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths, resultsWidth));
             sb.append("\n");
         }
         sb.append("\n");

@@ -57,7 +57,7 @@ public class RopfExporterTest {
                 "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C");
         StringBuffer expected = new StringBuffer();
         expected.append(
-                "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO  •SS: 1000  •EX: 10   AP: 55 BL: 45 •O: 2   •N: 3\n");
+                "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO  •SS: 1000  •EX: 10   AP: 55 BL: 45        •O: 2   •N: 3\n");
         expected.append(
                 "&                                                       •SC: E •A: OUV •SS: 12000 •EX: 19.5 AP: 50 BL: 40 C: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1\n");
         expected.append("\n");
@@ -91,11 +91,13 @@ public class RopfExporterTest {
     @Test
     public void shouldPadMetadataFieldsCorrectly() {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
-                "•PF: ACME •FS: 2021-07-26 •FE: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-07-28 A:56 B:44",
-                "•PF: Opinion Research •PD: 2021-07-29 A:57 B:43", "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl");
+                "•PF: ACME •FS: 2021-07-26 •FE: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-07-28 A:56 B:43 •O: 1",
+                "•PF: Opinion Research •PD: 2021-07-29 A:57 B:42.9", "A: AA001 •A:AP •EN: Apple Party",
+                "B: AA002 •A:Bl");
         StringBuffer expected = new StringBuffer();
-        expected.append("•PF: Opinion Research                                 •PD: 2021-07-29 AP: 57 BL: 43\n");
-        expected.append("•PF: ACME                                             •PD: 2021-07-28 AP: 56 BL: 44\n");
+        expected.append("•PF: Opinion Research                                 •PD: 2021-07-29 AP: 57 BL: 42.9\n");
+        expected.append(
+                "•PF: ACME                                             •PD: 2021-07-28 AP: 56 BL: 43   •O: 1\n");
         expected.append("•PF: ACME             •FS: 2021-07-26 •FE: 2021-07-27                 AP: 55 BL: 45\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
