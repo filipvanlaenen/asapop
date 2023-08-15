@@ -5,6 +5,23 @@ package net.filipvanlaenen.asapop.model;
  */
 public interface SampleSize {
     /**
+     * Record class for approximate sample sizes.
+     *
+     * @param value The approximate value of the sample size.
+     */
+    record ApproximateSampleSize(int value) implements SampleSize {
+        @Override
+        public int getMinimalValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "≈" + value;
+        }
+    }
+
+    /**
      * Record class for exact sample sizes.
      *
      * @param value The exact value of the sample size.
@@ -63,7 +80,9 @@ public interface SampleSize {
      * @return Returns a sample size instance.
      */
     static SampleSize parse(final String text) {
-        if (text.startsWith("≥")) {
+        if (text.startsWith("≈")) {
+            return new ApproximateSampleSize(Integer.parseInt(text.substring(1)));
+        } else if (text.startsWith("≥")) {
             return new MinimalSampleSize(Integer.parseInt(text.substring(1)));
         } else if (text.contains("–")) {
             int index = text.indexOf("–");

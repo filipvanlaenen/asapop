@@ -3,6 +3,8 @@ package net.filipvanlaenen.asapop.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.asapop.model.SampleSize.ApproximateSampleSize;
 import net.filipvanlaenen.asapop.model.SampleSize.ExactSampleSize;
 import net.filipvanlaenen.asapop.model.SampleSize.MinimalSampleSize;
 import net.filipvanlaenen.asapop.model.SampleSize.SampleSizeRange;
@@ -23,6 +25,10 @@ public class SampleSizeTest {
      * A minimal sample size to run the unit tests on.
      */
     private static final MinimalSampleSize MINIMAL_SAMPLE_SIZE = new MinimalSampleSize(ONE_THOUSAND);
+    /**
+     * An approximate sample size to run the unit tests on.
+     */
+    private static final ApproximateSampleSize APPROXIMATE_SAMPLE_SIZE = new ApproximateSampleSize(ONE_THOUSAND);
     /**
      * A sample size range to run the unit tests on.
      */
@@ -74,6 +80,30 @@ public class SampleSizeTest {
     @Test
     public void shouldConvertAMinimalSampleSizeCorrectlyToString() {
         assertEquals("≥1000", MINIMAL_SAMPLE_SIZE.toString());
+    }
+
+    /**
+     * Verifies that an approximate sample size can be parsed.
+     */
+    @Test
+    public void shouldParseAnApproximatelyEqualToIntegerIntoAnApproximateSampleSize() {
+        assertEquals(APPROXIMATE_SAMPLE_SIZE, SampleSize.parse("≈1000"));
+    }
+
+    /**
+     * Verifies that the minimal value of an approximate sample size is equal to its value.
+     */
+    @Test
+    public void minimalValueOfApproximateSampleSizeShouldBeItsValues() {
+        assertEquals(ONE_THOUSAND, APPROXIMATE_SAMPLE_SIZE.getMinimalValue());
+    }
+
+    /**
+     * Verifies that an approximate sample size is converted correctly to a string.
+     */
+    @Test
+    public void shouldConvertAnApproximateSampleSizeCorrectlyToString() {
+        assertEquals("≈1000", APPROXIMATE_SAMPLE_SIZE.toString());
     }
 
     /**
