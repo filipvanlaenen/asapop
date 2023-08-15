@@ -31,17 +31,18 @@ public class RopfExporterTest {
     @Test
     public void shouldExportElaborateOpinionPoll() {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
-                "•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:45 C: 2 D: 2 E: 2 •O: 2 •N: 3 •VS: 109",
+                "•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:45 C: 2 D: 2 E: 2 F: 2 •O: 2 •N: 3 •VS: 109",
                 "A: AA001 •A:AP •EN: Apple Party •NL: Appelpartij •EO: Pomo Partio •NO: Eplepartiet",
-                "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C", "D: AA004 •A:Δ •R:D", "E: AA005 •A:E");
+                "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C", "D: AA004 •A:Δ •R:D", "E: AA005 •A:E", "F: AA006 •A:F");
         StringBuffer expected = new StringBuffer();
         expected.append(
-                "•PF: ACME •PFP: BCME •C: The Post •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 AP: 55 BL: 45 C: 2 E: 2 Δ: 2 •O: 2 •N: 3 •VS: 109\n");
+                "•PF: ACME •PFP: BCME •C: The Post •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000 •EX: 10 AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2 •O: 2 •N: 3 •VS: 109\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP       •EN: Apple Party •EO: Pomo Partio •NL: Appelpartij •NO: Eplepartiet\n");
         expected.append("BL: AA002 •A: Bl                                         •NL: Blauw\n");
         expected.append("C:  AA003 •A: C\n");
         expected.append("E:  AA005 •A: E\n");
+        expected.append("F:  AA006 •A: F\n");
         expected.append("Δ:  AA004 •A: Δ  •R: D\n");
         assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
     }
@@ -53,17 +54,23 @@ public class RopfExporterTest {
     public void shouldExportOpinionPollsWithAlternativeResponse() {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
                 "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:45 •O: 2 •N: 3",
-                "& •SC: E •A: OUV •SS: 12000 •EX: 19.5 A:50 B:40 C:5.2 •O: 1.2 •N: 2.1 •VS: 112.1",
-                "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C");
+                "& •SC: E •A: OUV •SS: 800  A:50 B:40 C:10  •VS: 110",
+                "& •SC: P1 •A: OUV •SS: 12000 •EX: 19.5 A:50 B:40 C:5.2 D: 5.2 E: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1",
+                "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C", "D: AA004 •A:D",
+                "E: AA005 •A:E");
         StringBuffer expected = new StringBuffer();
         expected.append(
-                "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO  •SS: 1000  •EX: 10   AP: 55 BL: 45        •O: 2   •N: 3\n");
+                "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N  •A: IO  •SS: 1000  •EX: 10   AP: 55 BL: 45                      •O: 2   •N: 3\n");
         expected.append(
-                "&                                                       •SC: E •A: OUV •SS: 12000 •EX: 19.5 AP: 50 BL: 40 C: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1\n");
+                "&                                                       •SC: E  •A: OUV •SS: 800             AP: 50 BL: 40 C: 10                                •VS: 110\n");
+        expected.append(
+                "&                                                       •SC: P1 •A: OUV •SS: 12000 •EX: 19.5 AP: 50 BL: 40 C: 5.2 D: 5.2 E: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl                  •NL: Blauw\n");
         expected.append("C:  AA003 •A: C\n");
+        expected.append("D:  AA004 •A: D\n");
+        expected.append("E:  AA005 •A: E\n");
         assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
     }
 
@@ -112,12 +119,12 @@ public class RopfExporterTest {
     public void shouldPadCommissionnersFieldCorrectly() {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
                 "•PF: ACME •C: The Times •PD: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-07-28 A:56 B:44",
-                "•PF: Opinion Research •C: The Times •C: The Post •PD: 2021-07-29 A:57 B:43",
+                "•PF: Opinion Research •C: The Times •C: The Post •C: The Mail •PD: 2021-07-29 A:57 B:43",
                 "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl");
         StringBuffer expected = new StringBuffer();
-        expected.append("•PF: Opinion Research •C: The Post •C: The Times •PD: 2021-07-29 AP: 57 BL: 43\n");
-        expected.append("•PF: ACME                                        •PD: 2021-07-28 AP: 56 BL: 44\n");
-        expected.append("•PF: ACME             •C: The Times              •PD: 2021-07-27 AP: 55 BL: 45\n");
+        expected.append("•PF: Opinion Research •C: The Mail •C: The Post •C: The Times •PD: 2021-07-29 AP: 57 BL: 43\n");
+        expected.append("•PF: ACME                                                     •PD: 2021-07-28 AP: 56 BL: 44\n");
+        expected.append("•PF: ACME             •C: The Times                           •PD: 2021-07-27 AP: 55 BL: 45\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");

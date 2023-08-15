@@ -21,6 +21,10 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
  */
 public final class RopfExporter extends Exporter {
     /**
+     * The magic number three.
+     */
+    private static final int THREE = 3;
+    /**
      * The magic number four.
      */
     private static final int FOUR = 4;
@@ -148,14 +152,22 @@ public final class RopfExporter extends Exporter {
         return result;
     }
 
-    private static Integer calculateResultsWidth(Set<OpinionPoll> opinionPolls, Map<String, String> idsToKeysMap) {
+    /**
+     * Calculates the width for the result values over a set of opinion polls.
+     *
+     * @param opinionPolls The opinion polls.
+     * @param idsToKeysMap A map mapping the electoral list IDs to keys.
+     * @return The width for the result values.
+     */
+    private static Integer calculateResultsWidth(final Set<OpinionPoll> opinionPolls,
+            final Map<String, String> idsToKeysMap) {
         int result = 0;
         for (OpinionPoll opinionPoll : opinionPolls) {
             int width = 0;
             List<Set<ElectoralList>> electoralListCombinations =
                     new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
             for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
-                width += 3 + asKeysString(idsToKeysMap, electoralListCombination).length()
+                width += THREE + asKeysString(idsToKeysMap, electoralListCombination).length()
                         + opinionPoll.getMainResponseScenario()
                                 .getResult(ElectoralList.getIds(electoralListCombination)).getText().length();
             }
@@ -164,7 +176,7 @@ public final class RopfExporter extends Exporter {
                 width = 0;
                 electoralListCombinations = new ArrayList<Set<ElectoralList>>(responseScenario.getElectoralListSets());
                 for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
-                    width += 3 + asKeysString(idsToKeysMap, electoralListCombination).length() + responseScenario
+                    width += THREE + asKeysString(idsToKeysMap, electoralListCombination).length() + responseScenario
                             .getResult(ElectoralList.getIds(electoralListCombination)).getText().length();
                 }
                 result = Math.max(result, width);
@@ -218,6 +230,7 @@ public final class RopfExporter extends Exporter {
      * @param opinionPoll         The opinion poll to export.
      * @param idsToKeysMap        A map mapping the electoral list IDs to keys.
      * @param metadataFieldWidths The map with the metadata field widths.
+     * @param resultsWidth        The width for the result values.
      * @return A string representation of the opinion poll.
      */
     private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap,
@@ -272,6 +285,7 @@ public final class RopfExporter extends Exporter {
      * @param responseScenario    The response scenario to export.
      * @param idsToKeysMap        A map mapping the electoral list IDs to keys.
      * @param metadataFieldWidths The map with the metadata field widths.
+     * @param resultsWidth        The width for the result values.
      * @return A string representation of the opinion poll.
      */
     private static String export(final ResponseScenario responseScenario, final Map<String, String> idsToKeysMap,
@@ -505,7 +519,7 @@ public final class RopfExporter extends Exporter {
      */
     private static void updateMetadataFieldWidth(final Map<String, Integer> metadataFieldWidths, final String key,
             final String text) {
-        if (text != null && text.length() > 0) {
+        if (text != null && !text.isEmpty()) {
             int width = text.length();
             if (metadataFieldWidths.containsKey(key)) {
                 metadataFieldWidths.put(key, Math.max(width, metadataFieldWidths.get(key)));
