@@ -504,5 +504,12 @@ mapping:
     - "RO008"
     target: "PRO România (S&D)"
   startDate: "2020-10-08"
+- directMapping:
+    source: "GB004+GB005"
+    target: "Scottish National Party + Plaid Cymru"
+- directMapping:
+    compensationFactor: 0.06973 # 44 / 631
+    source: "GB006"
+    target: "UK Independence Party"
 lastElectionDate: "2018-10-14"
 ```

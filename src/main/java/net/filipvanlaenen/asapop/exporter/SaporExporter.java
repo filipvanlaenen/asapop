@@ -360,7 +360,11 @@ public class SaporExporter extends Exporter {
                     (int) Math.round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
             content.append(directSaporMapping.getTarget());
             content.append("=");
-            content.append(sample);
+            if (directSaporMapping.getCompensationFactor() == null) {
+                content.append(sample);
+            } else {
+                content.append((int) Math.round(sample * directSaporMapping.getCompensationFactor()));
+            }
             content.append("\n");
             return remainder - sample;
         } else {

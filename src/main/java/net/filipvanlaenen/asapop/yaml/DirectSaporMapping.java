@@ -5,6 +5,10 @@ package net.filipvanlaenen.asapop.yaml;
  */
 public class DirectSaporMapping {
     /**
+     * A compensation factor.
+     */
+    private Double compensationFactor;
+    /**
      * The source in the ROPF file.
      */
     private String source;
@@ -12,6 +16,15 @@ public class DirectSaporMapping {
      * The target in the SAPOR file.
      */
     private String target;
+
+    /**
+     * Returns the compensation factor.
+     *
+     * @return The compensation factor.
+     */
+    public Double getCompensationFactor() {
+        return compensationFactor;
+    }
 
     /**
      * Returns the source in the ROPF file.
@@ -29,6 +42,15 @@ public class DirectSaporMapping {
      */
     public String getTarget() {
         return target;
+    }
+
+    /**
+     * Sets the compensation factor.
+     *
+     * @param compensationFactor The compensation factor.
+     */
+    public void setCompensationFactor(final Double compensationFactor) {
+        this.compensationFactor = compensationFactor;
     }
 
     /**
