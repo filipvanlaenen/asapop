@@ -32,13 +32,13 @@ public class RopfExporterTest {
     public void shouldExportElaborateOpinionPoll() {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
                 "•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27"
-                        + " •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:45 C: 2 D: 2 E: 2 F: 2 •O: 2 •N: 3 •VS: 109",
+                        + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % A:55 B:45 C: 2 D: 2 E: 2 F: 2 •O: 2 •N: 3 •VS: 109",
                 "A: AA001 •A:AP •EN: Apple Party •NL: Appelpartij •EO: Pomo Partio •NO: Eplepartiet",
                 "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C", "D: AA004 •A:Δ •R:D", "E: AA005 •A:E", "F: AA006 •A:F");
         StringBuffer expected = new StringBuffer();
         expected.append(
                 "•PF: ACME •PFP: BCME •C: The Post •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27"
-                        + " •SC: N •A: IO •SS: 1000 •EX: 10 AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2 •O: 2 •N: 3 •VS: 109\n");
+                        + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2 •O: 2 •N: 3 •VS: 109\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP       •EN: Apple Party •EO: Pomo Partio •NL: Appelpartij •NO: Eplepartiet\n");
         expected.append("BL: AA002 •A: Bl                                         •NL: Blauw\n");

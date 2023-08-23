@@ -138,6 +138,7 @@ public final class RopfExporter extends Exporter {
             updateMetadataFieldWidth(result, "PFP", opinionPoll.getPollingFirmPartner());
             updateMetadataFieldWidth(result, "SC", opinionPoll.getScope());
             updateMetadataFieldWidth(result, "SS", opinionPoll.getSampleSize());
+            updateMetadataFieldWidth(result, "U", opinionPoll.getUnit());
             updateMetadataFieldWidth(result, "VS", opinionPoll.getVerifiedSum());
             for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
                 updateMetadataFieldWidth(result, "A", responseScenario.getArea());
@@ -246,6 +247,7 @@ public final class RopfExporter extends Exporter {
         sb.append(export("A", metadataFieldWidths, opinionPoll.getArea()));
         sb.append(export("SS", metadataFieldWidths, opinionPoll.getSampleSize()));
         sb.append(export("EX", metadataFieldWidths, opinionPoll.getExcluded()));
+        sb.append(export("U", metadataFieldWidths, opinionPoll.getUnit()));
         List<Set<ElectoralList>> electoralListCombinations =
                 new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
         Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {
