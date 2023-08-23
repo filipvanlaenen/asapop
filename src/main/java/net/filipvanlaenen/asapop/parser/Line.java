@@ -1,9 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
-import java.util.Map;
 import java.util.regex.Pattern;
-
-import net.filipvanlaenen.asapop.model.Scope;
 
 /**
  * Abstract class providing common functionality for all types of lines.
@@ -70,21 +67,6 @@ abstract class Line {
      * The pattern to match a sample size.
      */
     static final Pattern SAMPLE_SIZE_PATTERN = Pattern.compile("^((≥?\\d+)|(\\d+–\\d+))$");
-    /**
-     * A map mapping string values as they can appear in the ROPF file to the scopes.
-     */
-    static final Map<String, Scope> STRING_VALUE_TO_SCOPE =
-            Map.of("E", Scope.EUROPEAN, "N", Scope.NATIONAL, "P1", Scope.PRESIDENTIAL_FIRST_ROUND);
-
-    /**
-     * Parses the code for a scope into a scope.
-     *
-     * @param value The value representing a scope.
-     * @return The scope corresponding to the provide value.
-     */
-    static Scope parseScope(final String value) {
-        return STRING_VALUE_TO_SCOPE.get(value);
-    }
 
     /**
      * Checks whether a text matches a pattern.

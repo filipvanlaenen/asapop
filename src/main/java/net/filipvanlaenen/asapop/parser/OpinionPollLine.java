@@ -17,6 +17,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.Unit;
 
 /**
  * Class implementing a line representing an opinion poll.
@@ -247,7 +248,7 @@ final class OpinionPollLine extends Line {
             if (builder.hasScope()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
-                Scope scope = parseScope(value);
+                Scope scope = Scope.parse(value);
                 if (scope == null) {
                     warnings.add(new UnknownScopeValueWarning(lineNumber, value));
                 } else {
@@ -263,6 +264,18 @@ final class OpinionPollLine extends Line {
                 builder.setSampleSize(sampleSize);
             } else {
                 warnings.add(new MalformedSampleSizeWarning(lineNumber, value));
+            }
+            break;
+        case "U":
+            if (builder.hasUnit()) {
+                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+            } else {
+                Unit unit = Unit.parse(value);
+                if (unit == null) {
+                    warnings.add(new UnknownUnitValueWarning(lineNumber, value));
+                } else {
+                    builder.setUnit(unit);
+                }
             }
             break;
         case "VS":

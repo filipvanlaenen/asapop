@@ -190,7 +190,7 @@ final class ResponseScenarioLine extends Line {
             if (builder.hasScope()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
-                Scope scope = parseScope(value);
+                Scope scope = Scope.parse(value);
                 if (scope == null) {
                     warnings.add(new UnknownScopeValueWarning(lineNumber, value));
                 } else {

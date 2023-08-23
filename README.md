@@ -64,13 +64,14 @@ defined so far:
 * PFP: Polling firm partner
 * SC: Scope
 * SS: Sample size
+* U: Unit
 * VS: Verified sum
 
 The following example shows how all the metadata fields can be used:
 
 ```
-•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000         A:55 B:40 •O:2 •N:3
-•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-07 •FE: 2021-07-13 •PD: 2021-07-20 •SC: N •A: IO •SS: 1000 •EX: 10 A:65 B:40 •O:2      •VS: 107
+•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-14 •FE: 2021-07-20 •PD: 2021-07-27 •SC: N •A: IO •SS: 1000         •U: % A:55 B:40 •O:2 •N:3
+•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-07 •FE: 2021-07-13 •PD: 2021-07-20 •SC: N •A: IO •SS: 1000 •EX: 10       A:65 B:40 •O:2      •VS: 107
 ```
 
 Result fields consist of an electoral list key, a colon (":"), and a value. The electoral list key should start with an
@@ -121,6 +122,7 @@ The table below gives an overview over the metadata fields and their use:
 | PFP          | Polling firm partner | Text           | 0…1         | No                |
 | SC           | Scope                | Scope          | 0…1         | Yes               |
 | SS           | Sample size          | Sample Size    | 0…1         | Yes               |
+| U            | Unit                 | Unit           | 0…1         | No                |
 | VS           | Verified sum         | Decimal Number | 0…1         | Yes¹              |
 
 ¹ As for the regular results, the result for other, the number of no responses and the verified sum are not inherited by a response
@@ -144,6 +146,13 @@ The type `Scope` accepts the values as in the table below:
 | E     | European elections                 |
 | N     | National elections                 |
 | P1    | Presidential election, first round |
+
+The type `Unit` accepts the values as in the table below:
+
+| Value | Description |
+|-------|-------------|
+| %     | Percentages |
+| S     | Seats       |
 
 ### Incomplete Results
 

@@ -16,6 +16,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.Unit;
 
 /**
  * Unit tests on the <code>OpinionPollLine</code> class.
@@ -320,6 +321,18 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that an opinion poll with a unit can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAUnit() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: S A:15 B:3", ELECTORAL_LIST_KEY_MAP, 1);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "15").addResult("B", "3")
+                .setPollingFirm("ACME").setPublicationDate(DATE1).setUnit(Unit.SEATS).build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
      * Verifies that a wellformed line doesn't produce a warning while parsing.
      */
     @Test
@@ -391,6 +404,17 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line with an unknown unit produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningForAnUnknownUnitValue() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new UnknownUnitValueWarning(1, "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -566,6 +590,17 @@ public final class OpinionPollLineTest {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SC"));
+        assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line adding unit twice produces a warning.
+     */
+    @Test
+    public void shouldProduceAWarningWhenUnitIsAddedTwice() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: S •U: S A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1);
+        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "U"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 

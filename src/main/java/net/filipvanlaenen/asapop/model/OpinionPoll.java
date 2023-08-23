@@ -52,6 +52,10 @@ public final class OpinionPoll {
      * The scope.
      */
     private Scope scope;
+    /**
+     * The unit.
+     */
+    private Unit unit;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -68,6 +72,7 @@ public final class OpinionPoll {
         pollingFirmPartner = builder.pollingFirmPartner;
         publicationDate = builder.publicationDate;
         scope = builder.scope;
+        unit = builder.unit;
     }
 
     /**
@@ -110,6 +115,10 @@ public final class OpinionPoll {
          * The scope.
          */
         private Scope scope;
+        /**
+         * The unit.
+         */
+        private Unit unit;
 
         /**
          * Default constructor.
@@ -277,6 +286,15 @@ public final class OpinionPoll {
         }
 
         /**
+         * Returns whether a unit has been registered in this builder instance.
+         *
+         * @return True if a unit has been registered in this builder instance.
+         */
+        public boolean hasUnit() {
+            return unit != null;
+        }
+
+        /**
          * Returns whether a verified sum has been registered in this builder instance.
          *
          * @return True if a verified sum has been registered in this builder instance.
@@ -418,6 +436,17 @@ public final class OpinionPoll {
         }
 
         /**
+         * Sets the unit.
+         * 
+         * @param theUnit The unit.
+         * @return This builder instance.
+         */
+        public Builder setUnit(final Unit theUnit) {
+            this.unit = theUnit;
+            return this;
+        }
+
+        /**
          * Sets the verified sum.
          *
          * @param theVerifiedSum The verified sum.
@@ -451,7 +480,7 @@ public final class OpinionPoll {
                     && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                     && equalsOrBothNull(pollingFirmPartner, otherOpinionPoll.pollingFirmPartner)
                     && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
-                    && equalsOrBothNull(scope, otherOpinionPoll.scope);
+                    && equalsOrBothNull(scope, otherOpinionPoll.scope) && equalsOrBothNull(unit, otherOpinionPoll.unit);
         } else {
             return false;
         }
@@ -676,6 +705,15 @@ public final class OpinionPoll {
     }
 
     /**
+     * Returns the unit.
+     *
+     * @return The unit.
+     */
+    public Unit getUnit() {
+        return unit;
+    }
+
+    /**
      * Returns the verified sum.
      *
      * @return The verified sum.
@@ -687,6 +725,6 @@ public final class OpinionPoll {
     @Override
     public int hashCode() {
         return Objects.hash(alternativeResponseScenarios, area, commissioners, fieldworkEnd, fieldworkStart,
-                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, scope);
+                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, scope, unit);
     }
 }
