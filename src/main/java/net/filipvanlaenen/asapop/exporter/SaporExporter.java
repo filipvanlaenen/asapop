@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -16,6 +17,7 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
+import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
 import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
@@ -147,10 +149,21 @@ public class SaporExporter extends Exporter {
                         scale, remainder);
             }
         }
-        content.append("Other=");
-        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        content.append(remainder < 0 ? 0 : remainder);
-        content.append("\n");
+        if (remainder <= 0) {
+            content.append("Other=0\n");
+        } else {
+            for (SaporMapping map : mapping) {
+                if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
+                    remainder = processMapping(content, map.getEssentialEntriesMapping(), actualValues,
+                            calculationSampleSize, scale, remainder);
+                }
+            }
+            content.append("Other=");
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+            content.append(remainder < 0 ? 0 : remainder);
+            content.append("\n");
+        }
+
     }
 
     /**
@@ -374,6 +387,41 @@ public class SaporExporter extends Exporter {
         } else {
             return remainder;
         }
+    }
+
+    /**
+     * Processes an essential entries mapping, writing the result to the content and returning an updated remainder.
+     *
+     * @param content                      The StringBuilder to append the result of the mapping to.
+     * @param essentialEntriesSaporMapping The essential entries SAPOR mapping.
+     * @param actualValues                 A map with the actual values, i.e. either the nominal values or half the
+     *                                     precision for zero values.
+     * @param calculationSampleSize        The sample size to be used for the calculations.
+     * @param scale                        The scale.
+     * @param remainder                    The remainder so far.
+     * @return The updated remainder.
+     */
+    private int processMapping(final StringBuilder content,
+            final EssentialEntriesSaporMapping essentialEntriesSaporMapping,
+            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final int remainder) {
+        if (essentialEntriesSaporMapping == null) {
+            return remainder;
+        }
+        int sumOfSamples = 0;
+        Set<Entry<String, Integer>> absentTargets = essentialEntriesSaporMapping.getTargets().entrySet().stream()
+                .filter(k -> !actualValues.containsKey(asElectoralListCombination(k.getKey())))
+                .collect(Collectors.toSet());
+        int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum);
+        for (Entry<String, Integer> target : absentTargets) {
+            content.append(target.getKey());
+            content.append("=");
+            int sample = (int) Math.round(remainder * target.getValue() / sumOfWeights);
+            content.append(sample);
+            sumOfSamples += sample;
+            content.append("\n");
+        }
+        return remainder - sumOfSamples;
     }
 
     /**

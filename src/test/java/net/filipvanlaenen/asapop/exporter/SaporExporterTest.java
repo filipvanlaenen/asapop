@@ -20,6 +20,7 @@ import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
+import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
 import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
@@ -122,6 +123,20 @@ public class SaporExporterTest {
         splittingSaporMapping.setSource(source);
         splittingSaporMapping.setTargets(targets);
         saporMapping.setSplittingMapping(splittingSaporMapping);
+        return saporMapping;
+    }
+    
+    /**
+     * Creates an essential entries SAPOR mapping.
+     *
+     * @param essentialEntries The essential entries with their weights for the SAPOR mapping.
+     * @return A SAPOR mapping with an essential entries SAPOR mapping.
+     */
+    private static SaporMapping createEssentialEntriesSaporMapping( final Map<String, Integer> targets) {
+        SaporMapping saporMapping = new SaporMapping();
+        EssentialEntriesSaporMapping essentialEntriesSaporMapping = new EssentialEntriesSaporMapping();
+        essentialEntriesSaporMapping.setTargets(targets);
+        saporMapping.setEssentialEntriesMapping(essentialEntriesSaporMapping);
         return saporMapping;
     }
 

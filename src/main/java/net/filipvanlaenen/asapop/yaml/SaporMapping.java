@@ -13,6 +13,10 @@ public class SaporMapping {
      */
     private DirectSaporMapping directMapping;
     /**
+     * An essential entries mapping with the essential entries in a SAPOR file.
+     */
+    private EssentialEntriesSaporMapping essentialEntriesSaporMapping;
+    /**
      * A splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
      */
     private SplittingSaporMapping splittingMapping;
@@ -41,6 +45,15 @@ public class SaporMapping {
      */
     public DirectSaporMapping getDirectMapping() {
         return directMapping;
+    }
+
+    /**
+     * Returns the essential entries mapping with the essential entries in a SAPOR file.
+     *
+     * @return The essential entries mapping with the essential entries in a SAPOR file.
+     */
+    public EssentialEntriesSaporMapping getEssentialEntriesMapping() {
+        return essentialEntriesSaporMapping;
     }
 
     /**
@@ -89,9 +102,18 @@ public class SaporMapping {
     }
 
     /**
+     * Sets the essential entries mapping with the essential entries in a SAPOR file.
+     *
+     * @param essentialEntriesSaporMapping The essential entries mapping with the essential entries in a SAPOR file.
+     */
+    public void setEssentialEntriesMapping(final EssentialEntriesSaporMapping essentialEntriesSaporMapping) {
+        this.essentialEntriesSaporMapping = essentialEntriesSaporMapping;
+    }
+
+    /**
      * Sets the splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
      *
-     * @param additiveMapping The splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
+     * @param splittingMapping The splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
      */
     public void setSplittingMapping(final SplittingSaporMapping splittingMapping) {
         this.splittingMapping = splittingMapping;
