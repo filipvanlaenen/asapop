@@ -13,6 +13,10 @@ public class SaporMapping {
      */
     private DirectSaporMapping directMapping;
     /**
+     * A splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
+     */
+    private SplittingSaporMapping splittingMapping;
+    /**
      * The end date.
      */
     private String endDate;
@@ -37,6 +41,15 @@ public class SaporMapping {
      */
     public DirectSaporMapping getDirectMapping() {
         return directMapping;
+    }
+
+    /**
+     * Returns the splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
+     *
+     * @return The splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
+     */
+    public SplittingSaporMapping getSplittingMapping() {
+        return splittingMapping;
     }
 
     /**
@@ -73,6 +86,15 @@ public class SaporMapping {
      */
     public void setDirectMapping(final DirectSaporMapping directMapping) {
         this.directMapping = directMapping;
+    }
+
+    /**
+     * Sets the splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
+     *
+     * @param additiveMapping The splitting mapping from a result in an ROPF file to many entries in a SAPOR file.
+     */
+    public void setSplittingMapping(final SplittingSaporMapping splittingMapping) {
+        this.splittingMapping = splittingMapping;
     }
 
     /**

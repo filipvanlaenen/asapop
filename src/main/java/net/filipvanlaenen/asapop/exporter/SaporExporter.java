@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -17,6 +18,7 @@ import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
+import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
 
 /**
  * Exporter to the SAPOR files format.
@@ -140,6 +142,8 @@ public class SaporExporter extends Exporter {
                 remainder = processMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize, scale,
                         remainder);
                 remainder = processMapping(content, map.getAdditiveMapping(), actualValues, calculationSampleSize,
+                        scale, remainder);
+                remainder = processMapping(content, map.getSplittingMapping(), actualValues, calculationSampleSize,
                         scale, remainder);
             }
         }
@@ -367,6 +371,44 @@ public class SaporExporter extends Exporter {
             }
             content.append("\n");
             return remainder - sample;
+        } else {
+            return remainder;
+        }
+    }
+
+    /**
+     * Processes a splitting mapping, writing the result to the content and returning an updated remainder.
+     *
+     * @param content               The StringBuilder to append the result of the mapping to.
+     * @param splittingSaporMapping The splitting SAPOR mapping.
+     * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
+     *                              for zero values.
+     * @param calculationSampleSize The sample size to be used for the calculations.
+     * @param scale                 The scale.
+     * @param remainder             The remainder so far.
+     * @return The updated remainder.
+     */
+    private int processMapping(final StringBuilder content, final SplittingSaporMapping splittingSaporMapping,
+            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final int remainder) {
+        if (splittingSaporMapping == null) {
+            return remainder;
+        }
+        Set<ElectoralList> electoralLists = asElectoralListCombination(splittingSaporMapping.getSource());
+        if (actualValues.containsKey(electoralLists)) {
+            double totalSample = actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED;
+            int sumOfSamples = 0;
+            Map<String, Integer> targets = splittingSaporMapping.getTargets();
+            int sumOfWeights = targets.values().stream().reduce(0, Integer::sum);
+            for (Entry<String, Integer> target : targets.entrySet()) {
+                content.append(target.getKey());
+                content.append("=");
+                int sample = (int) Math.round(totalSample * target.getValue() / sumOfWeights);
+                content.append(sample);
+                sumOfSamples += sample;
+                content.append("\n");
+            }
+            return remainder - sumOfSamples;
         } else {
             return remainder;
         }

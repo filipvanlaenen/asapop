@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -21,6 +22,7 @@ import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
+import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
 
 /**
  * Unit tests on the <code>SaporExporter</code> class.
@@ -108,6 +110,22 @@ public class SaporExporterTest {
     }
 
     /**
+     * Creates a splitting SAPOR mapping.
+     *
+     * @param source  The source for the splitting SAPOR mapping.
+     * @param targets The targets with weights for the splitting SAPOR mapping.
+     * @return A SAPOR mapping with a splitting SAPOR mapping from the source to the targets.
+     */
+    private static SaporMapping createSplittingSaporMapping(final String source, final Map<String, Integer> targets) {
+        SaporMapping saporMapping = new SaporMapping();
+        SplittingSaporMapping splittingSaporMapping = new SplittingSaporMapping();
+        splittingSaporMapping.setSource(source);
+        splittingSaporMapping.setTargets(targets);
+        saporMapping.setSplittingMapping(splittingSaporMapping);
+        return saporMapping;
+    }
+
+    /**
      * Returns the SAPOR body for an opinion poll with the lines sorted using the default SAPOR exporter.
      *
      * @param poll                      The opinion poll.
@@ -181,6 +199,20 @@ public class SaporExporterTest {
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
                 createAdditiveSaporMapping(Set.of("B", "C"), "Alliance B+C"),
                 createAdditiveSaporMapping(Set.of("D", "E"), "Alliance D+E")));
+        saporConfiguration.setArea("AR");
+        return new SaporExporter(saporConfiguration);
+    }
+
+    /**
+     * Creates a SAPOR exporter with a splitting mapping.
+     *
+     * @return A SAPOR exporter with a splitting mapping.
+     */
+    private static SaporExporter createSplittingSaporExporter() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setLastElectionDate("2020-12-06");
+        saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
+                createSplittingSaporMapping("B+C", Map.of("Party B", 10, "Party C", 5))));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
@@ -655,6 +687,36 @@ public class SaporExporterTest {
         expected.append("Other=100\n");
         expected.append("Party A=400");
         assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createAdditiveSaporExporter()));
+    }
+
+    /**
+     * Verifies that a splitting mapping is processed correctly.
+     */
+    @Test
+    public void splittingMappingShouldBeProcessedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "C", "50")
+                .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=100\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=333\n");
+        expected.append("Party C=167");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createSplittingSaporExporter()));
+    }
+
+    /**
+     * Verifies that a splitting mapping requiring scaling is processed correctly.
+     */
+    @Test
+    public void splittingMappingWithScalingShouldBeProcessedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "400").addResult("B", "C", "500").setOther("100")
+                .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=100\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=333\n");
+        expected.append("Party C=167");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createSplittingSaporExporter()));
     }
 
     /**
