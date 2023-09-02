@@ -228,6 +228,10 @@ public class SaporExporter extends Exporter {
                     result.add(asElectoralListCombination(source));
                 }
             }
+            SplittingSaporMapping splittingSaporMapping = saporMapping.getSplittingMapping();
+            if (splittingSaporMapping != null) {
+                result.add(asElectoralListCombination(splittingSaporMapping.getSource()));
+            }
         }
         return result;
     }
