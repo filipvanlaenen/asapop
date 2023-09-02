@@ -409,10 +409,12 @@ public class SaporExporter extends Exporter {
             return remainder;
         }
         int sumOfSamples = 0;
+        String currentContent = content.toString();
         Set<Entry<String, Integer>> absentTargets = essentialEntriesSaporMapping.getTargets().entrySet().stream()
-                .filter(k -> !actualValues.containsKey(asElectoralListCombination(k.getKey())))
+                .filter(k -> !currentContent.contains(k.getKey()))
                 .collect(Collectors.toSet());
-        int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum);
+        int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum)
+                + essentialEntriesSaporMapping.getResidual();
         for (Entry<String, Integer> target : absentTargets) {
             content.append(target.getKey());
             content.append("=");
