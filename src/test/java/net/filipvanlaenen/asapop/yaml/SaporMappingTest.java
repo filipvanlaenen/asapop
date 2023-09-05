@@ -33,6 +33,30 @@ public class SaporMappingTest {
     }
 
     /**
+     * Verifies that the getter method <code>getEssentialEntriesMapping</code> is wired correctly to the setter method
+     * <code>setEssentialEntriesMapping</code>.
+     */
+    @Test
+    public void getEssentialEntriesMappingShouldBeWiredCorrectlyToSetEssentialEntriesMapping() {
+        SaporMapping saporMapping = new SaporMapping();
+        EssentialEntriesSaporMapping essentialEntriesMapping = new EssentialEntriesSaporMapping();
+        saporMapping.setEssentialEntriesMapping(essentialEntriesMapping);
+        assertEquals(essentialEntriesMapping, saporMapping.getEssentialEntriesMapping());
+    }
+
+    /**
+     * Verifies that the getter method <code>getSplittingMapping</code> is wired correctly to the setter method
+     * <code>setSplittingMapping</code>.
+     */
+    @Test
+    public void getSplittingMappingShouldBeWiredCorrectlyToSetSplittingMapping() {
+        SaporMapping saporMapping = new SaporMapping();
+        SplittingSaporMapping splittingMapping = new SplittingSaporMapping();
+        saporMapping.setSplittingMapping(splittingMapping);
+        assertEquals(splittingMapping, saporMapping.getSplittingMapping());
+    }
+
+    /**
      * Verifies that the getter method <code>getStartDate</code> is wired correctly to the setter method
      * <code>setStartDate</code>.
      */

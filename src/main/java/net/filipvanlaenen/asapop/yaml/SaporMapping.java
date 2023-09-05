@@ -104,10 +104,10 @@ public class SaporMapping {
     /**
      * Sets the essential entries mapping with the essential entries in a SAPOR file.
      *
-     * @param essentialEntriesSaporMapping The essential entries mapping with the essential entries in a SAPOR file.
+     * @param essentialEntriesMapping The essential entries mapping with the essential entries in a SAPOR file.
      */
-    public void setEssentialEntriesMapping(final EssentialEntriesSaporMapping essentialEntriesSaporMapping) {
-        this.essentialEntriesSaporMapping = essentialEntriesSaporMapping;
+    public void setEssentialEntriesMapping(final EssentialEntriesSaporMapping essentialEntriesMapping) {
+        this.essentialEntriesSaporMapping = essentialEntriesMapping;
     }
 
     /**
