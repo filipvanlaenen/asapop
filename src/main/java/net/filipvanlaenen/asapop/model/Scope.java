@@ -20,9 +20,15 @@ public enum Scope {
      */
     PRESIDENTIAL_FIRST_ROUND("P1");
 
+    /**
+     * The string representation of the scope.
+     */
     private String stringValue;
 
-    private final static Map<String, Scope> VALUE_MAP = new HashMap<String, Scope>();
+    /**
+     * A map mapping string values to their scope.
+     */
+    private static final Map<String, Scope> VALUE_MAP = new HashMap<String, Scope>();
 
     static {
         for (Scope scope : values()) {
@@ -30,10 +36,21 @@ public enum Scope {
         }
     }
 
+    /**
+     * Constructor taking the string value as its parameter.
+     *
+     * @param stringValue The string representation of the scope.
+     */
     Scope(final String stringValue) {
         this.stringValue = stringValue;
     }
 
+    /**
+     * Parses a string into a scope.
+     *
+     * @param string The string to parse.
+     * @return The scope represented by the string.
+     */
     public static Scope parse(final String string) {
         return VALUE_MAP.get(string);
     }
