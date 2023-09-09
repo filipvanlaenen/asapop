@@ -2,6 +2,9 @@ package net.filipvanlaenen.asapop.yaml;
 
 import java.util.Map;
 
+/**
+ * Class representing the splitting SAPOR mapping element for the YAML file containing the SAPOR configuration.
+ */
 public class SplittingSaporMapping {
     /**
      * The source in the ROPF file.

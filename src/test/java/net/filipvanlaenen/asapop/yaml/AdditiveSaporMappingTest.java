@@ -15,7 +15,7 @@ public class AdditiveSaporMappingTest {
      * <code>setSources</code>.
      */
     @Test
-    public void getSourceShouldBeWiredCorrectlyToSetSource() {
+    public void getSourcesShouldBeWiredCorrectlyToSetSources() {
         AdditiveSaporMapping additiveSaporMapping = new AdditiveSaporMapping();
         Set<String> sources = Set.of("AA001", "AA002");
         additiveSaporMapping.setSources(sources);
