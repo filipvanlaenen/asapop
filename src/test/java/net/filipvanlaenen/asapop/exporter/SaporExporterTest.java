@@ -274,7 +274,8 @@ public class SaporExporterTest {
         SaporConfiguration saporConfiguration = new SaporConfiguration();
         saporConfiguration.setLastElectionDate("2020-12-06");
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
-                createSplittingSaporMapping("B+C", Map.of("Party B", 10, "Party C", 5))));
+                createSplittingSaporMapping("B+C", Map.of("Party B", 2, "Party C", 1)),
+                createSplittingSaporMapping("D+E", Map.of("Party D", 2, "Party E", 1))));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
