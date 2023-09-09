@@ -162,7 +162,8 @@ public class SaporExporterTest {
     /**
      * Creates an essential entries SAPOR mapping.
      *
-     * @param essentialEntries The essential entries with their weights for the SAPOR mapping.
+     * @param residual The residual weight for the essential entries SAPOR mapping.
+     * @param targets  The targets with weights for the essential entries SAPOR mapping.
      * @return A SAPOR mapping with an essential entries SAPOR mapping.
      */
     private static SaporMapping createEssentialEntriesSaporMapping(final Integer residual,
