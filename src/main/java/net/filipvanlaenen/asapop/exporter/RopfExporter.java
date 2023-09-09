@@ -61,8 +61,10 @@ public final class RopfExporter extends Exporter {
      */
     private static String asKeysString(final Map<String, String> idsToKeysMap,
             final Set<ElectoralList> electoralListCombination) {
-        return String.join("+",
-                electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId())).collect(Collectors.toList()));
+        List<String> keys =
+                electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId())).collect(Collectors.toList());
+        Collections.sort(keys);
+        return String.join("+", keys);
     }
 
     /**
