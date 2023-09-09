@@ -30,6 +30,10 @@ import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
  */
 public class SaporExporterTest {
     /**
+     * The magic number one half.
+     */
+    private static final double ONE_HALF = 0.5D;
+    /**
      * The magic number thousand.
      */
     private static final int THOUSAND = 1000;
@@ -70,7 +74,20 @@ public class SaporExporterTest {
      * @return A SAPOR mapping with a direct mapping from the source to the target.
      */
     private static SaporMapping createDirectSaporMapping(final String source, final String target) {
-        return createDirectSaporMapping(source, target, null, null);
+        return createDirectSaporMapping(source, target, null, null, null);
+    }
+
+    /**
+     * Creates a direct SAPOR mapping.
+     *
+     * @param source             The source for the direct SAPOR mapping.
+     * @param target             The target for the direct SAPOR mapping.
+     * @param compensationFactor The compensation factor for the direct SAPOR mapping.
+     * @return A SAPOR mapping with a direct mapping from the source to the target.
+     */
+    private static SaporMapping createDirectSaporMapping(final String source, final String target,
+            final Double compensationFactor) {
+        return createDirectSaporMapping(source, target, null, null, compensationFactor);
     }
 
     /**
@@ -84,10 +101,26 @@ public class SaporExporterTest {
      */
     private static SaporMapping createDirectSaporMapping(final String source, final String target,
             final String startDate, final String endDate) {
+        return createDirectSaporMapping(source, target, startDate, endDate, null);
+    }
+
+    /**
+     * Creates a direct SAPOR mapping.
+     *
+     * @param source             The source for the direct SAPOR mapping.
+     * @param target             The target for the direct SAPOR mapping.
+     * @param startDate          The start date for the direct SAPOR mapping.
+     * @param endDate            The end date for the direct SAPOR mapping.
+     * @param compensationFactor The compensation factor for the direct SAPOR mapping.
+     * @return A SAPOR mapping with a direct mapping from the source to the target.
+     */
+    private static SaporMapping createDirectSaporMapping(final String source, final String target,
+            final String startDate, final String endDate, final Double compensationFactor) {
         SaporMapping saporMapping = new SaporMapping();
         DirectSaporMapping directSaporMapping = new DirectSaporMapping();
         directSaporMapping.setSource(source);
         directSaporMapping.setTarget(target);
+        directSaporMapping.setCompensationFactor(compensationFactor);
         saporMapping.setDirectMapping(directSaporMapping);
         saporMapping.setStartDate(startDate);
         saporMapping.setEndDate(endDate);
@@ -125,14 +158,14 @@ public class SaporExporterTest {
         saporMapping.setSplittingMapping(splittingSaporMapping);
         return saporMapping;
     }
-    
+
     /**
      * Creates an essential entries SAPOR mapping.
      *
      * @param essentialEntries The essential entries with their weights for the SAPOR mapping.
      * @return A SAPOR mapping with an essential entries SAPOR mapping.
      */
-    private static SaporMapping createEssentialEntriesSaporMapping( final Map<String, Integer> targets) {
+    private static SaporMapping createEssentialEntriesSaporMapping(final Map<String, Integer> targets) {
         SaporMapping saporMapping = new SaporMapping();
         EssentialEntriesSaporMapping essentialEntriesSaporMapping = new EssentialEntriesSaporMapping();
         essentialEntriesSaporMapping.setTargets(targets);
@@ -199,6 +232,20 @@ public class SaporExporterTest {
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A1", null, "2021-08-01"),
                 createDirectSaporMapping("A", "Party A2", "2021-08-02", null),
                 createDirectSaporMapping("B", "Party B")));
+        saporConfiguration.setArea("AR");
+        return new SaporExporter(saporConfiguration);
+    }
+
+    /**
+     * Creates a SAPOR exporter with a compensation factor.
+     *
+     * @return A SAPOR exporter with a compensation factor.
+     */
+    private static SaporExporter createSaporExporterWithCompensationFactor() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setLastElectionDate("2020-12-06");
+        saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
+                createDirectSaporMapping("B", "Party B"), createDirectSaporMapping("C", "Party C", ONE_HALF)));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
@@ -673,6 +720,21 @@ public class SaporExporterTest {
         expected.append("Party A2=400\n");
         expected.append("Party B=300");
         assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createShiftingSaporExporter()));
+    }
+
+    /**
+     * Verifies that a mapping with a compensation factor is processed correctly.
+     */
+    @Test
+    public void mappingWithCompensationFactorShouldBeProcessedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=100\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=300\n");
+        expected.append("Party C=100");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createSaporExporterWithCompensationFactor()));
     }
 
     /**

@@ -149,6 +149,7 @@ public class SaporExporter extends Exporter {
                         scale, remainder);
             }
         }
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         if (remainder <= 0) {
             content.append("Other=0\n");
         } else {
@@ -415,8 +416,7 @@ public class SaporExporter extends Exporter {
         int sumOfSamples = 0;
         String currentContent = content.toString();
         Set<Entry<String, Integer>> absentTargets = essentialEntriesSaporMapping.getTargets().entrySet().stream()
-                .filter(k -> !currentContent.contains(k.getKey()))
-                .collect(Collectors.toSet());
+                .filter(k -> !currentContent.contains(k.getKey())).collect(Collectors.toSet());
         int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum)
                 + essentialEntriesSaporMapping.getResidual();
         for (Entry<String, Integer> target : absentTargets) {
