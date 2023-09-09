@@ -155,8 +155,7 @@ public class SaporExporter extends Exporter {
         } else {
             for (SaporMapping map : mapping) {
                 if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                    remainder = processMapping(content, map.getEssentialEntriesMapping(), actualValues,
-                            calculationSampleSize, scale, remainder);
+                    remainder = processMapping(content, map.getEssentialEntriesMapping(), remainder);
                 }
             }
             content.append("Other=");
@@ -399,17 +398,11 @@ public class SaporExporter extends Exporter {
      *
      * @param content                      The StringBuilder to append the result of the mapping to.
      * @param essentialEntriesSaporMapping The essential entries SAPOR mapping.
-     * @param actualValues                 A map with the actual values, i.e. either the nominal values or half the
-     *                                     precision for zero values.
-     * @param calculationSampleSize        The sample size to be used for the calculations.
-     * @param scale                        The scale.
      * @param remainder                    The remainder so far.
      * @return The updated remainder.
      */
     private int processMapping(final StringBuilder content,
-            final EssentialEntriesSaporMapping essentialEntriesSaporMapping,
-            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
-            final int remainder) {
+            final EssentialEntriesSaporMapping essentialEntriesSaporMapping, final int remainder) {
         if (essentialEntriesSaporMapping == null) {
             return remainder;
         }
