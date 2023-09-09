@@ -2,16 +2,29 @@ package net.filipvanlaenen.asapop.yaml;
 
 import java.util.Map;
 
+/**
+ * Class representing the SAPOR mapping element containing the essential entries for the YAML file containing the SAPOR
+ * configuration.
+ */
 public class EssentialEntriesSaporMapping {
+    /**
+     * The residual weight.
+     */
     private Integer residual;
     /**
      * The targets in the SAPOR file.
      */
     private Map<String, Integer> targets;
 
+    /**
+     * Returns the residual weight in the SAPOR file.
+     *
+     * @return The residual weight in the SAPOR file.
+     */
     public Integer getResidual() {
         return residual;
     }
+
     /**
      * Returns the targets in the SAPOR file.
      *
@@ -21,9 +34,15 @@ public class EssentialEntriesSaporMapping {
         return targets;
     }
 
-    public void setResidual(Integer residual) {
+    /**
+     * Sets the residual weight in the SAPOR file.
+     *
+     * @param residual The residual weight in the SAPOR file.
+     */
+    public void setResidual(final Integer residual) {
         this.residual = residual;
     }
+
     /**
      * Sets the targets in the SAPOR file.
      *
