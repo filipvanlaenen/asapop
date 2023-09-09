@@ -165,9 +165,11 @@ public class SaporExporterTest {
      * @param essentialEntries The essential entries with their weights for the SAPOR mapping.
      * @return A SAPOR mapping with an essential entries SAPOR mapping.
      */
-    private static SaporMapping createEssentialEntriesSaporMapping(final Map<String, Integer> targets) {
+    private static SaporMapping createEssentialEntriesSaporMapping(final Integer residual,
+            final Map<String, Integer> targets) {
         SaporMapping saporMapping = new SaporMapping();
         EssentialEntriesSaporMapping essentialEntriesSaporMapping = new EssentialEntriesSaporMapping();
+        essentialEntriesSaporMapping.setResidual(residual);
         essentialEntriesSaporMapping.setTargets(targets);
         saporMapping.setEssentialEntriesMapping(essentialEntriesSaporMapping);
         return saporMapping;
@@ -261,6 +263,21 @@ public class SaporExporterTest {
         saporConfiguration.setMapping(Set.of(createDirectSaporMapping("A", "Party A"),
                 createAdditiveSaporMapping(Set.of("B", "C"), "Alliance B+C"),
                 createAdditiveSaporMapping(Set.of("D", "E"), "Alliance D+E")));
+        saporConfiguration.setArea("AR");
+        return new SaporExporter(saporConfiguration);
+    }
+
+    /**
+     * Creates a SAPOR exporter with an essential entries mapping.
+     *
+     * @return A SAPOR exporter with an essential entries mapping.
+     */
+    private static SaporExporter createEssentialEntriesSaporExporter() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setLastElectionDate("2020-12-06");
+        saporConfiguration
+                .setMapping(Set.of(createDirectSaporMapping("A", "Party A"), createDirectSaporMapping("B", "Party B"),
+                        createEssentialEntriesSaporMapping(1, Map.of("Party B", 1, "Party C", 1, "Party D", 2))));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
@@ -795,6 +812,22 @@ public class SaporExporterTest {
         expected.append("Party B=333\n");
         expected.append("Party C=167");
         assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createSplittingSaporExporter()));
+    }
+
+    /**
+     * Verifies that a mapping with essential entries is processed correctly.
+     */
+    @Test
+    public void essentialEntriesMappingShouldBeProcessedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").setSampleSize("1000")
+                .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=75\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=300\n");
+        expected.append("Party C=75\n");
+        expected.append("Party D=150");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createEssentialEntriesSaporExporter()));
     }
 
     /**
