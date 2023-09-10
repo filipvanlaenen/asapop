@@ -66,7 +66,7 @@ abstract class Line {
     /**
      * The pattern to match a sample size.
      */
-    static final Pattern SAMPLE_SIZE_PATTERN = Pattern.compile("^((≥?\\d+)|(\\d+–\\d+))$");
+    static final Pattern SAMPLE_SIZE_PATTERN = Pattern.compile("^(([≈≥]?\\d+)|(\\d+–\\d+))$");
 
     /**
      * Checks whether a text matches a pattern.
