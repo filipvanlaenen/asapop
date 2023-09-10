@@ -1,7 +1,9 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ public final class RichOpinionPollsFile {
      * The warnings.
      */
     private final Set<ParserWarning> warnings;
+    private final List<CommentLine> commentLines;
 
     /**
      * Private constructor creating a new instance from a set of opinion polls and the warnings collected while parsing.
@@ -28,9 +31,15 @@ public final class RichOpinionPollsFile {
      * @param opinionPollsSet The set with the opinion polls.
      * @param warnings        The set with warnings collected while parsing.
      */
-    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final Set<ParserWarning> warnings) {
+    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines,
+            final Set<ParserWarning> warnings) {
         this.opinionPolls = new OpinionPolls(opinionPollsSet);
+        this.commentLines = commentLines;
         this.warnings = warnings;
+    }
+
+    public List<CommentLine> getCommentLines() {
+        return commentLines;
     }
 
     /**
@@ -59,6 +68,7 @@ public final class RichOpinionPollsFile {
      */
     public static RichOpinionPollsFile parse(final String... lines) {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
+        List<CommentLine> commentLines = new ArrayList<CommentLine>();
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
         OpinionPoll lastOpinionPoll = null;
@@ -86,11 +96,12 @@ public final class RichOpinionPollsFile {
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(responseScenarioLine.getWarnings());
-            } else if (!ElectoralListLine.isElectoralListLine(line) && !EmptyLine.isEmptyLine(line)
-                    && !CommentLine.isCommentLine(line)) {
+            } else if (CommentLine.isCommentLine(line)) {
+                commentLines.add(CommentLine.parse(line));
+            } else if (!ElectoralListLine.isElectoralListLine(line) && !EmptyLine.isEmptyLine(line)) {
                 warnings.add(new UnrecognizedLineFormatWarning(lineNumber));
             }
         }
-        return new RichOpinionPollsFile(opinionPolls, warnings);
+        return new RichOpinionPollsFile(opinionPolls, commentLines, warnings);
     }
 }

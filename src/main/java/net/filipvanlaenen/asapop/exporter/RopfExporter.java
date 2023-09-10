@@ -14,6 +14,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.asapop.parser.CommentLine;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
 /**
@@ -360,6 +361,15 @@ public final class RopfExporter extends Exporter {
         for (String key : electoralListKeys) {
             sb.append(export(ElectoralList.get(keysToIdsMap.get(key)), idsToKeysMap, electoralListWidths));
             sb.append("\n");
+        }
+        List<CommentLine> commentLines = richOpinionPollsFile.getCommentLines();
+        if (!commentLines.isEmpty()) {
+            sb.append("\n");
+            for (CommentLine comment : commentLines) {
+                sb.append("‡ ");
+                sb.append(comment.getComment());
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }
