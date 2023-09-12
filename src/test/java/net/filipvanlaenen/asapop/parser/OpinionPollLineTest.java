@@ -403,7 +403,7 @@ public final class OpinionPollLineTest {
     public void shouldProduceAWarningForAnUnknownScopeValue() {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
-        Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        Set<ParserWarning> expected = Set.of(new UnknownMetadataValueWarning(1, "scope", "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 
@@ -414,7 +414,7 @@ public final class OpinionPollLineTest {
     public void shouldProduceAWarningForAnUnknownUnitValue() {
         OpinionPollLine opinionPollLine =
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
-        Set<ParserWarning> expected = Set.of(new UnknownUnitValueWarning(1, "X"));
+        Set<ParserWarning> expected = Set.of(new UnknownMetadataValueWarning(1, "unit", "X"));
         assertEquals(expected, opinionPollLine.getWarnings());
     }
 

@@ -272,7 +272,7 @@ public final class ResponseScenarioLineTest {
     public void shouldProduceAWarningForAnUnknownScopeValue() {
         ResponseScenarioLine responseScenarioLine =
                 ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1);
-        Set<ParserWarning> expected = Set.of(new UnknownScopeValueWarning(1, "X"));
+        Set<ParserWarning> expected = Set.of(new UnknownMetadataValueWarning(1, "scope", "X"));
         assertEquals(expected, responseScenarioLine.getWarnings());
     }
 

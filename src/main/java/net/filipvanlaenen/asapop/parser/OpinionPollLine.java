@@ -250,7 +250,7 @@ final class OpinionPollLine extends Line {
             } else {
                 Scope scope = Scope.parse(value);
                 if (scope == null) {
-                    warnings.add(new UnknownScopeValueWarning(lineNumber, value));
+                    warnings.add(new UnknownMetadataValueWarning(lineNumber, "scope", value));
                 } else {
                     builder.setScope(scope);
                 }
@@ -272,7 +272,7 @@ final class OpinionPollLine extends Line {
             } else {
                 Unit unit = Unit.parse(value);
                 if (unit == null) {
-                    warnings.add(new UnknownUnitValueWarning(lineNumber, value));
+                    warnings.add(new UnknownMetadataValueWarning(lineNumber, "unit", value));
                 } else {
                     builder.setUnit(unit);
                 }

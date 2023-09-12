@@ -192,7 +192,7 @@ final class ResponseScenarioLine extends Line {
             } else {
                 Scope scope = Scope.parse(value);
                 if (scope == null) {
-                    warnings.add(new UnknownScopeValueWarning(lineNumber, value));
+                    warnings.add(new UnknownMetadataValueWarning(lineNumber, "scope", value));
                 } else {
                     builder.setScope(scope);
                 }
