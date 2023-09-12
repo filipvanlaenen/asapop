@@ -23,12 +23,16 @@ public final class RichOpinionPollsFile {
      * The warnings.
      */
     private final Set<ParserWarning> warnings;
+    /**
+     * A list with the comment lines.
+     */
     private final List<CommentLine> commentLines;
 
     /**
      * Private constructor creating a new instance from a set of opinion polls and the warnings collected while parsing.
      *
      * @param opinionPollsSet The set with the opinion polls.
+     * @param commentLines    A list with the comment lines.
      * @param warnings        The set with warnings collected while parsing.
      */
     private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines,
@@ -38,6 +42,11 @@ public final class RichOpinionPollsFile {
         this.warnings = warnings;
     }
 
+    /**
+     * Returns the comment lines.
+     *
+     * @return The comment lines.
+     */
     public List<CommentLine> getCommentLines() {
         return commentLines;
     }

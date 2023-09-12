@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,10 @@ public final class RichOpinionPollsFileTest {
      * Line for electoral list C.
      */
     private static final String ELECTORAL_LIST_C_LINE = "C: AA003 •A: C";
+    /**
+     * Comment line.
+     */
+    private static final String COMMENT_LINE = "‡ Foo";
 
     /**
      * Verifies that a single line containing a simple opinion poll can be parsed.
@@ -171,5 +176,15 @@ public final class RichOpinionPollsFileTest {
     @Test
     public void shouldProduceAWarningForALineWithAnRecognizedFormat() {
         assertEquals(Set.of(new UnrecognizedLineFormatWarning(1)), RichOpinionPollsFile.parse("Foo").getWarnings());
+    }
+
+    /**
+     * Verifies that a single line containing a comment can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAComment() {
+        List<CommentLine> commentLines = RichOpinionPollsFile.parse(COMMENT_LINE).getCommentLines();
+        assertEquals(1, commentLines.size());
+        assertEquals("Foo", commentLines.get(0).getContent());
     }
 }
