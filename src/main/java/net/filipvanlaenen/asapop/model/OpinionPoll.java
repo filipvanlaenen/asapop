@@ -437,7 +437,7 @@ public final class OpinionPoll {
 
         /**
          * Sets the unit.
-         * 
+         *
          * @param theUnit The unit.
          * @return This builder instance.
          */

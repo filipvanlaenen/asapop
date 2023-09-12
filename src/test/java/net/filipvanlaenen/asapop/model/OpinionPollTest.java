@@ -230,6 +230,31 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that the setUnit method in the builder class is wired correctly to the getUnit method.
+     */
+    @Test
+    public void setUnitInBuilderShouldBeWiredCorrectlyToGetUnit() {
+        OpinionPoll poll = new OpinionPollTestBuilder().setUnit(Unit.PERCENTAGES).build();
+        assertEquals(Unit.PERCENTAGES, poll.getUnit());
+    }
+
+    /**
+     * Verifies that before the unit has been added, the builder responds that a unit is missing.
+     */
+    @Test
+    public void hasUnitInBuilderShouldReturnFalseBeforeUnitIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasUnit());
+    }
+
+    /**
+     * Verifies that after a unit has been added, the builder responds that a unit is present.
+     */
+    @Test
+    public void hasUnitInBuilderShouldReturnTrueAfterUnitIsAdded() {
+        assertTrue(new OpinionPollTestBuilder().setUnit(Unit.PERCENTAGES).hasUnit());
+    }
+
+    /**
      * Verifies that the setVerifiedSum method in the builder class is wired correctly to the getVerifiedSum method.
      */
     @Test
