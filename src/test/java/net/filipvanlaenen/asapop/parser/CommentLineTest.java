@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,5 +32,13 @@ public class CommentLineTest {
     @Test
     public void isCommentLineShouldDetectNonCommentLine() {
         assertFalse(CommentLine.isCommentLine("Foo"));
+    }
+
+    /**
+     * Verifies that the getter method <code>getContent</code> is wired correctly to the parameter from the constructor.
+     */
+    @Test
+    public void getContentShouldBeWiredCorrectlyToTheConstructor() {
+        assertEquals("Comment", CommentLine.parse("‡ Comment").getContent());
     }
 }

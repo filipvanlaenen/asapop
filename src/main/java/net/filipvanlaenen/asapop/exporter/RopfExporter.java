@@ -367,7 +367,7 @@ public final class RopfExporter extends Exporter {
             sb.append("\n");
             for (CommentLine comment : commentLines) {
                 sb.append("‡ ");
-                sb.append(comment.getComment());
+                sb.append(comment.getContent());
                 sb.append("\n");
             }
         }

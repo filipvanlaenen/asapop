@@ -3,17 +3,34 @@ package net.filipvanlaenen.asapop.parser;
 import java.util.regex.Pattern;
 
 /**
- * Class implementing an empty line.
+ * Class implementing an comment line.
  */
 public final class CommentLine extends Line {
-    private final String comment;
+    /**
+     * The content of the comment line.
+     */
+    private final String content;
     /**
      * The pattern to match a comment line.
      */
     private static final Pattern COMMENT_PATTERN = Pattern.compile("^\\s*‡.*$");
 
-    private CommentLine(final String comment) {
-        this.comment = comment;
+    /**
+     * Constructor taking the content of the comment line as its parameter.
+     *
+     * @param content The content of the comment line.
+     */
+    private CommentLine(final String content) {
+        this.content = content;
+    }
+
+    /**
+     * Returns the content of the comment line.
+     *
+     * @return The content of the comment line.F
+     */
+    public String getContent() {
+        return content;
     }
 
     /**
@@ -26,11 +43,13 @@ public final class CommentLine extends Line {
         return textMatchesPattern(COMMENT_PATTERN, line);
     }
 
+    /**
+     * Parses a line into a comment line object.
+     *
+     * @param line The line to be parsed.
+     * @return A comment line object representing the comment line.
+     */
     static CommentLine parse(final String line) {
         return new CommentLine(line.strip().substring(1).stripLeading());
-    }
-
-    public String getComment() {
-        return comment;
     }
 }
