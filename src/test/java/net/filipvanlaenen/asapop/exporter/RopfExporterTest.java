@@ -38,7 +38,8 @@ public class RopfExporterTest {
         StringBuffer expected = new StringBuffer();
         expected.append(
                 "•PF: ACME •PFP: BCME •C: The Post •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27"
-                        + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2 •O: 2 •N: 3 •VS: 109\n");
+                        + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2 •O: 2 •N: 3"
+                        + " •VS: 109\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP       •EN: Apple Party •EO: Pomo Partio •NL: Appelpartij •NO: Eplepartiet\n");
         expected.append("BL: AA002 •A: Bl                                         •NL: Blauw\n");
@@ -134,6 +135,26 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll with list combinations.
+     */
+    @Test
+    public void shouldSortCombinedElectoralListsAlphabetically() {
+        RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(
+                "•PF: ACME •PD: 2021-07-27 A:55 B+F+C+E+D:45", "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:B",
+                "C: AA003 •A:C", "D: AA004 •A:D", "E: AA005 •A:E", "F: AA006 •A:F");
+        StringBuffer expected = new StringBuffer();
+        expected.append("•PF: ACME •PD: 2021-07-27 AP: 55 B+C+D+E+F: 45\n");
+        expected.append("\n");
+        expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
+        expected.append("B:  AA002 •A: B\n");
+        expected.append("C:  AA003 •A: C\n");
+        expected.append("D:  AA004 •A: D\n");
+        expected.append("E:  AA005 •A: E\n");
+        expected.append("F:  AA006 •A: F\n");
         assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
     }
 }
