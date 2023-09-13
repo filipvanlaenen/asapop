@@ -17,6 +17,7 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 
 /**
@@ -234,9 +235,237 @@ public class EopaodCsvExporterTest {
     public void shouldExportOpinionPollWithNoResponsesAndOtherResultCorrectly() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "50").addResult("B", "40").setNoResponses("8")
                 .setOther("2").setPollingFirm("ACME").setPublicationDate(DATE).build();
-        String expected =
-                "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available" + ",92%,1%,54%,43%,2%";
+        String expected = "ACME,,2021-08-02,2021-08-02,Not Available,Not Available,Not Available,92%,1%,54%,43%,2%";
         assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll given in numbers of seats when the sample size and result values
+     * are given.
+     *
+     * <code>•U: S •SS: 1000 A: 40 B: 30 C: 20</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU01ShouldHandleSampleSizeAndResultValues() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setSampleSize("1000").setUnit(Unit.SEATS).setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,1.1%,44.4%,33.3%,22.2%,Not"
+                        + " Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of a response scenario given in numbers of seats when the sample size and result
+     * values are given.
+     *
+     * <code>•U: S •SS: 1000 A: 40 B: 30 C: 20</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU01ShouldHandleSampleSizeAndResultValues() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
+                .addResult("C", "20").setSampleSize("1000").build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,1.1%,44.4%,33.3%,22.2%,Not"
+                        + " Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll given in numbers of seats when the sample size, the excluded and
+     * result values are given.
+     *
+     * <code>•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU02ShouldHandleSampleSizeExcludedAndResultValues() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setSampleSize("1250").setUnit(Unit.SEATS).setExcluded(DecimalNumber.parse("20")).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,80%,1.1%,44.4%,33.3%,22.2%,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of response scenario given in numbers of seats when the sample size, the excluded and
+     * result values are given.
+     *
+     * <code>•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU02ShouldHandleSampleSizeExcludedAndResultValues() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
+                .addResult("C", "20").setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,80%,1.1%,44.4%,33.3%,22.2%,Not Available";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll given in numbers of seats when the sample size, result values and
+     * others are given.
+     *
+     * <code>•U: S •SS: 1000 A: 40 B: 30 C: 20 •O: 10</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU03ShouldHandleSampleSizeResultValuesAndOthers() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setOther("10").setSampleSize("1000").setUnit(Unit.SEATS).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,1.0%,40%,30%,20%,10%";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of a response scenario given in numbers of seats when the sample size, result values
+     * and others are given.
+     *
+     * <code>•U: S •SS: 1000 A: 40 B: 30 C: 20 •O: 10</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU03ShouldHandleSampleSizeResultValuesAndOthers() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
+                .addResult("C", "20").setOther("10").setSampleSize("1000").build();
+        String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,1.0%,40%,30%,20%,10%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll given in numbers of seats when the sample size, the excluded,
+     * result values and others are given.
+     *
+     * <code>•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU04ShouldHandleSampleSizeExcludedResultValuesAndOthers() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setOther("10").setSampleSize("1250").setUnit(Unit.SEATS).setExcluded(DecimalNumber.parse("20"))
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,80%,1.0%,40%,30%,20%,10%";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of a response scenario given in numbers of seats when the sample size, the excluded,
+     * result values and others are given.
+     *
+     * <code>•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU04ShouldHandleSampleSizeExcludedResultValuesAndOthers() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario =
+                new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                        .setOther("10").setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+        String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,80%,1.0%,40%,30%,20%,10%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll given in numbers of seats when the sample size, result values and
+     * others are less than one hundred.
+     *
+     * <code>•U: S •SS: 1250 A: 32 B: 24 C: 16 •O: 8</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU05ShouldHandleSampleSizeResultValuesAndOthersLessThanOneHundred() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "32").addResult("B", "24").addResult("C", "16")
+                .setOther("8").setSampleSize("1250").setUnit(Unit.SEATS).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,Not Available,1.2%,40.0%,30.0%,20.0%,10.0%";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of a response scenario given in numbers of seats when the sample size, result values
+     * and others are less than one hundred.
+     *
+     * <code>•U: S •SS: 1250 A: 32 B: 24 C: 16 •O: 8</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU05ShouldHandleSampleSizeResultValuesAndOthersLessThanOneHundred() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "32").addResult("B", "24")
+                .addResult("C", "16").setOther("8").setSampleSize("1250").build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,Not Available,1.2%,40.0%,30.0%,20.0%,10.0%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll in numbers of seats when the sample size, the excluded, result
+     * values and others are less than one hundred.
+     *
+     * <code>•U: S •SS: 1250 •EX: 30 A: 32 B: 24 C: 16 •O: 8</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU06ShouldHandleSampleSizeExcludedResultValuesAndOthersLessThanOneHundred() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "32").addResult("B", "24").addResult("C", "16")
+                .setOther("8").setSampleSize("1250").setUnit(Unit.SEATS).setExcluded(DecimalNumber.parse("30"))
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,70%,1.2%,40.0%,30.0%,20.0%,10.0%";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of a response scenario in numbers of seats when the sample size, the excluded, result
+     * values and others are less than one hundred.
+     *
+     * <code>•U: S •SS: 1250 •EX: 30 A: 32 B: 24 C: 16 •O: 8</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU06ShouldHandleSampleSizeExcludedResultValuesAndOthersLessThanOneHundred() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario =
+                new ResponseScenarioTestBuilder().addResult("A", "32").addResult("B", "24").addResult("C", "16")
+                        .setOther("8").setSampleSize("1250").setExcluded(DecimalNumber.parse("30")).build();
+        String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,70%,1.2%,40.0%,30.0%,20.0%,10.0%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of an opinion poll given in number of seats when the sample size, result values and
+     * others are greater than one hundred.
+     *
+     * <code>•U: S •SS: 1000 A: 80 B: 60 C: 40 •O: 20</code>
+     */
+    @Test
+    public void exportOfOpinionPollCaseU15ShouldHandleSampleSizeResultValuesAndOthersGreaterThanOneHundred() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "80").addResult("B", "60").addResult("C", "40")
+                .setOther("20").setSampleSize("1000").setUnit(Unit.SEATS).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,0.5%,40.0%,30.0%,20.0%,10.0%";
+        assertEquals(expected, EopaodCsvExporter.export(poll, null, A_AND_B_AND_C));
+    }
+
+    /**
+     * Verifies the correct export of a response scenario given in number of seats when the sample size, result values
+     * and others are greater than one hundred.
+     *
+     * <code>•U: S •SS: 1000 A: 80 B: 60 C: 40 •O: 20</code>
+     */
+    @Test
+    public void exportOfResponseScenarioCaseU15ShouldHandleSampleSizeResultValuesAndOthersGreaterThanOneHundred() {
+        OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "80").addResult("B", "60")
+                .addResult("C", "40").setOther("20").setSampleSize("1000").build();
+        String expected =
+                "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,0.5%,40.0%,30.0%,20.0%,10.0%";
+        assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, A_AND_B_AND_C));
     }
 
     /**

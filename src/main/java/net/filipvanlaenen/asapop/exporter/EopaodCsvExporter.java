@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -12,11 +13,16 @@ import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.model.ResultValue.Precision;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.Unit;
 
 /**
  * Exporter to the EOPAOD CSV file format.
  */
 public final class EopaodCsvExporter extends Exporter {
+    /**
+     * The magic number one hundred.
+     */
+    private static final double ONE_HUNDRED = 100D;
     /**
      * A map mapping scopes to CSV values.
      */
@@ -27,6 +33,24 @@ public final class EopaodCsvExporter extends Exporter {
      * Private constructor.
      */
     private EopaodCsvExporter() {
+    }
+
+    /**
+     * Calculates the number of seats.
+     *
+     * @param responseScenario The response scenario for which the number of seats should be calculated.
+     * @return The number of seats for the given response scenario.
+     */
+    private static double calculateNumberOfSeats(final ResponseScenario responseScenario) {
+        double numberOfSeats = 0D;
+        for (Set<ElectoralList> electoralLists : responseScenario.getElectoralListSets()) {
+            Set<String> electoralListIds = ElectoralList.getIds(electoralLists);
+            numberOfSeats += responseScenario.getResult(electoralListIds).getNominalValue();
+        }
+        if (responseScenario.getOther() != null) {
+            numberOfSeats += responseScenario.getOther().getNominalValue();
+        }
+        return numberOfSeats;
     }
 
     /**
@@ -102,8 +126,15 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(opinionPoll.getSampleSizeValue() == null ? "Not Available" : "Provided");
             elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
             Precision precision = calculatePrecision(opinionPoll, electoralListIdSets);
-            elements.add(precision + "%");
             Double scale = opinionPoll.getScale();
+            if (Unit.SEATS == opinionPoll.getUnit()) {
+                precision = Precision.TENTH;
+                double numberOfSeats = calculateNumberOfSeats(opinionPoll.getMainResponseScenario());
+                elements.add(Precision.TENTH.getFormat().format(ONE_HUNDRED / numberOfSeats) + "%");
+                scale = numberOfSeats / ONE_HUNDRED;
+            } else {
+                elements.add(precision + "%");
+            }
             for (Set<String> electoralListIdSet : electoralListIdSets) {
                 elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListIdSet), precision, scale));
             }
@@ -148,8 +179,15 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(sampleSize == null ? "Not Available" : "Provided");
         elements.add(notAvailableIfNull(exportParticipationRatePercentage(responseScenario, opinionPoll)));
         Precision precision = calculatePrecision(responseScenario, electoralListIdSets);
-        elements.add(precision + "%");
         Double scale = responseScenario.getScale();
+        if (Unit.SEATS == opinionPoll.getUnit()) {
+            precision = Precision.TENTH;
+            double numberOfSeats = calculateNumberOfSeats(responseScenario);
+            elements.add(Precision.TENTH.getFormat().format(ONE_HUNDRED / numberOfSeats) + "%");
+            scale = numberOfSeats / ONE_HUNDRED;
+        } else {
+            elements.add(precision + "%");
+        }
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListIdSet), precision, scale));
         }
