@@ -18,6 +18,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
@@ -390,6 +391,25 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that the body can be created for an opinion poll given in numbers of seats when the sample size and
+     * result values are given.
+     *
+     * <code>•U: S •SS: 1000 A: 40 B: 30 C: 20</code>
+     */
+    @Test
+    public void saporBodyCaseU01ShouldHandleSampleSizeAndResultValues() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setSampleSize("1000").setUnit(Unit.SEATS).setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=1\n");
+        expected.append("Party A=444\n");
+        expected.append("Party B=333\n");
+        expected.append("Party C=222");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded and result values
      * are given.
      *
@@ -409,6 +429,25 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that the body can be created for an opinion poll given in numbers of seats when the sample size, the
+     * excluded and result values are given.
+     *
+     * <code>•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20</code>
+     */
+    @Test
+    public void saporBodyCaseU02ShouldHandleSampleSizeExcludedAndResultValues() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setSampleSize("1250").setUnit(Unit.SEATS).setExcluded(DecimalNumber.parse("20")).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=1\n");
+        expected.append("Party A=444\n");
+        expected.append("Party B=333\n");
+        expected.append("Party C=222");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values and others are
      * given.
      *
@@ -419,6 +458,25 @@ public class SaporExporterTest {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
                 .setOther("10").setSampleSize("1000").setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
                 .setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=100\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=300\n");
+        expected.append("Party C=200");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll given in numbers of seats when the sample size, result
+     * values and others are given.
+     *
+     * <code>•U: S •SS: 1000 A: 40 B: 30 C: 20 •O: 10</code>
+     */
+    @Test
+    public void saporBodyCaseU03ShouldHandleSampleSizeResultValuesAndOthers() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setOther("10").setSampleSize("1000").setUnit(Unit.SEATS).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
         StringBuilder expected = new StringBuilder();
         expected.append("Other=100\n");
         expected.append("Party A=400\n");
@@ -447,6 +505,25 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that the body can be created for an opinion poll given in numbers of seats when the sample size, the
+     * excluded, result values and others are given.
+     *
+     * <code>•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10</code>
+     */
+    @Test
+    public void saporBodyCaseU04ShouldHandleSampleSizeExcludedResultValuesAndOthers() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                .setOther("10").setSampleSize("1250").setUnit(Unit.SEATS).setExcluded(DecimalNumber.parse("20"))
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=100\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=300\n");
+        expected.append("Party C=200");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
      * Verifies that the body can be created for an opinion poll when the sample size, result values and others are
      * given with an implicit number of no responses.
      *
@@ -466,6 +543,25 @@ public class SaporExporterTest {
     }
 
     /**
+     * Verifies that the body can be created for an opinion poll given in numbers of seats when the sample size, result
+     * values and others are less than one hundred.
+     *
+     * <code>•U: S •SS: 1250 A: 32 B: 24 C: 16 •O: 8</code>
+     */
+    @Test
+    public void saporBodyCaseU05ShouldHandleSampleSizeResultValuesAndOthersLessThanOneHundred() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "32").addResult("B", "24").addResult("C", "16")
+                .setOther("8").setSampleSize("1250").setUnit(Unit.SEATS).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=125\n");
+        expected.append("Party A=500\n");
+        expected.append("Party B=375\n");
+        expected.append("Party C=250");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
      * Verifies that the body can be created for an opinion poll when the sample size, the excluded, result values and
      * others are given with an implicit number of no responses.
      *
@@ -481,6 +577,25 @@ public class SaporExporterTest {
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=200");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll in numbers of seats when the sample size, the excluded,
+     * result values and others are less than one hundred.
+     *
+     * <code>•U: S •SS: 1250 •EX: 30 A: 32 B: 24 C: 16 •O: 8</code>
+     */
+    @Test
+    public void saporBodyCaseU06ShouldHandleSampleSizeExcludedResultValuesAndOthersLessThanOneHundred() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "32").addResult("B", "24").addResult("C", "16")
+                .setOther("8").setSampleSize("1250").setUnit(Unit.SEATS).setExcluded(DecimalNumber.parse("30"))
+                .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=87\n");
+        expected.append("Party A=350\n");
+        expected.append("Party B=263\n");
+        expected.append("Party C=175");
         assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
     }
 
@@ -647,6 +762,25 @@ public class SaporExporterTest {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "80").addResult("B", "60").addResult("C", "40")
                 .setOther("20").setSampleSize("1000").setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
                 .setFieldworkEnd(DATE_OR_MONTH2).build();
+        StringBuilder expected = new StringBuilder();
+        expected.append("Other=100\n");
+        expected.append("Party A=400\n");
+        expected.append("Party B=300\n");
+        expected.append("Party C=200");
+        assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1));
+    }
+
+    /**
+     * Verifies that the body can be created for an opinion poll given in number of seats when the sample size, result
+     * values and others are greater than one hundred.
+     *
+     * <code>•U: S •SS: 1000 A: 80 B: 60 C: 40 •O: 20</code>
+     */
+    @Test
+    public void saporBodyCaseU15ShouldHandleSampleSizeResultValuesAndOthersGreaterThanOneHundred() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "80").addResult("B", "60").addResult("C", "40")
+                .setOther("20").setSampleSize("1000").setUnit(Unit.SEATS).setPollingFirm("ACME")
+                .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
         StringBuilder expected = new StringBuilder();
         expected.append("Other=100\n");
         expected.append("Party A=400\n");

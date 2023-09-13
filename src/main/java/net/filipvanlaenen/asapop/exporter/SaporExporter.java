@@ -15,6 +15,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
@@ -79,6 +80,7 @@ public class SaporExporter extends Exporter {
             final Integer lowestEffectiveSampleSize) {
         ResponseScenario responseScenario = opinionPoll.getMainResponseScenario();
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
+        boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
         boolean hasExcluded = responseScenario.getExcluded() != null;
         boolean hasOther = responseScenario.getOther() != null;
@@ -100,8 +102,8 @@ public class SaporExporter extends Exporter {
         }
         double sumOfOtherAndActualValues = sumOfActualValues + actualOtherValue;
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        boolean hasImplicitlyNoResponses =
-                !hasNoResponses && hasOther && !strictlyWithinRoundingError && sumOfOtherAndActualValues < ONE_HUNDRED;
+        boolean hasImplicitlyNoResponses = !unitIsSeats && !hasNoResponses && hasOther && !strictlyWithinRoundingError
+                && sumOfOtherAndActualValues < ONE_HUNDRED;
         if (calculationSampleSize == null) {
             if (hasNoResponses) {
                 calculationSampleSize = lowestSampleSize;
@@ -122,13 +124,17 @@ public class SaporExporter extends Exporter {
         }
         double actualTotalSum = sumOfOtherAndActualValues + actualNoResponsesValue;
         double scale = 1D;
-        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        if (actualTotalSum > ONE_HUNDRED) {
-            scale = ONE_HUNDRED / actualTotalSum;
-        }
-        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        if (hasOther && hasNoResponses && actualTotalSum < ONE_HUNDRED) {
-            scale = ONE_HUNDRED / actualTotalSum;
+        if (unitIsSeats) {
+            scale = ONE_HUNDRED / sumOfOtherAndActualValues;
+        } else {
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+            if (actualTotalSum > ONE_HUNDRED) {
+                scale = ONE_HUNDRED / actualTotalSum;
+            }
+            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+            if (hasOther && hasNoResponses && actualTotalSum < ONE_HUNDRED) {
+                scale = ONE_HUNDRED / actualTotalSum;
+            }
         }
         int remainder = calculationSampleSize;
         if (hasNoResponses || hasImplicitlyNoResponses) {
