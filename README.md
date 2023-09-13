@@ -190,6 +190,13 @@ Below are a number of ways in which the results can be registered:
 | `•SS: 1250         A: 40 B: 30 C: 20 •O: 10 •N: 25`  | All rescaled³         | 1,250 - 20% = 1,000   |
 | `•SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10 •N: 25`  | All rescaled²³        | 1,250 - 20% = 1,000   |
 | `•SS: 1000         A: 80 B: 60 C: 40 •O: 20`         | All rescaled³ `•N: ?` | 1,000                 |
+| `•U: S •SS: 1000         A: 40 B: 30 C: 20`          | `•O: 0 •N: ?`         | 1,000                 |
+| `•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20`          | `•O: 0 •N: 20`        | 1,250 - 20% = 1,000   |
+| `•U: S •SS: 1000         A: 40 B: 30 C: 20 •O: 10`   | `•N: ?`               | 1,000                 |
+| `•U: S •SS: 1250 •EX: 20 A: 40 B: 30 C: 20 •O: 10`   | `•N: 20`              | 1,250 - 20% = 1,000   |
+| `•U: S •SS: 1000         A: 32 B: 24 C: 16 •O: 8`    | `•N: ?`               | 1,000                 |
+| `•U: S •SS: 1250 •EX: 20 A: 32 B: 24 C: 16 •O: 8`    | `•N: 20`              | 1,250 - 20% = 1,000   |
+| `•U: S •SS: 1000         A: 80 B: 60 C: 40 •O: 20`   | `•N: ?`               | 1,000                 |
 
 ¹ Field N is only calculated if the sum of the registered results is less than 100 - floor((_n_ - 1) / 2) × precision, in order to cater for rounding effects.
 
