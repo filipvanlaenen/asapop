@@ -62,6 +62,10 @@ public final class ResponseScenario {
      */
     private boolean strictlyWithinRoundingError;
     /**
+     * The sum of all the results and other.
+     */
+    private double sumOfResultsAndOther;
+    /**
      * The verified sum.
      */
     private DecimalNumber verifiedSum;
@@ -86,6 +90,7 @@ public final class ResponseScenario {
                 effectiveSampleSize = Math.round(sampleSizeValue * (1F - excluded.value() / HUNDRED));
             }
         }
+        sumOfResultsAndOther = builder.calculateSumOfResultsAndOther();
         scale = builder.calculateScale();
         scope = builder.scope;
         strictlyWithinRoundingError = builder.resultsAddStrictlyUp();
@@ -161,7 +166,7 @@ public final class ResponseScenario {
          */
         Double calculateScale() {
             if (!resultsAddUp()) {
-                return calculateResultsAndOtherSum() / ONE_HUNDRED;
+                return calculateSumOfResultsAndOther() / ONE_HUNDRED;
             } else if (hasNoResponses()) {
                 return 1D - noResponses.getNominalValue() / ONE_HUNDRED;
             } else {
@@ -170,11 +175,27 @@ public final class ResponseScenario {
         }
 
         /**
+         * Calculates the sum.
+         *
+         * @return The sum.
+         */
+        private double calculateSum() {
+            double sum = calculateSumOfResultsAndOther();
+            if (hasNoResponses()) {
+                Double value = noResponses.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            }
+            return sum;
+        }
+
+        /**
          * Calculates the sum of the results and other.
          *
          * @return The sum of the results and other.
          */
-        private double calculateResultsAndOtherSum() {
+        private double calculateSumOfResultsAndOther() {
             double sum = 0D;
             for (ResultValue resultValue : results.values()) {
                 Double value = resultValue.getNominalValue();
@@ -184,22 +205,6 @@ public final class ResponseScenario {
             }
             if (hasOther()) {
                 Double value = other.getNominalValue();
-                if (value != null) {
-                    sum += value;
-                }
-            }
-            return sum;
-        }
-
-        /**
-         * Calculates the sum.
-         *
-         * @return The sum.
-         */
-        private double calculateSum() {
-            double sum = calculateResultsAndOtherSum();
-            if (hasNoResponses()) {
-                Double value = noResponses.getNominalValue();
                 if (value != null) {
                     sum += value;
                 }
@@ -542,6 +547,15 @@ public final class ResponseScenario {
      */
     public Scope getScope() {
         return scope;
+    }
+
+    /**
+     * Returns the sum of all results and other.
+     *
+     * @return The sum of all results and other.
+     */
+    public Double getSumOfResultsAndOther() {
+        return sumOfResultsAndOther;
     }
 
     /**

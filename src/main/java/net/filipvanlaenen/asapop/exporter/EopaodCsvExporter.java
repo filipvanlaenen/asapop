@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -33,24 +32,6 @@ public final class EopaodCsvExporter extends Exporter {
      * Private constructor.
      */
     private EopaodCsvExporter() {
-    }
-
-    /**
-     * Calculates the number of seats.
-     *
-     * @param responseScenario The response scenario for which the number of seats should be calculated.
-     * @return The number of seats for the given response scenario.
-     */
-    private static double calculateNumberOfSeats(final ResponseScenario responseScenario) {
-        double numberOfSeats = 0D;
-        for (Set<ElectoralList> electoralLists : responseScenario.getElectoralListSets()) {
-            Set<String> electoralListIds = ElectoralList.getIds(electoralLists);
-            numberOfSeats += responseScenario.getResult(electoralListIds).getNominalValue();
-        }
-        if (responseScenario.getOther() != null) {
-            numberOfSeats += responseScenario.getOther().getNominalValue();
-        }
-        return numberOfSeats;
     }
 
     /**
@@ -129,7 +110,7 @@ public final class EopaodCsvExporter extends Exporter {
             Double scale = opinionPoll.getScale();
             if (Unit.SEATS == opinionPoll.getUnit()) {
                 precision = Precision.TENTH;
-                double numberOfSeats = calculateNumberOfSeats(opinionPoll.getMainResponseScenario());
+                double numberOfSeats = opinionPoll.getMainResponseScenario().getSumOfResultsAndOther();
                 elements.add(Precision.TENTH.getFormat().format(ONE_HUNDRED / numberOfSeats) + "%");
                 scale = numberOfSeats / ONE_HUNDRED;
             } else {
@@ -182,7 +163,7 @@ public final class EopaodCsvExporter extends Exporter {
         Double scale = responseScenario.getScale();
         if (Unit.SEATS == opinionPoll.getUnit()) {
             precision = Precision.TENTH;
-            double numberOfSeats = calculateNumberOfSeats(responseScenario);
+            double numberOfSeats = responseScenario.getSumOfResultsAndOther();
             elements.add(Precision.TENTH.getFormat().format(ONE_HUNDRED / numberOfSeats) + "%");
             scale = numberOfSeats / ONE_HUNDRED;
         } else {
