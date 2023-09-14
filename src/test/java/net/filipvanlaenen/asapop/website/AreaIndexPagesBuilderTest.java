@@ -100,6 +100,27 @@ public class AreaIndexPagesBuilderTest {
     }
 
     /**
+     * Verifies that the index page for an area with a small opinion poll with the results expressed as number of seats
+     * is built correctly.
+     */
+    @Test
+    public void areaIndexPageWithAnOpinionPollWithResultsInNumberOfSeatsShouldBeBuiltCorrectly() {
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        OpinionPolls opinionPolls = RichOpinionPollsFile
+                .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 •U: S A:55 B:40 C: 10 D: 9 E: 8 F: 7 G: 6 H: 5 I: 4",
+                        "A: MK001 •A:AP", "B: MK002 •A:BL", "C: MK003 •A:C", "D: MK004 •A:D", "E: MK005 •A:E",
+                        "F: MK006 •A:F", "G: MK007 •A:G", "H: MK008 •A:H", "I: MK009 •A:I")
+                .getOpinionPolls();
+        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
+        AreaConfiguration northMacedonia = new AreaConfiguration();
+        northMacedonia.setAreaCode("mk");
+        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        assertEquals(createAreaIndexPageWithAnOpinionPollWithResultsInNumberOfSeats(),
+                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                        .createAreaIndexPage(northMacedonia));
+    }
+
+    /**
      * Verifies that the index page for an area with a small opinion poll and one polling firm not included is built
      * correctly.
      */
@@ -132,12 +153,12 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setPollingFirmsNotIncluded(
-                Map.of("FCME", "foo-bar", "ECME", "qux", "DCME", "bar", "CCME", "foo-bar", "BCME", "foo"));
+        northMacedonia.setPollingFirmsNotIncluded(Map.of("FCME", "foo-bar", "ECME", "qux", "DCME", "bar", "CCME",
+                "foo-bar", "BCME", "foo", "GCME", "foo"));
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(
                 createAreaIndexPageWithASmallOpinionPoll("BCME", "foo", "CCME", "foo-bar", "DCME", "bar", "ECME", "qux",
-                        "FCME", "foo-bar"),
+                        "FCME", "foo-bar", "GCME", "foo"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
     }
@@ -451,5 +472,49 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"_area_mk\"> </h1>\n");
         expected.append("      <h2 class=\"upcoming-elections\"> </h2>\n");
+    }
+
+    /**
+     * Creates an index page for an area with an opinion poll with results in number of seats.
+     *
+     * @return An index page for an area with an opinion poll with results in number of seats.
+     */
+    private String createAreaIndexPageWithAnOpinionPollWithResultsInNumberOfSeats() {
+        StringBuilder expected = new StringBuilder();
+        addTopPart(expected, true);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        addMiddlePart(expected);
+        expected.append("      <table class=\"opinion-polls-table\">\n");
+        expected.append("        <thead>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <th class=\"fieldwork-period\"> </th>\n");
+        expected.append("            <th class=\"polling-firm-commissioner\"> </th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">AP</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">BL</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">C</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">D</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">E</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">F</th>\n");
+        expected.append("            <th class=\"electoral-lists-th\">G</th>\n");
+        expected.append("            <th class=\"other\"> </th>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </thead>\n");
+        expected.append("        <tbody>\n");
+        expected.append("          <tr>\n");
+        expected.append("            <td>2021-07-27 – 2021-07-28</td>\n");
+        expected.append("            <td>ACME</td>\n");
+        expected.append("            <td class=\"result-value-td\">55</td>\n");
+        expected.append("            <td class=\"result-value-td\">40</td>\n");
+        expected.append("            <td class=\"result-value-td\">10</td>\n");
+        expected.append("            <td class=\"result-value-td\">9</td>\n");
+        expected.append("            <td class=\"result-value-td\">8</td>\n");
+        expected.append("            <td class=\"result-value-td\">7</td>\n");
+        expected.append("            <td class=\"result-value-td\">6</td>\n");
+        expected.append("            <td class=\"result-value-td\">(9)</td>\n");
+        expected.append("          </tr>\n");
+        expected.append("        </tbody>\n");
+        expected.append("      </table>\n");
+        addBottomPart(expected);
+        return expected.toString();
     }
 }
