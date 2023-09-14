@@ -21,6 +21,10 @@ public class ResponseScenarioTest {
      */
     private static final double SCALE088 = 0.88D;
     /**
+     * The magic number 97.
+     */
+    private static final double NINETY_SEVEN = 97D;
+    /**
      * The magic number 1000.
      */
     private static final int ONE_THOUSAND = 1000;
@@ -184,6 +188,16 @@ public class ResponseScenarioTest {
     public void getScaleReturnsMoreThanOneWhenResultsDoNotAddUp() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").setOther("33").setNoResponses("2").build();
         assertEquals(SCALE088, poll.getScale());
+    }
+
+    /**
+     * Verifies that the sum of result values and other is calculated correctly.
+     */
+    @Test
+    public void getSumOfResultValuesAndOtherShouldBeCalculatedCorrectly() {
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "40").setOther("2")
+                .setNoResponses("2").build();
+        assertEquals(NINETY_SEVEN, poll.getMainResponseScenario().getSumOfResultsAndOther());
     }
 
     /**
