@@ -317,7 +317,7 @@ public class StatisticsPageBuilderTest {
         expected.append("        <div class=\"svg-chart-container-left\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
-                "            <text class=\"qualification-of-currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
                 "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\"/>\n");
         expected.append("          </svg>\n");
@@ -325,7 +325,7 @@ public class StatisticsPageBuilderTest {
         expected.append("        <div class=\"svg-chart-container-right\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
-                "            <text class=\"qualification-of-currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" r=\"100\"/>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");

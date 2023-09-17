@@ -32,6 +32,14 @@ terms:
       fr: "Fichiers CSV"
       nl: "CSV-bestanden"
       no: "CSV-filer"
+  - key: "currency"
+    translations:
+      de: "Aktualität"
+      en: "Currency"
+      eo: "Aktualeco"
+      fr: "Mise à jour"
+      nl: "Bijgewerktheid"
+      no: "Oppdaterthet"
   - key: "date"
     translations:
       de: "Termin"

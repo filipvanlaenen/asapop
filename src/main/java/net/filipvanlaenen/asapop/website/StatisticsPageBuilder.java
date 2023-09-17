@@ -355,9 +355,9 @@ final class StatisticsPageBuilder extends PageBuilder {
         double cy = ((double) SVG_CONTAINER_HEIGHT) / 2;
         double r = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
         double t = (cy - r) * 0.8D;
-        // <text fill="#0E3651"  font-family="Crimson Pro"></text>
+        // <text fill="#0E3651" font-family="Crimson Pro"></text>
         Text title = new Text(" ").x(cx).y(t / 2).fontSize(t).textAnchor(TextAnchorValue.MIDDLE)
-                .dominantBaseline(DominantBaselineValue.MIDDLE).clazz("qualification-of-currency");
+                .dominantBaseline(DominantBaselineValue.MIDDLE).clazz("currency");
         svg.addElement(title);
         svgChartContainer.addElement(htmlSvg);
         if (sum == 0L) {
@@ -387,6 +387,18 @@ final class StatisticsPageBuilder extends PageBuilder {
                 sx = ex;
                 sy = ey;
             }
+        }
+        if (extra == sum) {
+            svg.addElement(new Circle().cx(cx).cy(cy).r(r).clazz("absent"));
+        } else if (extra > 0L) {
+            Path sector = new Path();
+            sector.moveTo(cx, cy);
+            sector.lineTo(cx, cy - r);
+            sector.arcTo(r, r, 0, 2 * extra > sum ? LargeArcFlagValues.LARGE_ARC : LargeArcFlagValues.SMALL_ARC,
+                    SweepFlagValues.NEGATIVE_ANGLE, sx, sy);
+            sector.closePath();
+            sector.clazz("absent");
+            svg.addElement(sector);
         }
         return svgChartContainer;
     }
