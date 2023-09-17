@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -16,14 +17,22 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.tsvgj.Circle;
+import net.filipvanlaenen.tsvgj.Path;
+import net.filipvanlaenen.tsvgj.Path.LargeArcFlagValues;
+import net.filipvanlaenen.tsvgj.Path.SweepFlagValues;
+import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
+import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
+import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.Html;
 import net.filipvanlaenen.txhtmlj.P;
 import net.filipvanlaenen.txhtmlj.Section;
 import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.Sup;
+import net.filipvanlaenen.txhtmlj.Svg;
 import net.filipvanlaenen.txhtmlj.TBody;
 import net.filipvanlaenen.txhtmlj.TD;
 import net.filipvanlaenen.txhtmlj.TH;
@@ -126,6 +135,10 @@ final class StatisticsPageBuilder extends PageBuilder {
             // EQMU: Replacing the return value with null produces an equivalent mutant because the code is unreachable.
             return OUT_OF_DATE;
         }
+
+        String getClazz() {
+            return clazz;
+        }
     }
 
     /**
@@ -140,6 +153,14 @@ final class StatisticsPageBuilder extends PageBuilder {
      * The number of days in three years.
      */
     private static final int THREE_YEARS_AS_DAYS = 1 + 3 * 365;
+    /**
+     * The height of the SVG container.
+     */
+    private static final int SVG_CONTAINER_HEIGHT = 250;
+    /**
+     * The width of the SVG container.
+     */
+    private static final int SVG_CONTAINER_WIDTH = 500;
 
     /**
      * Today's day.
@@ -216,6 +237,8 @@ final class StatisticsPageBuilder extends PageBuilder {
         int totalNumberOfResultValuesYtd = 0;
         LocalDate totalMostRecentDate = LocalDate.EPOCH;
         int numberOfCurrencyQualifications = CurrencyQualification.values().length;
+        List<CurrencyQualification> currencyQualifications = new ArrayList<CurrencyQualification>();
+        long absent = 0L;
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -254,6 +277,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, now);
                 CurrencyQualification currencyQualification = CurrencyQualification
                         .calculateCurrencyQualification(numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll);
+                currencyQualifications.add(currencyQualification);
                 totalNumberOfOpinionPolls += numberOfOpinionPolls;
                 totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
                 totalNumberOfResponseScenarios += numberOfResponseScenarios;
@@ -287,6 +311,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
                 areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+                absent++;
             }
         }
         totalTr.addElement(new TD(" ").clazz("total"));
@@ -299,8 +324,62 @@ final class StatisticsPageBuilder extends PageBuilder {
                 .clazz("statistics-total-td"));
         totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
         section.addElement(createCurrencyFootnote());
+        section.addElement(createCurrencyCharts(currencyQualifications, absent));
         body.addElement(createFooter());
         return html;
+    }
+
+    private Div createCurrencyCharts(final List<CurrencyQualification> currencyQualifications, final long absent) {
+        Map<CurrencyQualification, Long> currencyQualificationsMap =
+                currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
+        Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
+        twoSvgChartsContainer
+                .addElement(createCurrencyChart("svg-chart-container-left", currencyQualificationsMap, absent));
+        twoSvgChartsContainer
+                .addElement(createCurrencyChart("svg-chart-container-right", currencyQualificationsMap, 0L));
+        return twoSvgChartsContainer;
+    }
+
+    private Div createCurrencyChart(final String clazz,
+            final Map<CurrencyQualification, Long> currencyQualificationsMap, final long extra) {
+        long sum = currencyQualificationsMap.values().stream().reduce(0L, Long::sum) + extra;
+        Div svgChartContainer = new Div().clazz(clazz);
+        Svg svg = new Svg();
+        svg.getSvg().viewBox(0, 0, SVG_CONTAINER_WIDTH, SVG_CONTAINER_HEIGHT).preserveAspectRatio(
+                PreserveAspectRatioAlignValue.X_MIN_Y_MIN, PreserveAspectRatioMeetOrSliceValue.MEET);
+        svgChartContainer.addElement(svg);
+        if (sum == 0L) {
+            return svgChartContainer;
+        }
+        double cx = ((double) SVG_CONTAINER_WIDTH) / 2;
+        double cy = ((double) SVG_CONTAINER_HEIGHT) / 2;
+        double r = ((double) SVG_CONTAINER_HEIGHT) * 2 / 5;
+        long counter = 0L;
+        double sx = cx;
+        double sy = cy - r;
+        double ex = cx;
+        double ey = cy - r;
+        for (CurrencyQualification cq : CurrencyQualification.values()) {
+            long l = currencyQualificationsMap.getOrDefault(cq, 0L);
+            counter += l;
+            if (l == sum) {
+                svg.getSvg().addElement(new Circle().cx(cx).cy(cy).r(r).clazz(cq.getClazz()));
+            } else if (l > 0L) {
+                ex = cx + Math.sin(2 * Math.PI * counter / sum) * r;
+                ey = cy - Math.cos(2 * Math.PI * counter / sum) * r;
+                Path sector = new Path();
+                sector.moveTo(cx, cy);
+                sector.lineTo(ex, ey);
+                sector.arcTo(r, r, 0, 2 * l > sum ? LargeArcFlagValues.LARGE_ARC : LargeArcFlagValues.SMALL_ARC,
+                        SweepFlagValues.NEGATIVE_ANGLE, sx, sy);
+                sector.closePath();
+                sector.clazz(cq.getClazz());
+                svg.getSvg().addElement(sector);
+                sx = ex;
+                sy = ey;
+            }
+        }
+        return svgChartContainer;
     }
 
     /**

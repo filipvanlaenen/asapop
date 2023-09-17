@@ -154,11 +154,11 @@ public class StatisticsPageBuilderTest {
     }
 
     /**
-     * Verifies that the electoral calendar page is built correctly.
+     * Adds the top part of a statistics page to a StringBuilder instance.
+     *
+     * @param expected The StringBuilder instance to add the top part to.
      */
-    @Test
-    public void electoralCalendarPageIsBuiltCorrectly() {
-        StringBuilder expected = new StringBuilder();
+    private void addTopPart(final StringBuilder expected) {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
@@ -198,6 +198,15 @@ public class StatisticsPageBuilderTest {
         expected.append("    </header>\n");
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"statistics\"> </h1>\n");
+    }
+
+    /**
+     * Verifies that the statistics page is built correctly.
+     */
+    @Test
+    public void statisticsPageIsBuiltCorrectly() {
+        StringBuilder expected = new StringBuilder();
+        addTopPart(expected);
         expected.append("      <table class=\"statistics-table\" id=\"statistics-table\">\n");
         expected.append("        <thead>\n");
         expected.append("          <tr>\n");
@@ -304,6 +313,19 @@ public class StatisticsPageBuilderTest {
                 + " class=\"possibly-out-of-date-color\">●</span> 50 % &gt; P ≥ 20 %,"
                 + " <span class=\"probably-out-of-date-color\">▲</span> 20 % &gt; P ≥ 5 %,"
                 + " <span class=\"out-of-date-color\">▲</span> 5 % &gt; P.</p>\n");
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" r=\"100\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
         expected.append("    </section>\n");
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
