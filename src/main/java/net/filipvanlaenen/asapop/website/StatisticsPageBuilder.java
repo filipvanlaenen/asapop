@@ -18,11 +18,14 @@ import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.tsvgj.Circle;
+import net.filipvanlaenen.tsvgj.DominantBaselineValue;
 import net.filipvanlaenen.tsvgj.Path;
 import net.filipvanlaenen.tsvgj.Path.LargeArcFlagValues;
 import net.filipvanlaenen.tsvgj.Path.SweepFlagValues;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
+import net.filipvanlaenen.tsvgj.Text;
+import net.filipvanlaenen.tsvgj.TextAnchorValue;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
@@ -344,16 +347,22 @@ final class StatisticsPageBuilder extends PageBuilder {
             final Map<CurrencyQualification, Long> currencyQualificationsMap, final long extra) {
         long sum = currencyQualificationsMap.values().stream().reduce(0L, Long::sum) + extra;
         Div svgChartContainer = new Div().clazz(clazz);
-        Svg svg = new Svg();
-        svg.getSvg().viewBox(0, 0, SVG_CONTAINER_WIDTH, SVG_CONTAINER_HEIGHT).preserveAspectRatio(
+        Svg htmlSvg = new Svg();
+        net.filipvanlaenen.tsvgj.Svg svg = htmlSvg.getSvg();
+        svg.viewBox(0, 0, SVG_CONTAINER_WIDTH, SVG_CONTAINER_HEIGHT).preserveAspectRatio(
                 PreserveAspectRatioAlignValue.X_MIN_Y_MIN, PreserveAspectRatioMeetOrSliceValue.MEET);
-        svgChartContainer.addElement(svg);
+        double cx = ((double) SVG_CONTAINER_WIDTH) / 2;
+        double cy = ((double) SVG_CONTAINER_HEIGHT) / 2;
+        double r = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
+        double t = (cy - r) * 0.8D;
+        // <text fill="#0E3651"  font-family="Crimson Pro"></text>
+        Text title = new Text(" ").x(cx).y(t / 2).fontSize(t).textAnchor(TextAnchorValue.MIDDLE)
+                .dominantBaseline(DominantBaselineValue.MIDDLE).clazz("qualification-of-currency");
+        svg.addElement(title);
+        svgChartContainer.addElement(htmlSvg);
         if (sum == 0L) {
             return svgChartContainer;
         }
-        double cx = ((double) SVG_CONTAINER_WIDTH) / 2;
-        double cy = ((double) SVG_CONTAINER_HEIGHT) / 2;
-        double r = ((double) SVG_CONTAINER_HEIGHT) * 2 / 5;
         long counter = 0L;
         double sx = cx;
         double sy = cy - r;
@@ -363,7 +372,7 @@ final class StatisticsPageBuilder extends PageBuilder {
             long l = currencyQualificationsMap.getOrDefault(cq, 0L);
             counter += l;
             if (l == sum) {
-                svg.getSvg().addElement(new Circle().cx(cx).cy(cy).r(r).clazz(cq.getClazz()));
+                svg.addElement(new Circle().cx(cx).cy(cy).r(r).clazz(cq.getClazz()));
             } else if (l > 0L) {
                 ex = cx + Math.sin(2 * Math.PI * counter / sum) * r;
                 ey = cy - Math.cos(2 * Math.PI * counter / sum) * r;
@@ -374,7 +383,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                         SweepFlagValues.NEGATIVE_ANGLE, sx, sy);
                 sector.closePath();
                 sector.clazz(cq.getClazz());
-                svg.getSvg().addElement(sector);
+                svg.addElement(sector);
                 sx = ex;
                 sy = ey;
             }
