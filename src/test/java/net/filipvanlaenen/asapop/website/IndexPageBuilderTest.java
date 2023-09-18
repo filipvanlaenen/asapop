@@ -182,6 +182,7 @@ public class IndexPageBuilderTest {
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
         stringBuilder.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
         stringBuilder.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
+        stringBuilder.append("    <script src=\"_js/tooltip.js\" type=\"application/javascript\">" + " </script>\n");
         stringBuilder.append("  </head>\n");
         stringBuilder.append("  <body onload=\"initializeLanguage();\">\n");
         stringBuilder.append("    <header>\n");

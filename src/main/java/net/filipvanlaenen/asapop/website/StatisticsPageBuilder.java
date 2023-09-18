@@ -329,6 +329,8 @@ final class StatisticsPageBuilder extends PageBuilder {
         section.addElement(createCurrencyFootnote());
         section.addElement(createCurrencyCharts(currencyQualifications, absent));
         body.addElement(createFooter());
+        Div tooltip = new Div(" ").id("tooltip").clazz("tooltip").style("position: absolute; display: none;");
+        body.addElement(tooltip);
         return html;
     }
 
@@ -355,7 +357,6 @@ final class StatisticsPageBuilder extends PageBuilder {
         double cy = ((double) SVG_CONTAINER_HEIGHT) / 2;
         double r = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
         double t = (cy - r) * 0.8D;
-        // <text fill="#0E3651" font-family="Crimson Pro"></text>
         Text title = new Text(" ").x(cx).y(t / 2).fontSize(t).textAnchor(TextAnchorValue.MIDDLE)
                 .dominantBaseline(DominantBaselineValue.MIDDLE).clazz("currency");
         svg.addElement(title);
@@ -383,6 +384,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                         SweepFlagValues.NEGATIVE_ANGLE, sx, sy);
                 sector.closePath();
                 sector.clazz(cq.getClazz());
+                sector.onmousemove("showTooltip(evt, '" + l + "/" + sum + " (" + (Math.round(100D * l / sum)) + "%)');")
+                        .onmouseout("hideTooltip();");
                 svg.addElement(sector);
                 sx = ex;
                 sy = ey;

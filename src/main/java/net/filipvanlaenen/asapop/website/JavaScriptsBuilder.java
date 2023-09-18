@@ -23,6 +23,7 @@ class JavaScriptsBuilder {
      * The internationalization terms.
      */
     private final Terms terms;
+    private final String tooltipScriptContent;
 
     /**
      * Constructor taking the internationalization terms as its parameter.
@@ -31,9 +32,11 @@ class JavaScriptsBuilder {
      * @param sortingScriptContent    The content of the sorting script.
      * @param terms                   The internationalization terms.
      */
-    JavaScriptsBuilder(final String navigationScriptContent, final String sortingScriptContent, final Terms terms) {
+    JavaScriptsBuilder(final String navigationScriptContent, final String sortingScriptContent,
+            final String tooltipScriptContent, final Terms terms) {
         this.navigationScriptContent = navigationScriptContent;
         this.sortingScriptContent = sortingScriptContent;
+        this.tooltipScriptContent = tooltipScriptContent;
         this.terms = terms;
     }
 
@@ -47,6 +50,7 @@ class JavaScriptsBuilder {
         result.put(Paths.get("_js", "internationalization.js"), new InternationalizationScriptBuilder(terms).build());
         result.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         result.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
+        result.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
         return result;
     }
 }

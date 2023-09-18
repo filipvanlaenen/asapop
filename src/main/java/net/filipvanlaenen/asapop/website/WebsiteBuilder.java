@@ -48,6 +48,7 @@ public class WebsiteBuilder {
      * The internationalization terms.
      */
     private final Terms terms;
+    private final String tooltipScriptContent;
     /**
      * The configuration for the website.
      */
@@ -70,7 +71,8 @@ public class WebsiteBuilder {
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
             final Map<String, OpinionPolls> opinionPollsMap, final Elections elections,
             final String baseStyleSheetContent, final String customStyleSheetContent,
-            final String navigationScriptContent, final String sortingScriptContent, final LocalDate now) {
+            final String navigationScriptContent, final String sortingScriptContent, final String tooltipScriptContent,
+            final LocalDate now) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
         this.opinionPollsMap = opinionPollsMap;
@@ -79,6 +81,7 @@ public class WebsiteBuilder {
         this.customStyleSheetContent = customStyleSheetContent;
         this.navigationScriptContent = navigationScriptContent;
         this.sortingScriptContent = sortingScriptContent;
+        this.tooltipScriptContent = tooltipScriptContent;
         this.now = now;
         this.startOfYear = now.withDayOfYear(1);
     }
@@ -91,7 +94,7 @@ public class WebsiteBuilder {
     public Website build() {
         Website website = new Website();
         JavaScriptsBuilder javaScriptsBuilder =
-                new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, terms);
+                new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, tooltipScriptContent, terms);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
         website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build());

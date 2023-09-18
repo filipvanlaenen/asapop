@@ -38,13 +38,15 @@ public class JavaScriptsBuilderTest {
     public void shouldBuildTheJavaScriptFilesCorrectly() {
         String navigationScriptContent = "function moveToArea(level) {}";
         String sortingScriptContent = "function sortTable(table) {}";
-        JavaScriptsBuilder builder =
-                new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, createTerms());
+        String tooltipScriptContent = "function tooltip(text) {}";
+        JavaScriptsBuilder builder = new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent,
+                tooltipScriptContent, createTerms());
         Map<Path, String> map = new HashMap<Path, String>();
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         map.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
+        map.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
         assertEquals(map, builder.build());
     }
 }

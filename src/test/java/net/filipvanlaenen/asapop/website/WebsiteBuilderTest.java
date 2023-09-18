@@ -138,6 +138,8 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         String sortingScriptContent = "function sortTable(table) {}";
         map.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
+        String tooltipScriptContent = "function tooltip(text) {}";
+        map.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
@@ -146,7 +148,8 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), terms, opinionPollsMap, elections,
-                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, sortingScriptContent, NOW);
+                baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, sortingScriptContent,
+                tooltipScriptContent, NOW);
         assertEquals(map, builder.build().asMap());
     }
 }

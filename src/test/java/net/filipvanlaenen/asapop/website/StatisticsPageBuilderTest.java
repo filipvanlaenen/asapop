@@ -171,6 +171,7 @@ public class StatisticsPageBuilderTest {
                 "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
+        expected.append("    <script src=\"_js/tooltip.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
         expected.append("  <body onload=\"initializeLanguage(); sortTable('statistics-table', 2, 'area-name',"
                 + " 'alphanumeric-internationalized')\">\n");
@@ -319,7 +320,8 @@ public class StatisticsPageBuilderTest {
         expected.append(
                 "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\"/>\n");
+                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\" onmousemove=\"showTooltip(evt, '2/4 (50%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("            <path class=\"absent\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\"/>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-right\">\n");
@@ -334,6 +336,7 @@ public class StatisticsPageBuilderTest {
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
+        expected.append("    <div class=\"tooltip\" id=\"tooltip\" style=\"position: absolute; display: none;\"> </div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
         assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(), createTerms(),

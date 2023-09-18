@@ -146,10 +146,11 @@ public final class CommandLineInterface {
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
                 String navigationScriptContent = readResource("/navigation.js");
                 String sortingScriptContent = readResource("/sorting.js");
+                String tooltipScriptContent = readResource("/tooltip.js");
                 LocalDate now = LocalDate.now();
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, elections,
                         baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, sortingScriptContent,
-                        now).build();
+                        tooltipScriptContent, now).build();
                 writeFiles(siteDirName, website.asMap());
             }
 

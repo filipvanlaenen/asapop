@@ -164,6 +164,8 @@ abstract class PageBuilder {
                 .src(relativePath + "_js/navigation.js"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
                 .src(relativePath + "_js/sorting.js"));
+        head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)
+                .src(relativePath + "_js/tooltip.js"));
         return head;
     }
 
