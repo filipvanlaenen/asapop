@@ -1,0 +1,91 @@
+package net.filipvanlaenen.asapop.website;
+
+import net.filipvanlaenen.kolektoj.OrderedCollection;
+import net.filipvanlaenen.tsvgj.Circle;
+import net.filipvanlaenen.tsvgj.DominantBaselineValue;
+import net.filipvanlaenen.tsvgj.Path;
+import net.filipvanlaenen.tsvgj.Path.LargeArcFlagValues;
+import net.filipvanlaenen.tsvgj.Path.SweepFlagValues;
+import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
+import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
+import net.filipvanlaenen.tsvgj.Text;
+import net.filipvanlaenen.tsvgj.TextAnchorValue;
+import net.filipvanlaenen.txhtmlj.Div;
+import net.filipvanlaenen.txhtmlj.FlowContent;
+import net.filipvanlaenen.txhtmlj.Svg;
+
+class PieChart {
+    record Entry(long value, String sliceClass) {
+    }
+
+    /**
+     * The height of the SVG container.
+     */
+    private static final int SVG_CONTAINER_HEIGHT = 250;
+    /**
+     * The width of the SVG container.
+     */
+    private static final int SVG_CONTAINER_WIDTH = 500;
+    private static final double CENTER_X = ((double) SVG_CONTAINER_WIDTH) / 2;
+    private static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) / 2;
+    private static final double RADIUS = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
+    private static final double TITLE_HEIGHT = (CENTER_Y - RADIUS) * 0.8D;
+    private final String divClass;
+    private final OrderedCollection<Entry> entries;
+    private final String titleClass;
+
+    PieChart(final String divClass, final String titleClass, final OrderedCollection<Entry> entries) {
+        this.divClass = divClass;
+        this.titleClass = titleClass;
+        this.entries = entries;
+    }
+
+    static FlowContent createTooltipDiv() {
+        return new Div(" ").id("tooltip").clazz("tooltip").style("position: absolute; display: none;");
+    }
+
+    Div getDiv() {
+        long sum = entries.stream().map(e -> e.value()).reduce(0L, Long::sum);
+        Div div = new Div().clazz(divClass);
+        Svg htmlSvg = new Svg();
+        net.filipvanlaenen.tsvgj.Svg svg = htmlSvg.getSvg();
+        svg.viewBox(0, 0, SVG_CONTAINER_WIDTH, SVG_CONTAINER_HEIGHT).preserveAspectRatio(
+                PreserveAspectRatioAlignValue.X_MIN_Y_MIN, PreserveAspectRatioMeetOrSliceValue.MEET);
+        Text title = new Text(" ").x(CENTER_X).y(TITLE_HEIGHT / 2).fontSize(TITLE_HEIGHT)
+                .textAnchor(TextAnchorValue.MIDDLE).dominantBaseline(DominantBaselineValue.MIDDLE).clazz(titleClass);
+        svg.addElement(title);
+        div.addElement(htmlSvg);
+        if (sum == 0L) {
+            return div;
+        }
+        long counter = 0L;
+        double startX = CENTER_X;
+        double startY = CENTER_Y - RADIUS;
+        double endX = CENTER_X;
+        double endY = CENTER_Y - RADIUS;
+        for (Entry entry : entries) {
+            long value = entry.value();
+            counter += value;
+            if (value == sum) {
+                svg.addElement(new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(entry.sliceClass()));
+            } else if (value > 0L) {
+                endX = CENTER_X + Math.sin(2 * Math.PI * counter / sum) * RADIUS;
+                endY = CENTER_Y - Math.cos(2 * Math.PI * counter / sum) * RADIUS;
+                Path slice = new Path().clazz(entry.sliceClass());
+                slice.moveTo(CENTER_X, CENTER_Y);
+                slice.lineTo(endX, endY);
+                slice.arcTo(RADIUS, RADIUS, 0,
+                        2 * value > sum ? LargeArcFlagValues.LARGE_ARC : LargeArcFlagValues.SMALL_ARC,
+                        SweepFlagValues.NEGATIVE_ANGLE, startX, startY);
+                slice.closePath();
+                slice.onmousemove(
+                        "showTooltip(evt, '" + value + "/" + sum + " (" + (Math.round(100D * value / sum)) + "%)');")
+                        .onmouseout("hideTooltip();");
+                svg.addElement(slice);
+                startX = endX;
+                startY = endY;
+            }
+        }
+        return div;
+    }
+}

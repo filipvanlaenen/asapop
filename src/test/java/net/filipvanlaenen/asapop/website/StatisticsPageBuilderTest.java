@@ -315,15 +315,6 @@ public class StatisticsPageBuilderTest {
                 + " <span class=\"probably-out-of-date-color\">▲</span> 20 % &gt; P ≥ 5 %,"
                 + " <span class=\"out-of-date-color\">▲</span> 5 % &gt; P.</p>\n");
         expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\" onmousemove=\"showTooltip(evt, '2/4 (50%)');\" onmouseout=\"hideTooltip();\"/>\n");
-        expected.append("            <path class=\"absent\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\"/>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-right\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
@@ -331,12 +322,23 @@ public class StatisticsPageBuilderTest {
         expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" r=\"100\"/>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\" onmousemove=\"showTooltip(evt, '2/4 (50%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"absent\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\" onmousemove=\"showTooltip(evt, '2/4 (50%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
         expected.append("      </div>\n");
         expected.append("    </section>\n");
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
-        expected.append("    <div class=\"tooltip\" id=\"tooltip\" style=\"position: absolute; display: none;\"> </div>\n");
+        expected.append(
+                "    <div class=\"tooltip\" id=\"tooltip\" style=\"position: absolute; display: none;\"> </div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
         assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(), createTerms(),
