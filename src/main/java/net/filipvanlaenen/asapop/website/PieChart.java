@@ -93,11 +93,11 @@ class PieChart {
                 sliceClass = "pie-chart-" + ((i % 10) + 1);
             }
             if (value == sum) {
-                svg.addElement(new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(entry.sliceClass()));
+                svg.addElement(new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass));
             } else if (value > 0L) {
                 endX = CENTER_X + Math.sin(2 * Math.PI * counter / sum) * RADIUS;
                 endY = CENTER_Y - Math.cos(2 * Math.PI * counter / sum) * RADIUS;
-                Path slice = new Path().clazz(entry.sliceClass());
+                Path slice = new Path().clazz(sliceClass);
                 slice.moveTo(CENTER_X, CENTER_Y);
                 slice.lineTo(endX, endY);
                 slice.arcTo(RADIUS, RADIUS, 0,
