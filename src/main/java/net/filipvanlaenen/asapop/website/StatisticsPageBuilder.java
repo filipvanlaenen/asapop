@@ -252,10 +252,10 @@ final class StatisticsPageBuilder extends PageBuilder {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
                 areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
-                numberOfOpinionPollsEntries.add(new PieChart.Entry(numberOfOpinionPolls, areaKey));
+                numberOfOpinionPollsEntries.add(new PieChart.Entry(numberOfOpinionPolls, null));
                 int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
                 areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
-                numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(numberOfOpinionPollsYtd, areaKey));
+                numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(numberOfOpinionPollsYtd, null));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
                 areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);

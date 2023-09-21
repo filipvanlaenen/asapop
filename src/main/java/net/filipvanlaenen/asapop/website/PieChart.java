@@ -84,9 +84,14 @@ class PieChart {
         double startY = CENTER_Y - RADIUS;
         double endX = CENTER_X;
         double endY = CENTER_Y - RADIUS;
+        int i = 0;
         for (Entry entry : entries) {
             long value = entry.value();
             counter += value;
+            String sliceClass = entry.sliceClass();
+            if (sliceClass == null) {
+                sliceClass = "pie-chart-" + ((i % 10) + 1);
+            }
             if (value == sum) {
                 svg.addElement(new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(entry.sliceClass()));
             } else if (value > 0L) {
@@ -106,6 +111,7 @@ class PieChart {
                 startX = endX;
                 startY = endY;
             }
+            i++;
         }
         return div;
     }

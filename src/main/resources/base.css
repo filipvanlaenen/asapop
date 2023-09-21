@@ -47,6 +47,46 @@ header {
   display: block;
 }
 
+circle.pie-chart-1, path.pie-chart-1 {
+  fill: #F3B23A;
+}
+
+circle.pie-chart-2, path.pie-chart-2 {
+  fill: #A75C97;
+}
+
+circle.pie-chart-3, path.pie-chart-3 {
+  fill: #57EABD;
+}
+
+circle.pie-chart-4, path.pie-chart-4 {
+  fill: #4B7492;
+}
+
+circle.pie-chart-5, path.pie-chart-5 {
+  fill: #BC7F46;
+}
+
+circle.pie-chart-6, path.pie-chart-6 {
+  fill: #EA2E68;
+}
+
+circle.pie-chart-7, path.pie-chart-7 {
+  fill: #611474;
+}
+
+circle.pie-chart-8, path.pie-chart-8 {
+  fill: #368417;
+}
+
+circle.pie-chart-9, path.pie-chart-9 {
+  fill: #81CBD8;
+}
+
+circle.pie-chart-10, path.pie-chart-10 {
+  fill: #366D74;
+}
+
 @media screen and (max-width: 700px) {
   .svg-chart-container-left {
     width: 100%;
