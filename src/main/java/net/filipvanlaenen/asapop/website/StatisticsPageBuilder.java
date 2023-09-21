@@ -17,7 +17,9 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.array.ModifiableArrayCollection;
 import net.filipvanlaenen.kolektoj.array.ModifiableOrderedArrayCollection;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
@@ -225,8 +227,11 @@ final class StatisticsPageBuilder extends PageBuilder {
         LocalDate totalMostRecentDate = LocalDate.EPOCH;
         int numberOfCurrencyQualifications = CurrencyQualification.values().length;
         List<CurrencyQualification> currencyQualifications = new ArrayList<CurrencyQualification>();
-
         long absent = 0L;
+        ModifiableCollection<PieChart.Entry> numberOfOpinionPollsEntries =
+                new ModifiableArrayCollection<PieChart.Entry>();
+        ModifiableCollection<PieChart.Entry> numberOfOpinionPollsYtdEntries =
+                new ModifiableArrayCollection<PieChart.Entry>();
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -247,8 +252,10 @@ final class StatisticsPageBuilder extends PageBuilder {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
                 areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
+                numberOfOpinionPollsEntries.add(new PieChart.Entry(numberOfOpinionPolls, areaKey));
                 int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
                 areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
+                numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(numberOfOpinionPollsYtd, areaKey));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
                 areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
@@ -313,6 +320,12 @@ final class StatisticsPageBuilder extends PageBuilder {
         totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
         section.addElement(createCurrencyFootnote());
         section.addElement(createCurrencyCharts(currencyQualifications, absent));
+        Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
+        twoSvgChartsContainer
+                .addElement(new PieChart("svg-chart-container-left", "currency", numberOfOpinionPollsEntries).getDiv());
+        twoSvgChartsContainer.addElement(
+                new PieChart("svg-chart-container-right", "currency", numberOfOpinionPollsYtdEntries).getDiv());
+        section.addElement(twoSvgChartsContainer);
         body.addElement(createFooter());
         body.addElement(PieChart.createTooltipDiv());
         return html;
