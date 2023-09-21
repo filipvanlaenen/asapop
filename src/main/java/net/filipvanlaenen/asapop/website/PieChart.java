@@ -1,6 +1,10 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.Comparator;
+
+import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
+import net.filipvanlaenen.kolektoj.array.OrderedArrayCollection;
 import net.filipvanlaenen.tsvgj.Circle;
 import net.filipvanlaenen.tsvgj.DominantBaselineValue;
 import net.filipvanlaenen.tsvgj.Path;
@@ -18,6 +22,19 @@ class PieChart {
     record Entry(long value, String sliceClass) {
     }
 
+    private static class EntryComparator implements Comparator<Entry> {
+        @Override
+        public int compare(Entry e1, Entry e2) {
+            if (e1.value() < e2.value()) {
+                return 1;
+            } else if (e1.value() > e2.value()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
     /**
      * The height of the SVG container.
      */
@@ -33,6 +50,10 @@ class PieChart {
     private final String divClass;
     private final OrderedCollection<Entry> entries;
     private final String titleClass;
+
+    PieChart(final String divClass, final String titleClass, final Collection<Entry> entries) {
+        this(divClass, titleClass, new OrderedArrayCollection<Entry>(entries, new EntryComparator()));
+    }
 
     PieChart(final String divClass, final String titleClass, final OrderedCollection<Entry> entries) {
         this.divClass = divClass;
