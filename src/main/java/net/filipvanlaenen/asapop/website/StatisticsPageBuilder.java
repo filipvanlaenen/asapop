@@ -321,14 +321,14 @@ final class StatisticsPageBuilder extends PageBuilder {
     private Div createCurrencyCharts(final List<CurrencyQualification> currencyQualifications, final long absent) {
         Map<CurrencyQualification, Long> currencyQualificationsMap =
                 currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
-        ModifiableOrderedCollection<PieChart.Entry> foo = new ModifiableOrderedArrayCollection<PieChart.Entry>();
+        ModifiableOrderedCollection<PieChart.Entry> entries = new ModifiableOrderedArrayCollection<PieChart.Entry>();
         for (CurrencyQualification cq : CurrencyQualification.values()) {
-            foo.add(new PieChart.Entry(currencyQualificationsMap.getOrDefault(cq, 0L), cq.getClazz()));
+            entries.add(new PieChart.Entry(currencyQualificationsMap.getOrDefault(cq, 0L), cq.getClazz()));
         }
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
-        twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-right", "currency", foo).getDiv());
-        foo.add(new PieChart.Entry(absent, "absent"));
-        twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-left", "currency", foo).getDiv());
+        twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-right", "currency", entries).getDiv());
+        entries.add(new PieChart.Entry(absent, "absent"));
+        twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-left", "currency", entries).getDiv());
         return twoSvgChartsContainer;
     }
 
