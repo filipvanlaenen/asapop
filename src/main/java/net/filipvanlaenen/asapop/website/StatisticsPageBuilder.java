@@ -232,6 +232,14 @@ final class StatisticsPageBuilder extends PageBuilder {
                 new ModifiableArrayCollection<PieChart.Entry>();
         ModifiableCollection<PieChart.Entry> numberOfOpinionPollsYtdEntries =
                 new ModifiableArrayCollection<PieChart.Entry>();
+        ModifiableCollection<PieChart.Entry> numberOfResponseScenariosEntries =
+                new ModifiableArrayCollection<PieChart.Entry>();
+        ModifiableCollection<PieChart.Entry> numberOfResponseScenariosYtdEntries =
+                new ModifiableArrayCollection<PieChart.Entry>();
+        ModifiableCollection<PieChart.Entry> numberOfResultValuesEntries =
+                new ModifiableArrayCollection<PieChart.Entry>();
+        ModifiableCollection<PieChart.Entry> numberOfResultValuesYtdEntries =
+                new ModifiableArrayCollection<PieChart.Entry>();
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -258,12 +266,16 @@ final class StatisticsPageBuilder extends PageBuilder {
                 numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(numberOfOpinionPollsYtd, null));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
                 areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
+                numberOfResponseScenariosEntries.add(new PieChart.Entry(numberOfResponseScenarios, null));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
                 areaTr.data("number-of-response-scenarios-ytd", Integer.toString(numberOfResponseScenariosYtd));
+                numberOfResponseScenariosYtdEntries.add(new PieChart.Entry(numberOfResponseScenariosYtd, null));
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
                 areaTr.data("number-of-result-values", Integer.toString(numberOfResultValues));
+                numberOfResultValuesEntries.add(new PieChart.Entry(numberOfResultValues, null));
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
                 areaTr.data("number-of-result-values-ytd", Integer.toString(numberOfResultValuesYtd));
+                numberOfResultValuesYtdEntries.add(new PieChart.Entry(numberOfResultValuesYtd, null));
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
@@ -320,12 +332,28 @@ final class StatisticsPageBuilder extends PageBuilder {
         totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
         section.addElement(createCurrencyFootnote());
         section.addElement(createCurrencyCharts(currencyQualifications, absent));
-        Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
-        twoSvgChartsContainer
-                .addElement(new PieChart("svg-chart-container-left", "currency", numberOfOpinionPollsEntries).getDiv());
-        twoSvgChartsContainer.addElement(
-                new PieChart("svg-chart-container-right", "currency", numberOfOpinionPollsYtdEntries).getDiv());
-        section.addElement(twoSvgChartsContainer);
+        Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
+        numberOfOpinionPollsCharts.addElement(
+                new PieChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
+                        .getDiv());
+        numberOfOpinionPollsCharts.addElement(
+                new PieChart("svg-chart-container-right", "number-of-opinion-polls", numberOfOpinionPollsYtdEntries)
+                        .getDiv());
+        section.addElement(numberOfOpinionPollsCharts);
+        Div numberOfResponseScenariosCharts = new Div().clazz("two-svg-charts-container");
+        numberOfResponseScenariosCharts.addElement(new PieChart("svg-chart-container-left",
+                "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+        numberOfResponseScenariosCharts.addElement(new PieChart("svg-chart-container-right",
+                "number-of-response-scenarios", numberOfResponseScenariosYtdEntries).getDiv());
+        section.addElement(numberOfResponseScenariosCharts);
+        Div numberOfResultValusCharts = new Div().clazz("two-svg-charts-container");
+        numberOfResultValusCharts.addElement(
+                new PieChart("svg-chart-container-left", "number-of-result-values", numberOfResultValuesEntries)
+                        .getDiv());
+        numberOfResultValusCharts.addElement(
+                new PieChart("svg-chart-container-right", "number-of-result-values", numberOfResultValuesYtdEntries)
+                        .getDiv());
+        section.addElement(numberOfResultValusCharts);
         body.addElement(createFooter());
         body.addElement(PieChart.createTooltipDiv());
         return html;

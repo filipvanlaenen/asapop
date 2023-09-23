@@ -90,7 +90,7 @@ class PieChart {
             counter += value;
             String sliceClass = entry.sliceClass();
             if (sliceClass == null) {
-                sliceClass = "pie-chart-" + ((i % 10) + 1);
+                sliceClass = "pie-chart-" + ((i % 12) + 1);
             }
             if (value == sum) {
                 svg.addElement(new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass));

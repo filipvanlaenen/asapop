@@ -87,6 +87,14 @@ circle.pie-chart-10, path.pie-chart-10 {
   fill: #366D74;
 }
 
+circle.pie-chart-10, path.pie-chart-11 {
+  fill: #1D8F74;
+}
+
+circle.pie-chart-10, path.pie-chart-12 {
+  fill: #7D4E0A;
+}
+
 @media screen and (max-width: 700px) {
   .svg-chart-container-left {
     width: 100%;

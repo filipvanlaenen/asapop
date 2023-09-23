@@ -333,6 +333,72 @@ public class StatisticsPageBuilderTest {
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("      </div>\n");
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"number-of-opinion-polls\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 191.221475 205.901699 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showTooltip(evt, '3/5 (60%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 191.221475 205.901699 Z\" onmousemove=\"showTooltip(evt, '2/5 (40%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"number-of-opinion-polls\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showTooltip(evt, '2/3 (67%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\" onmousemove=\"showTooltip(evt, '1/3 (33%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"number-of-response-scenarios\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 179.289322 195.710678 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showTooltip(evt, '5/8 (63%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 179.289322 195.710678 Z\" onmousemove=\"showTooltip(evt, '3/8 (38%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"number-of-response-scenarios\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 150 125 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showTooltip(evt, '3/4 (75%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 150 125 Z\" onmousemove=\"showTooltip(evt, '1/4 (25%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"number-of-result-values\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showTooltip(evt, '6/9 (67%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\" onmousemove=\"showTooltip(evt, '3/9 (33%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append(
+                "            <text class=\"number-of-result-values\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append(
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 154.894348 94.098301 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showTooltip(evt, '4/5 (80%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append(
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 154.894348 94.098301 Z\" onmousemove=\"showTooltip(evt, '1/5 (20%)');\" onmouseout=\"hideTooltip();\"/>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
         expected.append("    </section>\n");
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
