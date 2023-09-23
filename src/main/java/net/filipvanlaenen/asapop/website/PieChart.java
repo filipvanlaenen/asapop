@@ -93,7 +93,11 @@ class PieChart {
                 sliceClass = "pie-chart-" + ((i % 12) + 1);
             }
             if (value == sum) {
-                svg.addElement(new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass));
+                Circle circle = new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass);
+                circle.onmousemove(
+                        "showTooltip(evt, '" + value + "/" + sum + " (" + (Math.round(100D * value / sum)) + "%)');")
+                        .onmouseout("hideTooltip();");
+                svg.addElement(circle);
             } else if (value > 0L) {
                 endX = CENTER_X + Math.sin(2 * Math.PI * counter / sum) * RADIUS;
                 endY = CENTER_Y - Math.cos(2 * Math.PI * counter / sum) * RADIUS;

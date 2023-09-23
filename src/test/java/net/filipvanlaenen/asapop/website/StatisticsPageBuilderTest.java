@@ -319,7 +319,7 @@ public class StatisticsPageBuilderTest {
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
                 "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" r=\"100\"/>\n");
+        expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" onmousemove=\"showTooltip(evt, '2/2 (100%)');\" onmouseout=\"hideTooltip();\" r=\"100\"/>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-left\">\n");
