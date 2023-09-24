@@ -255,27 +255,29 @@ final class StatisticsPageBuilder extends PageBuilder {
             tBody.addElement(areaTr);
             TD tdAreaName = new TD();
             areaTr.addElement(tdAreaName);
-            tdAreaName.addElement(new A(" ").clazz("_area_" + areaCode).href(areaCode + "/index.html"));
+            String areaClass = "_area_" + areaCode;
+            tdAreaName.addElement(new A(" ").clazz(areaClass).href(areaCode + "/index.html"));
             if (opinionPollsMap.containsKey(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
                 areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
-                numberOfOpinionPollsEntries.add(new PieChart.Entry(numberOfOpinionPolls, null));
+                numberOfOpinionPollsEntries.add(new PieChart.Entry(areaClass, numberOfOpinionPolls, null));
                 int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
                 areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
-                numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(numberOfOpinionPollsYtd, null));
+                numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(areaClass, numberOfOpinionPollsYtd, null));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
                 areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
-                numberOfResponseScenariosEntries.add(new PieChart.Entry(numberOfResponseScenarios, null));
+                numberOfResponseScenariosEntries.add(new PieChart.Entry(areaClass, numberOfResponseScenarios, null));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
                 areaTr.data("number-of-response-scenarios-ytd", Integer.toString(numberOfResponseScenariosYtd));
-                numberOfResponseScenariosYtdEntries.add(new PieChart.Entry(numberOfResponseScenariosYtd, null));
+                numberOfResponseScenariosYtdEntries
+                        .add(new PieChart.Entry(areaClass, numberOfResponseScenariosYtd, null));
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
                 areaTr.data("number-of-result-values", Integer.toString(numberOfResultValues));
-                numberOfResultValuesEntries.add(new PieChart.Entry(numberOfResultValues, null));
+                numberOfResultValuesEntries.add(new PieChart.Entry(areaClass, numberOfResultValues, null));
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
                 areaTr.data("number-of-result-values-ytd", Integer.toString(numberOfResultValuesYtd));
-                numberOfResultValuesYtdEntries.add(new PieChart.Entry(numberOfResultValuesYtd, null));
+                numberOfResultValuesYtdEntries.add(new PieChart.Entry(areaClass, numberOfResultValuesYtd, null));
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
@@ -364,11 +366,11 @@ final class StatisticsPageBuilder extends PageBuilder {
                 currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
         ModifiableOrderedCollection<PieChart.Entry> entries = new ModifiableOrderedArrayCollection<PieChart.Entry>();
         for (CurrencyQualification cq : CurrencyQualification.values()) {
-            entries.add(new PieChart.Entry(currencyQualificationsMap.getOrDefault(cq, 0L), cq.getClazz()));
+            entries.add(new PieChart.Entry("", currencyQualificationsMap.getOrDefault(cq, 0L), cq.getClazz()));
         }
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-right", "currency", entries).getDiv());
-        entries.add(new PieChart.Entry(absent, "absent"));
+        entries.add(new PieChart.Entry("", absent, "absent"));
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-left", "currency", entries).getDiv());
         return twoSvgChartsContainer;
     }

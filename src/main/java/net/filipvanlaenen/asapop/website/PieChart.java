@@ -14,12 +14,14 @@ import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
 import net.filipvanlaenen.tsvgj.Text;
 import net.filipvanlaenen.tsvgj.TextAnchorValue;
+import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.FlowContent;
+import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.Svg;
 
 class PieChart {
-    record Entry(long value, String sliceClass) {
+    record Entry(String labelClass, long value, String sliceClass) {
     }
 
     private static class EntryComparator implements Comparator<Entry> {
@@ -47,6 +49,11 @@ class PieChart {
     private static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) / 2;
     private static final double RADIUS = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
     private static final double TITLE_HEIGHT = (CENTER_Y - RADIUS) * 0.8D;
+    private static final String TOOLTIP_ID = "pieChartTooltip";
+    private static final String TOOLTIP_LABEL_ID = "pieChartTooltipLabel";
+    private static final String TOOLTIP_DIVIDEND_ID = "pieChartTooltipDividend";
+    private static final String TOOLTIP_DIVISOR_ID = "pieChartTooltipDivisor";
+    private static final String TOOLTIP_PERCENTAGE_ID = "pieChartTooltipPercentage";
     private final String divClass;
     private final OrderedCollection<Entry> entries;
     private final String titleClass;
@@ -62,7 +69,16 @@ class PieChart {
     }
 
     static FlowContent createTooltipDiv() {
-        return new Div(" ").id("tooltip").clazz("tooltip").style("position: absolute; display: none;");
+        Div div = new Div(" ").id(TOOLTIP_ID).clazz("tooltip").style("position: absolute; display: none;");
+        div.addElement(new Span(" ").id(TOOLTIP_LABEL_ID));
+        div.addElement(new BR());
+        div.addElement(new Span(" ").id(TOOLTIP_DIVIDEND_ID));
+        div.addContent("/");
+        div.addElement(new Span(" ").id(TOOLTIP_DIVISOR_ID));
+        div.addContent(" (");
+        div.addElement(new Span(" ").id(TOOLTIP_PERCENTAGE_ID));
+        div.addContent("%)");
+        return div;
     }
 
     Div getDiv() {
@@ -94,9 +110,9 @@ class PieChart {
             }
             if (value == sum) {
                 Circle circle = new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass);
-                circle.onmousemove(
-                        "showTooltip(evt, '" + value + "/" + sum + " (" + (Math.round(100D * value / sum)) + "%)');")
-                        .onmouseout("hideTooltip();");
+                circle.onmousemove("showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
+                        + "', '" + (Math.round(100D * value / sum)) + "');")
+                        .onmouseout("hideTooltip('" + TOOLTIP_ID + "');");
                 svg.addElement(circle);
             } else if (value > 0L) {
                 endX = CENTER_X + Math.sin(2 * Math.PI * counter / sum) * RADIUS;
@@ -108,9 +124,9 @@ class PieChart {
                         2 * value > sum ? LargeArcFlagValues.LARGE_ARC : LargeArcFlagValues.SMALL_ARC,
                         SweepFlagValues.NEGATIVE_ANGLE, startX, startY);
                 slice.closePath();
-                slice.onmousemove(
-                        "showTooltip(evt, '" + value + "/" + sum + " (" + (Math.round(100D * value / sum)) + "%)');")
-                        .onmouseout("hideTooltip();");
+                slice.onmousemove("showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
+                        + "', '" + (Math.round(100D * value / sum)) + "');")
+                        .onmouseout("hideTooltip('" + TOOLTIP_ID + "');");
                 svg.addElement(slice);
                 startX = endX;
                 startY = endY;
