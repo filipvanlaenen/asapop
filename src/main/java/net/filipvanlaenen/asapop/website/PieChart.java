@@ -21,7 +21,7 @@ import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.Svg;
 
 class PieChart {
-    record Entry(String labelClass, long value, String sliceClass) {
+    record Entry(String labelClass, String symbol, long value, String sliceClass) {
     }
 
     private static class EntryComparator implements Comparator<Entry> {
@@ -49,11 +49,13 @@ class PieChart {
     private static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) / 2;
     private static final double RADIUS = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
     private static final double TITLE_HEIGHT = (CENTER_Y - RADIUS) * 0.8D;
+    private static final double SYMBOL_HEIGHT = TITLE_HEIGHT * 0.6D;
     private static final String TOOLTIP_ID = "pieChartTooltip";
     private static final String TOOLTIP_LABEL_ID = "pieChartTooltipLabel";
     private static final String TOOLTIP_DIVIDEND_ID = "pieChartTooltipDividend";
     private static final String TOOLTIP_DIVISOR_ID = "pieChartTooltipDivisor";
     private static final String TOOLTIP_PERCENTAGE_ID = "pieChartTooltipPercentage";
+    private static final String SYMBOL_CLASS = "pieChartSymbol";
     private final String divClass;
     private final OrderedCollection<Entry> entries;
     private final String titleClass;
@@ -96,6 +98,7 @@ class PieChart {
             return div;
         }
         long counter = 0L;
+        double halfwayCounter = 0D;
         double startX = CENTER_X;
         double startY = CENTER_Y - RADIUS;
         double endX = CENTER_X;
@@ -103,17 +106,20 @@ class PieChart {
         int i = 0;
         for (Entry entry : entries) {
             long value = entry.value();
+            halfwayCounter = counter + value / 2D;
             counter += value;
             String sliceClass = entry.sliceClass();
             if (sliceClass == null) {
                 sliceClass = "pie-chart-" + ((i % 12) + 1);
             }
+            String onMouseMoveEvent = "showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
+                    + "', '" + (Math.round(100D * value / sum)) + "');";
+            String onMouseOutEvent = "hideTooltip('" + TOOLTIP_ID + "');";
             if (value == sum) {
                 Circle circle = new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass);
-                circle.onmousemove("showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
-                        + "', '" + (Math.round(100D * value / sum)) + "');")
-                        .onmouseout("hideTooltip('" + TOOLTIP_ID + "');");
+                circle.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
                 svg.addElement(circle);
+                // TODO: Add symbol
             } else if (value > 0L) {
                 endX = CENTER_X + Math.sin(2 * Math.PI * counter / sum) * RADIUS;
                 endY = CENTER_Y - Math.cos(2 * Math.PI * counter / sum) * RADIUS;
@@ -124,10 +130,14 @@ class PieChart {
                         2 * value > sum ? LargeArcFlagValues.LARGE_ARC : LargeArcFlagValues.SMALL_ARC,
                         SweepFlagValues.NEGATIVE_ANGLE, startX, startY);
                 slice.closePath();
-                slice.onmousemove("showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
-                        + "', '" + (Math.round(100D * value / sum)) + "');")
-                        .onmouseout("hideTooltip('" + TOOLTIP_ID + "');");
+                slice.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
                 svg.addElement(slice);
+                double symbolX = CENTER_X + Math.sin(2 * Math.PI * halfwayCounter / sum) * RADIUS * 0.8D;
+                double symbolY = CENTER_Y - Math.cos(2 * Math.PI * halfwayCounter / sum) * RADIUS * 0.8D;
+                Text symbol = new Text(entry.symbol()).x(symbolX).y(symbolY).fontSize(SYMBOL_HEIGHT)
+                        .textAnchor(TextAnchorValue.MIDDLE).dominantBaseline(DominantBaselineValue.MIDDLE)
+                        .clazz(SYMBOL_CLASS).onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
+                svg.addElement(symbol);
                 startX = endX;
                 startY = endY;
             }

@@ -136,6 +136,10 @@ final class StatisticsPageBuilder extends PageBuilder {
         String getClazz() {
             return clazz;
         }
+
+        String getSymbol() {
+            return symbol;
+        }
     }
 
     /**
@@ -256,28 +260,32 @@ final class StatisticsPageBuilder extends PageBuilder {
             TD tdAreaName = new TD();
             areaTr.addElement(tdAreaName);
             String areaClass = "_area_" + areaCode;
+            String areaSymbol = areaCode.toUpperCase();
             tdAreaName.addElement(new A(" ").clazz(areaClass).href(areaCode + "/index.html"));
             if (opinionPollsMap.containsKey(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
                 areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
-                numberOfOpinionPollsEntries.add(new PieChart.Entry(areaClass, numberOfOpinionPolls, null));
+                numberOfOpinionPollsEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfOpinionPolls, null));
                 int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
                 areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
-                numberOfOpinionPollsYtdEntries.add(new PieChart.Entry(areaClass, numberOfOpinionPollsYtd, null));
+                numberOfOpinionPollsYtdEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfOpinionPollsYtd, null));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
                 areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
-                numberOfResponseScenariosEntries.add(new PieChart.Entry(areaClass, numberOfResponseScenarios, null));
+                numberOfResponseScenariosEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResponseScenarios, null));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
                 areaTr.data("number-of-response-scenarios-ytd", Integer.toString(numberOfResponseScenariosYtd));
                 numberOfResponseScenariosYtdEntries
-                        .add(new PieChart.Entry(areaClass, numberOfResponseScenariosYtd, null));
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResponseScenariosYtd, null));
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
                 areaTr.data("number-of-result-values", Integer.toString(numberOfResultValues));
-                numberOfResultValuesEntries.add(new PieChart.Entry(areaClass, numberOfResultValues, null));
+                numberOfResultValuesEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValues, null));
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
                 areaTr.data("number-of-result-values-ytd", Integer.toString(numberOfResultValuesYtd));
-                numberOfResultValuesYtdEntries.add(new PieChart.Entry(areaClass, numberOfResultValuesYtd, null));
+                numberOfResultValuesYtdEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValuesYtd, null));
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
@@ -366,11 +374,12 @@ final class StatisticsPageBuilder extends PageBuilder {
                 currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
         ModifiableOrderedCollection<PieChart.Entry> entries = new ModifiableOrderedArrayCollection<PieChart.Entry>();
         for (CurrencyQualification cq : CurrencyQualification.values()) {
-            entries.add(new PieChart.Entry("", currencyQualificationsMap.getOrDefault(cq, 0L), cq.getClazz()));
+            entries.add(new PieChart.Entry("", cq.getSymbol(), currencyQualificationsMap.getOrDefault(cq, 0L),
+                    cq.getClazz()));
         }
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-right", "currency", entries).getDiv());
-        entries.add(new PieChart.Entry("", absent, "absent"));
+        entries.add(new PieChart.Entry("", "–", absent, "absent"));
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-left", "currency", entries).getDiv());
         return twoSvgChartsContainer;
     }
