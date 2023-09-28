@@ -119,7 +119,10 @@ class PieChart {
                 Circle circle = new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass);
                 circle.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
                 svg.addElement(circle);
-                // TODO: Add symbol
+                Text symbol = new Text(entry.symbol()).x(CENTER_X).y(CENTER_Y).fontSize(SYMBOL_HEIGHT)
+                        .textAnchor(TextAnchorValue.MIDDLE).dominantBaseline(DominantBaselineValue.MIDDLE)
+                        .clazz(SYMBOL_CLASS).onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
+                svg.addElement(symbol);
             } else if (value > 0L) {
                 endX = CENTER_X + Math.sin(2 * Math.PI * counter / sum) * RADIUS;
                 endY = CENTER_Y - Math.cos(2 * Math.PI * counter / sum) * RADIUS;

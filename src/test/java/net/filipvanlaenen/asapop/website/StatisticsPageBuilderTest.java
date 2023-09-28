@@ -323,6 +323,7 @@ public class StatisticsPageBuilderTest {
                 "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
                 "            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\" onmouseout=\"hideTooltip('pieChartTooltip');\" r=\"100\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"250\" y=\"125\">●</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-left\">\n");
