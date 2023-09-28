@@ -48,23 +48,23 @@ final class StatisticsPageBuilder extends PageBuilder {
         /**
          * Up-to-date.
          */
-        UP_TO_DATE("■", "up-to-date-color", 0.8D),
+        UP_TO_DATE("■", "up-to-date", 0.8D),
         /**
          * Probably up-to-date.
          */
-        PROBABLY_UP_TO_DATE("●", "probably-up-to-date-color", 0.5D),
+        PROBABLY_UP_TO_DATE("●", "probably-up-to-date", 0.5D),
         /**
          * Possibly out-of-date.
          */
-        POSSIBLY_OUT_OF_DATE("●", "possibly-out-of-date-color", 0.2D),
+        POSSIBLY_OUT_OF_DATE("●", "possibly-out-of-date", 0.2D),
         /**
          * Probably out-of-date.
          */
-        PROBABLY_OUT_OF_DATE("▲", "probably-out-of-date-color", 0.05D),
+        PROBABLY_OUT_OF_DATE("▲", "probably-out-of-date", 0.05D),
         /**
          * Out-of-date.
          */
-        OUT_OF_DATE("▲", "out-of-date-color", 0D);
+        OUT_OF_DATE("▲", "out-of-date", 0D);
 
         /**
          * The magic number seven.
@@ -72,13 +72,13 @@ final class StatisticsPageBuilder extends PageBuilder {
         private static final int SEVEN = 7;
 
         /**
-         * The class for the span element.
-         */
-        private final String clazz;
-        /**
          * The symbol.
          */
         private final String symbol;
+        /**
+         * The term.
+         */
+        private final String term;
         /**
          * The (lower) threshold.
          */
@@ -88,12 +88,12 @@ final class StatisticsPageBuilder extends PageBuilder {
          * Constructor taking the symbol, the span element class and the (lower) threshold as its parameters.
          *
          * @param symbol    The symbol.
-         * @param clazz     The span element class.
+         * @param term      The term.
          * @param threshold The (lower) threshold.
          */
-        CurrencyQualification(final String symbol, final String clazz, final double threshold) {
+        CurrencyQualification(final String symbol, final String term, final double threshold) {
             this.symbol = symbol;
-            this.clazz = clazz;
+            this.term = term;
             this.threshold = threshold;
         }
 
@@ -103,7 +103,7 @@ final class StatisticsPageBuilder extends PageBuilder {
          * @return A span element for the currency qualification.
          */
         private Span createSpan() {
-            return new Span(symbol).clazz(clazz);
+            return new Span(symbol).clazz(getColorClazz());
         }
 
         /**
@@ -133,12 +133,21 @@ final class StatisticsPageBuilder extends PageBuilder {
             return OUT_OF_DATE;
         }
 
-        String getClazz() {
-            return clazz;
+        /**
+         * Returns the class for the color.
+         *
+         * @return The class for the color.
+         */
+        String getColorClazz() {
+            return term + "-color";
         }
 
         String getSymbol() {
             return symbol;
+        }
+
+        String getTerm() {
+            return term;
         }
     }
 
@@ -347,21 +356,21 @@ final class StatisticsPageBuilder extends PageBuilder {
                 new PieChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
                         .getDiv());
         numberOfOpinionPollsCharts.addElement(
-                new PieChart("svg-chart-container-right", "number-of-opinion-polls", numberOfOpinionPollsYtdEntries)
+                new PieChart("svg-chart-container-right", "number-of-opinion-polls-ytd", numberOfOpinionPollsYtdEntries)
                         .getDiv());
         section.addElement(numberOfOpinionPollsCharts);
         Div numberOfResponseScenariosCharts = new Div().clazz("two-svg-charts-container");
         numberOfResponseScenariosCharts.addElement(new PieChart("svg-chart-container-left",
                 "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
         numberOfResponseScenariosCharts.addElement(new PieChart("svg-chart-container-right",
-                "number-of-response-scenarios", numberOfResponseScenariosYtdEntries).getDiv());
+                "number-of-response-scenarios-ytd", numberOfResponseScenariosYtdEntries).getDiv());
         section.addElement(numberOfResponseScenariosCharts);
         Div numberOfResultValusCharts = new Div().clazz("two-svg-charts-container");
         numberOfResultValusCharts.addElement(
                 new PieChart("svg-chart-container-left", "number-of-result-values", numberOfResultValuesEntries)
                         .getDiv());
         numberOfResultValusCharts.addElement(
-                new PieChart("svg-chart-container-right", "number-of-result-values", numberOfResultValuesYtdEntries)
+                new PieChart("svg-chart-container-right", "number-of-result-values-ytd", numberOfResultValuesYtdEntries)
                         .getDiv());
         section.addElement(numberOfResultValusCharts);
         body.addElement(createFooter());
@@ -369,17 +378,20 @@ final class StatisticsPageBuilder extends PageBuilder {
         return html;
     }
 
-    private Div createCurrencyCharts(final List<CurrencyQualification> currencyQualifications, final long absent) {
+    private Div createCurrencyCharts(final List<CurrencyQualification> currencyQualifications,
+            final long noOpinionPolls) {
         Map<CurrencyQualification, Long> currencyQualificationsMap =
                 currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
         ModifiableOrderedCollection<PieChart.Entry> entries = new ModifiableOrderedArrayCollection<PieChart.Entry>();
         for (CurrencyQualification cq : CurrencyQualification.values()) {
-            entries.add(new PieChart.Entry("", cq.getSymbol(), currencyQualificationsMap.getOrDefault(cq, 0L),
-                    cq.getClazz()));
+            if (currencyQualificationsMap.containsKey(cq)) {
+                entries.add(new PieChart.Entry(cq.getTerm(), cq.getSymbol(), currencyQualificationsMap.get(cq),
+                        cq.getColorClazz()));
+            }
         }
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-right", "currency", entries).getDiv());
-        entries.add(new PieChart.Entry("", "–", absent, "absent"));
+        entries.add(new PieChart.Entry("no-opinion-polls", "–", noOpinionPolls, "no-opinion-polls"));
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-left", "currency", entries).getDiv());
         return twoSvgChartsContainer;
     }
@@ -396,15 +408,25 @@ final class StatisticsPageBuilder extends PageBuilder {
         footnote.addElement(new Span(" ").clazz("qualification-of-currency"));
         footnote.addContent(": ");
         footnote.addElement(CurrencyQualification.UP_TO_DATE.createSpan());
-        footnote.addContent(" P ≥ 80 %, ");
+        footnote.addContent(" ");
+        footnote.addElement(new Span(" ").clazz(CurrencyQualification.UP_TO_DATE.getTerm()));
+        footnote.addContent(" (P ≥ 80 %), ");
         footnote.addElement(CurrencyQualification.PROBABLY_UP_TO_DATE.createSpan());
-        footnote.addContent(" 80 % > P ≥ 50 %, ");
+        footnote.addContent(" ");
+        footnote.addElement(new Span(" ").clazz(CurrencyQualification.PROBABLY_UP_TO_DATE.getTerm()));
+        footnote.addContent(" (80 % > P ≥ 50 %), ");
         footnote.addElement(CurrencyQualification.POSSIBLY_OUT_OF_DATE.createSpan());
-        footnote.addContent(" 50 % > P ≥ 20 %, ");
+        footnote.addContent(" ");
+        footnote.addElement(new Span(" ").clazz(CurrencyQualification.POSSIBLY_OUT_OF_DATE.getTerm()));
+        footnote.addContent(" (50 % > P ≥ 20 %), ");
         footnote.addElement(CurrencyQualification.PROBABLY_OUT_OF_DATE.createSpan());
-        footnote.addContent(" 20 % > P ≥ 5 %, ");
+        footnote.addContent(" ");
+        footnote.addElement(new Span(" ").clazz(CurrencyQualification.PROBABLY_OUT_OF_DATE.getTerm()));
+        footnote.addContent(" (20 % > P ≥ 5 %), ");
         footnote.addElement(CurrencyQualification.OUT_OF_DATE.createSpan());
-        footnote.addContent(" 5 % > P.");
+        footnote.addContent(" ");
+        footnote.addElement(new Span(" ").clazz(CurrencyQualification.OUT_OF_DATE.getTerm()));
+        footnote.addContent(" (5 % > P).");
         return footnote;
     }
 

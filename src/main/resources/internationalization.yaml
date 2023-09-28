@@ -144,6 +144,14 @@ terms:
       fr: "Au plus tard environ"
       nl: "Niet later dan omtrent"
       no: "Senest omtrent"
+  - key: "no-opinion-polls"
+    translations:
+      de: "Keine Umfragen"
+      en: "No opinion polls"
+      eo: "Neniuj opinisondoj"
+      fr: "Pas de sondages"
+      nl: "Geen opiniepeilingen"
+      no: "Ingen meningsmålinger"
   - key: "none"
     translations:
       de: "Keine"
@@ -160,6 +168,14 @@ terms:
       fr: "Nombre de sondages"
       nl: "Aantal opiniepeilingen"
       no: "Antall meningsmålinger"
+  - key: "number-of-opinion-polls-ytd"
+    translations:
+      de: "Anzahl Umfragen (year-to-date)"
+      en: "Number of Opinion Polls (Year-to-date)"
+      eo: "Nombro da opinisondoj (ĝis nun ĉi-jare)"
+      fr: "Nombre de sondages (année à ce jour)"
+      nl: "Aantal opiniepeilingen (year-to-date)"
+      no: "Antall meningsmålinger (hittil i år)"
   - key: "number-of-response-scenarios"
     translations:
       de: "Anzahl Antwortsszenarien"
@@ -168,6 +184,14 @@ terms:
       fr: "Nombre de scénarios de réponse"
       nl: "Aantal responsscenario’s"
       no: "Antall responsscenarier"
+  - key: "number-of-response-scenarios-ytd"
+    translations:
+      de: "Anzahl Antwortsszenarien (year-to-date)"
+      en: "Number of Response Scenarios (Year-to-date)"
+      eo: "Nombro da respondscenaroj (ĝis nun ĉi-jare)"
+      fr: "Nombre de scénarios de réponse (année à ce jour)"
+      nl: "Aantal responsscenario’s (year-to-date)"
+      no: "Antall responsscenarier (hittil i år)"
   - key: "number-of-result-values"
     translations:
       de: "Anzahl Ergebniswerte"
@@ -176,6 +200,14 @@ terms:
       fr: "Nombre de valeurs de résultat"
       nl: "Aantal resultaatwaarden"
       no: "Antall resultatverdier"
+  - key: "number-of-result-values-ytd"
+    translations:
+      de: "Anzahl Ergebniswerte (year-to-date)"
+      en: "Number of Result Values (Year-to-date)"
+      eo: "Nombro da rezultvaloroj (ĝis nun ĉi-jare)"
+      fr: "Nombre de valeurs de résultat (année à ce jour)"
+      nl: "Aantal resultaatwaarden (year-to-date)"
+      no: "Antall resultatverdier (hittil i år)"      
   - key: "other"
     translations:
       de: "Sonstige"
@@ -184,6 +216,14 @@ terms:
       fr: "Autres"
       nl: "Anderen"
       no: "Andre"
+  - key: "out-of-date"
+    translations:
+      de: "Nicht auf dem neuesten Stand"
+      en: "Out of date"
+      eo: "Ne ĝisdataj"
+      fr: "Pas à jour"
+      nl: "Niet meer up-to-date"
+      no: "Utdatert"
   - key: "parliament"
     translations:
       de: "Parlament"
@@ -256,6 +296,14 @@ terms:
       fr: "Les agences de sondage suivantes ne sont pas incluses dans ces pages"
       nl: "De volgende peilingsbureaus zijn niet opgenomen in deze pagina’s"
       no: "Følgende meningsmålingsinstitutter er ikke tatt med på disse sider"
+  - key: "possibly-out-of-date"
+    translations:
+      de: "Möglicherweise nicht mehr auf dem neuesten Stand"
+      en: "Possibly out of date"
+      eo: "Eble ne plu ĝisdataj"
+      fr: "Peut-être pas plus à jour"
+      nl: "Mogelijk niet meer up-to-date"
+      no: "Muligens utdatert"
   - key: "president"
     translations:
       de: "Präsident"
@@ -268,6 +316,22 @@ terms:
     translations:
       en: "Privacy statement: This website uses your browser’s local store, a technology similar to cookies, to store your language preference between sessions."
       nl: "Verklaring over de bescherming van persoonsgegevens: Deze website gebruikt de local store van je browser, een technologie vergelijkbaar met cookies, om tussen twee sessies in je taalkeuze te kunnen bewaren."
+  - key: "probably-out-of-date"
+    translations:
+      de: "Wahrscheinlich nicht mehr auf dem neuesten Stand"
+      en: "Probably out of date"
+      eo: "Verŝajne ne plu ĝisdataj"
+      fr: "Probablement pas plus à jour"
+      nl: "Waarschijnlijk niet meer up-to-date"
+      no: "Sannsynligvis utdatert"
+  - key: "probably-up-to-date"
+    translations:
+      de: "Wahrscheinlich auf dem neuesten Stand"
+      en: "Probably up-to-date"
+      eo: "Verŝajne ĝisdataj"
+      fr: "Probablement à jour"
+      nl: "Waarschijnlijk up-to-date"
+      no: "Sannsynligvis oppdatert"
   - key: "publication-date"
     translations:
       de: "Veröffentlichungsdatum"
@@ -324,6 +388,14 @@ terms:
       fr: "Prochaines élections"
       nl: "Komende verkiezingen"
       no: "Kommende valg"
+  - key: "up-to-date"
+    translations:
+      de: "Auf dem neuesten Stand"
+      en: "Up-to-date"
+      eo: "Ĝisdata"
+      fr: "À jour"
+      nl: "Up-to-date"
+      no: "Oppdatert"
   - key: "year-to-date"
     translations:
       de: "year-to-date"
