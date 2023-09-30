@@ -43,7 +43,7 @@ public record Election(String areaCode, ElectionType electionType, List<Election
      */
     public ElectionDate getNextElectionDate(final LocalDate now) {
         for (ElectionDate electionDate : dates) {
-            if (electionDate.getEndDate().isAfter(now)) {
+            if (!electionDate.getEndDate().isBefore(now)) {
                 return electionDate;
             }
         }
