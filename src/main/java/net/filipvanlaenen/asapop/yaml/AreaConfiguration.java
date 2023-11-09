@@ -23,6 +23,10 @@ public class AreaConfiguration {
      */
     private Map<String, String> pollingFirmsNotIncluded;
     /**
+     * The area's subdivisions.
+     */
+    private AreaSubdivisionConfiguration[] subdivisions;
+    /**
      * A map with the translation of the term in a number of languages.
      */
     private Map<String, String> translations;
@@ -61,6 +65,15 @@ public class AreaConfiguration {
      */
     public Map<String, String> getPollingFirmsNotIncluded() {
         return pollingFirmsNotIncluded;
+    }
+
+    /**
+     * Returns an array with the area's subdivision configurations.
+     *
+     * @return An array with the area's subdivision configurations.
+     */
+    public AreaSubdivisionConfiguration[] getSubdivsions() {
+        return subdivisions;
     }
 
     /**
@@ -107,6 +120,15 @@ public class AreaConfiguration {
      */
     public void setPollingFirmsNotIncluded(final Map<String, String> pollingFirmsNotIncluded) {
         this.pollingFirmsNotIncluded = pollingFirmsNotIncluded;
+    }
+
+    /**
+     * Sets the array with the area's subdivision configurations.
+     *
+     * @param subdivisions The array with the area's subdivision configurations.'
+     */
+    public void setSubdivisions(final AreaSubdivisionConfiguration[] subdivisions) {
+        this.subdivisions = subdivisions;
     }
 
     /**
