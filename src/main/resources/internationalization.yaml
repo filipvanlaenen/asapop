@@ -248,6 +248,14 @@ terms:
       fr: "L’agence de sondage suivante n’est pas incluse dans ces pages"
       nl: "Het volgende peilingsbureau is niet opgenomen in deze pagina’s"
       no: "Følgende meningsmålingsinstitutt er ikke tatt med på disse sider"
+  - key: "polling-firm-not-included-reason-close-ties-to-a-political-party"
+    translations:
+      de: "enge Verbindungen zu einer politischen Partei"
+      en: "close ties to a political party"
+      eo: "proksimaj ligoj al politika partio"
+      fr: "des liens étroits avec un parti politique"
+      nl: "nauwe banden met een politieke partij"
+      no: "nære bånd til et politisk parti"
   - key: "polling-firm-not-included-reason-does-not-follow-standard-methodological-rules"
     translations:
       de: "folgt nicht die allgemein anerkannte methodische Standardregeln"
