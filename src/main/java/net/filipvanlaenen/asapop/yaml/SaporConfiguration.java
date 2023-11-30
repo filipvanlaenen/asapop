@@ -18,6 +18,18 @@ public class SaporConfiguration {
      * The mapping from the results in the ROPF file to the entries in the SAPOR files.
      */
     private Set<SaporMapping> mapping;
+    /**
+     * The preferred scope.
+     */
+    private String preferredScope;
+    /**
+     * The region for the response scenarios.
+     */
+    private String region;
+    /**
+     * The scope.
+     */
+    private String scope;
 
     /**
      * Returns the area as it should appear in the SAPOR files.
@@ -47,6 +59,33 @@ public class SaporConfiguration {
     }
 
     /**
+     * Returns the preferred scope.
+     *
+     * @return The preferred scope.
+     */
+    public String getPreferredScope() {
+        return preferredScope;
+    }
+
+    /**
+     * Returns the region for the response scenarios.
+     *
+     * @return The region for the response scenarios.
+     */
+    public String getRegion() {
+        return region;
+    }
+
+    /**
+     * Returns the scope.
+     *
+     * @return The scope.
+     */
+    public String getScope() {
+        return scope;
+    }
+
+    /**
      * Sets the area as it should appear in the SAPOR files.
      *
      * @param area The area as it should appear in the SAPOR files.
@@ -71,5 +110,32 @@ public class SaporConfiguration {
      */
     public void setMapping(final Set<SaporMapping> mapping) {
         this.mapping = mapping;
+    }
+
+    /**
+     * Sets the preferred scope.
+     *
+     * @param preferredScope The preferred scope.
+     */
+    public void setPreferredScope(final String preferredScope) {
+        this.preferredScope = preferredScope;
+    }
+
+    /**
+     * Sets the region for the response scenarios.
+     *
+     * @param region The region for the response scenarios.
+     */
+    public void setRegion(final String region) {
+        this.region = region;
+    }
+
+    /**
+     * Sets the scope.
+     *
+     * @param scope The scope.
+     */
+    public void setScope(final String scope) {
+        this.scope = scope;
     }
 }

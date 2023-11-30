@@ -39,6 +39,7 @@ import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
 import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
@@ -232,11 +233,22 @@ public final class CommandLineInterface {
          */
         static void addAreaTerms(final Terms terms, final WebsiteConfiguration websiteConfiguration) {
             for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
+                String areaCode = areaConfiguration.getAreaCode();
                 if (areaConfiguration.getTranslations() != null) {
                     Term term = new Term();
-                    term.setKey("_area_" + areaConfiguration.getAreaCode());
+                    term.setKey("_area_" + areaCode);
                     term.setTranslations(areaConfiguration.getTranslations());
                     terms.getTerms().add(term);
+                }
+                if (areaConfiguration.getSubdivsions() != null) {
+                    for (AreaSubdivisionConfiguration subdivision : areaConfiguration.getSubdivsions()) {
+                        if (subdivision.getTranslations() != null) {
+                            Term term = new Term();
+                            term.setKey("_area_" + areaCode + "-" + subdivision.getAreaCode());
+                            term.setTranslations(subdivision.getTranslations());
+                            terms.getTerms().add(term);
+                        }
+                    }
                 }
             }
         }

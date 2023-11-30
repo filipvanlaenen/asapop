@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
@@ -57,6 +58,22 @@ public class CsvFilesBuilder {
                         .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+")))).collect(Collectors.toList());
                 String outputContent = EopaodCsvExporter.export(opinionPolls, null, electoralListKeySets);
                 result.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
+            }
+            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
+            if (subdivisions != null) {
+                for (AreaSubdivisionConfiguration subdivision : subdivisions) {
+                    csvConfiguration = subdivision.getCsvConfiguration();
+                    if (csvConfiguration != null) {
+                        OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
+                        List<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
+                                .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
+                                .collect(Collectors.toList());
+                        String subdivisionAreaCode = subdivision.getAreaCode();
+                        String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
+                                electoralListKeySets);
+                        result.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"), outputContent);
+                    }
+                }
             }
         }
         return result;

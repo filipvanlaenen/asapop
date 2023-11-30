@@ -15,6 +15,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
@@ -55,6 +56,14 @@ public class SaporExporter extends Exporter {
      * A set with the mapped electoral list combinations.
      */
     private final Set<Set<ElectoralList>> mappedElectoralListCombinations;
+    /**
+     * The region.
+     */
+    private final String region;
+    /**
+     * The scope.
+     */
+    private final Scope scope;
 
     /**
      * Creates an exporter taking the SAPOR configuration as its parameter.
@@ -66,6 +75,8 @@ public class SaporExporter extends Exporter {
         this.lastElectionDate = LocalDate.parse(saporConfiguration.getLastElectionDate());
         this.mapping = saporConfiguration.getMapping();
         this.mappedElectoralListCombinations = calculateMappedElectoralListCombinations();
+        this.scope = saporConfiguration.getScope() == null ? null : Scope.parse(saporConfiguration.getScope());
+        this.region = saporConfiguration.getRegion();
     }
 
     /**
@@ -78,7 +89,7 @@ public class SaporExporter extends Exporter {
      */
     void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll, final Integer lowestSampleSize,
             final Integer lowestEffectiveSampleSize) {
-        ResponseScenario responseScenario = opinionPoll.getMainResponseScenario();
+        ResponseScenario responseScenario = getMatchingResponseScenario(opinionPoll);
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
         boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
@@ -263,7 +274,7 @@ public class SaporExporter extends Exporter {
     public SaporDirectory export(final OpinionPolls opinionPolls) {
         SaporDirectory result = new SaporDirectory();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
-            if (lastElectionDate.isBefore(opinionPoll.getEndDate())) {
+            if (lastElectionDate.isBefore(opinionPoll.getEndDate()) && hasMatchingResponseScenario(opinionPoll)) {
                 String pollingFirm = opinionPoll.getPollingFirm();
                 result.put(getSaporFilePath(opinionPoll),
                         getSaporContent(opinionPoll, opinionPolls.getLowestSampleSize(pollingFirm),
@@ -274,21 +285,27 @@ public class SaporExporter extends Exporter {
         return result;
     }
 
-    /**
-     * Returns the warnings encountered during the export of an opinion poll.
-     *
-     * @param opinionPoll The warnings encountered during the export of an opinion poll.
-     * @return A set with exporter warnings for an opinion poll.
-     */
-    Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
-        Set<ExporterWarning> warnings = new HashSet<ExporterWarning>();
-        Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
-        for (Set<ElectoralList> electoralList : electoralLists) {
-            if (!mappedElectoralListCombinations.contains(electoralList)) {
-                warnings.add(new MissingSaporMappingWarning(electoralList));
+    private ResponseScenario getMatchingResponseScenario(final OpinionPoll opinionPoll) {
+        ResponseScenario mainResponseScenario = opinionPoll.getMainResponseScenario();
+        String mainResponseScenarioArea =
+                mainResponseScenario.getArea() == null ? opinionPoll.getArea() : mainResponseScenario.getArea();
+        Scope mainResponseScenarioScope =
+                mainResponseScenario.getScope() == null ? opinionPoll.getScope() : mainResponseScenario.getScope();
+        if ((region == null || region.equals(mainResponseScenarioArea))
+                && (scope == null || scope.equals(mainResponseScenarioScope))) {
+            return opinionPoll.getMainResponseScenario();
+        }
+        for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
+            String responseScenarioArea =
+                    responseScenario.getArea() == null ? opinionPoll.getArea() : responseScenario.getArea();
+            Scope responseScenarioScope =
+                    responseScenario.getScope() == null ? opinionPoll.getScope() : responseScenario.getScope();
+            if ((region == null || region.equals(responseScenarioArea))
+                    && (scope == null || scope.equals(responseScenarioScope))) {
+                return responseScenario;
             }
         }
-        return warnings;
+        return null;
     }
 
     /**
@@ -322,6 +339,27 @@ public class SaporExporter extends Exporter {
                 exportPollingFirms(opinionPoll).replaceAll("[ !\"#%&'\\(\\)\\*\\+,\\./:<=>\\?@\\[\\\\\\]\\{\\}]", ""));
         sb.append(".poll");
         return Paths.get(sb.toString());
+    }
+
+    /**
+     * Returns the warnings encountered during the export of an opinion poll.
+     *
+     * @param opinionPoll The warnings encountered during the export of an opinion poll.
+     * @return A set with exporter warnings for an opinion poll.
+     */
+    Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
+        Set<ExporterWarning> warnings = new HashSet<ExporterWarning>();
+        Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
+        for (Set<ElectoralList> electoralList : electoralLists) {
+            if (!mappedElectoralListCombinations.contains(electoralList)) {
+                warnings.add(new MissingSaporMappingWarning(electoralList));
+            }
+        }
+        return warnings;
+    }
+
+    private boolean hasMatchingResponseScenario(final OpinionPoll opinionPoll) {
+        return getMatchingResponseScenario(opinionPoll) != null;
     }
 
     /**
