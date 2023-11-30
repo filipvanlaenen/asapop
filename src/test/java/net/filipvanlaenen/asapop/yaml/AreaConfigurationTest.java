@@ -59,6 +59,19 @@ public class AreaConfigurationTest {
     }
 
     /**
+     * Verifies that the getter method <code>getSubdivisions</code> is wired correctly to the setter method
+     * <code>setSubdivisions</code>.
+     */
+    @Test
+    public void getSubdivisionsShouldBeWiredCorrectlyToSetSubdivisions() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        AreaSubdivisionConfiguration[] subdivisions =
+                new AreaSubdivisionConfiguration[] {new AreaSubdivisionConfiguration()};
+        areaConfiguration.setSubdivisions(subdivisions);
+        assertEquals(subdivisions, areaConfiguration.getSubdivsions());
+    }
+
+    /**
      * Verifies that the getter method <code>getTranslations</code> is wired correctly to the setter method
      * <code>setTranslations</code>.
      */
