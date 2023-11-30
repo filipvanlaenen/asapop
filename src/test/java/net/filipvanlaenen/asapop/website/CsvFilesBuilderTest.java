@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
@@ -34,7 +35,16 @@ public class CsvFilesBuilderTest {
         CsvConfiguration csvConfiguration = new CsvConfiguration();
         csvConfiguration.setElectoralListIds(List.of("A", "B"));
         northMacedonia.setCsvConfiguration(csvConfiguration);
-        websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, new AreaConfiguration()));
+        AreaConfiguration belgium = new AreaConfiguration();
+        belgium.setAreaCode("be");
+        AreaSubdivisionConfiguration flanders = new AreaSubdivisionConfiguration();
+        flanders.setAreaCode("vlg");
+        CsvConfiguration flemishCsvConfiguration = new CsvConfiguration();
+        flemishCsvConfiguration.setElectoralListIds(List.of("P", "Q"));
+        flanders.setCsvConfiguration(flemishCsvConfiguration);
+        AreaSubdivisionConfiguration[] belgianSubdivisions = new AreaSubdivisionConfiguration[] {flanders};
+        belgium.setSubdivisions(belgianSubdivisions);
+        websiteConfiguration.setAreaConfigurations(Set.of(belgium, northMacedonia, new AreaConfiguration()));
         return websiteConfiguration;
     }
 
@@ -44,12 +54,18 @@ public class CsvFilesBuilderTest {
     @Test
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
+        map.put(Paths.get("_csv", "be-vlg.csv"),
+                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
+                        + "Sample Size Qualification,Participation,Precision,P,Q,Other\n");
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
-        Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
+        Map<String, OpinionPolls> opinionPollsMap =
+                Map.of("be", new OpinionPolls(Collections.EMPTY_SET), "mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
+        ElectoralList.get("P").setAbbreviation("P");
+        ElectoralList.get("Q").setAbbreviation("Q");
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), opinionPollsMap);
         assertEquals(map, builder.build());
     }
