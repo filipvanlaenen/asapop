@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -110,10 +111,16 @@ public abstract class Exporter {
                 Integer sampleSizeValue2 = op2.getSampleSizeValue();
                 sampleSizeValue2 = sampleSizeValue2 == null ? 0 : sampleSizeValue2;
                 if (sampleSizeValue1.equals(sampleSizeValue2)) {
-                    if (op1.getPollingFirm() == null) {
+                    String pollingFirm1 = op1.getPollingFirm();
+                    String pollingFirm2 = op2.getPollingFirm();
+                    if (Objects.equals(pollingFirm1, pollingFirm2)) {
+                        return 0;
+                    } else if (pollingFirm1 == null) {
                         return -1;
+                    } else if (pollingFirm2 == null) {
+                        return 1;
                     } else {
-                        return op1.getPollingFirm().compareTo(op2.getPollingFirm());
+                        return pollingFirm1.compareTo(pollingFirm2);
                     }
                 } else {
                     return sampleSizeValue2 - sampleSizeValue1;

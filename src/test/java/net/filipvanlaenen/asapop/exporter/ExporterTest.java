@@ -295,8 +295,13 @@ public class ExporterTest {
                 .setSampleSize("1000").setPollingFirm("BCME").setFieldworkEnd(DATE_OR_MONTH4).build();
         OpinionPoll poll6 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
                 .setSampleSize("1000").setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH5).build();
-        List<OpinionPoll> expected = List.of(poll6, poll5, poll4, poll3, poll2, poll1);
-        assertEquals(expected, Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4, poll5, poll6)));
+        OpinionPoll poll7 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
+                .setSampleSize("1000").addCommissioner("The Times").setFieldworkEnd(DATE_OR_MONTH4).build();
+        OpinionPoll poll8 = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
+                .setSampleSize("1000").setPollingFirm("CCME").setFieldworkEnd(DATE_OR_MONTH4).build();
+        List<OpinionPoll> expected = List.of(poll6, poll7, poll5, poll8, poll4, poll3, poll2, poll1);
+        assertEquals(expected,
+                Exporter.sortOpinionPolls(Set.of(poll1, poll2, poll3, poll4, poll5, poll6, poll7, poll8)));
     }
 
     /**
