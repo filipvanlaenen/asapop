@@ -1,28 +1,37 @@
 package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.kolektoj.Collection;
 
 /**
  * Unit tests on the <code>HighestAveragesAllocation</code> class.
  */
 public class HighestAveragesAllocationTest {
     /**
-     * The magic number three.
+     * The magic long number three.
      */
     private static final long THREE = 3L;
+    /**
+     * The magic integer number three.
+     */
+    private static final int INTEGER_THREE = 3;
+    /**
+     * The magic number ten.
+     */
+    private static final int TEN = 10;
 
     /**
      * Verifies that the first seat is allocated to the largest number of votes.
      */
     @Test
     public void shouldAllocateTheFirstSeatToTheLargestNumberOfVotes() {
-        assertEquals(Map.of(1L, List.of(0), 2L, List.of(1)), HighestAveragesAllocation.allocate(1, List.of(2L, 1L)));
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(1, Collection.of(2L, 1L));
+        assertTrue(allocation.getNumberOfSeats(1L).containsSame(Collection.of(0)));
+        assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(1)));
     }
 
     /**
@@ -30,8 +39,9 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheFirstTwoSeatsToTheTwoEqualLargestNumberOfVotes() {
-        assertEquals(Map.of(1L, List.of(0), 2L, List.of(1, 1)),
-                HighestAveragesAllocation.allocate(2, List.of(2L, 2L, 1L)));
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(2, Collection.of(2L, 2L, 1L));
+        assertTrue(allocation.getNumberOfSeats(1L).containsSame(Collection.of(0)));
+        assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(1, 1)));
     }
 
     /**
@@ -39,9 +49,8 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheFirstSeatToOneOfTheTwoEqualLargestNumberOfVotes() {
-        List<Integer> actual = HighestAveragesAllocation.allocate(1, List.of(2L, 2L)).get(2L);
-        Collections.sort(actual);
-        assertEquals(List.of(0, 1), actual);
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(1, Collection.of(2L, 2L));
+        assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(0, 1)));
     }
 
     /**
@@ -50,8 +59,9 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheSecondSeatToTheLargestNumberOfVotesIfMoreThanDoubleOfTheNext() {
-        assertEquals(Map.of(1L, List.of(0), THREE, List.of(2)),
-                HighestAveragesAllocation.allocate(2, List.of(THREE, 1L)));
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(2, Collection.of(THREE, 1L));
+        assertTrue(allocation.getNumberOfSeats(1L).containsSame(Collection.of(0)));
+        assertTrue(allocation.getNumberOfSeats(THREE).containsSame(Collection.of(2)));
     }
 
     /**
@@ -60,15 +70,68 @@ public class HighestAveragesAllocationTest {
      */
     @Test
     public void shouldAllocateTheSecondSeatToTheSecondLargestNumberOfVotesIfMoreThanHalfOfTheLargest() {
-        assertEquals(Map.of(2L, List.of(1), THREE, List.of(1)),
-                HighestAveragesAllocation.allocate(2, List.of(THREE, 2L)));
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(2, Collection.of(THREE, 2L));
+        assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(1)));
+        assertTrue(allocation.getNumberOfSeats(THREE).containsSame(Collection.of(1)));
     }
 
     /**
-     * Verifies that in case of a toss-up, the second seat is also allocated to smallest number of seats.
+     * Verifies that in case of a toss-up, the second seat is also allocated to the smallest number of seats.
      */
     @Test
     public void shouldAllocateTheSecondSeatToTheSmallestNumberOfVotesInCaseOfATossUp() {
-        assertEquals(Map.of(1L, List.of(1), 2L, List.of(1)), HighestAveragesAllocation.allocate(2, List.of(1L, 2L)));
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(2, Collection.of(1L, 2L));
+        assertTrue(allocation.getNumberOfSeats(1L).containsSame(Collection.of(1)));
+        assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(1)));
+    }
+
+    /**
+     * Verifies that getNumberOfSeatsString returns a simple number string for a unique number of votes.
+     */
+    @Test
+    public void getNumberOfSeatsStringShouldReturnASimpleNumberStringForUniqueNumberOfVotes() {
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(1, Collection.of(2L, 1L));
+        assertEquals("0", allocation.getNumberOfSeatsString(1L));
+    }
+
+    /**
+     * Verifies that getNumberOfSeatsString returns a simple number string for duplicate number of votes with the same
+     * number of seats.
+     */
+    @Test
+    public void getNumberOfSeatsStringShouldReturnASimpleNumberStringForDuplicateNumberOfVotesWithEqualResult() {
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(2, Collection.of(2L, 2L, 1L));
+        assertEquals("1", allocation.getNumberOfSeatsString(2L));
+    }
+
+    /**
+     * Verifies that getNumberOfSeatsString returns a vulgar fraction for a duplicate number of votes with different
+     * number of seats.
+     */
+    @Test
+    public void getNumberOfSeatsStringShouldReturnAVulgarFractionForDuplicateNumberOfVotesWithDifferentResults() {
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(1, Collection.of(2L, 2L, 1L));
+        assertEquals("½", allocation.getNumberOfSeatsString(2L));
+    }
+
+    /**
+     * Verifies that getNumberOfSeatsString returns an integer and vulgar fraction for a duplicate number of votes with
+     * different number of seats.
+     */
+    @Test
+    public void getNumberOfSeatsStringShouldReturnAnIntegerAndVulgarFraction() {
+        HighestAveragesAllocation allocation = new HighestAveragesAllocation(INTEGER_THREE, Collection.of(2L, 2L));
+        assertEquals("1½", allocation.getNumberOfSeatsString(2L));
+    }
+
+    /**
+     * Verifies that getNumberOfSeatsString returns an integer and non-Unicode vulgar fraction for a duplicate number of
+     * votes with different number of seats.
+     */
+    @Test
+    public void getNumberOfSeatsStringShouldReturnAnIntegerAndNonUnicodeVulgarFraction() {
+        HighestAveragesAllocation allocation =
+                new HighestAveragesAllocation(TEN, Collection.of(2L, 2L, 2L, 2L, 2L, 2L, 2L));
+        assertEquals("1 3/7", allocation.getNumberOfSeatsString(2L));
     }
 }
