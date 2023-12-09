@@ -24,8 +24,8 @@ public class ElectionTest {
     /**
      * An election to run the unit tests on.
      */
-    private static final Election ELECTION =
-            new Election("aa", ElectionType.NATIONAL, List.of(ELECTION_DATE), List.of(List.of(ANNULLED_ELECTION_DATE)));
+    private static final Election ELECTION = new Election("aa", ElectionType.NATIONAL, 1, List.of(ELECTION_DATE),
+            List.of(List.of(ANNULLED_ELECTION_DATE)), null);
     /**
      * A date before the election date.
      */
@@ -64,8 +64,8 @@ public class ElectionTest {
      */
     @Test
     public void datesAnnulledShouldBeWiredCorrectlyToTheConstructor() {
-        assertEquals(List.of(List.of(ANNULLED_ELECTION_DATE)), new Election("aa", ElectionType.NATIONAL,
-                List.of(ELECTION_DATE), List.of(List.of(ANNULLED_ELECTION_DATE))).datesAnnulled());
+        assertEquals(List.of(List.of(ANNULLED_ELECTION_DATE)), new Election("aa", ElectionType.NATIONAL, 1,
+                List.of(ELECTION_DATE), List.of(List.of(ANNULLED_ELECTION_DATE)), null).datesAnnulled());
     }
 
     /**
@@ -82,8 +82,8 @@ public class ElectionTest {
     @Test
     public void getNextElectionDateShouldReturnFirstDateInTheFuture() {
         assertEquals(ELECTION_DATE,
-                new Election("aa", ElectionType.NATIONAL, List.of(ELECTION_DATE, ElectionDate.parse("2023-04-11")),
-                        List.of(List.of(ANNULLED_ELECTION_DATE))).getNextElectionDate(NOW_BEFORE));
+                new Election("aa", ElectionType.NATIONAL, 1, List.of(ELECTION_DATE, ElectionDate.parse("2023-04-11")),
+                        List.of(List.of(ANNULLED_ELECTION_DATE)), null).getNextElectionDate(NOW_BEFORE));
     }
 
     /**

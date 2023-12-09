@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.analysis.HighestAveragesAllocation;
 import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.ElectionType;
@@ -21,9 +22,13 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.model.ResultValue.Precision;
+import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.ElectoralSystem;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
 import net.filipvanlaenen.txhtmlj.H2;
@@ -140,7 +145,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
             table.addElement(tBody);
             boolean publicationDateFootnote = false;
             for (OpinionPoll opinionPoll : latestOpinionPolls) {
-                OpinionPollRowData opinionPollRow = createOpinionPollRow(largestElectoralListSets, opinionPoll);
+                OpinionPollRowData opinionPollRow =
+                        createOpinionPollRow(largestElectoralListSets, opinionPoll, areaConfiguration);
                 tBody.addElement(opinionPollRow.row);
                 publicationDateFootnote |= opinionPollRow.publicationDateFootnote;
             }
@@ -356,8 +362,25 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @return A record containing the row and related data.
      */
     private OpinionPollRowData createOpinionPollRow(final List<Set<ElectoralList>> largestElectoralListSets,
-            final OpinionPoll opinionPoll) {
+            final OpinionPoll opinionPoll, final AreaConfiguration areaConfiguration) {
         TR opinionPollRow = new TR();
+        // TODO: Should match national and European elections against their scopes.
+        Election nextElection = elections.getNextElection(areaConfiguration.getAreaCode(), ElectionType.NATIONAL,
+                opinionPoll.getEndDate());
+        int numberOfSeats = 0;
+        HighestAveragesAllocation allocation = null;
+        if (opinionPoll.getScope() == Scope.NATIONAL && nextElection != null && nextElection.electionData() != null
+                && nextElection.electionData().getElectoralSystem() != null) {
+            ElectoralSystem electoralSystem = nextElection.electionData().getElectoralSystem();
+            numberOfSeats = electoralSystem.getNumberOfSeats();
+            Double threshold = electoralSystem.getThreshold();
+            ModifiableCollection<Long> votes = ModifiableCollection.empty();
+            for (ResultValue resultValue : opinionPoll.getMainResponseScenario().getResults()) {
+                // TODO: Central conversion of nominal value to votes.
+                votes.add((long) (resultValue.getNominalValue() * 100000));
+            }
+            allocation = new HighestAveragesAllocation(numberOfSeats, threshold, votes);
+        }
         String start = "";
         if (opinionPoll.getFieldworkStart() != null) {
             start = opinionPoll.getFieldworkStart().toString();
@@ -419,6 +442,12 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     valueTd.addContent(text.substring(0, decimalPointIndex));
                     valueTd.addElement(new Span(" ").clazz("decimal-point"));
                     valueTd.addContent(text.substring(decimalPointIndex + 1) + "%");
+                    if (allocation != null) {
+                        valueTd.addElement(new BR());
+                        valueTd.addContent(
+                                allocation.getNumberOfSeatsString((long) (resultValue.getNominalValue() * 100000)));
+                        // TODO: Add a footnote.
+                    }
                     opinionPollRow.addElement(valueTd);
                 }
             }
@@ -427,6 +456,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             TD valueTd = new TD("(" + Precision.ONE.getFormat().format(otherSeats) + ")").clazz("result-value-td");
             opinionPollRow.addElement(valueTd);
         } else {
+            // TODO: Add other seats if allocation.
             String otherText = precision.getFormat().format(other);
             if (otherText.equals("-0")) {
                 otherText = "0";

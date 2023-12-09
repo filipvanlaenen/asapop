@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -114,7 +115,7 @@ public class IndexPageBuilderTest {
         expected.append("      </div>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(expected.toString(),
                 new IndexPageBuilder(websiteConfiguration, elections, NOW1).build().asString());
     }
@@ -145,7 +146,7 @@ public class IndexPageBuilderTest {
         expected.append("      </div>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(expected.toString(),
                 new IndexPageBuilder(websiteConfiguration, elections, NOW3).build().asString());
     }

@@ -207,7 +207,7 @@ public class AreaIndexPagesBuilderTest {
         electionLists.setEuropean(europeanElections);
         northMacedonia.setElections(electionLists);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(createAreaIndexPageWithUpcomingElections(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(northMacedonia));

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -199,7 +200,7 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(expected.toString(),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
     }

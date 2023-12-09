@@ -52,7 +52,7 @@ public class ElectionsTest {
      */
     private Elections createElectionsInstanceWithOneElection() {
         Elections elections = new Elections();
-        elections.addElection("aa", ElectionType.NATIONAL, "2023-04-15");
+        elections.addElection("aa", ElectionType.NATIONAL, 1, "2023-04-15", null);
         return elections;
     }
 
@@ -63,8 +63,8 @@ public class ElectionsTest {
     @Test
     public void shouldReturnElectionWithDateInTheFutureForAreaAndType() {
         Elections elections = createElectionsInstanceWithOneElection();
-        Election expected = new Election("aa", ElectionType.NATIONAL, List.of(ElectionDate.parse("2023-04-15")),
-                List.of(List.of()));
+        Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
+                List.of(List.of()), null);
         assertEquals(expected, elections.getNextElection("aa", ElectionType.NATIONAL, EARLY_NOW));
     }
 
@@ -94,8 +94,8 @@ public class ElectionsTest {
     @Test
     public void shouldReturnElectionWithDateInTheFuture() {
         Elections elections = createElectionsInstanceWithOneElection();
-        Election expected = new Election("aa", ElectionType.NATIONAL, List.of(ElectionDate.parse("2023-04-15")),
-                List.of(List.of()));
+        Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
+                List.of(List.of()), null);
         assertEquals(Set.of(expected), elections.getNextElections(EARLY_NOW));
     }
 
@@ -115,11 +115,11 @@ public class ElectionsTest {
     @Test
     public void shouldReturnFirstOfThreeElectionsInTheFutureForArea() {
         Elections elections = new Elections();
-        elections.addElection("aa", ElectionType.NATIONAL, "2023-04-15");
-        elections.addElection("aa", ElectionType.NATIONAL, "2024-04-15");
-        elections.addElection("aa", ElectionType.NATIONAL, "2025-04-15");
-        Election expected = new Election("aa", ElectionType.NATIONAL, List.of(ElectionDate.parse("2023-04-15")),
-                List.of(List.of()));
+        elections.addElection("aa", ElectionType.NATIONAL, 1, "2023-04-15", null);
+        elections.addElection("aa", ElectionType.NATIONAL, 2, "2024-04-15", null);
+        elections.addElection("aa", ElectionType.NATIONAL, 3, "2025-04-15", null);
+        Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
+                List.of(List.of()), null);
         assertEquals(expected, elections.getNextElection("aa", ElectionType.NATIONAL, EARLY_NOW));
     }
 
@@ -129,9 +129,9 @@ public class ElectionsTest {
     @Test
     public void shouldReturnElectionWithAnnuledDateInPastAndNextDateInTheFuture() {
         Elections elections = new Elections();
-        elections.addElection("aa", ElectionType.NATIONAL, "(2023-04-13)+2023-04-15");
-        Election expected = new Election("aa", ElectionType.NATIONAL, List.of(ElectionDate.parse("2023-04-15")),
-                List.of(List.of(ElectionDate.parse("2023-04-13"))));
+        elections.addElection("aa", ElectionType.NATIONAL, 1, "(2023-04-13)+2023-04-15", null);
+        Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
+                List.of(List.of(ElectionDate.parse("2023-04-13"))), null);
         assertEquals(expected, elections.getNextElection("aa", ElectionType.NATIONAL, EARLY_NOW));
     }
 
@@ -189,7 +189,7 @@ public class ElectionsTest {
     @Test
     public void twoDifferentElectionsInstancesWithDifferentValuesShouldNotBeEqual() {
         Elections elections = new Elections();
-        elections.addElection("aa", ElectionType.NATIONAL, "2023-04-15");
+        elections.addElection("aa", ElectionType.NATIONAL, 1, "2023-04-15", null);
         assertFalse(EMPTY_ELECTIONS.equals(elections));
     }
 
@@ -199,7 +199,7 @@ public class ElectionsTest {
     @Test
     public void twoDifferentElectionsInstancesWithDifferentValuesShouldHaveDifferentHashCodes() {
         Elections elections = new Elections();
-        elections.addElection("aa", ElectionType.NATIONAL, "2023-04-15");
+        elections.addElection("aa", ElectionType.NATIONAL, 1, "2023-04-15", null);
         assertFalse(EMPTY_ELECTIONS.hashCode() == elections.hashCode());
     }
 }

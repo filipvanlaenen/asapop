@@ -11,7 +11,7 @@ import net.filipvanlaenen.kolektoj.hash.HashMap;
 /**
  * Class implementing highest-averages allocation.
  */
-final class HighestAveragesAllocation {
+public final class HighestAveragesAllocation {
     /**
      * Register containing the number of seats and current quotient for a number of votes.
      */
@@ -84,13 +84,17 @@ final class HighestAveragesAllocation {
                     Map.of(1L, "⅕", 2L, "⅖", 3L, "⅗", 4L, "⅘"), 6, Map.of(1L, "⅙", 2L, "⅓", 3L, "½", 4L, "⅔", 5L, "⅚"));
 
     /**
+     * A map with the allocation of number of seats per number of votes.
+     */
+    private Map<Long, Integer> allocation;
+    /**
      * The number of seats to be allocated.
      */
     private final int numberOfSeats;
     /**
-     * A map with the allocation of number of seats per number of votes.
+     * The threshold.
      */
-    private Map<Long, Integer> allocation;
+    private final Double threshold;
 
     /**
      * Private constructor taking the number of seats the a collection with the number of votes as its parameters.
@@ -98,8 +102,10 @@ final class HighestAveragesAllocation {
      * @param numberOfSeats The number of seats.
      * @param numberOfVotes A collection with the number of votes.
      */
-    HighestAveragesAllocation(final int numberOfSeats, final Collection<Long> numberOfVotes) {
+    public HighestAveragesAllocation(final int numberOfSeats, final Double threshold,
+            final Collection<Long> numberOfVotes) {
         this.numberOfSeats = numberOfSeats;
+        this.threshold = threshold;
         this.allocation = calculateAllocation(numberOfVotes);
     }
 
@@ -112,10 +118,14 @@ final class HighestAveragesAllocation {
     private Map<Long, Integer> calculateAllocation(final Collection<Long> numberOfVotes) {
         Collection<Register> registers = new ArrayCollection<Register>(
                 numberOfVotes.stream().map(n -> new Register(n)).toArray(Register[]::new));
+        long totalNumberOfVotes = numberOfVotes.stream().reduce(0L, Long::sum);
+        long votesThreshold = threshold == null ? 0 : Math.round(threshold * totalNumberOfVotes / 100D);
+        Collection<Register> qualifiedRegisters = new ArrayCollection<Register>(
+                registers.stream().filter(r -> r.getNumberOfVotes() > votesThreshold).toArray(Register[]::new));
         for (int s = 0; s < numberOfSeats; s++) {
             Register nextSeat = null;
             double maxQuotient = 0D;
-            for (Register r : registers) {
+            for (Register r : qualifiedRegisters) {
                 double quotient = r.getQuotient();
                 // EQMU: Changing the conditional boundary on the third condition produces an equivalent mutant.
                 if (quotient > maxQuotient
@@ -147,7 +157,7 @@ final class HighestAveragesAllocation {
      * @param numberOfVotes The number of votes.
      * @return A string with the number of votes.
      */
-    String getNumberOfSeatsString(final long numberOfVotes) {
+    public String getNumberOfSeatsString(final long numberOfVotes) {
         Collection<Integer> allNumberOfSeats = allocation.getAll(numberOfVotes);
         if (allNumberOfSeats.size() == 1) {
             return Integer.toString(allNumberOfSeats.get());

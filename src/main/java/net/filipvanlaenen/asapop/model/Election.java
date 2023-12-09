@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.yaml.ElectionData;
+
 /**
  * Class modeling an election. An election has an area code, an election type, as set of dates and a set of dates for
  * annulled rounds.
@@ -14,8 +16,8 @@ import java.util.stream.Collectors;
  * @param dates         The election dates.
  * @param datesAnnulled The dates for the rounds for which the results were annulled.
  */
-public record Election(String areaCode, ElectionType electionType, List<ElectionDate> dates,
-        List<List<ElectionDate>> datesAnnulled) {
+public record Election(String areaCode, ElectionType electionType, int number, List<ElectionDate> dates,
+        List<List<ElectionDate>> datesAnnulled, ElectionData electionData) {
     /**
      * Constructor converting the collections into unmodifiable collections.
      *
@@ -24,13 +26,16 @@ public record Election(String areaCode, ElectionType electionType, List<Election
      * @param dates         The election dates.
      * @param datesAnnulled The dates for the rounds for which the results were annulled.
      */
-    public Election(final String areaCode, final ElectionType electionType, final List<ElectionDate> dates,
-            final List<List<ElectionDate>> datesAnnulled) {
+    public Election(final String areaCode, final ElectionType electionType, final int number,
+            final List<ElectionDate> dates, final List<List<ElectionDate>> datesAnnulled,
+            final ElectionData electionData) {
         this.areaCode = areaCode;
         this.electionType = electionType;
+        this.number = number;
         this.dates = Collections.unmodifiableList(dates);
         this.datesAnnulled = Collections.unmodifiableList(
                 datesAnnulled.stream().map(l -> Collections.unmodifiableList(l)).collect(Collectors.toList()));
+        this.electionData = electionData;
     }
 
     /**

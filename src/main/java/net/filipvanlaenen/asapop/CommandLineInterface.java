@@ -41,6 +41,8 @@ import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.asapop.yaml.ElectionList;
+import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
@@ -137,11 +139,14 @@ public final class CommandLineInterface {
                 String customStyleSheetFileName = args[FOUR];
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
+                File siteConfigurationFile = new File(siteConfigurationFileName);
                 WebsiteConfiguration websiteConfiguration =
-                        objectMapper.readValue(new File(siteConfigurationFileName), WebsiteConfiguration.class);
+                        objectMapper.readValue(siteConfigurationFile, WebsiteConfiguration.class);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
                 addAreaTerms(terms, websiteConfiguration);
-                Elections elections = ElectionsBuilder.extractElections(websiteConfiguration);
+                Map<String, ElectionData> electionDataFiles =
+                        readElectionDataFiles(websiteConfiguration, siteConfigurationFile.getParent());
+                Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, electionDataFiles);
                 Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
@@ -154,7 +159,6 @@ public final class CommandLineInterface {
                         tooltipScriptContent, now).build();
                 writeFiles(siteDirName, website.asMap());
             }
-
         },
         /**
          * Command to read an ROPF file and convert it to another format.
@@ -297,6 +301,39 @@ public final class CommandLineInterface {
                 }
             }
             return opinionPollsMap;
+        }
+
+        private static Map<String, ElectionData> readElectionDataFiles(WebsiteConfiguration websiteConfiguration,
+                String dir) {
+            Map<String, ElectionData> result = new HashMap<String, ElectionData>();
+            Set<AreaConfiguration> areaConfigurations = websiteConfiguration.getAreaConfigurations();
+            if (areaConfigurations == null) {
+                return result;
+            }
+            for (AreaConfiguration areaConfiguration : areaConfigurations) {
+                String areaCode = areaConfiguration.getAreaCode();
+                ElectionLists electionLists = areaConfiguration.getElections();
+                if (electionLists != null) {
+                    ElectionList nationalElections = electionLists.getNational();
+                    if (nationalElections != null) {
+                        for (int i : nationalElections.getDates().keySet()) {
+                            File electionDataFile = new File(dir + "/" + areaCode + "-" + i + ".yaml");
+                            if (electionDataFile.exists()) {
+                                ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+                                objectMapper.setSerializationInclusion(Include.NON_NULL);
+                                try {
+                                    result.put(areaCode + "-" + i,
+                                            objectMapper.readValue(electionDataFile, ElectionData.class));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         /**

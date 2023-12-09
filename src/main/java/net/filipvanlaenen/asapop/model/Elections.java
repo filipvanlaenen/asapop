@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.yaml.ElectionData;
+
 /**
  * Class holding elections indexed by area and election type.
  */
@@ -26,8 +28,10 @@ public final class Elections {
      * @param areaCode     The area code.
      * @param electionType The election type.
      * @param date         A set of dates encoded in a string.
+     * @param electionData
      */
-    public void addElection(final String areaCode, final ElectionType electionType, final String date) {
+    public void addElection(final String areaCode, final ElectionType electionType, final int index, final String date,
+            ElectionData electionData) {
         String[] singleDates = date.split("\\+");
         List<ElectionDate> dates = new ArrayList<ElectionDate>();
         List<List<ElectionDate>> datesAnnulled = new ArrayList<List<ElectionDate>>();
@@ -54,7 +58,8 @@ public final class Elections {
         if (!areaElections.containsKey(electionType)) {
             areaElections.put(electionType, new ArrayList<Election>());
         }
-        areaElections.get(electionType).add(new Election(areaCode, electionType, dates, datesAnnulled));
+        areaElections.get(electionType)
+                .add(new Election(areaCode, electionType, index, dates, datesAnnulled, electionData));
     }
 
     /**
