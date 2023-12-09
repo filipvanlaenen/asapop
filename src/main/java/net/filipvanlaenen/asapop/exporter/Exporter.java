@@ -116,9 +116,9 @@ public abstract class Exporter {
                     if (Objects.equals(pollingFirm1, pollingFirm2)) {
                         return 0;
                     } else if (pollingFirm1 == null) {
-                        return -1;
-                    } else if (pollingFirm2 == null) {
                         return 1;
+                    } else if (pollingFirm2 == null) {
+                        return -1;
                     } else {
                         return pollingFirm1.compareTo(pollingFirm2);
                     }
