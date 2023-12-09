@@ -43,4 +43,37 @@ public class SaporConfigurationTest {
         saporConfiguration.setMapping(mapping);
         assertEquals(mapping, saporConfiguration.getMapping());
     }
+
+    /**
+     * Verifies that the getter method <code>getPreferredScope</code> is wired correctly to the setter method
+     * <code>setPreferredScope</code>.
+     */
+    @Test
+    public void getPreferredScopeShouldBeWiredCorrectlyToSetPreferredScope() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setPreferredScope("E");
+        assertEquals("E", saporConfiguration.getPreferredScope());
+    }
+
+    /**
+     * Verifies that the getter method <code>getRegion</code> is wired correctly to the setter method
+     * <code>setRegion</code>.
+     */
+    @Test
+    public void getRegionShouldBeWiredCorrectlyToSetRegion() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setRegion("RE");
+        assertEquals("RE", saporConfiguration.getRegion());
+    }
+
+    /**
+     * Verifies that the getter method <code>getScope</code> is wired correctly to the setter method
+     * <code>setScope</code>.
+     */
+    @Test
+    public void getScopeShouldBeWiredCorrectlyToSetScope() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setScope("E");
+        assertEquals("E", saporConfiguration.getScope());
+    }
 }
