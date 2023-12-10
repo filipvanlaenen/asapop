@@ -96,6 +96,9 @@ terms:
       fr: "Aller à"
       nl: "Ga naar"
       no: "Gå til"
+  - key: "instant-seat-projection"
+    translations:
+      en: "Instant seat projection"
   - key: "language"
     translations:
       de: "Sprache"

@@ -83,7 +83,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param row                     The opinion poll row.
      * @param publicationDateFootnote Whether a publication date footnote should be added.
      */
-    private record OpinionPollRowData(TR row, boolean publicationDateFootnote) {
+    private record OpinionPollRowData(TR row, boolean publicationDateFootnote, boolean instantSeatProjectionFootnote) {
     };
 
     /**
@@ -144,19 +144,19 @@ class AreaIndexPagesBuilder extends PageBuilder {
             TBody tBody = new TBody();
             table.addElement(tBody);
             boolean publicationDateFootnote = false;
+            boolean instantSeatProjectionFootnote = false;
             for (OpinionPoll opinionPoll : latestOpinionPolls) {
                 OpinionPollRowData opinionPollRow =
                         createOpinionPollRow(largestElectoralListSets, opinionPoll, areaConfiguration);
                 tBody.addElement(opinionPollRow.row);
                 publicationDateFootnote |= opinionPollRow.publicationDateFootnote;
+                instantSeatProjectionFootnote |= opinionPollRow.instantSeatProjectionFootnote;
+            }
+            if (instantSeatProjectionFootnote) {
+                section.addElement(createFootnote("i", "instant-seat-projection"));
             }
             if (publicationDateFootnote) {
-                P p = new P();
-                section.addElement(p);
-                Sup sup = new Sup();
-                p.addElement(sup);
-                sup.addElement(new I("p"));
-                p.addElement(new Span(" ").clazz("publication-date"));
+                section.addElement(createFootnote("p", "publication-date"));
             }
         }
     }
@@ -354,6 +354,15 @@ class AreaIndexPagesBuilder extends PageBuilder {
         return html.asString();
     }
 
+    private P createFootnote(String letter, String spanClass) {
+        P p = new P();
+        Sup sup = new Sup();
+        p.addElement(sup);
+        sup.addElement(new I(letter));
+        p.addElement(new Span(" ").clazz(spanClass));
+        return p;
+    }
+
     /**
      * Creates an opinion poll row.
      *
@@ -423,6 +432,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
         Double scale = opinionPoll.getScale();
         ResultValue.Precision precision =
                 ResultValue.Precision.getHighestPrecision(opinionPoll.getMainResponseScenario().getResults());
+        boolean instantSeatProjectionIncluded = false;
         for (Set<ElectoralList> electoralListSet : largestElectoralListSets) {
             ResultValue resultValue = opinionPoll.getResult(ElectoralList.getIds(electoralListSet));
             if (resultValue == null) {
@@ -446,7 +456,10 @@ class AreaIndexPagesBuilder extends PageBuilder {
                         valueTd.addElement(new BR());
                         valueTd.addContent(
                                 allocation.getNumberOfSeatsString((long) (resultValue.getNominalValue() * 100000)));
-                        // TODO: Add a footnote.
+                        Sup sup = new Sup();
+                        valueTd.addElement(sup);
+                        sup.addElement(new I("i"));
+                        instantSeatProjectionIncluded = true;
                     }
                     opinionPollRow.addElement(valueTd);
                 }
@@ -475,6 +488,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 opinionPollRow.addElement(valueTd);
             }
         }
-        return new OpinionPollRowData(opinionPollRow, publicationDateUsed);
+        return new OpinionPollRowData(opinionPollRow, publicationDateUsed, instantSeatProjectionIncluded);
     }
 }
