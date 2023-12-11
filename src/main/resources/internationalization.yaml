@@ -98,7 +98,12 @@ terms:
       no: "Gå til"
   - key: "instant-seat-projection"
     translations:
+      de: "Sofortprojektion von Sitze"
       en: "Instant seat projection"
+      eo: "Tujprojekcio de seĝoj"
+      fr: "Projection instantanée en sièges"
+      nl: "Enkelvoudige projectie in zetels"
+      no: "Direkteprojeksjon til mandater"
   - key: "language"
     translations:
       de: "Sprache"
