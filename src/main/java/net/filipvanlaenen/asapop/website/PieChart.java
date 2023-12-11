@@ -20,13 +20,27 @@ import net.filipvanlaenen.txhtmlj.FlowContent;
 import net.filipvanlaenen.txhtmlj.Span;
 import net.filipvanlaenen.txhtmlj.Svg;
 
+/**
+ * Class building pie charts in SVG.
+ */
 class PieChart {
+    /**
+     * Record type to contain entries for a pie chart.
+     *
+     * @param labelClass The class for this entry's label.
+     * @param symbol     The symbol for this entry.
+     * @param value      The value for this entry.
+     * @param sliceClass The class for this entry's slice in the pie chart.
+     */
     record Entry(String labelClass, String symbol, long value, String sliceClass) {
     }
 
+    /**
+     * Comparator to compare entries.
+     */
     private static class EntryComparator implements Comparator<Entry> {
         @Override
-        public int compare(Entry e1, Entry e2) {
+        public int compare(final Entry e1, final Entry e2) {
             if (e1.value() < e2.value()) {
                 return 1;
             } else if (e1.value() > e2.value()) {
@@ -45,44 +59,116 @@ class PieChart {
      * The width of the SVG container.
      */
     private static final int SVG_CONTAINER_WIDTH = 500;
+    /**
+     * The X coordinate for the center of the pie chart.
+     */
     private static final double CENTER_X = ((double) SVG_CONTAINER_WIDTH) / 2;
+    /**
+     * The Y coordinate for the center of the pie chart.
+     */
     private static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) / 2;
+    /**
+     * The radius of the pie chart.
+     */
     private static final double RADIUS = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
+    /**
+     * The radius for the placement of the symbols.
+     */
+    private static final double SYMBOL_RADIUS = RADIUS * 0.8D;
+    /**
+     * The height for the title of the pie chart.
+     */
     private static final double TITLE_HEIGHT = (CENTER_Y - RADIUS) * 0.8D;
+    /**
+     * The height for the entry symbols on the pie chart.
+     */
     private static final double SYMBOL_HEIGHT = TITLE_HEIGHT * 0.6D;
+    /**
+     * The ID for the HTML element containing the pie chart tooltip.
+     */
     private static final String TOOLTIP_ID = "pieChartTooltip";
+    /**
+     * The ID for the HTML element containing the pie chart tooltip label.
+     */
     private static final String TOOLTIP_LABEL_ID = "pieChartTooltipLabel";
-    private static final String TOOLTIP_DIVIDEND_ID = "pieChartTooltipDividend";
-    private static final String TOOLTIP_DIVISOR_ID = "pieChartTooltipDivisor";
+    /**
+     * The ID for the HTML element containing the tooltip for an entry's numerator.
+     */
+    private static final String TOOLTIP_NUMERATOR_ID = "pieChartTooltipNumerator";
+    /**
+     * The ID for the HTML element containing the tooltip for an entry's denominator.
+     */
+    private static final String TOOLTIP_DENOMINATOR_ID = "pieChartTooltipDenominator";
+    /**
+     * The ID for the HTML element containing the tooltip for an entry's percentage.
+     */
     private static final String TOOLTIP_PERCENTAGE_ID = "pieChartTooltipPercentage";
+    /**
+     * The ID for the HTML element containing an entry's symbol.
+     */
     private static final String SYMBOL_CLASS = "pieChartSymbol";
+    /**
+     * The HTML class for the pie chart's div element.
+     */
     private final String divClass;
+    /**
+     * An ordered collection with the entries for the pie chart.
+     */
     private final OrderedCollection<Entry> entries;
+    /**
+     * The HTML class for the title.
+     */
     private final String titleClass;
 
+    /**
+     * Constructor taking the HTML class for the pie chart's div element, the HTML class for the title and a collection
+     * of entries as its parameters. The entries will be sorted according to their size.
+     *
+     * @param divClass   The HTML class for the pie chart's div element.
+     * @param titleClass The HTML class for the title.
+     * @param entries    The entries for the pie chart.
+     */
     PieChart(final String divClass, final String titleClass, final Collection<Entry> entries) {
         this(divClass, titleClass, new OrderedArrayCollection<Entry>(entries, new EntryComparator()));
     }
 
+    /**
+     * Constructor taking the HTML class for the pie chart's div element, the HTML class for the title and an ordered
+     * collection of entries as its parameters.
+     *
+     * @param divClass   The HTML class for the pie chart's div element.
+     * @param titleClass The HTML class for the title.
+     * @param entries    The entries for the pie chart in the order in which they should be presented in the pie chart.
+     */
     PieChart(final String divClass, final String titleClass, final OrderedCollection<Entry> entries) {
         this.divClass = divClass;
         this.titleClass = titleClass;
         this.entries = entries;
     }
 
+    /**
+     * Creates the div element for the tooltip.
+     *
+     * @return A div element with the tooltip.
+     */
     static FlowContent createTooltipDiv() {
         Div div = new Div(" ").id(TOOLTIP_ID).clazz("tooltip").style("position: absolute; display: none;");
         div.addElement(new Span(" ").id(TOOLTIP_LABEL_ID));
         div.addElement(new BR());
-        div.addElement(new Span(" ").id(TOOLTIP_DIVIDEND_ID));
+        div.addElement(new Span(" ").id(TOOLTIP_NUMERATOR_ID));
         div.addContent("/");
-        div.addElement(new Span(" ").id(TOOLTIP_DIVISOR_ID));
+        div.addElement(new Span(" ").id(TOOLTIP_DENOMINATOR_ID));
         div.addContent(" (");
         div.addElement(new Span(" ").id(TOOLTIP_PERCENTAGE_ID));
         div.addContent("%)");
         return div;
     }
 
+    /**
+     * Creates a div element with the pie chart.
+     *
+     * @return A div element with the pie chart.
+     */
     Div getDiv() {
         long sum = entries.stream().map(e -> e.value()).reduce(0L, Long::sum);
         Div div = new Div().clazz(divClass);
@@ -135,8 +221,8 @@ class PieChart {
                 slice.closePath();
                 slice.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
                 svg.addElement(slice);
-                double symbolX = CENTER_X + Math.sin(2 * Math.PI * halfwayCounter / sum) * RADIUS * 0.8D;
-                double symbolY = CENTER_Y - Math.cos(2 * Math.PI * halfwayCounter / sum) * RADIUS * 0.8D;
+                double symbolX = CENTER_X + Math.sin(2 * Math.PI * halfwayCounter / sum) * SYMBOL_RADIUS;
+                double symbolY = CENTER_Y - Math.cos(2 * Math.PI * halfwayCounter / sum) * SYMBOL_RADIUS;
                 Text symbol = new Text(entry.symbol()).x(symbolX).y(symbolY).fontSize(SYMBOL_HEIGHT)
                         .textAnchor(TextAnchorValue.MIDDLE).dominantBaseline(DominantBaselineValue.MIDDLE)
                         .clazz(SYMBOL_CLASS).onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);

@@ -436,7 +436,7 @@ public class StatisticsPageBuilderTest {
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
         expected.append(
-                "    <div class=\"tooltip\" id=\"pieChartTooltip\" style=\"position: absolute; display: none;\"> <span id=\"pieChartTooltipLabel\"> </span><br/><span id=\"pieChartTooltipDividend\"> </span>/<span id=\"pieChartTooltipDivisor\"> </span> (<span id=\"pieChartTooltipPercentage\"> </span>%)</div>\n");
+                "    <div class=\"tooltip\" id=\"pieChartTooltip\" style=\"position: absolute; display: none;\"> <span id=\"pieChartTooltipLabel\"> </span><br/><span id=\"pieChartTooltipNumerator\"> </span>/<span id=\"pieChartTooltipDenominator\"> </span> (<span id=\"pieChartTooltipPercentage\"> </span>%)</div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
         assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(), createTerms(),
