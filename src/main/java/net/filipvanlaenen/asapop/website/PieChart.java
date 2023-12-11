@@ -38,7 +38,7 @@ class PieChart {
     /**
      * Comparator to compare entries.
      */
-    private static class EntryComparator implements Comparator<Entry> {
+    static class EntryComparator implements Comparator<Entry> {
         @Override
         public int compare(final Entry e1, final Entry e2) {
             if (e1.value() < e2.value()) {
@@ -196,7 +196,7 @@ class PieChart {
             counter += value;
             String sliceClass = entry.sliceClass();
             if (sliceClass == null) {
-                sliceClass = "pie-chart-" + ((i % 12) + 1);
+                sliceClass = "pie-chart-" + (i % 12 + 1);
             }
             String onMouseMoveEvent = "showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
                     + "', '" + (Math.round(100D * value / sum)) + "');";
