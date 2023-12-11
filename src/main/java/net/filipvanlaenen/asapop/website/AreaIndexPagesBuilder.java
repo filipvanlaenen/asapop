@@ -445,24 +445,25 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 String text = (scale == 1D) ? resultValue.getText() : precision.getFormat().format(displayValue);
                 other -= displayValue;
                 int decimalPointIndex = text.indexOf(".");
+                TD valueTd = null;
                 if (decimalPointIndex == -1) {
-                    opinionPollRow.addElement(new TD(text + "%").clazz("result-value-td"));
+                    valueTd = new TD(text + "%").clazz("result-value-td");
                 } else {
-                    TD valueTd = new TD().clazz("result-value-td");
+                    valueTd = new TD().clazz("result-value-td");
                     valueTd.addContent(text.substring(0, decimalPointIndex));
                     valueTd.addElement(new Span(" ").clazz("decimal-point"));
                     valueTd.addContent(text.substring(decimalPointIndex + 1) + "%");
-                    if (allocation != null) {
-                        valueTd.addElement(new BR());
-                        valueTd.addContent(
-                                allocation.getNumberOfSeatsString((long) (resultValue.getNominalValue() * 100000)));
-                        Sup sup = new Sup();
-                        valueTd.addElement(sup);
-                        sup.addElement(new I("i"));
-                        instantSeatProjectionIncluded = true;
-                    }
-                    opinionPollRow.addElement(valueTd);
                 }
+                if (allocation != null) {
+                    valueTd.addElement(new BR());
+                    valueTd.addContent(
+                            allocation.getNumberOfSeatsString((long) (resultValue.getNominalValue() * 100000)));
+                    Sup sup = new Sup();
+                    valueTd.addElement(sup);
+                    sup.addElement(new I("i"));
+                    instantSeatProjectionIncluded = true;
+                }
+                opinionPollRow.addElement(valueTd);
             }
         }
         if (unitIsSeats) {
