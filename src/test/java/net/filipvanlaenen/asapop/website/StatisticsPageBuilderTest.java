@@ -319,25 +319,37 @@ public class StatisticsPageBuilderTest {
         expected.append("      <div class=\"two-svg-charts-container\">\n");
         expected.append("        <div class=\"svg-chart-container-right\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\" onmouseout=\"hideTooltip('pieChartTooltip');\" r=\"100\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"250\" y=\"125\">●</text>\n");
+        expected.append("            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\""
+                + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\""
+                + " onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" r=\"100\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"250\""
+                + " y=\"125\">●</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-left\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\""
+                + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"330\""
+                + " y=\"125\">●</text>\n");
         expected.append(
-                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"330\" y=\"125\">●</text>\n");
-        expected.append(
-                "            <path class=\"no-opinion-polls\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\" onmousemove=\"showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"170\" y=\"125\">–</text>\n");
+                "            <path class=\"no-opinion-polls\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\""
+                        + " onmousemove=\"showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"170\""
+                + " y=\"125\">–</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("      </div>\n");
@@ -345,29 +357,91 @@ public class StatisticsPageBuilderTest {
         expected.append("        <div class=\"svg-chart-container-left\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
-                "            <text class=\"number-of-opinion-polls\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <text class=\"number-of-opinion-polls\" dominant-baseline=\"middle\" font-size=\"20\""
+                        + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 191.221475 205.901699 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '5', '60');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 191.221475 205.901699 A 100 100 0 1 0 250 25"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '5', '60');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '5', '60');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"326.084521\""
+                + " y=\"149.72136\">DK</text>\n");
         expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '5', '60');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"326.084521\" y=\"149.72136\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 191.221475 205.901699 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '2', '5', '40');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '2', '5', '40');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"173.915479\" y=\"100.27864\">EE</text>\n");
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 191.221475 205.901699"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '2', '5', '40');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '2', '5', '40');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"173.915479\""
+                + " y=\"100.27864\">EE</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-right\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
-                "            <text class=\"number-of-opinion-polls-ytd\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <text class=\"number-of-opinion-polls-ytd\" dominant-baseline=\"middle\" font-size=\"20\""
+                        + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '2', '3', '67');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\""
+                        + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '2', '3', '67');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '2', '3', '67');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\""
+                + " y=\"165\">DK</text>\n");
         expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '2', '3', '67');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\" y=\"165\">DK</text>\n");
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\""
+                        + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '3', '33');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '3', '33');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\""
+                + " y=\"85\">EE</text>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("      </div>\n");
+        expected.append("      <div class=\"two-svg-charts-container\">\n");
+        expected.append("        <div class=\"svg-chart-container-left\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <text class=\"number-of-response-scenarios\" dominant-baseline=\"middle\""
+                + " font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '3', '33');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 179.289322 195.710678 A 100 100 0 1 0 250 25"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '5', '8', '63');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '5', '8', '63');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"323.910363\""
+                + " y=\"155.614675\">DK</text>\n");
         expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '3', '33');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\" y=\"85\">EE</text>\n");
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 179.289322 195.710678"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '8', '38');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '8', '38');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"176.089637\""
+                + " y=\"94.385325\">EE</text>\n");
+        expected.append("          </svg>\n");
+        expected.append("        </div>\n");
+        expected.append("        <div class=\"svg-chart-container-right\">\n");
+        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <text class=\"number-of-response-scenarios-ytd\" dominant-baseline=\"middle\""
+                + " font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+        expected.append("            <path class=\"pie-chart-1\" d=\"M 250 125 L 150 125 A 100 100 0 1 0 250 25 Z\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '4', '75');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '4', '75');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"306.568542\""
+                + " y=\"181.568542\">DK</text>\n");
+        expected.append("            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 150 125 Z\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '4', '25');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '4', '25');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"193.431458\""
+                + " y=\"68.431458\">EE</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("      </div>\n");
@@ -375,59 +449,46 @@ public class StatisticsPageBuilderTest {
         expected.append("        <div class=\"svg-chart-container-left\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
         expected.append(
-                "            <text class=\"number-of-response-scenarios\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <text class=\"number-of-result-values\" dominant-baseline=\"middle\" font-size=\"20\""
+                        + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 179.289322 195.710678 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '5', '8', '63');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\""
+                        + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '6', '9', '67');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '6', '9', '67');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\""
+                + " y=\"165\">DK</text>\n");
         expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '5', '8', '63');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"323.910363\" y=\"155.614675\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 179.289322 195.710678 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '8', '38');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '8', '38');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"176.089637\" y=\"94.385325\">EE</text>\n");
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\""
+                        + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '9', '33');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '9', '33');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\""
+                + " y=\"85\">EE</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("        <div class=\"svg-chart-container-right\">\n");
         expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
+        expected.append("            <text class=\"number-of-result-values-ytd\" dominant-baseline=\"middle\""
+                + " font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
         expected.append(
-                "            <text class=\"number-of-response-scenarios-ytd\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
+                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 154.894348 94.098301 A 100 100 0 1 0 250 25"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '4', '5', '80');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '4', '5', '80');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"297.02282\""
+                + " y=\"189.72136\">DK</text>\n");
         expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 150 125 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '4', '75');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '4', '75');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"306.568542\" y=\"181.568542\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 150 125 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '4', '25');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '4', '25');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"193.431458\" y=\"68.431458\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"number-of-result-values\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '6', '9', '67');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '6', '9', '67');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\" y=\"165\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '9', '33');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '9', '33');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\" y=\"85\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"number-of-result-values-ytd\" dominant-baseline=\"middle\" font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 154.894348 94.098301 A 100 100 0 1 0 250 25 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '4', '5', '80');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '4', '5', '80');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"297.02282\" y=\"189.72136\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 154.894348 94.098301 Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '5', '20');\" onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append(
-                "            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '5', '20');\" onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"202.97718\" y=\"60.27864\">EE</text>\n");
+                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 154.894348 94.098301"
+                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '5', '20');\""
+                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
+        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '5', '20');\""
+                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"202.97718\""
+                + " y=\"60.27864\">EE</text>\n");
         expected.append("          </svg>\n");
         expected.append("        </div>\n");
         expected.append("      </div>\n");
@@ -436,7 +497,10 @@ public class StatisticsPageBuilderTest {
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
         expected.append(
-                "    <div class=\"tooltip\" id=\"pieChartTooltip\" style=\"position: absolute; display: none;\"> <span id=\"pieChartTooltipLabel\"> </span><br/><span id=\"pieChartTooltipNumerator\"> </span>/<span id=\"pieChartTooltipDenominator\"> </span> (<span id=\"pieChartTooltipPercentage\"> </span>%)</div>\n");
+                "    <div class=\"tooltip\" id=\"pieChartTooltip\" style=\"position: absolute; display: none;\">"
+                        + " <span id=\"pieChartTooltipLabel\"> </span><br/><span id=\"pieChartTooltipNumerator\">"
+                        + " </span>/<span id=\"pieChartTooltipDenominator\"> </span> (<span"
+                        + " id=\"pieChartTooltipPercentage\"> </span>%)</div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
         assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(), createTerms(),
