@@ -285,6 +285,14 @@ public class SaporExporter extends Exporter {
         return result;
     }
 
+    /**
+     * Returns an opinion poll's response scenario that matches the conditions to be exported. If the main response
+     * scenario matches, it will be returned, and otherwise one of the matching alternative responses scenarios. If no
+     * response scenarios match, <code>null</code> will be returned.
+     *
+     * @param opinionPoll The opinion poll for which to find a matching response scenario.
+     * @return A matching response scenario, or <code>null</code>.
+     */
     private ResponseScenario getMatchingResponseScenario(final OpinionPoll opinionPoll) {
         ResponseScenario mainResponseScenario = opinionPoll.getMainResponseScenario();
         String mainResponseScenarioArea =
@@ -358,6 +366,12 @@ public class SaporExporter extends Exporter {
         return warnings;
     }
 
+    /**
+     * Returns whether an opinion poll has a response scenario that matches the conditions to be exported.
+     *
+     * @param opinionPoll The opinion poll to test.
+     * @return True if the opinion poll has a response scenario that matches the conditions to be exported.
+     */
     private boolean hasMatchingResponseScenario(final OpinionPoll opinionPoll) {
         return getMatchingResponseScenario(opinionPoll) != null;
     }
