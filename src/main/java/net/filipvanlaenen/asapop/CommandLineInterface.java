@@ -303,13 +303,22 @@ public final class CommandLineInterface {
             return opinionPollsMap;
         }
 
-        private static Map<String, ElectionData> readElectionDataFiles(WebsiteConfiguration websiteConfiguration,
-                String dir) {
+        /**
+         * Reads the election data files from a directory according to the website configuration and puts them in a map.
+         *
+         * @param websiteConfiguration The website configuration.
+         * @param dir                  The directory to read the election data files from.
+         * @return A map with the election data files.
+         */
+        private static Map<String, ElectionData> readElectionDataFiles(final WebsiteConfiguration websiteConfiguration,
+                final String dir) {
             Map<String, ElectionData> result = new HashMap<String, ElectionData>();
             Set<AreaConfiguration> areaConfigurations = websiteConfiguration.getAreaConfigurations();
             if (areaConfigurations == null) {
                 return result;
             }
+            ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+            objectMapper.setSerializationInclusion(Include.NON_NULL);
             for (AreaConfiguration areaConfiguration : areaConfigurations) {
                 String areaCode = areaConfiguration.getAreaCode();
                 ElectionLists electionLists = areaConfiguration.getElections();
@@ -319,8 +328,6 @@ public final class CommandLineInterface {
                         for (int i : nationalElections.getDates().keySet()) {
                             File electionDataFile = new File(dir + "/" + areaCode + "-" + i + ".yaml");
                             if (electionDataFile.exists()) {
-                                ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-                                objectMapper.setSerializationInclusion(Include.NON_NULL);
                                 try {
                                     result.put(areaCode + "-" + i,
                                             objectMapper.readValue(electionDataFile, ElectionData.class));
@@ -328,7 +335,6 @@ public final class CommandLineInterface {
                                     e.printStackTrace();
                                 }
                             }
-
                         }
                     }
                 }
