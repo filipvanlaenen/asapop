@@ -23,6 +23,10 @@ public class HighestAveragesAllocationTest {
      * The magic number ten.
      */
     private static final int TEN = 10;
+    /**
+     * The magic number forty.
+     */
+    private static final double FORTY = 40D;
 
     /**
      * Verifies that the first seat is allocated to the largest number of votes.
@@ -83,6 +87,17 @@ public class HighestAveragesAllocationTest {
         HighestAveragesAllocation allocation = new HighestAveragesAllocation(2, 0D, Collection.of(1L, 2L));
         assertTrue(allocation.getNumberOfSeats(1L).containsSame(Collection.of(1)));
         assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(1)));
+    }
+
+    /**
+     * Verifies that number of votes below the threshold do not get any seats.
+     */
+    @Test
+    public void shouldNotAllocateSeatsToANumberOfVotesBelowThreshold() {
+        HighestAveragesAllocation allocation =
+                new HighestAveragesAllocation(INTEGER_THREE, FORTY, Collection.of(1L, 2L));
+        assertTrue(allocation.getNumberOfSeats(1L).containsSame(Collection.of(0)));
+        assertTrue(allocation.getNumberOfSeats(2L).containsSame(Collection.of(INTEGER_THREE)));
     }
 
     /**

@@ -77,6 +77,10 @@ public final class HighestAveragesAllocation {
     }
 
     /**
+     * The magic number one hundred.
+     */
+    private static final double ONE_HUNDRED = 100D;
+    /**
      * Map of maps containing vulgar fractions.
      */
     private static final Map<Integer, Map<Long, String>> VULGAR_FRACTIONS =
@@ -100,6 +104,7 @@ public final class HighestAveragesAllocation {
      * Private constructor taking the number of seats the a collection with the number of votes as its parameters.
      *
      * @param numberOfSeats The number of seats.
+     * @param threshold     The threshold.
      * @param numberOfVotes A collection with the number of votes.
      */
     public HighestAveragesAllocation(final int numberOfSeats, final Double threshold,
@@ -119,7 +124,7 @@ public final class HighestAveragesAllocation {
         Collection<Register> registers = new ArrayCollection<Register>(
                 numberOfVotes.stream().map(n -> new Register(n)).toArray(Register[]::new));
         long totalNumberOfVotes = numberOfVotes.stream().reduce(0L, Long::sum);
-        long votesThreshold = threshold == null ? 0 : Math.round(threshold * totalNumberOfVotes / 100D);
+        long votesThreshold = threshold == null ? 0 : Math.round(threshold * totalNumberOfVotes / ONE_HUNDRED);
         Collection<Register> qualifiedRegisters = new ArrayCollection<Register>(
                 registers.stream().filter(r -> r.getNumberOfVotes() > votesThreshold).toArray(Register[]::new));
         for (int s = 0; s < numberOfSeats; s++) {
