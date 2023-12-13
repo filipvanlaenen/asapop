@@ -331,6 +331,16 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
+     * Converts a result value to a number of votes that can be used for an instant seat projection.
+     *
+     * @param resultValue The result value to convert.
+     * @return A number of votes that can be used for an instant seat projection.
+     */
+    private long convertResultValueToNumberOfVotes(final ResultValue resultValue) {
+        return Math.round(resultValue.getNominalValue() * ONE_HUNDRED);
+    }
+
+    /**
      * Creates the index page for an area.
      *
      * @param areaConfiguration The configuration for the area.
@@ -354,7 +364,14 @@ class AreaIndexPagesBuilder extends PageBuilder {
         return html.asString();
     }
 
-    private P createFootnote(String letter, String spanClass) {
+    /**
+     * Creates a footnote.
+     *
+     * @param letter    The letter for the footnote.
+     * @param spanClass The span class for the footnote.
+     * @return A paragraph containing a footnote.
+     */
+    private P createFootnote(final String letter, final String spanClass) {
         P p = new P();
         Sup sup = new Sup();
         p.addElement(sup);
@@ -385,8 +402,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
             Double threshold = electoralSystem.getThreshold();
             ModifiableCollection<Long> votes = ModifiableCollection.empty();
             for (ResultValue resultValue : opinionPoll.getMainResponseScenario().getResults()) {
-                // TODO: Central conversion of nominal value to votes.
-                votes.add((long) (resultValue.getNominalValue() * 100000));
+                votes.add(convertResultValueToNumberOfVotes(resultValue));
             }
             allocation = new HighestAveragesAllocation(numberOfSeats, threshold, votes);
         }
@@ -457,7 +473,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 if (allocation != null) {
                     valueTd.addElement(new BR());
                     valueTd.addContent(
-                            allocation.getNumberOfSeatsString((long) (resultValue.getNominalValue() * 100000)));
+                            allocation.getNumberOfSeatsString(convertResultValueToNumberOfVotes(resultValue)));
                     Sup sup = new Sup();
                     valueTd.addElement(sup);
                     sup.addElement(new I("i"));
