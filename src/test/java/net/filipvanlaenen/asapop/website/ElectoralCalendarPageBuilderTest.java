@@ -1,16 +1,22 @@
 package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.model.Election;
+import net.filipvanlaenen.asapop.model.ElectionDate;
+import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.asapop.website.ElectoralCalendarPageBuilder.ElectionComparator;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
@@ -203,5 +209,44 @@ public class ElectoralCalendarPageBuilderTest {
         Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(expected.toString(),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+    }
+
+    /**
+     * Verifies that an election with an earlier date comes first.
+     */
+    @Test
+    public void electionComparatorShouldSortElectionWithEarlierDateFirst() {
+        Election e1 = new Election("AA", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-12-13")),
+                Collections.EMPTY_LIST, null);
+        Election e2 = new Election("AA", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-12-14")),
+                Collections.EMPTY_LIST, null);
+        assertTrue(new ElectionComparator(NOW).compare(e1, e2) < 0);
+        assertTrue(new ElectionComparator(NOW).compare(e2, e1) > 0);
+    }
+
+    /**
+     * Verifies that for elections with the same date, they are sorted according to area code.
+     */
+    @Test
+    public void electionComparatorShouldSortElectionWithSameDatesAccordingToAreaCode() {
+        Election e1 = new Election("AA", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-12-13")),
+                Collections.EMPTY_LIST, null);
+        Election e2 = new Election("AB", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-12-13")),
+                Collections.EMPTY_LIST, null);
+        assertTrue(new ElectionComparator(NOW).compare(e1, e2) < 0);
+        assertTrue(new ElectionComparator(NOW).compare(e2, e1) > 0);
+    }
+
+    /**
+     * Verifies that for elections with the same date and area code, they are sorted according to the election type.
+     */
+    @Test
+    public void electionComparatorShouldSortElectionWithSameDatesAndAreaCodesAccordingToElectionType() {
+        Election e1 = new Election("AA", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-12-13")),
+                Collections.EMPTY_LIST, null);
+        Election e2 = new Election("AA", ElectionType.EUROPEAN, 1, List.of(ElectionDate.parse("2023-12-13")),
+                Collections.EMPTY_LIST, null);
+        assertTrue(new ElectionComparator(NOW).compare(e1, e2) < 0);
+        assertTrue(new ElectionComparator(NOW).compare(e2, e1) > 0);
     }
 }

@@ -27,6 +27,39 @@ import net.filipvanlaenen.txhtmlj.Table;
  */
 final class ElectoralCalendarPageBuilder extends PageBuilder {
     /**
+     * Comparator class to sort the elections.
+     */
+    static final class ElectionComparator implements Comparator<Election> {
+        /**
+         * Today's day.
+         */
+        private final LocalDate now;
+
+        /**
+         * Constructor with the current day as its parameter.
+         *
+         * @param now Today's date.
+         */
+        ElectionComparator(final LocalDate now) {
+            this.now = now;
+        }
+
+        @Override
+        public int compare(final Election e1, final Election e2) {
+            int dateResult = e1.getNextElectionDate(now).compareTo(e2.getNextElectionDate(now));
+            if (dateResult != 0) {
+                return dateResult;
+            }
+            int areaResult = e1.areaCode().compareTo(e2.areaCode());
+            if (areaResult != 0) {
+                return areaResult;
+            } else {
+                return e1.electionType().compareTo(e2.electionType());
+            }
+        }
+    }
+
+    /**
      * The elections.
      */
     private final Elections elections;
@@ -75,21 +108,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         TBody tBody = new TBody();
         table.addElement(tBody);
         List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now));
-        nextElections.sort(new Comparator<Election>() {
-            @Override
-            public int compare(final Election e1, final Election e2) {
-                int dateResult = e1.getNextElectionDate(now).compareTo(e2.getNextElectionDate(now));
-                if (dateResult != 0) {
-                    return dateResult;
-                }
-                int areaResult = e1.areaCode().compareTo(e2.areaCode());
-                if (areaResult != 0) {
-                    return areaResult;
-                } else {
-                    return e1.electionType().compareTo(e2.electionType());
-                }
-            }
-        });
+        nextElections.sort(new ElectionComparator(now));
         for (Election nextElection : nextElections) {
             TR areaTr = new TR();
             tBody.addElement(areaTr);
