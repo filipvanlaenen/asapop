@@ -63,6 +63,11 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * The magic number 100.0.
      */
     private static final double ONE_HUNDRED = 100D;
+    /**
+     * A map converting scopes to election types.
+     */
+    private static final Map<Scope, ElectionType> ELECTION_TYPES_BY_SCOPE = Map.of(Scope.EUROPEAN,
+            ElectionType.EUROPEAN, Scope.NATIONAL, ElectionType.NATIONAL, Scope.PRESIDENTIAL_FIRST_ROUND, null);
 
     /**
      * The elections.
@@ -80,8 +85,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * Private record to carry the data resulting from creating a new opinion poll row.
      *
-     * @param row                     The opinion poll row.
-     * @param publicationDateFootnote Whether a publication date footnote should be added.
+     * @param row                           The opinion poll row.
+     * @param publicationDateFootnote       Whether a publication date footnote should be added.
+     * @param instantSeatProjectionFootnote Whether an instant seat projection footnote should be added.
      */
     private record OpinionPollRowData(TR row, boolean publicationDateFootnote, boolean instantSeatProjectionFootnote) {
     };
@@ -385,26 +391,29 @@ class AreaIndexPagesBuilder extends PageBuilder {
      *
      * @param largestElectoralListSets A list with electoral list sets, sorted from largest to smallest.
      * @param opinionPoll              The opinion poll for which a row should be created.
+     * @param areaConfiguration        The area configuration.
      * @return A record containing the row and related data.
      */
     private OpinionPollRowData createOpinionPollRow(final List<Set<ElectoralList>> largestElectoralListSets,
             final OpinionPoll opinionPoll, final AreaConfiguration areaConfiguration) {
         TR opinionPollRow = new TR();
-        // TODO: Should match national and European elections against their scopes.
-        Election nextElection = elections.getNextElection(areaConfiguration.getAreaCode(), ElectionType.NATIONAL,
-                opinionPoll.getEndDate());
+        ElectionType electionType = ELECTION_TYPES_BY_SCOPE.get(opinionPoll.getScope());
         int numberOfSeats = 0;
         HighestAveragesAllocation allocation = null;
-        if (opinionPoll.getScope() == Scope.NATIONAL && nextElection != null && nextElection.electionData() != null
-                && nextElection.electionData().getElectoralSystem() != null) {
-            ElectoralSystem electoralSystem = nextElection.electionData().getElectoralSystem();
-            numberOfSeats = electoralSystem.getNumberOfSeats();
-            Double threshold = electoralSystem.getThreshold();
-            ModifiableCollection<Long> votes = ModifiableCollection.empty();
-            for (ResultValue resultValue : opinionPoll.getMainResponseScenario().getResults()) {
-                votes.add(convertResultValueToNumberOfVotes(resultValue));
+        if (electionType != null) {
+            Election nextElection =
+                    elections.getNextElection(areaConfiguration.getAreaCode(), electionType, opinionPoll.getEndDate());
+            if (nextElection != null && nextElection.electionData() != null
+                    && nextElection.electionData().getElectoralSystem() != null) {
+                ElectoralSystem electoralSystem = nextElection.electionData().getElectoralSystem();
+                numberOfSeats = electoralSystem.getNumberOfSeats();
+                Double threshold = electoralSystem.getThreshold();
+                ModifiableCollection<Long> votes = ModifiableCollection.empty();
+                for (ResultValue resultValue : opinionPoll.getMainResponseScenario().getResults()) {
+                    votes.add(convertResultValueToNumberOfVotes(resultValue));
+                }
+                allocation = new HighestAveragesAllocation(numberOfSeats, threshold, votes);
             }
-            allocation = new HighestAveragesAllocation(numberOfSeats, threshold, votes);
         }
         String start = "";
         if (opinionPoll.getFieldworkStart() != null) {
