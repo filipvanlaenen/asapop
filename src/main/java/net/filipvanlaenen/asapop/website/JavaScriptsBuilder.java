@@ -23,6 +23,9 @@ class JavaScriptsBuilder {
      * The internationalization terms.
      */
     private final Terms terms;
+    /**
+     * The content of the tooltip script.
+     */
     private final String tooltipScriptContent;
 
     /**
@@ -30,6 +33,7 @@ class JavaScriptsBuilder {
      *
      * @param navigationScriptContent The content of the navigation script.
      * @param sortingScriptContent    The content of the sorting script.
+     * @param tooltipScriptContent    The content of the tooltip script.
      * @param terms                   The internationalization terms.
      */
     JavaScriptsBuilder(final String navigationScriptContent, final String sortingScriptContent,
