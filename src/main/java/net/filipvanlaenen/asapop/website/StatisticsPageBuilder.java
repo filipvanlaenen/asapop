@@ -134,18 +134,28 @@ final class StatisticsPageBuilder extends PageBuilder {
         }
 
         /**
-         * Returns the class for the color.
+         * Returns the class for the color for this currency qualification.
          *
-         * @return The class for the color.
+         * @return The class for the color for this currency qualification.
          */
         String getColorClazz() {
             return term + "-color";
         }
 
+        /**
+         * Returns the symbol for this currency qualification.
+         *
+         * @return The symbol for this currency qualification.
+         */
         String getSymbol() {
             return symbol;
         }
 
+        /**
+         * Returns the term for this currency qualification.
+         *
+         * @return The term for this currency qualification.
+         */
         String getTerm() {
             return term;
         }
@@ -200,6 +210,63 @@ final class StatisticsPageBuilder extends PageBuilder {
     }
 
     /**
+     * Ands empty statistics data and cells to a statistics row.
+     *
+     * @param areaTr The row to add the statistics to.
+     */
+    private void addEmptyStatisticsDataAndCells(final TR areaTr) {
+        areaTr.data("number-of-opinion-polls", "-1");
+        areaTr.data("number-of-opinion-polls-ytd", "-1");
+        areaTr.data("number-of-response-scenarios", "-1");
+        areaTr.data("number-of-response-scenarios-ytd", "-1");
+        areaTr.data("number-of-result-values", "-1");
+        areaTr.data("number-of-result-values-ytd", "-1");
+        areaTr.data("most-recent-date", "-1");
+        areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+        areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+        areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+        areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+    }
+
+    /**
+     * Adds statistics data and cells to a statistics row.
+     *
+     * @param areaTr                       The row to add the statistics to.
+     * @param numberOfOpinionPolls         The number of opinion polls.
+     * @param numberOfOpinionPollsYtd      The number of opinion polls year-to-date.
+     * @param numberOfResponseScenarios    The number of response scenarios.
+     * @param numberOfResponseScenariosYtd The number of response scenarios year-to-date.
+     * @param numberOfResultValues         The number of result values.
+     * @param numberOfResultValuesYtd      The number of result values year-to-date.
+     * @param mostRecentDate               The most recent date.
+     * @param currencyQualification        The currency qualification.
+     */
+    private void addStatisticsDataAndCells(final TR areaTr, final int numberOfOpinionPolls,
+            final int numberOfOpinionPollsYtd, final int numberOfResponseScenarios,
+            final int numberOfResponseScenariosYtd, final int numberOfResultValues, final int numberOfResultValuesYtd,
+            final LocalDate mostRecentDate, final CurrencyQualification currencyQualification) {
+        areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
+        areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
+        areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
+        areaTr.data("number-of-response-scenarios-ytd", Integer.toString(numberOfResponseScenariosYtd));
+        areaTr.data("number-of-result-values", Integer.toString(numberOfResultValues));
+        areaTr.data("number-of-result-values-ytd", Integer.toString(numberOfResultValuesYtd));
+        areaTr.addElement(createNumberAndYearToDateTd(numberOfOpinionPolls, numberOfOpinionPollsYtd)
+                .clazz("statistics-value-td"));
+        areaTr.addElement(createNumberAndYearToDateTd(numberOfResponseScenarios, numberOfResponseScenariosYtd)
+                .clazz("statistics-value-td"));
+        areaTr.addElement(createNumberAndYearToDateTd(numberOfResultValues, numberOfResultValuesYtd)
+                .clazz("statistics-value-td"));
+        TD mostRecentDateTd = new TD().clazz("statistics-value-td");
+        mostRecentDateTd.addElement(currencyQualification.createSpan());
+        mostRecentDateTd.addContent(" " + mostRecentDate.toString());
+        areaTr.data("most-recent-date",
+                Integer.toString(CurrencyQualification.values().length - currencyQualification.ordinal()) + "-"
+                        + mostRecentDate.toString());
+        areaTr.addElement(mostRecentDateTd);
+    }
+
+    /**
      * Builds the content of the statistics page.
      *
      * @return The content of the statistics page
@@ -238,9 +305,8 @@ final class StatisticsPageBuilder extends PageBuilder {
         int totalNumberOfResultValues = 0;
         int totalNumberOfResultValuesYtd = 0;
         LocalDate totalMostRecentDate = LocalDate.EPOCH;
-        int numberOfCurrencyQualifications = CurrencyQualification.values().length;
         List<CurrencyQualification> currencyQualifications = new ArrayList<CurrencyQualification>();
-        long absent = 0L;
+        long numberOfAreasWithoutOpinionPolls = 0L;
         ModifiableCollection<PieChart.Entry> numberOfOpinionPollsEntries =
                 new ModifiableArrayCollection<PieChart.Entry>();
         ModifiableCollection<PieChart.Entry> numberOfOpinionPollsYtdEntries =
@@ -274,27 +340,11 @@ final class StatisticsPageBuilder extends PageBuilder {
             if (opinionPollsMap.containsKey(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
-                areaTr.data("number-of-opinion-polls", Integer.toString(numberOfOpinionPolls));
-                numberOfOpinionPollsEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfOpinionPolls, null));
                 int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
-                areaTr.data("number-of-opinion-polls-ytd", Integer.toString(numberOfOpinionPollsYtd));
-                numberOfOpinionPollsYtdEntries
-                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfOpinionPollsYtd, null));
                 int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
-                areaTr.data("number-of-response-scenarios", Integer.toString(numberOfResponseScenarios));
-                numberOfResponseScenariosEntries
-                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResponseScenarios, null));
                 int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
-                areaTr.data("number-of-response-scenarios-ytd", Integer.toString(numberOfResponseScenariosYtd));
-                numberOfResponseScenariosYtdEntries
-                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResponseScenariosYtd, null));
                 int numberOfResultValues = opinionPolls.getNumberOfResultValues();
-                areaTr.data("number-of-result-values", Integer.toString(numberOfResultValues));
-                numberOfResultValuesEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValues, null));
                 int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
-                areaTr.data("number-of-result-values-ytd", Integer.toString(numberOfResultValuesYtd));
-                numberOfResultValuesYtdEntries
-                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValuesYtd, null));
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
@@ -303,7 +353,19 @@ final class StatisticsPageBuilder extends PageBuilder {
                 long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, now);
                 CurrencyQualification currencyQualification = CurrencyQualification
                         .calculateCurrencyQualification(numberOfOpinionPollsPerDay, daysSinceLastOpinionPoll);
-                currencyQualifications.add(currencyQualification);
+                addStatisticsDataAndCells(areaTr, numberOfOpinionPolls, numberOfOpinionPollsYtd,
+                        numberOfResponseScenarios, numberOfResponseScenariosYtd, numberOfResultValues,
+                        numberOfResultValuesYtd, mostRecentDate, currencyQualification);
+                numberOfOpinionPollsEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfOpinionPolls, null));
+                numberOfOpinionPollsYtdEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfOpinionPollsYtd, null));
+                numberOfResponseScenariosEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResponseScenarios, null));
+                numberOfResponseScenariosYtdEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResponseScenariosYtd, null));
+                numberOfResultValuesEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValues, null));
+                numberOfResultValuesYtdEntries
+                        .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValuesYtd, null));
                 totalNumberOfOpinionPolls += numberOfOpinionPolls;
                 totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
                 totalNumberOfResponseScenarios += numberOfResponseScenarios;
@@ -312,32 +374,10 @@ final class StatisticsPageBuilder extends PageBuilder {
                 totalNumberOfResultValuesYtd += numberOfResultValuesYtd;
                 totalMostRecentDate =
                         mostRecentDate.isAfter(totalMostRecentDate) ? mostRecentDate : totalMostRecentDate;
-                areaTr.addElement(createNumberAndYearToDateTd(numberOfOpinionPolls, numberOfOpinionPollsYtd)
-                        .clazz("statistics-value-td"));
-                areaTr.addElement(createNumberAndYearToDateTd(numberOfResponseScenarios, numberOfResponseScenariosYtd)
-                        .clazz("statistics-value-td"));
-                areaTr.addElement(createNumberAndYearToDateTd(numberOfResultValues, numberOfResultValuesYtd)
-                        .clazz("statistics-value-td"));
-                TD mostRecentDateTd = new TD().clazz("statistics-value-td");
-                mostRecentDateTd.addElement(currencyQualification.createSpan());
-                mostRecentDateTd.addContent(" " + mostRecentDate.toString());
-                areaTr.data("most-recent-date",
-                        Integer.toString(numberOfCurrencyQualifications - currencyQualification.ordinal()) + "-"
-                                + mostRecentDate.toString());
-                areaTr.addElement(mostRecentDateTd);
+                currencyQualifications.add(currencyQualification);
             } else {
-                areaTr.data("number-of-opinion-polls", "-1");
-                areaTr.data("number-of-opinion-polls-ytd", "-1");
-                areaTr.data("number-of-response-scenarios", "-1");
-                areaTr.data("number-of-response-scenarios-ytd", "-1");
-                areaTr.data("number-of-result-values", "-1");
-                areaTr.data("number-of-result-values-ytd", "-1");
-                areaTr.data("most-recent-date", "-1");
-                areaTr.addElement(new TD("—").clazz("statistics-value-td"));
-                areaTr.addElement(new TD("—").clazz("statistics-value-td"));
-                areaTr.addElement(new TD("—").clazz("statistics-value-td"));
-                areaTr.addElement(new TD("—").clazz("statistics-value-td"));
-                absent++;
+                addEmptyStatisticsDataAndCells(areaTr);
+                numberOfAreasWithoutOpinionPolls++;
             }
         }
         totalTr.addElement(new TD(" ").clazz("total"));
@@ -350,7 +390,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 .clazz("statistics-total-td"));
         totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
         section.addElement(createCurrencyFootnote());
-        section.addElement(createCurrencyCharts(currencyQualifications, absent));
+        section.addElement(createCurrencyCharts(currencyQualifications, numberOfAreasWithoutOpinionPolls));
         Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
         numberOfOpinionPollsCharts.addElement(
                 new PieChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
@@ -378,8 +418,17 @@ final class StatisticsPageBuilder extends PageBuilder {
         return html;
     }
 
+    /**
+     * Creates a currency chart for the provided occurrences of the currency qualifications and a number of absent
+     * opinion poll.
+     *
+     * @param currencyQualifications           A list containing a currency qualification for each area that has opinion
+     *                                         polls.
+     * @param numberOfAreasWithoutOpinionPolls The number of areas without opinion polls.
+     * @return An HTML div element with the currency charts for the areas.
+     */
     private Div createCurrencyCharts(final List<CurrencyQualification> currencyQualifications,
-            final long noOpinionPolls) {
+            final long numberOfAreasWithoutOpinionPolls) {
         Map<CurrencyQualification, Long> currencyQualificationsMap =
                 currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
         ModifiableOrderedCollection<PieChart.Entry> entries = new ModifiableOrderedArrayCollection<PieChart.Entry>();
@@ -391,7 +440,7 @@ final class StatisticsPageBuilder extends PageBuilder {
         }
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-right", "currency", entries).getDiv());
-        entries.add(new PieChart.Entry("no-opinion-polls", "–", noOpinionPolls, "no-opinion-polls"));
+        entries.add(new PieChart.Entry("no-opinion-polls", "–", numberOfAreasWithoutOpinionPolls, "no-opinion-polls"));
         twoSvgChartsContainer.addElement(new PieChart("svg-chart-container-left", "currency", entries).getDiv());
         return twoSvgChartsContainer;
     }
