@@ -108,6 +108,14 @@ class PieChart {
      */
     private static final String SYMBOL_CLASS = "pieChartSymbol";
     /**
+     * The magic number twelve.
+     */
+    private static final int TWELVE = 12;
+    /**
+     * The magic number one hundred.
+     */
+    private static final double ONE_HUNDRED = 100D;
+    /**
      * The HTML class for the pie chart's div element.
      */
     private final String divClass;
@@ -196,10 +204,10 @@ class PieChart {
             counter += value;
             String sliceClass = entry.sliceClass();
             if (sliceClass == null) {
-                sliceClass = "pie-chart-" + (i % 12 + 1);
+                sliceClass = "pie-chart-" + (i % TWELVE + 1);
             }
             String onMouseMoveEvent = "showPieChartTooltip(evt, '" + entry.labelClass() + "', '" + value + "', '" + sum
-                    + "', '" + (Math.round(100D * value / sum)) + "');";
+                    + "', '" + (Math.round(ONE_HUNDRED * value / sum)) + "');";
             String onMouseOutEvent = "hideTooltip('" + TOOLTIP_ID + "');";
             if (value == sum) {
                 Circle circle = new Circle().cx(CENTER_X).cy(CENTER_Y).r(RADIUS).clazz(sliceClass);
