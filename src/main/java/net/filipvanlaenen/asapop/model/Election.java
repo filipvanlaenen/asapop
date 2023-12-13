@@ -13,8 +13,10 @@ import net.filipvanlaenen.asapop.yaml.ElectionData;
  *
  * @param areaCode      The area code for the election.
  * @param electionType  The election type.
+ * @param number        The election number.
  * @param dates         The election dates.
  * @param datesAnnulled The dates for the rounds for which the results were annulled.
+ * @param electionData  The election date.
  */
 public record Election(String areaCode, ElectionType electionType, int number, List<ElectionDate> dates,
         List<List<ElectionDate>> datesAnnulled, ElectionData electionData) {
@@ -23,8 +25,10 @@ public record Election(String areaCode, ElectionType electionType, int number, L
      *
      * @param areaCode      The area code for the election.
      * @param electionType  The election type.
+     * @param number        The election number.
      * @param dates         The election dates.
      * @param datesAnnulled The dates for the rounds for which the results were annulled.
+     * @param electionData  The election date.
      */
     public Election(final String areaCode, final ElectionType electionType, final int number,
             final List<ElectionDate> dates, final List<List<ElectionDate>> datesAnnulled,
