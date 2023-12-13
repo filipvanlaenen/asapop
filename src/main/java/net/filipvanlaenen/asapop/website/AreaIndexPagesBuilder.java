@@ -66,8 +66,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * A map converting scopes to election types.
      */
-    private static final Map<Scope, ElectionType> ELECTION_TYPES_BY_SCOPE = Map.of(Scope.EUROPEAN,
-            ElectionType.EUROPEAN, Scope.NATIONAL, ElectionType.NATIONAL, Scope.PRESIDENTIAL_FIRST_ROUND, null);
+    private static final net.filipvanlaenen.kolektoj.Map<Scope, ElectionType> ELECTION_TYPES_BY_SCOPE =
+            net.filipvanlaenen.kolektoj.Map.of(Scope.EUROPEAN, ElectionType.EUROPEAN, Scope.NATIONAL,
+                    ElectionType.NATIONAL, Scope.PRESIDENTIAL_FIRST_ROUND, null, null, null);
 
     /**
      * The elections.
