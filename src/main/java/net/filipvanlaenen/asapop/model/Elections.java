@@ -27,11 +27,12 @@ public final class Elections {
      *
      * @param areaCode     The area code.
      * @param electionType The election type.
+     * @param index        The index of the election.
      * @param date         A set of dates encoded in a string.
-     * @param electionData
+     * @param electionData The election data.
      */
     public void addElection(final String areaCode, final ElectionType electionType, final int index, final String date,
-            ElectionData electionData) {
+            final ElectionData electionData) {
         String[] singleDates = date.split("\\+");
         List<ElectionDate> dates = new ArrayList<ElectionDate>();
         List<List<ElectionDate>> datesAnnulled = new ArrayList<List<ElectionDate>>();
