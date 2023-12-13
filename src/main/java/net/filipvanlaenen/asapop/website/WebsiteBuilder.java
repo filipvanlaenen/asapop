@@ -48,6 +48,9 @@ public class WebsiteBuilder {
      * The internationalization terms.
      */
     private final Terms terms;
+    /**
+     * The tooptip script content.
+     */
     private final String tooltipScriptContent;
     /**
      * The configuration for the website.
@@ -65,7 +68,8 @@ public class WebsiteBuilder {
      * @param baseStyleSheetContent   The base style sheet content.
      * @param customStyleSheetContent The custom style sheet content.
      * @param navigationScriptContent The content of the navigation script.
-     * @param sortingScriptContent    The content of the sorrting script.
+     * @param sortingScriptContent    The content of the sorting script.
+     * @param tooltipScriptContent    The content of the tooltip script.
      * @param now                     Today's date.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
