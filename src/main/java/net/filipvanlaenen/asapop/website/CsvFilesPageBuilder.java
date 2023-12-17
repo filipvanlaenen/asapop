@@ -115,14 +115,21 @@ final class CsvFilesPageBuilder extends PageBuilder {
         return html;
     }
 
-    private boolean hasCsvFiles(AreaConfiguration ac) {
-        if (ac.getAreaCode() == null) {
+    /**
+     * Returns whether an area configuration has a configuration present to export CSV files, either directly or though
+     * a subdivision.
+     *
+     * @param areaConfiguration The area configuration.
+     * @return True if the area configuration has a configuration present to export CSV files.
+     */
+    private boolean hasCsvFiles(final AreaConfiguration areaConfiguration) {
+        if (areaConfiguration.getAreaCode() == null) {
             return false;
         }
-        if (ac.getCsvConfiguration() != null) {
+        if (areaConfiguration.getCsvConfiguration() != null) {
             return true;
         }
-        AreaSubdivisionConfiguration[] subdivisions = ac.getSubdivsions();
+        AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
         if (subdivisions != null) {
             for (AreaSubdivisionConfiguration subdivision : subdivisions) {
                 if (subdivision.getAreaCode() != null && subdivision.getCsvConfiguration() != null) {
