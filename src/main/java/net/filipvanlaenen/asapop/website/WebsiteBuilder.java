@@ -33,9 +33,13 @@ public class WebsiteBuilder {
      */
     private final LocalDate now;
     /**
-     * The map with the opinion polls.
+     * The map with the opinion polls related to parliamentary elections.
      */
-    private final Map<String, OpinionPolls> opinionPollsMap;
+    private final Map<String, OpinionPolls> parliamentaryOpinionPollsMap;
+    /**
+     * The map with the opinion polls related to presidential elections.
+     */
+    private final Map<String, OpinionPolls> presidentialOpinionPollsMap;
     /**
      * The content of the sorting script.
      */
@@ -61,25 +65,27 @@ public class WebsiteBuilder {
      * Constructor taking a website configuration, the internationalization terms and a map with the opinion polls as
      * its parameters.
      *
-     * @param websiteConfiguration    The website configuration.
-     * @param terms                   The internationalization terms.
-     * @param opinionPollsMap         The map with all the opinion polls.
-     * @param elections               The elections.
-     * @param baseStyleSheetContent   The base style sheet content.
-     * @param customStyleSheetContent The custom style sheet content.
-     * @param navigationScriptContent The content of the navigation script.
-     * @param sortingScriptContent    The content of the sorting script.
-     * @param tooltipScriptContent    The content of the tooltip script.
-     * @param now                     Today's date.
+     * @param websiteConfiguration         The website configuration.
+     * @param terms                        The internationalization terms.
+     * @param parliamentaryOpinionPollsMap The map with all the opinion polls related to parliamentary elections.
+     * @param elections                    The elections.
+     * @param baseStyleSheetContent        The base style sheet content.
+     * @param customStyleSheetContent      The custom style sheet content.
+     * @param navigationScriptContent      The content of the navigation script.
+     * @param sortingScriptContent         The content of the sorting script.
+     * @param tooltipScriptContent         The content of the tooltip script.
+     * @param now                          Today's date.
      */
     public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
-            final Map<String, OpinionPolls> opinionPollsMap, final Elections elections,
+            final Map<String, OpinionPolls> parliamentaryOpinionPollsMap,
+            final Map<String, OpinionPolls> presidentialOpinionPollsMap, final Elections elections,
             final String baseStyleSheetContent, final String customStyleSheetContent,
             final String navigationScriptContent, final String sortingScriptContent, final String tooltipScriptContent,
             final LocalDate now) {
         this.websiteConfiguration = websiteConfiguration;
         this.terms = terms;
-        this.opinionPollsMap = opinionPollsMap;
+        this.parliamentaryOpinionPollsMap = parliamentaryOpinionPollsMap;
+        this.presidentialOpinionPollsMap = presidentialOpinionPollsMap;
         this.elections = elections;
         this.baseStyleSheetContent = baseStyleSheetContent;
         this.customStyleSheetContent = customStyleSheetContent;
@@ -105,9 +111,13 @@ public class WebsiteBuilder {
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.put("statistics.html",
-                new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, now, startOfYear).build());
-        website.putAll(new CsvFilesBuilder(websiteConfiguration, opinionPollsMap).build());
-        website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, now).build());
+                new StatisticsPageBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap, now, startOfYear)
+                        .build());
+        website.putAll(
+                new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
+                        .build());
+        website.putAll(
+                new AreaIndexPagesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, elections, now).build());
         return website;
     }
 }

@@ -158,8 +158,8 @@ public final class CommandLineInterface {
                 String tooltipScriptContent = readResource("/tooltip.js");
                 LocalDate now = LocalDate.now();
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap,
-                        elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent,
-                        sortingScriptContent, tooltipScriptContent, now).build();
+                        presidentialOpinionPollsMap, elections, baseStyleSheetContent, customStyleSheetContent,
+                        navigationScriptContent, sortingScriptContent, tooltipScriptContent, now).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },
