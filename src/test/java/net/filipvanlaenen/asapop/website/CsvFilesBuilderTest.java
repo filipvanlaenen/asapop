@@ -66,7 +66,8 @@ public class CsvFilesBuilderTest {
         ElectoralList.get("B").setAbbreviation("B");
         ElectoralList.get("P").setAbbreviation("P");
         ElectoralList.get("Q").setAbbreviation("Q");
-        CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), opinionPollsMap);
+        CsvFilesBuilder builder =
+                new CsvFilesBuilder(createWebsiteConfiguration(), opinionPollsMap, Collections.EMPTY_MAP);
         assertEquals(map, builder.build());
     }
 }
