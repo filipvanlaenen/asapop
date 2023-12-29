@@ -147,16 +147,19 @@ public final class CommandLineInterface {
                 Map<String, ElectionData> electionDataFiles =
                         readElectionDataFiles(websiteConfiguration, siteConfigurationFile.getParent());
                 Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, electionDataFiles);
-                Map<String, OpinionPolls> opinionPollsMap = readAllOpinionPolls(ropfDirName, websiteConfiguration);
+                Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
+                        readAllParliamentaryOpinionPolls(ropfDirName, websiteConfiguration);
+                Map<String, OpinionPolls> presidentialOpinionPollsMap =
+                        readAllPresidentialOpinionPolls(ropfDirName, websiteConfiguration);
                 String baseStyleSheetContent = readResource("/base.css");
                 String customStyleSheetContent = String.join("\n", readFile(customStyleSheetFileName));
                 String navigationScriptContent = readResource("/navigation.js");
                 String sortingScriptContent = readResource("/sorting.js");
                 String tooltipScriptContent = readResource("/tooltip.js");
                 LocalDate now = LocalDate.now();
-                Website website = new WebsiteBuilder(websiteConfiguration, terms, opinionPollsMap, elections,
-                        baseStyleSheetContent, customStyleSheetContent, navigationScriptContent, sortingScriptContent,
-                        tooltipScriptContent, now).build();
+                Website website = new WebsiteBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap,
+                        elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent,
+                        sortingScriptContent, tooltipScriptContent, now).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },
@@ -277,14 +280,14 @@ public final class CommandLineInterface {
         }
 
         /**
-         * Reads all the opinion polls.
+         * Reads all the opinion polls related to parliamentary elections.
          *
          * @param ropfDirName          The directory where the ROPF files reside.
          * @param websiteConfiguration The configuration for the website.
-         * @return A map with all opinion polls.
+         * @return A map with all opinion polls related to parliamentary elections.
          * @throws IOException Thrown if something related to IO goes wrong.
          */
-        private static Map<String, OpinionPolls> readAllOpinionPolls(final String ropfDirName,
+        private static Map<String, OpinionPolls> readAllParliamentaryOpinionPolls(final String ropfDirName,
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
             Set<String> areaCodes =
@@ -298,6 +301,42 @@ public final class CommandLineInterface {
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
                     printWarnings(richOpinionPollsFile.getWarnings());
                     opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
+                }
+            }
+            return opinionPollsMap;
+        }
+
+        /**
+         * Reads all the opinion polls related to presidential elections.
+         *
+         * @param ropfDirName          The directory where the ROPF files reside.
+         * @param websiteConfiguration The configuration for the website.
+         * @return A map with all opinion polls related to presidential elections.
+         * @throws IOException Thrown if something related to IO goes wrong.
+         */
+        private static Map<String, OpinionPolls> readAllPresidentialOpinionPolls(final String ropfDirName,
+                final WebsiteConfiguration websiteConfiguration) throws IOException {
+            Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
+            Set<AreaConfiguration> areasWithPresidentialElections =
+                    websiteConfiguration
+                            .getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null
+                                    && ac.getElections() != null && ac.getElections().getPresidential() != null)
+                            .collect(Collectors.toSet());
+            Set<String> presidentialOpinionPollCodes = new HashSet<String>();
+            for (AreaConfiguration areaConfiguration : areasWithPresidentialElections) {
+                String areaCode = areaConfiguration.getAreaCode();
+                for (int index : areaConfiguration.getElections().getPresidential().getDates().keySet()) {
+                    presidentialOpinionPollCodes.add(areaCode + "_p" + index);
+                }
+            }
+            for (String presidentialOpinionPollCode : presidentialOpinionPollCodes) {
+                Path ropfPath = Paths.get(ropfDirName, presidentialOpinionPollCode + ".ropf");
+                if (Files.exists(ropfPath)) {
+                    System.out.println("Going to parse " + presidentialOpinionPollCode + "...");
+                    String[] ropfContent = readFile(ropfPath);
+                    RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                    printWarnings(richOpinionPollsFile.getWarnings());
+                    opinionPollsMap.put(presidentialOpinionPollCode, richOpinionPollsFile.getOpinionPolls());
                 }
             }
             return opinionPollsMap;
