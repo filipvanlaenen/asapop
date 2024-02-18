@@ -141,11 +141,12 @@ The table below gives an informal overview over the field types:
 
 The type `Scope` accepts the values as in the table below:
 
-| Value | Description                        |
-|-------|------------------------------------|
-| E     | European elections                 |
-| N     | National elections                 |
-| P1    | Presidential election, first round |
+| Value | Description                                       |
+|-------|---------------------------------------------------|
+| E     | European elections                                |
+| N     | National elections                                |
+| N2    | Two-party-preferred results in national elections |
+| P1    | Presidential election, first round                |
 
 The type `Unit` accepts the values as in the table below:
 
