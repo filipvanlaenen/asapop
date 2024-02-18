@@ -16,6 +16,10 @@ public enum Scope {
      */
     NATIONAL("N"),
     /**
+     * Two-party-preferred results in opinion polls for the election of the national parliament.
+     */
+    NATIONAL_TWO_PARTY_PREFERRED("N2"),
+    /**
      * Opinion polls for the first round of the presidential election.
      */
     PRESIDENTIAL_FIRST_ROUND("P1");
