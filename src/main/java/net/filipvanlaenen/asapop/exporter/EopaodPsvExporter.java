@@ -68,7 +68,7 @@ public final class EopaodPsvExporter extends Exporter {
     static String export(final OpinionPoll opinionPoll, final String area,
             final List<Set<String>> electoralListIdSets) {
         List<String> lines = new ArrayList<String>();
-        if (areaMatches(area, opinionPoll.getArea())) {
+        if (areaMatches(area, null, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
             elements.add(exportPollingFirms(opinionPoll));
             elements.add(naIfNull(exportCommissioners(opinionPoll)));
@@ -110,7 +110,7 @@ public final class EopaodPsvExporter extends Exporter {
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
             final List<Set<String>> electoralListKeySets) {
-        if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
+        if (!areaMatches(area, null, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
         List<String> elements = new ArrayList<String>();
