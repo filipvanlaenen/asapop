@@ -10,6 +10,10 @@ public class CsvConfiguration {
      * The list with the IDs for the electoral lists.
      */
     private List<String> electoralListIds;
+    /**
+     * The area to be included in the export of the national polls.
+     */
+    private String includeAreaAsNational;
 
     /**
      * Returns the list with the IDs for the electoral lists.
@@ -21,11 +25,29 @@ public class CsvConfiguration {
     }
 
     /**
+     * Returns the area to be included in the export of the national polls.
+     *
+     * @return The area to be included in the export of the national polls.
+     */
+    public String getIncludeAreaAsNational() {
+        return includeAreaAsNational;
+    }
+
+    /**
      * Sets the list with the IDs for the electoral lists.
      *
      * @param electoralListIds The list with the IDs for the electoral lists.
      */
     public void setElectoralListIds(final List<String> electoralListIds) {
         this.electoralListIds = electoralListIds;
+    }
+
+    /**
+     * Sets the area to be included in the export of the national polls.
+     *
+     * @param includeAreaAsNational The area to be included in the export of the national polls.
+     */
+    public void setIncludeAreaAsNational(final String includeAreaAsNational) {
+        this.includeAreaAsNational = includeAreaAsNational;
     }
 }

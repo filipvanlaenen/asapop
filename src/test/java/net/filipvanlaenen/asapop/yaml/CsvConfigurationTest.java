@@ -20,4 +20,15 @@ public class CsvConfigurationTest {
         csvConfiguration.setElectoralListIds(List.of("A", "B"));
         assertEquals(List.of("A", "B"), csvConfiguration.getElectoralListIds());
     }
+
+    /**
+     * Verifies that the getter method <code>getIncludeAreaAsNational</code> is wired correctly to the setter method
+     * <code>setIncludeAreaAsNational</code>.
+     */
+    @Test
+    public void getIncludeAreaAsNationalShouldBeWiredCorrectlyToSetIncludeAreaAsNational() {
+        CsvConfiguration csvConfiguration = new CsvConfiguration();
+        csvConfiguration.setIncludeAreaAsNational("ABC");
+        assertEquals("ABC", csvConfiguration.getIncludeAreaAsNational());
+    }
 }
