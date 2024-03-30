@@ -22,7 +22,11 @@ public enum Scope {
     /**
      * Opinion polls for the first round of the presidential election.
      */
-    PRESIDENTIAL_FIRST_ROUND("P1");
+    PRESIDENTIAL_FIRST_ROUND("P1"),
+    /**
+     * Opinion polls for the election of the regional parliament.
+     */
+    REGIONAL("R");
 
     /**
      * The string representation of the scope.
