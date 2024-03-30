@@ -2,7 +2,6 @@ package net.filipvanlaenen.asapop.exporter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -13,6 +12,7 @@ import net.filipvanlaenen.asapop.model.ResultValue.Precision;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Exporter to the EOPAOD CSV file format.
@@ -25,7 +25,8 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * A map mapping scopes to CSV values.
      */
-    static final Map<Scope, String> SCOPE_TO_PSV_STRING = Map.of(Scope.EUROPEAN, "European", Scope.NATIONAL, "National",
+    private static final Map<Scope, String> SCOPE_TO_PSV_STRING = Map.of(null, null, Scope.EUROPEAN, "European",
+            Scope.NATIONAL, "National", Scope.NATIONAL_TWO_PARTY_PREFERRED, "National Two-party-preferred",
             Scope.PRESIDENTIAL_FIRST_ROUND, "Presidential");
 
     /**
@@ -102,7 +103,7 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
-            elements.add(notAvailableIfNull(exportScope(opinionPoll.getScope())));
+            elements.add(notAvailableIfNull(SCOPE_TO_PSV_STRING.get(opinionPoll.getScope())));
             elements.add(notAvailableIfNull(opinionPoll.getSampleSizeValue()));
             elements.add(opinionPoll.getSampleSizeValue() == null ? "Not Available" : "Provided");
             elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
@@ -154,7 +155,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(
-                exportScope(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
+                SCOPE_TO_PSV_STRING.get(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         SampleSize sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
         elements.add(sampleSize == null ? "Not Available" : Integer.toString(sampleSize.getMinimalValue()));
         elements.add(sampleSize == null ? "Not Available" : "Provided");
@@ -206,16 +207,6 @@ public final class EopaodCsvExporter extends Exporter {
         } else {
             return participationRate + "%";
         }
-    }
-
-    /**
-     * Exports the scope to the terms used by the EOPAOD PSV format.
-     *
-     * @param scope The scope to convert.
-     * @return A term used by EOPAOD PSV format for the scope.
-     */
-    private static String exportScope(final Scope scope) {
-        return scope == null ? null : SCOPE_TO_PSV_STRING.get(scope);
     }
 
     /**
