@@ -13,6 +13,7 @@ import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
  * Exporter to the EOPAOD CSV file format.
@@ -25,14 +26,28 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * A map mapping scopes to CSV values.
      */
-    private static final Map<Scope, String> SCOPE_TO_PSV_STRING = Map.of(null, null, Scope.EUROPEAN, "European",
-            Scope.NATIONAL, "National", Scope.NATIONAL_TWO_PARTY_PREFERRED, "National Two-party-preferred",
-            Scope.PRESIDENTIAL_FIRST_ROUND, "Presidential");
+    private static final Map<Scope, String> SCOPE_TO_PSV_STRING = createScopeToPsvMap();
 
     /**
      * Private constructor.
      */
     private EopaodCsvExporter() {
+    }
+
+    /**
+     * Creates the map mapping the scopes to their PSV values.
+     *
+     * @return A map mapping the scopes to their PSV values.
+     */
+    private static Map<Scope, String> createScopeToPsvMap() {
+        ModifiableMap<Scope, String> map = ModifiableMap.empty();
+        map.add(null, null);
+        map.add(Scope.EUROPEAN, "European");
+        map.add(Scope.NATIONAL, "National");
+        map.add(Scope.NATIONAL_TWO_PARTY_PREFERRED, "National Two-party-preferred");
+        map.add(Scope.PRESIDENTIAL_FIRST_ROUND, "Presidential");
+        map.add(Scope.REGIONAL, "Regional");
+        return map;
     }
 
     /**
@@ -62,12 +77,13 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * Exports the opinion polls.
      *
-     * @param opinionPolls        The opinion polls to export.
-     * @param area                The area to filter opinion polls and response scenarios on.
-     * @param electoralListIdSets A list with the sets of IDs for the electoral lists to be exported.
+     * @param opinionPolls          The opinion polls to export.
+     * @param area                  The area to filter opinion polls and response scenarios on.
+     * @param includeAreaAsNational The area to be included as national.
+     * @param electoralListIdSets   A list with the sets of IDs for the electoral lists to be exported.
      * @return A string containing the opinion polls in the CSV file format for EOPAOD.
      */
-    public static String export(final OpinionPolls opinionPolls, final String area,
+    public static String export(final OpinionPolls opinionPolls, final String area, final String includeAreaAsNational,
             final List<Set<String>> electoralListIdSets) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
@@ -78,7 +94,7 @@ public final class EopaodCsvExporter extends Exporter {
         }
         sb.append(",Other\n");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
-            String lines = export(opinionPoll, area, electoralListIdSets);
+            String lines = export(opinionPoll, area, includeAreaAsNational, electoralListIdSets);
             if (lines != null) {
                 sb.append(lines);
                 sb.append("\n");
@@ -90,15 +106,16 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * Exports the opinion poll.
      *
-     * @param opinionPoll         The opinion poll to export.
-     * @param area                The area to filter opinion polls on.
-     * @param electoralListIdSets A list with the sets of IDs of the electoral lists to be exported.
+     * @param opinionPoll           The opinion poll to export.
+     * @param area                  The area to filter opinion polls on.
+     * @param includeAreaAsNational The area to be included as national.
+     * @param electoralListIdSets   A list with the sets of IDs of the electoral lists to be exported.
      * @return A string containing the opinion poll in the CSV file format for EOPAOD.
      */
-    static String export(final OpinionPoll opinionPoll, final String area,
+    static String export(final OpinionPoll opinionPoll, final String area, final String includeAreaAsNational,
             final List<Set<String>> electoralListIdSets) {
         List<String> lines = new ArrayList<String>();
-        if (areaMatches(area, opinionPoll.getArea())) {
+        if (areaMatches(area, includeAreaAsNational, opinionPoll.getArea())) {
             List<String> elements = new ArrayList<String>();
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
@@ -124,7 +141,8 @@ public final class EopaodCsvExporter extends Exporter {
             lines.add(String.join(",", elements));
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            String responseScenarioLine = export(responseScenario, opinionPoll, area, electoralListIdSets);
+            String responseScenarioLine =
+                    export(responseScenario, opinionPoll, area, includeAreaAsNational, electoralListIdSets);
             if (responseScenarioLine != null) {
                 lines.add(responseScenarioLine);
             }
@@ -139,15 +157,17 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * Exports the response scenario.
      *
-     * @param responseScenario    The response scenario to export.
-     * @param opinionPoll         The opinion poll this response scenario relates to.
-     * @param area                The area to filter response scenarios on.
-     * @param electoralListIdSets A list with the sets of IDs of the electoral lists to be exported.
+     * @param responseScenario      The response scenario to export.
+     * @param opinionPoll           The opinion poll this response scenario relates to.
+     * @param area                  The area to filter response scenarios on.
+     * @param includeAreaAsNational The area to be included as national.
+     * @param electoralListIdSets   A list with the sets of IDs of the electoral lists to be exported.
      * @return A string containing the response scenario in the PSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
-            final List<Set<String>> electoralListIdSets) {
-        if (!areaMatches(area, secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
+            final String includeAreaAsNational, final List<Set<String>> electoralListIdSets) {
+        if (!areaMatches(area, includeAreaAsNational,
+                secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
         List<String> elements = new ArrayList<String>();
