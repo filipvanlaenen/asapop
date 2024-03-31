@@ -322,7 +322,7 @@ public class ExporterTest {
      */
     @Test
     public void areaShouldMatchWhenSpecifiedAreaIsNull() {
-        assertTrue(Exporter.areaMatches(null, "N"));
+        assertTrue(Exporter.areaMatches(null, null, "N"));
     }
 
     /**
@@ -330,7 +330,7 @@ public class ExporterTest {
      */
     @Test
     public void areaShouldMatchWhenSpecifiedAreaIsTwoDashesAndProvidedAreaIsNull() {
-        assertTrue(Exporter.areaMatches("--", null));
+        assertTrue(Exporter.areaMatches("--", null, null));
     }
 
     /**
@@ -338,7 +338,7 @@ public class ExporterTest {
      */
     @Test
     public void areaShouldNotMatchWhenSpecifiedAreaIsTwoDashesAndProvidedAreaIsNotNull() {
-        assertFalse(Exporter.areaMatches("--", "N"));
+        assertFalse(Exporter.areaMatches("--", null, "N"));
     }
 
     /**
@@ -346,7 +346,7 @@ public class ExporterTest {
      */
     @Test
     public void areaShouldMatchWhenEqualToSpecifiedArea() {
-        assertTrue(Exporter.areaMatches("N", "N"));
+        assertTrue(Exporter.areaMatches("N", null, "N"));
     }
 
     /**
@@ -354,7 +354,7 @@ public class ExporterTest {
      */
     @Test
     public void areaShouldNotMatchWhenNotEqualToSpecifiedArea() {
-        assertFalse(Exporter.areaMatches("S", "N"));
+        assertFalse(Exporter.areaMatches("S", null, "N"));
     }
 
     /**

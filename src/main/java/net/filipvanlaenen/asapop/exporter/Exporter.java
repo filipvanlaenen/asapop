@@ -40,16 +40,24 @@ public abstract class Exporter {
     }
 
     /**
-     * Verifies whether the provided area matches with the specified area. If the specified area is <code>null</code>,
-     * or the specified area and the provided area are equal, or the specified area is <code>--</code> and the provided
-     * area is <code>null</code>, the areas are said to match, and the method returns true.
+     * Verifies whether the provided area matches with the specified area.
      *
-     * @param specifiedArea The area specified for export.
-     * @param actualArea    The are of the opinion poll or response alternative.
+     * <ol>
+     * <li>If the specified area is equal to <code>null</code>, any actual area matches.</li>
+     * <li>If the specified area is equal to <code>--</code>, the actual area has to be equal to <code>null</code> or
+     * the area specified that be included as national in order to match.</li>
+     * <li>Otherwise, the actual area only matches if it's equal to the specified area.</li>
+     * </ol>
+     *
+     * @param specifiedArea         The area specified for export.
+     * @param includeAreaAsNational The area that also should match as national.
+     * @param actualArea            The are of the opinion poll or response alternative.
      * @return True if the provided area matches with the specified area, false otherwise.
      */
-    static boolean areaMatches(final String specifiedArea, final String actualArea) {
-        return specifiedArea == null || specifiedArea.equals("--") && actualArea == null
+    static boolean areaMatches(final String specifiedArea, final String includeAreaAsNational,
+            final String actualArea) {
+        return specifiedArea == null
+                || "--".equals(specifiedArea) && (actualArea == null || actualArea.equals(includeAreaAsNational))
                 || specifiedArea.equals(actualArea);
     }
 
