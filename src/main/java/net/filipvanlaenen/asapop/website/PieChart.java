@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
-import net.filipvanlaenen.kolektoj.array.OrderedArrayCollection;
+import net.filipvanlaenen.kolektoj.sortedtree.SortedTreeCollection;
 import net.filipvanlaenen.tsvgj.Circle;
 import net.filipvanlaenen.tsvgj.DominantBaselineValue;
 import net.filipvanlaenen.tsvgj.Path;
@@ -137,7 +137,7 @@ class PieChart {
      * @param entries    The entries for the pie chart.
      */
     PieChart(final String divClass, final String titleClass, final Collection<Entry> entries) {
-        this(divClass, titleClass, new OrderedArrayCollection<Entry>(entries, new EntryComparator()));
+        this(divClass, titleClass, new SortedTreeCollection<Entry>(new EntryComparator(), entries));
     }
 
     /**
