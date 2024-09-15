@@ -9,7 +9,7 @@ import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
-import net.filipvanlaenen.kolektoj.array.OrderedArrayCollection;
+import net.filipvanlaenen.kolektoj.sortedtree.SortedTreeCollection;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -83,14 +83,14 @@ final class CsvFilesPageBuilder extends PageBuilder {
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
             if (subdivisions != null) {
                 OrderedCollection<AreaSubdivisionConfiguration> sortedSubdivisions =
-                        new OrderedArrayCollection<AreaSubdivisionConfiguration>(Collection.of(subdivisions),
+                        new SortedTreeCollection<AreaSubdivisionConfiguration>(
                                 new Comparator<AreaSubdivisionConfiguration>() {
                                     @Override
                                     public int compare(final AreaSubdivisionConfiguration asc0,
                                             final AreaSubdivisionConfiguration asc1) {
                                         return asc0.getAreaCode().compareTo(asc1.getAreaCode());
                                     }
-                                });
+                                }, Collection.of(subdivisions));
                 for (AreaSubdivisionConfiguration subdivision : sortedSubdivisions) {
                     if (subdivision.getAreaCode() != null && subdivision.getCsvConfiguration() != null) {
                         String subdivisionCode = areaCode + "-" + subdivision.getAreaCode();
