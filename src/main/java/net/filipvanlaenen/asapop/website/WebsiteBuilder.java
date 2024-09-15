@@ -68,6 +68,7 @@ public class WebsiteBuilder {
      * @param websiteConfiguration         The website configuration.
      * @param terms                        The internationalization terms.
      * @param parliamentaryOpinionPollsMap The map with all the opinion polls related to parliamentary elections.
+     * @param presidentialOpinionPollsMap  The map with all the opinion polls related to presidential elections.
      * @param elections                    The elections.
      * @param baseStyleSheetContent        The base style sheet content.
      * @param customStyleSheetContent      The custom style sheet content.
@@ -116,6 +117,7 @@ public class WebsiteBuilder {
         website.putAll(
                 new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
                         .build());
+        website.putAll(new WidgetsBuilder(websiteConfiguration, parliamentaryOpinionPollsMap).build());
         website.putAll(
                 new AreaIndexPagesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, elections, now).build());
         return website;
