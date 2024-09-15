@@ -66,7 +66,8 @@ public class CsvFilesBuilder {
                 OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
                 List<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
                         .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+")))).collect(Collectors.toList());
-                String outputContent = EopaodCsvExporter.export(opinionPolls, null, electoralListKeySets);
+                String outputContent = EopaodCsvExporter.export(opinionPolls, "--",
+                        csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets);
                 result.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
@@ -80,7 +81,7 @@ public class CsvFilesBuilder {
                                 .collect(Collectors.toList());
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
-                                electoralListKeySets);
+                                null, electoralListKeySets);
                         result.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"), outputContent);
                     }
                 }
@@ -104,7 +105,7 @@ public class CsvFilesBuilder {
                     return k1.iterator().next().compareTo(k2.iterator().next());
                 }
             });
-            String outputContent = EopaodCsvExporter.export(opinionPolls, null, candidateKeys);
+            String outputContent = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys);
             result.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent);
         }
         return result;
