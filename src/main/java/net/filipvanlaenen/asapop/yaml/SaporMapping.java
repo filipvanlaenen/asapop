@@ -9,6 +9,10 @@ public class SaporMapping {
      */
     private AdditiveSaporMapping additiveMapping;
     /**
+     * An additive splitting mapping from two or more results in an ROPF file to many entries in a SAPOR file.
+     */
+    private AdditiveSplittingSaporMapping additiveSplittingMapping;
+    /**
      * A direct mapping from a result in an ROPF file to an entry in a SAPOR file.
      */
     private DirectSaporMapping directMapping;
@@ -36,6 +40,15 @@ public class SaporMapping {
      */
     public AdditiveSaporMapping getAdditiveMapping() {
         return additiveMapping;
+    }
+
+    /**
+     * Returns the additive splitting mapping from two or more results in an ROPF file to many entries in a SAPOR file.
+     *
+     * @return The additive splitting mapping from two or more results in an ROPF file to many entries in a SAPOR file.
+     */
+    public AdditiveSplittingSaporMapping getAdditiveSplittingMapping() {
+        return additiveSplittingMapping;
     }
 
     /**
@@ -90,6 +103,16 @@ public class SaporMapping {
      */
     public void setAdditiveMapping(final AdditiveSaporMapping additiveMapping) {
         this.additiveMapping = additiveMapping;
+    }
+
+    /**
+     * Sets the additive splitting mapping from two or more results in an ROPF file to many entries in a SAPOR file.
+     *
+     * @param additiveSplittingMapping The additive splitting mapping from two or more results in an ROPF file to many
+     *                                 entries in a SAPOR file.
+     */
+    public void setAdditiveSplittingMapping(final AdditiveSplittingSaporMapping additiveSplittingMapping) {
+        this.additiveSplittingMapping = additiveSplittingMapping;
     }
 
     /**
