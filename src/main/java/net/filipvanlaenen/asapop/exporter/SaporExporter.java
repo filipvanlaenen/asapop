@@ -18,6 +18,7 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
+import net.filipvanlaenen.asapop.yaml.AdditiveSplittingSaporMapping;
 import net.filipvanlaenen.asapop.yaml.DirectSaporMapping;
 import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
@@ -162,6 +163,8 @@ public class SaporExporter extends Exporter {
                         remainder);
                 remainder = processMapping(content, map.getAdditiveMapping(), actualValues, calculationSampleSize,
                         scale, remainder);
+                remainder = processMapping(content, map.getAdditiveSplittingMapping(), actualValues,
+                        calculationSampleSize, scale, remainder);
                 remainder = processMapping(content, map.getSplittingMapping(), actualValues, calculationSampleSize,
                         scale, remainder);
             }
@@ -242,6 +245,12 @@ public class SaporExporter extends Exporter {
             AdditiveSaporMapping additiveSaporMapping = saporMapping.getAdditiveMapping();
             if (additiveSaporMapping != null) {
                 for (String source : additiveSaporMapping.getSources()) {
+                    result.add(asElectoralListCombination(source));
+                }
+            }
+            AdditiveSplittingSaporMapping additiveSplittingSaporMapping = saporMapping.getAdditiveSplittingMapping();
+            if (additiveSplittingSaporMapping != null) {
+                for (String source : additiveSplittingSaporMapping.getSources()) {
                     result.add(asElectoralListCombination(source));
                 }
             }
@@ -410,6 +419,53 @@ public class SaporExporter extends Exporter {
             content.append(sample);
             content.append("\n");
             return remainder - sample;
+        } else {
+            return remainder;
+        }
+    }
+
+    /**
+     * Processes an additive splitting mapping, writing the result to the content and returning an updated remainder.
+     *
+     * @param content                       The StringBuilder to append the result of the mapping to.
+     * @param additiveSplittingSaporMapping The additive splitting SAPOR mapping.
+     * @param actualValues                  A map with the actual values, i.e. either the nominal values or half the
+     *                                      precision for zero values.
+     * @param calculationSampleSize         The sample size to be used for the calculations.
+     * @param scale                         The scale.
+     * @param remainder                     The remainder so far.
+     * @return The updated remainder.
+     */
+    private int processMapping(final StringBuilder content,
+            final AdditiveSplittingSaporMapping additiveSplittingSaporMapping,
+            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final int remainder) {
+        if (additiveSplittingSaporMapping == null) {
+            return remainder;
+        }
+        double actualValue = 0D;
+        boolean termPresent = false;
+        for (String source : additiveSplittingSaporMapping.getSources()) {
+            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+            if (actualValues.containsKey(electoralLists)) {
+                termPresent = true;
+                actualValue += actualValues.get(electoralLists);
+            }
+        }
+        if (termPresent) {
+            double totalSample = actualValue * calculationSampleSize * scale / ONE_HUNDRED;
+            int sumOfSamples = 0;
+            Map<String, Integer> targets = additiveSplittingSaporMapping.getTargets();
+            int sumOfWeights = targets.values().stream().reduce(0, Integer::sum);
+            for (Entry<String, Integer> target : targets.entrySet()) {
+                content.append(target.getKey());
+                content.append("=");
+                int sample = (int) Math.round(totalSample * target.getValue() / sumOfWeights);
+                content.append(sample);
+                sumOfSamples += sample;
+                content.append("\n");
+            }
+            return remainder - sumOfSamples;
         } else {
             return remainder;
         }
