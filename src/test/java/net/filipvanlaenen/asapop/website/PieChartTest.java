@@ -50,7 +50,7 @@ public class PieChartTest {
      */
     @Test
     public void shouldCreateAnEmptyPieChart() {
-        PieChart pieChart = new PieChart("pie-chart", "pie-chart-title", Collection.empty());
+        PieChart pieChart = new PieChart("pie-chart", "pie-chart-title", Collection.of());
         StringBuilder expected = new StringBuilder();
         expected.append("<div class=\"pie-chart\">\n");
         expected.append("  <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
