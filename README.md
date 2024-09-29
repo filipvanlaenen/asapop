@@ -10,7 +10,6 @@
 - [Analysis](#analysis)
 - [Build a Website](#build-a-website)
 - [Conversion from ROPF to CSV](#conversion-from-ropf-to-csv)
-- [Conversion from ROPF to PSV](#conversion-from-ropf-to-psv)
 - [Format ROPF Files](#format-ropf-files)
 - [Provide SAPOR Files](#provide-sapor-files)
 
@@ -420,44 +419,6 @@ Use `--` to indicate that only opinion polls and response scenarios not related 
 
 ```
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.csv ABC DEF GHI -a=--
-```
-
-## Conversion from ROPF to PSV
-
-An ROPF file can be converted to EOPAOD's PSV file format using the following
-command:
-
-```
-convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]
-```
-
-Assume the opinion polls have been stored in a file called `nn.ropf`, and you
-want to convert them to a file called `nn.psv`, and the electoral lists have
-keys `ABC`, `DEF` and `GHI`, then you can use the following command to do the
-conversion:
-
-```
-java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI
-```
-
-In case the electoral lists `ABC` and `GHI` were polled together in one of the opinion polls, a column with that
-combination can be exported using `ABC+GHI` as an argument:
-
-```
-java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI ABC+GHI
-```
-
-The option `-a` can be used to filter the opinion polls and response scenarios by a certain area. The following command
-would export only the opinion polls and response scenarios related to the area `XX`:
-
-```
-java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI -a=XX
-```
-
-Use `--` to indicate that only opinion polls and response scenarios not related to an area should be exported:
-
-```
-java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar convert nn.ropf nn.psv ABC DEF GHI -a=--
 ```
 
 ## Format ROPF Files
