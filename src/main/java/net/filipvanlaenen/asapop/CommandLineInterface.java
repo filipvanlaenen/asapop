@@ -26,7 +26,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import net.filipvanlaenen.asapop.analysis.AnalysisEngine;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
-import net.filipvanlaenen.asapop.exporter.EopaodPsvExporter;
 import net.filipvanlaenen.asapop.exporter.RopfExporter;
 import net.filipvanlaenen.asapop.exporter.SaporDirectory;
 import net.filipvanlaenen.asapop.exporter.SaporExporter;
@@ -90,7 +89,6 @@ public final class CommandLineInterface {
         System.out.println(
                 "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
-        System.out.println("  convert <ropf-file-name> <psv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  format <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
     }
@@ -189,8 +187,6 @@ public final class CommandLineInterface {
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
                     outputContent = EopaodCsvExporter.export(opinionPolls, area, null, electoralListKeySets);
-                } else if (outputFileName.endsWith(".psv")) {
-                    outputContent = EopaodPsvExporter.export(opinionPolls, area, electoralListKeySets);
                 }
                 writeFile(outputFileName, outputContent);
             }

@@ -26,7 +26,7 @@ public final class EopaodCsvExporter extends Exporter {
     /**
      * A map mapping scopes to CSV values.
      */
-    private static final Map<Scope, String> SCOPE_TO_PSV_STRING = createScopeToPsvMap();
+    private static final Map<Scope, String> SCOPE_TO_CSV_STRING = createScopeToCsvMap();
 
     /**
      * Private constructor.
@@ -35,11 +35,11 @@ public final class EopaodCsvExporter extends Exporter {
     }
 
     /**
-     * Creates the map mapping the scopes to their PSV values.
+     * Creates the map mapping the scopes to their CSV values.
      *
-     * @return A map mapping the scopes to their PSV values.
+     * @return A map mapping the scopes to their CSV values.
      */
-    private static Map<Scope, String> createScopeToPsvMap() {
+    private static Map<Scope, String> createScopeToCsvMap() {
         ModifiableMap<Scope, String> map = ModifiableMap.empty();
         map.add(null, null);
         map.add(Scope.EUROPEAN, "European");
@@ -120,7 +120,7 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
-            elements.add(notAvailableIfNull(SCOPE_TO_PSV_STRING.get(opinionPoll.getScope())));
+            elements.add(notAvailableIfNull(SCOPE_TO_CSV_STRING.get(opinionPoll.getScope())));
             elements.add(notAvailableIfNull(opinionPoll.getSampleSizeValue()));
             elements.add(opinionPoll.getSampleSizeValue() == null ? "Not Available" : "Provided");
             elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
@@ -162,7 +162,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @param area                  The area to filter response scenarios on.
      * @param includeAreaAsNational The area to be included as national.
      * @param electoralListIdSets   A list with the sets of IDs of the electoral lists to be exported.
-     * @return A string containing the response scenario in the PSV file format for EOPAOD.
+     * @return A string containing the response scenario in the CSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
             final String includeAreaAsNational, final List<Set<String>> electoralListIdSets) {
@@ -175,7 +175,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(
-                SCOPE_TO_PSV_STRING.get(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
+                SCOPE_TO_CSV_STRING.get(secondIfFirstNull(responseScenario.getScope(), opinionPoll.getScope()))));
         SampleSize sampleSize = secondIfFirstNull(responseScenario.getSampleSize(), opinionPoll.getSampleSize());
         elements.add(sampleSize == null ? "Not Available" : Integer.toString(sampleSize.getMinimalValue()));
         elements.add(sampleSize == null ? "Not Available" : "Provided");

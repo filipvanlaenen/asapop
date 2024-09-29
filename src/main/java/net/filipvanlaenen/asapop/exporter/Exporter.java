@@ -177,7 +177,7 @@ public abstract class Exporter {
      * Exports the dates from the opinion poll to two data elements.
      *
      * @param opinionPoll The opinion poll to export the dates from.
-     * @return A list with two elements containing the dates for the EOPAOD PSV file.
+     * @return A list with two elements containing the dates for the EOPAOD CSV file.
      */
     static List<String> exportDates(final OpinionPoll opinionPoll) {
         List<String> elements = new ArrayList<String>();
