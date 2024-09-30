@@ -24,6 +24,7 @@ import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
 import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
+import net.filipvanlaenen.kolektoj.Collection;
 
 /**
  * Exporter to the SAPOR files format.
@@ -45,6 +46,10 @@ public class SaporExporter extends Exporter {
      * The area as it should be exported to the SAPOR files.
      */
     private final String area;
+    /**
+     * Whether all relevant response scenarios should be averaged together.
+     */
+    private final boolean averageResponseScenarios;
     /**
      * The date of the last election.
      */
@@ -73,11 +78,12 @@ public class SaporExporter extends Exporter {
      */
     public SaporExporter(final SaporConfiguration saporConfiguration) {
         this.area = saporConfiguration.getArea();
+        this.averageResponseScenarios = "AVERGARED".equalsIgnoreCase(saporConfiguration.getResponseScenarioSelection());
         this.lastElectionDate = LocalDate.parse(saporConfiguration.getLastElectionDate());
         this.mapping = saporConfiguration.getMapping();
         this.mappedElectoralListCombinations = calculateMappedElectoralListCombinations();
-        this.scope = saporConfiguration.getScope() == null ? null : Scope.parse(saporConfiguration.getScope());
         this.region = saporConfiguration.getRegion();
+        this.scope = saporConfiguration.getScope() == null ? null : Scope.parse(saporConfiguration.getScope());
     }
 
     /**
@@ -90,7 +96,7 @@ public class SaporExporter extends Exporter {
      */
     void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll, final Integer lowestSampleSize,
             final Integer lowestEffectiveSampleSize) {
-        ResponseScenario responseScenario = getMatchingResponseScenario(opinionPoll);
+        ResponseScenario responseScenario = getMatchingResponseScenario(opinionPoll).get();
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
         boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
@@ -183,7 +189,6 @@ public class SaporExporter extends Exporter {
             content.append(remainder < 0 ? 0 : remainder);
             content.append("\n");
         }
-
     }
 
     /**
@@ -302,7 +307,7 @@ public class SaporExporter extends Exporter {
      * @param opinionPoll The opinion poll for which to find a matching response scenario.
      * @return A matching response scenario, or <code>null</code>.
      */
-    private ResponseScenario getMatchingResponseScenario(final OpinionPoll opinionPoll) {
+    private Collection<ResponseScenario> getMatchingResponseScenario(final OpinionPoll opinionPoll) {
         ResponseScenario mainResponseScenario = opinionPoll.getMainResponseScenario();
         String mainResponseScenarioArea =
                 mainResponseScenario.getArea() == null ? opinionPoll.getArea() : mainResponseScenario.getArea();
@@ -310,7 +315,7 @@ public class SaporExporter extends Exporter {
                 mainResponseScenario.getScope() == null ? opinionPoll.getScope() : mainResponseScenario.getScope();
         if ((region == null || region.equals(mainResponseScenarioArea))
                 && (scope == null || scope.equals(mainResponseScenarioScope))) {
-            return opinionPoll.getMainResponseScenario();
+            return Collection.of(opinionPoll.getMainResponseScenario());
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
             String responseScenarioArea =
@@ -319,10 +324,10 @@ public class SaporExporter extends Exporter {
                     responseScenario.getScope() == null ? opinionPoll.getScope() : responseScenario.getScope();
             if ((region == null || region.equals(responseScenarioArea))
                     && (scope == null || scope.equals(responseScenarioScope))) {
-                return responseScenario;
+                return Collection.of(responseScenario);
             }
         }
-        return null;
+        return Collection.of();
     }
 
     /**
@@ -382,7 +387,7 @@ public class SaporExporter extends Exporter {
      * @return True if the opinion poll has a response scenario that matches the conditions to be exported.
      */
     private boolean hasMatchingResponseScenario(final OpinionPoll opinionPoll) {
-        return getMatchingResponseScenario(opinionPoll) != null;
+        return !getMatchingResponseScenario(opinionPoll).isEmpty();
     }
 
     /**
