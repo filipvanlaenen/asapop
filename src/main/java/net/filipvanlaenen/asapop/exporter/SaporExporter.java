@@ -97,6 +97,19 @@ public class SaporExporter extends Exporter {
     void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll, final Integer lowestSampleSize,
             final Integer lowestEffectiveSampleSize) {
         ResponseScenario responseScenario = getMatchingResponseScenario(opinionPoll).get();
+        Map<String, Integer> saporBody = new HashMap<String, Integer>();
+        calculateSaporBody(saporBody, opinionPoll, responseScenario, lowestSampleSize, lowestEffectiveSampleSize);
+        for (Entry<String, Integer> entry : saporBody.entrySet()) {
+            content.append(entry.getKey());
+            content.append("=");
+            content.append(entry.getValue());
+            content.append("\n");
+        }
+    }
+
+    private void calculateSaporBody(final Map<String, Integer> saporBody, final OpinionPoll opinionPoll,
+            ResponseScenario responseScenario, final Integer lowestSampleSize,
+            final Integer lowestEffectiveSampleSize) {
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
         boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
@@ -165,29 +178,27 @@ public class SaporExporter extends Exporter {
         }
         for (SaporMapping map : mapping) {
             if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                remainder = processMapping(content, map.getDirectMapping(), actualValues, calculationSampleSize, scale,
-                        remainder);
-                remainder = processMapping(content, map.getAdditiveMapping(), actualValues, calculationSampleSize,
+                remainder = processMapping(saporBody, map.getDirectMapping(), actualValues, calculationSampleSize,
                         scale, remainder);
-                remainder = processMapping(content, map.getAdditiveSplittingMapping(), actualValues,
+                remainder = processMapping(saporBody, map.getAdditiveMapping(), actualValues, calculationSampleSize,
+                        scale, remainder);
+                remainder = processMapping(saporBody, map.getAdditiveSplittingMapping(), actualValues,
                         calculationSampleSize, scale, remainder);
-                remainder = processMapping(content, map.getSplittingMapping(), actualValues, calculationSampleSize,
+                remainder = processMapping(saporBody, map.getSplittingMapping(), actualValues, calculationSampleSize,
                         scale, remainder);
             }
         }
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         if (remainder <= 0) {
-            content.append("Other=0\n");
+            saporBody.put("Other", 0);
         } else {
             for (SaporMapping map : mapping) {
                 if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                    remainder = processMapping(content, map.getEssentialEntriesMapping(), remainder);
+                    remainder = processMapping(saporBody, map.getEssentialEntriesMapping(), remainder);
                 }
             }
-            content.append("Other=");
             // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-            content.append(remainder < 0 ? 0 : remainder);
-            content.append("\n");
+            saporBody.put("Other", remainder < 0 ? 0 : remainder);
         }
     }
 
@@ -402,7 +413,7 @@ public class SaporExporter extends Exporter {
      * @param remainder             The remainder so far.
      * @return The updated remainder.
      */
-    private int processMapping(final StringBuilder content, final AdditiveSaporMapping additiveSaporMapping,
+    private int processMapping(final Map<String, Integer> saporBody, final AdditiveSaporMapping additiveSaporMapping,
             final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (additiveSaporMapping == null) {
@@ -419,10 +430,7 @@ public class SaporExporter extends Exporter {
         }
         if (termPresent) {
             int sample = (int) Math.round(actualValue * calculationSampleSize * scale / ONE_HUNDRED);
-            content.append(additiveSaporMapping.getTarget());
-            content.append("=");
-            content.append(sample);
-            content.append("\n");
+            saporBody.put(additiveSaporMapping.getTarget(), sample);
             return remainder - sample;
         } else {
             return remainder;
@@ -441,7 +449,7 @@ public class SaporExporter extends Exporter {
      * @param remainder                     The remainder so far.
      * @return The updated remainder.
      */
-    private int processMapping(final StringBuilder content,
+    private int processMapping(final Map<String, Integer> saporBody,
             final AdditiveSplittingSaporMapping additiveSplittingSaporMapping,
             final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
@@ -463,12 +471,9 @@ public class SaporExporter extends Exporter {
             Map<String, Integer> targets = additiveSplittingSaporMapping.getTargets();
             int sumOfWeights = targets.values().stream().reduce(0, Integer::sum);
             for (Entry<String, Integer> target : targets.entrySet()) {
-                content.append(target.getKey());
-                content.append("=");
                 int sample = (int) Math.round(totalSample * target.getValue() / sumOfWeights);
-                content.append(sample);
+                saporBody.put(target.getKey(), sample);
                 sumOfSamples += sample;
-                content.append("\n");
             }
             return remainder - sumOfSamples;
         } else {
@@ -488,7 +493,7 @@ public class SaporExporter extends Exporter {
      * @param remainder             The remainder so far.
      * @return The updated remainder.
      */
-    private int processMapping(final StringBuilder content, final DirectSaporMapping directSaporMapping,
+    private int processMapping(final Map<String, Integer> saporBody, final DirectSaporMapping directSaporMapping,
             final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (directSaporMapping == null) {
@@ -498,14 +503,12 @@ public class SaporExporter extends Exporter {
         if (actualValues.containsKey(electoralLists)) {
             int sample =
                     (int) Math.round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
-            content.append(directSaporMapping.getTarget());
-            content.append("=");
             if (directSaporMapping.getCompensationFactor() == null) {
-                content.append(sample);
+                saporBody.put(directSaporMapping.getTarget(), sample);
             } else {
-                content.append((int) Math.round(sample * directSaporMapping.getCompensationFactor()));
+                saporBody.put(directSaporMapping.getTarget(),
+                        (int) Math.round(sample * directSaporMapping.getCompensationFactor()));
             }
-            content.append("\n");
             return remainder - sample;
         } else {
             return remainder;
@@ -520,24 +523,20 @@ public class SaporExporter extends Exporter {
      * @param remainder                    The remainder so far.
      * @return The updated remainder.
      */
-    private int processMapping(final StringBuilder content,
+    private int processMapping(final Map<String, Integer> saporBody,
             final EssentialEntriesSaporMapping essentialEntriesSaporMapping, final int remainder) {
         if (essentialEntriesSaporMapping == null) {
             return remainder;
         }
         int sumOfSamples = 0;
-        String currentContent = content.toString();
         Set<Entry<String, Integer>> absentTargets = essentialEntriesSaporMapping.getTargets().entrySet().stream()
-                .filter(k -> !currentContent.contains(k.getKey())).collect(Collectors.toSet());
+                .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());
         int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum)
                 + essentialEntriesSaporMapping.getResidual();
         for (Entry<String, Integer> target : absentTargets) {
-            content.append(target.getKey());
-            content.append("=");
             int sample = (int) Math.round(remainder * target.getValue() / sumOfWeights);
-            content.append(sample);
+            saporBody.put(target.getKey(), sample);
             sumOfSamples += sample;
-            content.append("\n");
         }
         return remainder - sumOfSamples;
     }
@@ -554,7 +553,7 @@ public class SaporExporter extends Exporter {
      * @param remainder             The remainder so far.
      * @return The updated remainder.
      */
-    private int processMapping(final StringBuilder content, final SplittingSaporMapping splittingSaporMapping,
+    private int processMapping(final Map<String, Integer> saporBody, final SplittingSaporMapping splittingSaporMapping,
             final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (splittingSaporMapping == null) {
@@ -567,12 +566,9 @@ public class SaporExporter extends Exporter {
             Map<String, Integer> targets = splittingSaporMapping.getTargets();
             int sumOfWeights = targets.values().stream().reduce(0, Integer::sum);
             for (Entry<String, Integer> target : targets.entrySet()) {
-                content.append(target.getKey());
-                content.append("=");
                 int sample = (int) Math.round(totalSample * target.getValue() / sumOfWeights);
-                content.append(sample);
+                saporBody.put(target.getKey(), sample);
                 sumOfSamples += sample;
-                content.append("\n");
             }
             return remainder - sumOfSamples;
         } else {
