@@ -96,9 +96,25 @@ public class SaporExporter extends Exporter {
      */
     void appendSaporBody(final StringBuilder content, final OpinionPoll opinionPoll, final Integer lowestSampleSize,
             final Integer lowestEffectiveSampleSize) {
-        ResponseScenario responseScenario = getMatchingResponseScenario(opinionPoll).get();
+        Collection<ResponseScenario> responseScenarios = getMatchingResponseScenario(opinionPoll);
         Map<String, Integer> saporBody = new HashMap<String, Integer>();
-        calculateSaporBody(saporBody, opinionPoll, responseScenario, lowestSampleSize, lowestEffectiveSampleSize);
+        for (ResponseScenario responseScenario : responseScenarios) {
+            Map<String, Integer> body =
+                    calculateSaporBody(opinionPoll, responseScenario, lowestSampleSize, lowestEffectiveSampleSize);
+            for (Entry<String, Integer> entry : body.entrySet()) {
+                if (saporBody.containsKey(entry.getKey())) {
+                    saporBody.put(entry.getKey(), saporBody.get(entry.getKey()) + entry.getValue());
+                } else {
+                    saporBody.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        int numberOfResponseScenarios = responseScenarios.size();
+        if (numberOfResponseScenarios > 1) {
+            for (String key : saporBody.keySet()) {
+                saporBody.put(key, (int) Math.round(1F * saporBody.get(key) / numberOfResponseScenarios));
+            }
+        }
         for (Entry<String, Integer> entry : saporBody.entrySet()) {
             content.append(entry.getKey());
             content.append("=");
@@ -107,9 +123,9 @@ public class SaporExporter extends Exporter {
         }
     }
 
-    private void calculateSaporBody(final Map<String, Integer> saporBody, final OpinionPoll opinionPoll,
-            ResponseScenario responseScenario, final Integer lowestSampleSize,
-            final Integer lowestEffectiveSampleSize) {
+    private Map<String, Integer> calculateSaporBody(final OpinionPoll opinionPoll, ResponseScenario responseScenario,
+            final Integer lowestSampleSize, final Integer lowestEffectiveSampleSize) {
+        Map<String, Integer> saporBody = new HashMap<String, Integer>();
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
         boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
@@ -200,6 +216,7 @@ public class SaporExporter extends Exporter {
             // EQMU: Changing the conditional boundary below produces an equivalent mutant.
             saporBody.put("Other", remainder < 0 ? 0 : remainder);
         }
+        return saporBody;
     }
 
     /**
