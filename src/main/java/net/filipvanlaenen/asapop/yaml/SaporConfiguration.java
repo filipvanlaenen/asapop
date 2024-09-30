@@ -27,6 +27,10 @@ public class SaporConfiguration {
      */
     private String region;
     /**
+     * How to select between response scenarios when there is more than one relevant.
+     */
+    private String responseScenarioSelection;
+    /**
      * The scope.
      */
     private String scope;
@@ -74,6 +78,15 @@ public class SaporConfiguration {
      */
     public String getRegion() {
         return region;
+    }
+
+    /**
+     * Returns how to select between response scenarios when there is more than one relevant.
+     *
+     * @return How to select between response scenarios when there is more than one relevant.
+     */
+    public String getResponseScenarioSelection() {
+        return responseScenarioSelection;
     }
 
     /**
@@ -128,6 +141,15 @@ public class SaporConfiguration {
      */
     public void setRegion(final String region) {
         this.region = region;
+    }
+
+    /**
+     * Sets how to select between response scenarios when there is more than one relevant.
+     *
+     * @param responseScenarioSelection How to select between response scenarios when there is more than one relevant.
+     */
+    public void setResponseScenarioSelection(final String responseScenarioSelection) {
+        this.responseScenarioSelection = responseScenarioSelection;
     }
 
     /**

@@ -76,4 +76,15 @@ public class SaporConfigurationTest {
         saporConfiguration.setScope("E");
         assertEquals("E", saporConfiguration.getScope());
     }
+
+    /**
+     * Verifies that the getter method <code>getResponseScenarioSelection</code> is wired correctly to the setter method
+     * <code>setResponseScenarioSelection</code>.
+     */
+    @Test
+    public void getResponseScenarioSelectionShouldBeWiredCorrectlyToSetResponseScenarioSelection() {
+        SaporConfiguration saporConfiguration = new SaporConfiguration();
+        saporConfiguration.setResponseScenarioSelection("averaged");
+        assertEquals("averaged", saporConfiguration.getResponseScenarioSelection());
+    }
 }
