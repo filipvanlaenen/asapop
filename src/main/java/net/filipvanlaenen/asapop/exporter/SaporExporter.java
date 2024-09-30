@@ -79,7 +79,7 @@ public class SaporExporter extends Exporter {
      */
     public SaporExporter(final SaporConfiguration saporConfiguration) {
         this.area = saporConfiguration.getArea();
-        this.averageResponseScenarios = "AVERGARED".equalsIgnoreCase(saporConfiguration.getResponseScenarioSelection());
+        this.averageResponseScenarios = "AVERAGED".equalsIgnoreCase(saporConfiguration.getResponseScenarioSelection());
         this.lastElectionDate = LocalDate.parse(saporConfiguration.getLastElectionDate());
         this.mapping = saporConfiguration.getMapping();
         this.mappedElectoralListCombinations = calculateMappedElectoralListCombinations();
