@@ -57,6 +57,18 @@ public class SaporMappingTest {
     }
 
     /**
+     * Verifies that the getter method <code>getAdditiveSplittingMapping</code> is wired correctly to the setter method
+     * <code>setAdditiveSplittingMapping</code>.
+     */
+    @Test
+    public void getAdditiveSplittingMappingShouldBeWiredCorrectlyToSetAdditiveSplittingMapping() {
+        SaporMapping saporMapping = new SaporMapping();
+        AdditiveSplittingSaporMapping additiveSplittingMapping = new AdditiveSplittingSaporMapping();
+        saporMapping.setAdditiveSplittingMapping(additiveSplittingMapping);
+        assertEquals(additiveSplittingMapping, saporMapping.getAdditiveSplittingMapping());
+    }
+
+    /**
      * Verifies that the getter method <code>getStartDate</code> is wired correctly to the setter method
      * <code>setStartDate</code>.
      */
