@@ -19,10 +19,6 @@ public class SaporConfiguration {
      */
     private Set<SaporMapping> mapping;
     /**
-     * The preferred scope.
-     */
-    private String preferredScope;
-    /**
      * The region for the response scenarios.
      */
     private String region;
@@ -60,15 +56,6 @@ public class SaporConfiguration {
      */
     public Set<SaporMapping> getMapping() {
         return mapping;
-    }
-
-    /**
-     * Returns the preferred scope.
-     *
-     * @return The preferred scope.
-     */
-    public String getPreferredScope() {
-        return preferredScope;
     }
 
     /**
@@ -123,15 +110,6 @@ public class SaporConfiguration {
      */
     public void setMapping(final Set<SaporMapping> mapping) {
         this.mapping = mapping;
-    }
-
-    /**
-     * Sets the preferred scope.
-     *
-     * @param preferredScope The preferred scope.
-     */
-    public void setPreferredScope(final String preferredScope) {
-        this.preferredScope = preferredScope;
     }
 
     /**

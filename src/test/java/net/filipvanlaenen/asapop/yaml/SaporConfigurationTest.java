@@ -45,17 +45,6 @@ public class SaporConfigurationTest {
     }
 
     /**
-     * Verifies that the getter method <code>getPreferredScope</code> is wired correctly to the setter method
-     * <code>setPreferredScope</code>.
-     */
-    @Test
-    public void getPreferredScopeShouldBeWiredCorrectlyToSetPreferredScope() {
-        SaporConfiguration saporConfiguration = new SaporConfiguration();
-        saporConfiguration.setPreferredScope("E");
-        assertEquals("E", saporConfiguration.getPreferredScope());
-    }
-
-    /**
      * Verifies that the getter method <code>getRegion</code> is wired correctly to the setter method
      * <code>setRegion</code>.
      */
