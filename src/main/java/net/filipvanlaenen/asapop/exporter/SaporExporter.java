@@ -124,8 +124,94 @@ public class SaporExporter extends Exporter {
         }
     }
 
-    private Map<String, Integer> calculateSaporBody(final OpinionPoll opinionPoll, ResponseScenario responseScenario,
-            final Integer lowestSampleSize, final Integer lowestEffectiveSampleSize) {
+    /**
+     * Appends the SAPOR header for an opinion poll to a StringBuilder.
+     *
+     * @param content     The StringBuilder to append the SAPOR header to.
+     * @param opinionPoll The opinion poll.
+     */
+    void appendSaporHeader(final StringBuilder content, final OpinionPoll opinionPoll) {
+        content.append("Type=Election\n");
+        content.append("PollingFirm=");
+        content.append(exportPollingFirms(opinionPoll));
+        content.append("\n");
+        if (!opinionPoll.getCommissioners().isEmpty()) {
+            content.append("Commissioners=");
+            content.append(exportCommissioners(opinionPoll));
+            content.append("\n");
+        }
+        content.append("FieldworkStart=");
+        if (opinionPoll.getFieldworkStart() != null) {
+            content.append(opinionPoll.getFieldworkStart().getStart().toString());
+        } else if (opinionPoll.getFieldworkEnd() != null) {
+            content.append(opinionPoll.getFieldworkEnd().getStart().toString());
+        } else {
+            content.append(opinionPoll.getPublicationDate().toString());
+        }
+        content.append("\n");
+        content.append("FieldworkEnd=");
+        content.append(opinionPoll.getEndDate().toString());
+        content.append("\n");
+        content.append("Area=");
+        content.append(area);
+        content.append("\n");
+    }
+
+    /**
+     * Converts a source string to an electoral list combination.
+     *
+     * @param source The source string to convert.
+     * @return A set of electoral lists converted from the source string.
+     */
+    private Set<ElectoralList> asElectoralListCombination(final String source) {
+        Set<String> ids = new HashSet<String>(Arrays.asList(source.split(ELECTORAL_LIST_ID_SEPARATOR)));
+        return ElectoralList.get(ids);
+    }
+
+    /**
+     * Calculate the set of electoral list combinations covered by the SAPOR mapping.
+     *
+     * @return A set with the electoral list combinations covered by the SAPOR mapping.
+     */
+    private Set<Set<ElectoralList>> calculateMappedElectoralListCombinations() {
+        Set<Set<ElectoralList>> result = new HashSet<Set<ElectoralList>>();
+        for (SaporMapping saporMapping : mapping) {
+            DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
+            if (directSaporMapping != null) {
+                result.add(asElectoralListCombination(directSaporMapping.getSource()));
+            }
+            AdditiveSaporMapping additiveSaporMapping = saporMapping.getAdditiveMapping();
+            if (additiveSaporMapping != null) {
+                for (String source : additiveSaporMapping.getSources()) {
+                    result.add(asElectoralListCombination(source));
+                }
+            }
+            AdditiveSplittingSaporMapping additiveSplittingSaporMapping = saporMapping.getAdditiveSplittingMapping();
+            if (additiveSplittingSaporMapping != null) {
+                for (String source : additiveSplittingSaporMapping.getSources()) {
+                    result.add(asElectoralListCombination(source));
+                }
+            }
+            SplittingSaporMapping splittingSaporMapping = saporMapping.getSplittingMapping();
+            if (splittingSaporMapping != null) {
+                result.add(asElectoralListCombination(splittingSaporMapping.getSource()));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Calculates the Sapor body from a response scenario and returns it as a map.
+     *
+     * @param opinionPoll               The opinion poll to which the response scenario belongs.
+     * @param responseScenario          The response scenario.
+     * @param lowestSampleSize          The lowest sample size.
+     * @param lowestEffectiveSampleSize The lowest effective sample size.
+     * @return A map with the values for the Sapor body.
+     */
+    private Map<String, Integer> calculateSaporBody(final OpinionPoll opinionPoll,
+            final ResponseScenario responseScenario, final Integer lowestSampleSize,
+            final Integer lowestEffectiveSampleSize) {
         Map<String, Integer> saporBody = new HashMap<String, Integer>();
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
         boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
@@ -218,82 +304,6 @@ public class SaporExporter extends Exporter {
             saporBody.put("Other", remainder < 0 ? 0 : remainder);
         }
         return saporBody;
-    }
-
-    /**
-     * Appends the SAPOR header for an opinion poll to a StringBuilder.
-     *
-     * @param content     The StringBuilder to append the SAPOR header to.
-     * @param opinionPoll The opinion poll.
-     */
-    void appendSaporHeader(final StringBuilder content, final OpinionPoll opinionPoll) {
-        content.append("Type=Election\n");
-        content.append("PollingFirm=");
-        content.append(exportPollingFirms(opinionPoll));
-        content.append("\n");
-        if (!opinionPoll.getCommissioners().isEmpty()) {
-            content.append("Commissioners=");
-            content.append(exportCommissioners(opinionPoll));
-            content.append("\n");
-        }
-        content.append("FieldworkStart=");
-        if (opinionPoll.getFieldworkStart() != null) {
-            content.append(opinionPoll.getFieldworkStart().getStart().toString());
-        } else if (opinionPoll.getFieldworkEnd() != null) {
-            content.append(opinionPoll.getFieldworkEnd().getStart().toString());
-        } else {
-            content.append(opinionPoll.getPublicationDate().toString());
-        }
-        content.append("\n");
-        content.append("FieldworkEnd=");
-        content.append(opinionPoll.getEndDate().toString());
-        content.append("\n");
-        content.append("Area=");
-        content.append(area);
-        content.append("\n");
-    }
-
-    /**
-     * Converts a source string to an electoral list combination.
-     *
-     * @param source The source string to convert.
-     * @return A set of electoral lists converted from the source string.
-     */
-    private Set<ElectoralList> asElectoralListCombination(final String source) {
-        Set<String> ids = new HashSet<String>(Arrays.asList(source.split(ELECTORAL_LIST_ID_SEPARATOR)));
-        return ElectoralList.get(ids);
-    }
-
-    /**
-     * Calculate the set of electoral list combinations covered by the SAPOR mapping.
-     *
-     * @return A set with the electoral list combinations covered by the SAPOR mapping.
-     */
-    private Set<Set<ElectoralList>> calculateMappedElectoralListCombinations() {
-        Set<Set<ElectoralList>> result = new HashSet<Set<ElectoralList>>();
-        for (SaporMapping saporMapping : mapping) {
-            DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
-            if (directSaporMapping != null) {
-                result.add(asElectoralListCombination(directSaporMapping.getSource()));
-            }
-            AdditiveSaporMapping additiveSaporMapping = saporMapping.getAdditiveMapping();
-            if (additiveSaporMapping != null) {
-                for (String source : additiveSaporMapping.getSources()) {
-                    result.add(asElectoralListCombination(source));
-                }
-            }
-            AdditiveSplittingSaporMapping additiveSplittingSaporMapping = saporMapping.getAdditiveSplittingMapping();
-            if (additiveSplittingSaporMapping != null) {
-                for (String source : additiveSplittingSaporMapping.getSources()) {
-                    result.add(asElectoralListCombination(source));
-                }
-            }
-            SplittingSaporMapping splittingSaporMapping = saporMapping.getSplittingMapping();
-            if (splittingSaporMapping != null) {
-                result.add(asElectoralListCombination(splittingSaporMapping.getSource()));
-            }
-        }
-        return result;
     }
 
     /**
@@ -431,7 +441,7 @@ public class SaporExporter extends Exporter {
     /**
      * Processes an additive mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param content               The StringBuilder to append the result of the mapping to.
+     * @param saporBody             A map with the values for the Sapor body.
      * @param additiveSaporMapping  The additive SAPOR mapping.
      * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
      *                              for zero values.
@@ -467,7 +477,7 @@ public class SaporExporter extends Exporter {
     /**
      * Processes an additive splitting mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param content                       The StringBuilder to append the result of the mapping to.
+     * @param saporBody                     A map with the values for the Sapor body.
      * @param additiveSplittingSaporMapping The additive splitting SAPOR mapping.
      * @param actualValues                  A map with the actual values, i.e. either the nominal values or half the
      *                                      precision for zero values.
@@ -511,7 +521,7 @@ public class SaporExporter extends Exporter {
     /**
      * Processes a direct mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param content               The StringBuilder to append the result of the mapping to.
+     * @param saporBody             A map with the values for the Sapor body.
      * @param directSaporMapping    The direct SAPOR mapping.
      * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
      *                              for zero values.
@@ -545,7 +555,7 @@ public class SaporExporter extends Exporter {
     /**
      * Processes an essential entries mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param content                      The StringBuilder to append the result of the mapping to.
+     * @param saporBody                    A map with the values for the Sapor body.
      * @param essentialEntriesSaporMapping The essential entries SAPOR mapping.
      * @param remainder                    The remainder so far.
      * @return The updated remainder.
@@ -571,7 +581,7 @@ public class SaporExporter extends Exporter {
     /**
      * Processes a splitting mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param content               The StringBuilder to append the result of the mapping to.
+     * @param saporBody             A map with the values for the Sapor body.
      * @param splittingSaporMapping The splitting SAPOR mapping.
      * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
      *                              for zero values.
