@@ -42,7 +42,8 @@ public class CsvFilesBuilder {
      * Constructor taking the website configuration and the map with the opinion polls as its parameter.
      *
      * @param websiteConfiguration         The website configuration.
-     * @param parliamentaryOpinionPollsMap The map with the opinion polls.
+     * @param parliamentaryOpinionPollsMap The map with the opinion polls related to parliamentary elections.
+     * @param presidentialOpinionPollsMap  The map with the opinion polls related to presidential elections.
      */
     public CsvFilesBuilder(final WebsiteConfiguration websiteConfiguration,
             final Map<String, OpinionPolls> parliamentaryOpinionPollsMap,
@@ -59,6 +60,17 @@ public class CsvFilesBuilder {
      */
     public Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
+        buildAndAddParliamentaryCsvFiles(result);
+        buildAndAddPresidentialCsvFiles(result);
+        return result;
+    }
+
+    /**
+     * Builds all the CSV files related to parliamentary elections and adds them to the map.
+     *
+     * @param csvFilesMap The map with the CSV files.
+     */
+    private void buildAndAddParliamentaryCsvFiles(final Map<Path, String> csvFilesMap) {
         for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
             String areaCode = areaConfiguration.getAreaCode();
             CsvConfiguration csvConfiguration = areaConfiguration.getCsvConfiguration();
@@ -68,7 +80,7 @@ public class CsvFilesBuilder {
                         .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+")))).collect(Collectors.toList());
                 String outputContent = EopaodCsvExporter.export(opinionPolls, "--",
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets);
-                result.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
+                csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
             if (subdivisions != null) {
@@ -82,11 +94,20 @@ public class CsvFilesBuilder {
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
                                 null, electoralListKeySets);
-                        result.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"), outputContent);
+                        csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"),
+                                outputContent);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Builds all the CSV files related to presidential elections and adds them to the map.
+     *
+     * @param csvFilesMap The map with the CSV files.
+     */
+    private void buildAndAddPresidentialCsvFiles(final Map<Path, String> csvFilesMap) {
         for (String presidentialElectionCode : presidentialOpinionPollsMap.keySet()) {
             OpinionPolls opinionPolls = presidentialOpinionPollsMap.get(presidentialElectionCode);
             List<Set<String>> candidateKeys = new ArrayList<Set<String>>();
@@ -101,13 +122,12 @@ public class CsvFilesBuilder {
             }
             candidateKeys.sort(new Comparator<Set<String>>() {
                 @Override
-                public int compare(Set<String> k1, Set<String> k2) {
+                public int compare(final Set<String> k1, final Set<String> k2) {
                     return k1.iterator().next().compareTo(k2.iterator().next());
                 }
             });
             String outputContent = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys);
-            result.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent);
+            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent);
         }
-        return result;
     }
 }

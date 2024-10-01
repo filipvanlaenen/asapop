@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
@@ -55,19 +56,28 @@ public class CsvFilesBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
         map.put(Paths.get("_csv", "be-vlg.csv"),
-                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
-                        + "Sample Size Qualification,Participation,Precision,P,Q,Other\n");
+                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
+                        + "Participation,Precision,P,Q,Other\n");
+        map.put(Paths.get("_csv", "fr_p13.csv"),
+                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
+                        + "Participation,Precision,F,G,Other\n"
+                        + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
+                        + "40%,Not Available\n");
         map.put(Paths.get("_csv", "mk.csv"),
-                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
-                        + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
-        Map<String, OpinionPolls> opinionPollsMap =
+                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
+                        + "Participation,Precision,A,B,Other\n");
+        Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
                 Map.of("be", new OpinionPolls(Collections.EMPTY_SET), "mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
         ElectoralList.get("P").setAbbreviation("P");
         ElectoralList.get("Q").setAbbreviation("Q");
-        CsvFilesBuilder builder =
-                new CsvFilesBuilder(createWebsiteConfiguration(), opinionPollsMap, Collections.EMPTY_MAP);
+        OpinionPolls opinionPolls = RichOpinionPollsFile
+                .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 F:55 G:40", "F: FR001 •A:F", "G: FR002 •A:G")
+                .getOpinionPolls();
+        Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
+        CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
+                presidentialOpinionPollsMap);
         assertEquals(map, builder.build());
     }
 }
