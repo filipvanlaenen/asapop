@@ -18,6 +18,8 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.ResponseScenario;
+import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AdditiveSaporMapping;
@@ -1093,9 +1095,12 @@ public class SaporExporterTest {
         OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2)
                 .setScope(Scope.NATIONAL).build();
-        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "55").addResult("Z", "43").setSampleSize("1000")
+        OpinionPoll poll2 = new OpinionPollTestBuilder().addResult("A", "54").addResult("Z", "42").setSampleSize("1000")
                 .setPollingFirm("BCME").setFieldworkStart(DATE_OR_MONTH3).setFieldworkEnd(DATE_OR_MONTH4)
-                .setScope(Scope.NATIONAL).build();
+                .setScope(Scope.EUROPEAN).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("Z", "43")
+                .setSampleSize("1000").setScope(Scope.NATIONAL).build();
+        poll2.addAlternativeResponseScenario(responseScenario);
         OpinionPoll poll3 = new OpinionPollTestBuilder().addResult("A", "55").addResult("Z", "43").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH0).setFieldworkEnd(DATE_OR_MONTH0)
                 .setScope(Scope.NATIONAL).build();
