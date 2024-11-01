@@ -195,7 +195,7 @@ public final class ResponseScenario {
          *
          * @return The sum of the results and other.
          */
-        private double calculateSumOfResultsAndOther() {
+        double calculateSumOfResultsAndOther() {
             double sum = 0D;
             for (ResultValue resultValue : results.values()) {
                 Double value = resultValue.getNominalValue();

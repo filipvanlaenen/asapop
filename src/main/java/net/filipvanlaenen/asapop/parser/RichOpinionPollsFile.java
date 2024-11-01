@@ -10,6 +10,8 @@ import java.util.Set;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class implementing an ROPF file.
@@ -91,12 +93,15 @@ public final class RichOpinionPollsFile {
         int lineNumber = 0;
         for (String line : lines) {
             lineNumber++;
+            Token token = Laconic.LOGGER.logMessage("Parsing line number %d.", lineNumber);
             if (OpinionPollLine.isOpinionPollLine(line)) {
-                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, lineNumber);
+                Laconic.LOGGER.logMessage("Line is recognized as an opinion poll line.");
+                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, lineNumber, token);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(opinionPollLine.getWarnings());
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
+                Laconic.LOGGER.logMessage("Line is recognized as a response scenario line.");
                 ResponseScenarioLine responseScenarioLine =
                         ResponseScenarioLine.parse(line, electoralListKeyMap, lineNumber);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
@@ -106,9 +111,10 @@ public final class RichOpinionPollsFile {
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(responseScenarioLine.getWarnings());
             } else if (CommentLine.isCommentLine(line)) {
+                Laconic.LOGGER.logMessage("Line is recognized as a comment line.");
                 commentLines.add(CommentLine.parse(line));
             } else if (!ElectoralListLine.isElectoralListLine(line) && !EmptyLine.isEmptyLine(line)) {
-                warnings.add(new UnrecognizedLineFormatWarning(lineNumber));
+                Laconic.LOGGER.logError("Line doesn't have a recognized line format.", token);
             }
         }
         return new RichOpinionPollsFile(opinionPolls, commentLines, warnings);

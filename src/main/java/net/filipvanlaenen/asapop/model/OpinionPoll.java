@@ -159,6 +159,10 @@ public final class OpinionPoll {
             return new OpinionPoll(this);
         }
 
+        public double calculateSumOfResultsAndOther() {
+            return responseScenarioBuilder.calculateSumOfResultsAndOther();
+        }
+
         /**
          * Returns whether an area has been registered in this builder instance.
          *

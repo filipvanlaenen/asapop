@@ -18,6 +18,8 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class implementing a line representing an opinion poll.
@@ -102,7 +104,7 @@ final class OpinionPollLine extends Line {
      * @return An OpinionPollLine representing the line.
      */
     static OpinionPollLine parse(final String line, final Map<String, ElectoralList> electoralListKeyMap,
-            final int lineNumber) {
+            final int lineNumber, final Token token) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         String remainder = line;
@@ -112,8 +114,9 @@ final class OpinionPollLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
+        Laconic.LOGGER.logMessage("Sum of results and other: %f", builder.calculateSumOfResultsAndOther(), token);
         if (!builder.resultsAddUp()) {
-            warnings.add(new ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning(lineNumber));
+            Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", token);
         }
         if (!builder.hasDates()) {
             warnings.add(new DatesMissingWarning(lineNumber));
