@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -12,12 +11,12 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
-import net.filipvanlaenen.laconic.Laconic;
 
 /**
  * Unit tests on the <code>RichOpinionPollsFile</code> class.
@@ -178,10 +177,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldProduceAWarningForALineWithAnRecognizedFormat() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream printStream = new PrintStream(outputStream);
-        Laconic.LOGGER.setPrintStream(printStream);
-        Laconic.LOGGER.setPrefixWithTimestamp(false);
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         RichOpinionPollsFile.parse("Foo");
         String expected = "‡ ⬐ Parsing line number 1.\n" + "‡ Line doesn't have a recognized line format.\n";
         assertEquals(expected, outputStream.toString());

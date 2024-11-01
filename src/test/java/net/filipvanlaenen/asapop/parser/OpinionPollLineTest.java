@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -24,6 +26,9 @@ import net.filipvanlaenen.laconic.Token;
  * Unit tests on the <code>OpinionPollLine</code> class.
  */
 public final class OpinionPollLineTest {
+    /**
+     * A Laconic logging token for unit testing.
+     */
     private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.");
     /**
      * A date for the unit tests.
@@ -619,5 +624,19 @@ public final class OpinionPollLineTest {
                 .parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
         Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SS"));
         assertEquals(expected, opinionPollLine.getWarnings());
+    }
+
+    /**
+     * Verifies that a line with results that don't add up logs an error message.
+     */
+    @Test
+    public void shouldLogErrorWhenResultsDoNotAddUp() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:60 B:50", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.\n"
+                + "‡ ⬐ Total sum: 110.000000\n" + "‡ Results don’t add up within rounding error interval.\n";
+        assertEquals(expected, outputStream.toString());
+
     }
 }
