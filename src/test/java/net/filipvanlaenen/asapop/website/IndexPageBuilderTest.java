@@ -73,6 +73,14 @@ public class IndexPageBuilderTest {
         nationalElectionsInNetherlands.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/dutch_polls");
         electionListsForNetherlands.setNational(nationalElectionsInNetherlands);
         netherlands.setElections(electionListsForNetherlands);
+        AreaConfiguration portugal = new AreaConfiguration();
+        portugal.setAreaCode("pt");
+        ElectionLists electionListsForPortugal = new ElectionLists();
+        ElectionList nationalElectionsInPortugal = new ElectionList();
+        nationalElectionsInPortugal.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInPortugal.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/portuguese_polls");
+        electionListsForPortugal.setNational(nationalElectionsInPortugal);
+        portugal.setElections(electionListsForPortugal);
         AreaConfiguration bulgaria = new AreaConfiguration();
         bulgaria.setAreaCode("bg");
         ElectionLists electionListsForBulgaria = new ElectionLists();
@@ -84,7 +92,7 @@ public class IndexPageBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         websiteConfiguration
-                .setAreaConfigurations(Set.of(sweden, latvia, bulgaria, netherlands, northMacedonia, poland));
+                .setAreaConfigurations(Set.of(sweden, bulgaria, netherlands, northMacedonia, latvia, poland, portugal));
         return websiteConfiguration;
     }
 
@@ -198,6 +206,7 @@ public class IndexPageBuilderTest {
         stringBuilder.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
         stringBuilder.append("  <option class=\"_area_nl\" value=\"nl\"> </option>\n");
         stringBuilder.append("  <option class=\"_area_pl\" value=\"pl\"> </option>\n");
+        stringBuilder.append("  <option class=\"_area_pt\" value=\"pt\"> </option>\n");
         stringBuilder.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         stringBuilder.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
                 + " class=\"csv-files\" href=\"csv.html\"> </a> · <a class=\"statistics-page\""
