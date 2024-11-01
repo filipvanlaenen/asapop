@@ -20,9 +20,17 @@ import net.filipvanlaenen.asapop.model.SampleSize.ExactSampleSize;
  */
 public class OpinionPollTest {
     /**
+     * The delta for comparing doubles.
+     */
+    private static final double DELTA = 0.000001D;
+    /**
      * The magic number 0.88.
      */
     private static final double SCALE088 = 0.88D;
+    /**
+     * The magic number 103.
+     */
+    private static final double ONE_HUNDRED_THREE = 103d;
     /**
      * The magic number 1000.
      */
@@ -1046,5 +1054,15 @@ public class OpinionPollTest {
         OpinionPoll.Builder opinionPollBuilder = new OpinionPollTestBuilder().addResult("A", "100")
                 .addResult("B", "0.1").addResult("C", "0").setOther("0.1").setNoResponses("0.1");
         assertFalse(opinionPollBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the sum is calculated correctly.
+     */
+    @Test
+    public void getSumShouldReturnTheSum() {
+        OpinionPoll.Builder opinionPollBuilder = new OpinionPollTestBuilder().addResult("A", "100").addResult("B", "1")
+                .addResult("C", "0").setOther("1").setNoResponses("1");
+        assertEquals(ONE_HUNDRED_THREE, opinionPollBuilder.getSum(), DELTA);
     }
 }

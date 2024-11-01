@@ -159,8 +159,13 @@ public final class OpinionPoll {
             return new OpinionPoll(this);
         }
 
-        public double calculateSumOfResultsAndOther() {
-            return responseScenarioBuilder.calculateSumOfResultsAndOther();
+        /**
+         * Returns the sum.
+         *
+         * @return The sum.
+         */
+        public double getSum() {
+            return responseScenarioBuilder.calculateSum();
         }
 
         /**

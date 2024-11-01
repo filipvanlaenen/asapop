@@ -101,6 +101,7 @@ final class OpinionPollLine extends Line {
      * @param line                The line to parse an opinion poll from.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
      * @param lineNumber          The line number.
+     * @param token               The Laconic logging token.
      * @return An OpinionPollLine representing the line.
      */
     static OpinionPollLine parse(final String line, final Map<String, ElectoralList> electoralListKeyMap,
@@ -114,7 +115,7 @@ final class OpinionPollLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
-        Laconic.LOGGER.logMessage("Sum of results and other: %f", builder.calculateSumOfResultsAndOther(), token);
+        Laconic.LOGGER.logMessage("Total sum: %f", builder.getSum(), token);
         if (!builder.resultsAddUp()) {
             Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", token);
         }
