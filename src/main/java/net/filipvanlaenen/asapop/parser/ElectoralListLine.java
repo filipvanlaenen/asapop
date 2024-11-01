@@ -158,5 +158,4 @@ final class ElectoralListLine extends Line {
         electoralList.setRomanizedAbbreviation(romanizedAbbreviation);
         electoralList.setNames(names);
     }
-
 }

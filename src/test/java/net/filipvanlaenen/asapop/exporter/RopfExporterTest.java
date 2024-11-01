@@ -157,4 +157,20 @@ public class RopfExporterTest {
         expected.append("F:  AA006 •A: F\n");
         assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
     }
+
+    /**
+     * Verifies that keys are produced when the abbreviation doesn't directly produce a valid key.
+     */
+    @Test
+    public void shouldProduceAlternativeKeys() {
+        RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45",
+                "A: AA001 •A:+ •EN: Apple Party", "B: AA002 •A:3S •EN: 3 Stars", "C: AA003 •A:C", "D: AA004 •A:D",
+                "E: AA005 •A:E", "F: AA006 •A:F");
+        StringBuffer expected = new StringBuffer();
+        expected.append("•PF: ACME •PD: 2021-07-27 AA001: 55 N3S: 45\n");
+        expected.append("\n");
+        expected.append("AA001: AA001 •A: +  •EN: Apple Party\n");
+        expected.append("N3S:   AA002 •A: 3S •EN: 3 Stars\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+    }
 }

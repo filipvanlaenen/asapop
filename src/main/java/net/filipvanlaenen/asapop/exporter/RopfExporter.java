@@ -114,8 +114,16 @@ public final class RopfExporter extends Exporter {
     private static Map<String, String> calculateIdsToKeys(final Set<ElectoralList> electoralLists) {
         Map<String, String> result = new HashMap<String, String>();
         for (ElectoralList electoralList : electoralLists) {
-            result.put(electoralList.getId(), electoralList.getAbbreviation()
-                    .replaceAll("[^\\p{javaUpperCase}\\p{javaLowerCase}\\p{Digit}]", "").toUpperCase());
+            String key = electoralList.getAbbreviation()
+                    .replaceAll("[^\\p{javaUpperCase}\\p{javaLowerCase}\\p{Digit}]", "").toUpperCase();
+            String id = electoralList.getId();
+            if (key.isEmpty()) {
+                key = id;
+            }
+            if (Character.isDigit(key.charAt(0))) {
+                key = "N" + key;
+            }
+            result.put(id, key);
         }
         return result;
     }
