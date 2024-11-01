@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
@@ -49,5 +50,28 @@ public class CommandLineInterfaceTest {
         websiteConfiguration.setAreaConfigurations(Set.of(sweden));
         CommandLineInterface.Command.addAreaTerms(terms, websiteConfiguration);
         assertEquals(0, terms.getTerms().size());
+    }
+
+    /**
+     * Verifies that the name of a subdivision is added to the terms if translations are provided.
+     */
+    @Test
+    public void translationOfASubdivisionShouldBeAddedToTerms() {
+        Terms terms = new Terms();
+        terms.setTerms(new HashSet<Term>());
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        AreaConfiguration belgium = new AreaConfiguration();
+        belgium.setAreaCode("be");
+        AreaSubdivisionConfiguration flanders = new AreaSubdivisionConfiguration();
+        flanders.setAreaCode("vlg");
+        flanders.setTranslations(Map.of("en", "Flanders"));
+        AreaSubdivisionConfiguration[] subdivisions = new AreaSubdivisionConfiguration[] {flanders};
+        belgium.setSubdivisions(subdivisions);
+        websiteConfiguration.setAreaConfigurations(Set.of(belgium));
+        CommandLineInterface.Command.addAreaTerms(terms, websiteConfiguration);
+        assertEquals(1, terms.getTerms().size());
+        Term term = terms.getTerms().iterator().next();
+        assertEquals("_area_be-vlg", term.getKey());
+        assertEquals("Flanders", term.getTranslations().get("en"));
     }
 }
