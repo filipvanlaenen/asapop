@@ -83,25 +83,29 @@ public final class RichOpinionPollsFile {
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
         OpinionPoll lastOpinionPoll = null;
+        int lineNumber = 0;
         for (String line : lines) {
+            lineNumber++;
+            Token token = Laconic.LOGGER.logMessage("Parsing line number %d.", lineNumber);
             if (ElectoralListLine.isElectoralListLine(line)) {
+                Laconic.LOGGER.logMessage("Line is recognized as an electoral list line.", token);
                 ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
                 electoralListLine.updateElectoralList();
                 electoralListKeyMap.put(electoralListLine.getKey(), electoralListLine.getElectoralList());
             }
         }
-        int lineNumber = 0;
+        lineNumber = 0;
         for (String line : lines) {
             lineNumber++;
             Token token = Laconic.LOGGER.logMessage("Parsing line number %d.", lineNumber);
             if (OpinionPollLine.isOpinionPollLine(line)) {
-                Laconic.LOGGER.logMessage("Line is recognized as an opinion poll line.");
+                Laconic.LOGGER.logMessage("Line is recognized as an opinion poll line.", token);
                 OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, lineNumber, token);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(opinionPollLine.getWarnings());
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
-                Laconic.LOGGER.logMessage("Line is recognized as a response scenario line.");
+                Laconic.LOGGER.logMessage("Line is recognized as a response scenario line.", token);
                 ResponseScenarioLine responseScenarioLine =
                         ResponseScenarioLine.parse(line, electoralListKeyMap, lineNumber);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
@@ -111,7 +115,7 @@ public final class RichOpinionPollsFile {
                 opinionPolls.add(lastOpinionPoll);
                 warnings.addAll(responseScenarioLine.getWarnings());
             } else if (CommentLine.isCommentLine(line)) {
-                Laconic.LOGGER.logMessage("Line is recognized as a comment line.");
+                Laconic.LOGGER.logMessage("Line is recognized as a comment line.", token);
                 commentLines.add(CommentLine.parse(line));
             } else if (!ElectoralListLine.isElectoralListLine(line) && !EmptyLine.isEmptyLine(line)) {
                 Laconic.LOGGER.logError("Line doesn't have a recognized line format.", token);
