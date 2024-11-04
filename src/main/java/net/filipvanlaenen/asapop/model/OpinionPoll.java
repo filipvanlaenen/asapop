@@ -165,7 +165,7 @@ public final class OpinionPoll {
          * @return The sum.
          */
         public double getSum() {
-            return responseScenarioBuilder.calculateSum();
+            return responseScenarioBuilder.getSum();
         }
 
         /**

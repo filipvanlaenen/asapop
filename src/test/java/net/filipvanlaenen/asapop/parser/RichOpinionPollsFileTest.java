@@ -17,6 +17,8 @@ import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>RichOpinionPollsFile</code> class.
@@ -64,6 +66,7 @@ public final class RichOpinionPollsFileTest {
      * Comment line.
      */
     private static final String COMMENT_LINE = "‡ Foo";
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test RichOpinionPollsFileTest.");
 
     /**
      * Verifies that a single line containing a simple opinion poll can be parsed.
@@ -72,8 +75,9 @@ public final class RichOpinionPollsFileTest {
     public void shouldParseSingleLineWithASimpleOpinionPoll() {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                .getOpinionPolls().getOpinionPolls());
+        assertEquals(polls,
+                RichOpinionPollsFile.parse(TOKEN, SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                        .getOpinionPolls().getOpinionPolls());
     }
 
     /**
@@ -86,7 +90,7 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
     }
 
     /**
@@ -99,7 +103,7 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
     }
 
     /**
@@ -112,7 +116,7 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
     }
 
     /**
@@ -129,7 +133,7 @@ public final class RichOpinionPollsFileTest {
         poll.addAlternativeResponseScenario(scenario);
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
     }
 
     /**
@@ -137,7 +141,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseALineWithAnElectoralListDefinitionAndAddAbbreviation() {
-        RichOpinionPollsFile.parse("A: AA001 •A: AP •EN: Apple Party");
+        RichOpinionPollsFile.parse(TOKEN, "A: AA001 •A: AP •EN: Apple Party");
         assertEquals("AP", ElectoralList.get("AA001").getAbbreviation());
     }
 
@@ -146,7 +150,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseSingleLineWithASimpleOpinionPollWithoutWarnings() {
-        assertTrue(RichOpinionPollsFile.parse(SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+        assertTrue(RichOpinionPollsFile.parse(TOKEN, SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
                 .getWarnings().isEmpty());
     }
 
@@ -155,10 +159,9 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldProduceAWarningForALineWithAMalformedResultValue() {
-        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
-                RichOpinionPollsFile
-                        .parse("•PF: ACME •PD: 2021-07-27 A:x B:45", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                        .getWarnings());
+        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")), RichOpinionPollsFile
+                .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:x B:45", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                .getWarnings());
     }
 
     /**
@@ -166,10 +169,9 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldProduceAWarningForALineWithAMalformedOtherResultValue() {
-        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")),
-                RichOpinionPollsFile
-                        .parse("•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                        .getWarnings());
+        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")), RichOpinionPollsFile
+                .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                .getWarnings());
     }
 
     /**
@@ -178,8 +180,9 @@ public final class RichOpinionPollsFileTest {
     @Test
     public void shouldProduceAWarningForALineWithAnRecognizedFormat() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
-        RichOpinionPollsFile.parse("Foo");
-        String expected = "‡ ⬐ Parsing line number 1.\n" + "‡ Line doesn't have a recognized line format.\n";
+        RichOpinionPollsFile.parse(TOKEN, "Foo");
+        String expected = "‡   Unit test RichOpinionPollsFileTest.\n" + "‡ ⬐ Parsing line number 1.\n"
+                + "‡ Line doesn't have a recognized line format.\n";
         assertEquals(expected, outputStream.toString());
     }
 
@@ -188,7 +191,7 @@ public final class RichOpinionPollsFileTest {
      */
     @Test
     public void shouldParseSingleLineWithAComment() {
-        List<CommentLine> commentLines = RichOpinionPollsFile.parse(COMMENT_LINE).getCommentLines();
+        List<CommentLine> commentLines = RichOpinionPollsFile.parse(TOKEN, COMMENT_LINE).getCommentLines();
         assertEquals(1, commentLines.size());
         assertEquals("Foo", commentLines.get(0).getContent());
     }

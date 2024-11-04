@@ -15,6 +15,8 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class implementing a line representing a response alternative.
@@ -92,10 +94,11 @@ final class ResponseScenarioLine extends Line {
      * @param line                The line to parse a response scenario from.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
      * @param lineNumber          The line number the data block.
+     * @param token               The Laconic logging token.
      * @return A ResponseScenarioLine instance representing the line.
      */
     static ResponseScenarioLine parse(final String line, final Map<String, ElectoralList> electoralListKeyMap,
-            final int lineNumber) {
+            final int lineNumber, final Token token) {
         ResponseScenario.Builder builder = new ResponseScenario.Builder();
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         Matcher responseScenarioMatcher = RESPONSE_SCENARIO_PATTERN.matcher(line);
@@ -107,8 +110,9 @@ final class ResponseScenarioLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
+        Laconic.LOGGER.logMessage("Total sum is %f.", builder.getSum(), token);
         if (!builder.resultsAddUp()) {
-            warnings.add(new ResultValuesNotAddingUpWithinRoundingErrorIntervalWarning(lineNumber));
+            Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", token);
         }
         return new ResponseScenarioLine(builder.build(), warnings);
     }

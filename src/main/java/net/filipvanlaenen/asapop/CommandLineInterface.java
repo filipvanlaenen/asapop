@@ -47,6 +47,8 @@ import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class implementing a command line interface.
@@ -113,8 +115,9 @@ public final class CommandLineInterface {
                 String inputFileName = args[1];
                 String electionDataFileName = args[2];
                 String outputFileName = args[THREE];
+                Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
-                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
                 printWarnings(richOpinionPollsFile.getWarnings());
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
@@ -180,8 +183,9 @@ public final class CommandLineInterface {
                 for (int i = 0; i < noOfElectoralListKeySets; i++) {
                     electoralListKeySets.add(new HashSet<String>(Arrays.asList(args[i + THREE].split("\\+"))));
                 }
+                Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
-                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
                 printWarnings(richOpinionPollsFile.getWarnings());
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 String outputContent = "";
@@ -198,8 +202,9 @@ public final class CommandLineInterface {
             @Override
             void execute(final String[] args) throws IOException {
                 String ropfFileName = args[1];
+                Token token = Laconic.LOGGER.logMessage("Parsing file %s.", ropfFileName);
                 String[] ropfContent = readFile(ropfFileName);
-                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
                 printWarnings(richOpinionPollsFile.getWarnings());
                 writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile));
             }
@@ -213,8 +218,9 @@ public final class CommandLineInterface {
                 String inputFileName = args[1];
                 String saporDirName = args[2];
                 String saporConfigurationFileName = args[THREE];
+                Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
-                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
                 printWarnings(richOpinionPollsFile.getWarnings());
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
@@ -285,6 +291,8 @@ public final class CommandLineInterface {
          */
         private static Map<String, OpinionPolls> readAllParliamentaryOpinionPolls(final String ropfDirName,
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
+            Token token = Laconic.LOGGER
+                    .logMessage("Parsing all parliamentary opinion polls files in the directory %s.", ropfDirName);
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
             Set<String> areaCodes =
                     websiteConfiguration.getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null)
@@ -292,9 +300,10 @@ public final class CommandLineInterface {
             for (String areaCode : areaCodes) {
                 Path ropfPath = Paths.get(ropfDirName, areaCode + ".ropf");
                 if (Files.exists(ropfPath)) {
-                    System.out.println("Going to parse " + areaCode + "...");
+                    Token fileToken =
+                            Laconic.LOGGER.logMessage(token, "Parsing the file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
-                    RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                    RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
                     printWarnings(richOpinionPollsFile.getWarnings());
                     opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
                 }
@@ -312,6 +321,8 @@ public final class CommandLineInterface {
          */
         private static Map<String, OpinionPolls> readAllPresidentialOpinionPolls(final String ropfDirName,
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
+            Token token = Laconic.LOGGER.logMessage(
+                    "Parsing all presidential election opinion polls files in the directory %s.", ropfDirName);
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
             Set<AreaConfiguration> areasWithPresidentialElections =
                     websiteConfiguration
@@ -328,9 +339,10 @@ public final class CommandLineInterface {
             for (String presidentialOpinionPollCode : presidentialOpinionPollCodes) {
                 Path ropfPath = Paths.get(ropfDirName, presidentialOpinionPollCode + ".ropf");
                 if (Files.exists(ropfPath)) {
-                    System.out.println("Going to parse " + presidentialOpinionPollCode + "...");
+                    Token fileToken =
+                            Laconic.LOGGER.logMessage(token, "Parsing file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
-                    RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(ropfContent);
+                    RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
                     printWarnings(richOpinionPollsFile.getWarnings());
                     opinionPollsMap.put(presidentialOpinionPollCode, richOpinionPollsFile.getOpinionPolls());
                 }

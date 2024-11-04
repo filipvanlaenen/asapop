@@ -19,6 +19,8 @@ import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the class <code>EopaodCsvExporter</code>.
@@ -53,6 +55,10 @@ public class EopaodCsvExporterTest {
      */
     private static final List<Set<String>> A_AND_B_AND_C_IDS =
             List.of(Set.of("AA001"), Set.of("AA002"), Set.of("AA003"));
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test EopaodCsvExporterTest.");
 
     /**
      * Verifies the correct export of a minimal opinion poll.
@@ -60,7 +66,8 @@ public class EopaodCsvExporterTest {
     @Test
     public void shouldExportMinimalOpinionPoll() {
         OpinionPolls opinionPolls = RichOpinionPollsFile
-                .parse("•PF: ACME •PD: 2021-07-27 A:55 B:45", "A: AA001 •A:AP", "B: AA002 •A:BL").getOpinionPolls();
+                .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45", "A: AA001 •A:AP", "B: AA002 •A:BL")
+                .getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
@@ -74,7 +81,7 @@ public class EopaodCsvExporterTest {
      */
     @Test
     public void shouldExportWithCombinedElectoralListsAbbreviation() {
-        OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A+C:55 B+D:45",
+        OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A+C:55 B+D:45",
                 "A: AA001 •A:AP", "B: AA002 •A:BL", "C: AA003 •A:CC", "D: AA004 •A:DE").getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
@@ -91,7 +98,7 @@ public class EopaodCsvExporterTest {
     @Test
     public void shouldExportWithRomanizedAbbreviation() {
         OpinionPolls opinionPolls = RichOpinionPollsFile
-                .parse("•PF: ACME •PD: 2021-07-27 A:55 B:45", "A: AA001 •A:ΑΠ •R:AP", "B: AA002 •A:BL")
+                .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45", "A: AA001 •A:ΑΠ •R:AP", "B: AA002 •A:BL")
                 .getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
@@ -108,7 +115,7 @@ public class EopaodCsvExporterTest {
     public void shouldSortOpinionPolls() {
         OpinionPolls opinionPolls =
                 RichOpinionPollsFile
-                        .parse("•PF: ACME •PD: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-08-15 A:55 B:45",
+                        .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-08-15 A:55 B:45",
                                 "•PF: ACME •PD: 2021-07-28 A:55 B:45", "A: AA001 •A:AP", "B: AA002 •A:BL")
                         .getOpinionPolls();
         StringBuffer expected = new StringBuffer();
@@ -128,7 +135,7 @@ public class EopaodCsvExporterTest {
      */
     @Test
     public void shouldExportOpinionPollWithAlternativeResponseScenario() {
-        OpinionPolls opinionPolls = RichOpinionPollsFile.parse("•PF: ACME •PD: 2021-07-27 A:55 B:45",
+        OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45",
                 "& A:50 B:40 C:10", "A: AA001 •A:AP", "B: AA002 •A:BL", "C: AA003 •A:C").getOpinionPolls();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");

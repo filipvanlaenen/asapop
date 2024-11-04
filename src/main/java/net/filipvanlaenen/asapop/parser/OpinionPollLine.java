@@ -115,7 +115,7 @@ final class OpinionPollLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
-        Laconic.LOGGER.logMessage("Total sum: %f", builder.getSum(), token);
+        Laconic.LOGGER.logMessage("Total sum is %f.", builder.getSum(), token);
         if (!builder.resultsAddUp()) {
             Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", token);
         }

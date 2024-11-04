@@ -635,7 +635,7 @@ public final class OpinionPollLineTest {
         Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.");
         OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:60 B:50", ELECTORAL_LIST_KEY_MAP, 1, token);
         String expected = "‡   Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.\n"
-                + "‡ ⬐ Total sum: 110.000000\n" + "‡ Results don’t add up within rounding error interval.\n";
+                + "‡ ⬐ Total sum is 110.000000.\n" + "‡ Results don’t add up within rounding error interval.\n";
         assertEquals(expected, outputStream.toString());
 
     }

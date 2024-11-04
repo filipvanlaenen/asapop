@@ -19,11 +19,18 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>CsvFilesBuilder</code> class.
  */
 public class CsvFilesBuilderTest {
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test CsvFilesBuilderTest.");
+
     /**
      * Creates a website configuration.
      *
@@ -73,7 +80,7 @@ public class CsvFilesBuilderTest {
         ElectoralList.get("P").setAbbreviation("P");
         ElectoralList.get("Q").setAbbreviation("Q");
         OpinionPolls opinionPolls = RichOpinionPollsFile
-                .parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 F:55 G:40", "F: FR001 •A:F", "G: FR002 •A:G")
+                .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 F:55 G:40", "F: FR001 •A:F", "G: FR002 •A:G")
                 .getOpinionPolls();
         Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,

@@ -179,7 +179,7 @@ public final class ResponseScenario {
          *
          * @return The sum.
          */
-        double calculateSum() {
+        public double getSum() {
             double sum = calculateSumOfResultsAndOther();
             if (hasNoResponses()) {
                 Double value = noResponses.getNominalValue();
@@ -304,7 +304,7 @@ public final class ResponseScenario {
          * @return True if the sum of results is within the interval of rounding errors.
          */
         private boolean resultsAddUp(final boolean strictly) {
-            double sum = calculateSum();
+            double sum = getSum();
             Precision precision = Precision.getHighestPrecision(results.values());
             if (hasOther()) {
                 precision = Precision.highest(precision, other.getPrecision());
