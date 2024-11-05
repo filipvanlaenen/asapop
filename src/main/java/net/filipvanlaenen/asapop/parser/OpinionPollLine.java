@@ -113,7 +113,7 @@ final class OpinionPollLine extends Line {
             remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber);
         }
         if (!builder.hasResults()) {
-            warnings.add(new ResultsMissingWarning(lineNumber));
+            Laconic.LOGGER.logError("No results found.", token);
         }
         Token sumToken = Laconic.LOGGER.logMessage(token, "Total sum is %f.", builder.getSum());
         if (!builder.resultsAddUp()) {

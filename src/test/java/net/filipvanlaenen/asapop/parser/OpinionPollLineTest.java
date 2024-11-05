@@ -444,10 +444,13 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForMissingResults() {
-        OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new ResultsMissingWarning(1));
-        assertEquals(expected, opinionPollLine.getWarnings());
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldProduceAWarningForMissingResults.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected =
+                "‡ ⬐ Unit test OpinionPollLineTest.shouldProduceAWarningForMissingResults.\n" + "‡ No results found.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

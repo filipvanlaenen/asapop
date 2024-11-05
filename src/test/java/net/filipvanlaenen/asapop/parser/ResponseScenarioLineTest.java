@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
@@ -298,10 +300,13 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldProduceAWarningForMissingResults() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 •SC: N", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new ResultsMissingWarning(1));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldProduceAWarningForMissingResults.");
+        ResponseScenarioLine.parse("& •SS: 999 •SC: N", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡ ⬐ Unit test ResponseScenarioLineTest.shouldProduceAWarningForMissingResults.\n"
+                + "‡ No results found.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

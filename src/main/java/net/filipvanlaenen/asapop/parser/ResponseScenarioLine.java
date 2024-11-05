@@ -108,11 +108,11 @@ final class ResponseScenarioLine extends Line {
             remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber);
         }
         if (!builder.hasResults()) {
-            warnings.add(new ResultsMissingWarning(lineNumber));
+            Laconic.LOGGER.logError("No results found.", token);
         }
-        Laconic.LOGGER.logMessage("Total sum is %f.", builder.getSum(), token);
+        Token sumToken = Laconic.LOGGER.logMessage(token, "Total sum is %f.", builder.getSum());
         if (!builder.resultsAddUp()) {
-            Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", token);
+            Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", sumToken);
         }
         return new ResponseScenarioLine(builder.build(), warnings);
     }
