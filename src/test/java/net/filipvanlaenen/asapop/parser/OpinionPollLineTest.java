@@ -455,10 +455,12 @@ public final class OpinionPollLineTest {
      */
     @Test
     public void shouldProduceAWarningForMissingDates() {
-        OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new DatesMissingWarning(1));
-        assertEquals(expected, opinionPollLine.getWarnings());
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldProduceAWarningForMissingDates.");
+        OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected =
+                "‡ ⬐ Unit test OpinionPollLineTest.shouldProduceAWarningForMissingDates.\n" + "‡ No dates found.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
@@ -637,6 +639,5 @@ public final class OpinionPollLineTest {
         String expected = "‡   Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.\n"
                 + "‡ ⬐ Total sum is 110.000000.\n" + "‡ Results don’t add up within rounding error interval.\n";
         assertEquals(expected, outputStream.toString());
-
     }
 }

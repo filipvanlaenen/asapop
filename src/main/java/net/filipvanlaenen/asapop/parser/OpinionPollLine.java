@@ -115,12 +115,12 @@ final class OpinionPollLine extends Line {
         if (!builder.hasResults()) {
             warnings.add(new ResultsMissingWarning(lineNumber));
         }
-        Laconic.LOGGER.logMessage("Total sum is %f.", builder.getSum(), token);
+        Token sumToken = Laconic.LOGGER.logMessage(token, "Total sum is %f.", builder.getSum());
         if (!builder.resultsAddUp()) {
-            Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", token);
+            Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", sumToken);
         }
         if (!builder.hasDates()) {
-            warnings.add(new DatesMissingWarning(lineNumber));
+            Laconic.LOGGER.logError("No dates found.", token);
         }
         if (!builder.hasPollingFirmOrCommissioner()) {
             warnings.add(new PollingFirmAndCommissionerMissingWarning(lineNumber));
