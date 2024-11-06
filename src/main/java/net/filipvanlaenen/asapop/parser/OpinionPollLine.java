@@ -110,7 +110,7 @@ final class OpinionPollLine extends Line {
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         String remainder = line;
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber);
+            remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber, token);
         }
         if (!builder.hasResults()) {
             Laconic.LOGGER.logError("No results found.", token);
@@ -139,12 +139,13 @@ final class OpinionPollLine extends Line {
      * @return The unprocessed part of the line.
      */
     private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
-            final String remainder, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber) {
+            final String remainder, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
+            final Token token) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, warnings, keyValueBlock, lineNumber);
+            processMetadata(builder, warnings, keyValueBlock, lineNumber, token);
         } else {
             processResultData(builder, warnings, keyValueBlock, electoralListKeyMap, lineNumber);
         }
@@ -160,11 +161,12 @@ final class OpinionPollLine extends Line {
      * @param lineNumber     The line number the data block.
      */
     private static void processMetadata(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final int lineNumber) {
+            final String keyValueString, final int lineNumber, final Token token) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
         String value = keyValueMatcher.group(2);
+        Token keyToken = Laconic.LOGGER.logMessage(token, "Processing metadata field %s.", key);
         switch (key) {
         case "A":
             if (builder.hasArea()) {
@@ -193,7 +195,7 @@ final class OpinionPollLine extends Line {
                 DateMonthOrYear fieldworkEnd = DateMonthOrYear.parse(value);
                 builder.setFieldworkEnd(fieldworkEnd);
             } else {
-                warnings.add(new MalformedDateMonthOrYearWarning(lineNumber, key, value));
+                Laconic.LOGGER.logError("Malformed date, month or year (“%s”).", value, keyToken);
             }
             break;
         case "FS":
@@ -203,7 +205,7 @@ final class OpinionPollLine extends Line {
                 DateMonthOrYear fieldworkStart = DateMonthOrYear.parse(value);
                 builder.setFieldworkStart(fieldworkStart);
             } else {
-                warnings.add(new MalformedDateMonthOrYearWarning(lineNumber, key, value));
+                Laconic.LOGGER.logError("Malformed date, month or year (“%s”).", value, keyToken);
             }
             break;
         case "N":
@@ -231,7 +233,7 @@ final class OpinionPollLine extends Line {
                 LocalDate publicationDate = LocalDate.parse(value);
                 builder.setPublicationDate(publicationDate);
             } else {
-                warnings.add(new MalformedDateWarning(lineNumber, key, value));
+                Laconic.LOGGER.logError("Malformed date (“%s”).", value, keyToken);
             }
             break;
         case "PF":

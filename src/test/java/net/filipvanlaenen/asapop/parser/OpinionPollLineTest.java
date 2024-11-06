@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
