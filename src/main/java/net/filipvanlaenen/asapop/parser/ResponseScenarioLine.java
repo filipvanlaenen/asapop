@@ -105,7 +105,7 @@ final class ResponseScenarioLine extends Line {
         responseScenarioMatcher.find();
         String remainder = responseScenarioMatcher.group(1);
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber);
+            remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber, token);
         }
         if (!builder.hasResults()) {
             Laconic.LOGGER.logError("No results found.", token);
@@ -128,12 +128,13 @@ final class ResponseScenarioLine extends Line {
      * @return The unprocessed part of the line.
      */
     private static String parseKeyValue(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
-            final String remainder, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber) {
+            final String remainder, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
+            final Token token) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, warnings, keyValueBlock, lineNumber);
+            processMetadata(builder, warnings, keyValueBlock, lineNumber, token);
         } else {
             processResultData(builder, warnings, keyValueBlock, electoralListKeyMap, lineNumber);
         }
@@ -149,11 +150,12 @@ final class ResponseScenarioLine extends Line {
      * @param lineNumber     The line number the data block.
      */
     private static void processMetadata(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final int lineNumber) {
+            final String keyValueString, final int lineNumber, final Token token) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
         String value = keyValueMatcher.group(2);
+        Token keyToken = Laconic.LOGGER.logMessage(token, "Processing metadata field %s.", key);
         switch (key) {
         case "A":
             if (builder.hasArea()) {
@@ -169,7 +171,7 @@ final class ResponseScenarioLine extends Line {
                 DecimalNumber excluded = DecimalNumber.parse(value);
                 builder.setExcluded(excluded);
             } else {
-                warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
+                Laconic.LOGGER.logError("Malformed decimal number %s.", value, keyToken);
             }
             break;
         case "N":
@@ -219,7 +221,7 @@ final class ResponseScenarioLine extends Line {
                 try {
                     builder.setVerifiedSum(DecimalNumber.parse(value));
                 } catch (NumberFormatException nfe) {
-                    warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
+                    Laconic.LOGGER.logError("Malformed decimal number %s.", value, keyToken);
                 }
             }
             break;

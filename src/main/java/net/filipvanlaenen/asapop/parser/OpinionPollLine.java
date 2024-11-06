@@ -185,7 +185,7 @@ final class OpinionPollLine extends Line {
                 DecimalNumber excluded = DecimalNumber.parse(value);
                 builder.setExcluded(excluded);
             } else {
-                warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
+                Laconic.LOGGER.logError("Malformed decimal number %s.", value, keyToken);
             }
             break;
         case "FE":
@@ -195,7 +195,7 @@ final class OpinionPollLine extends Line {
                 DateMonthOrYear fieldworkEnd = DateMonthOrYear.parse(value);
                 builder.setFieldworkEnd(fieldworkEnd);
             } else {
-                Laconic.LOGGER.logError("Malformed date, month or year (“%s”).", value, keyToken);
+                Laconic.LOGGER.logError("Malformed date, month or year %s.", value, keyToken);
             }
             break;
         case "FS":
@@ -205,7 +205,7 @@ final class OpinionPollLine extends Line {
                 DateMonthOrYear fieldworkStart = DateMonthOrYear.parse(value);
                 builder.setFieldworkStart(fieldworkStart);
             } else {
-                Laconic.LOGGER.logError("Malformed date, month or year (“%s”).", value, keyToken);
+                Laconic.LOGGER.logError("Malformed date, month or year %s.", value, keyToken);
             }
             break;
         case "N":
@@ -233,7 +233,7 @@ final class OpinionPollLine extends Line {
                 LocalDate publicationDate = LocalDate.parse(value);
                 builder.setPublicationDate(publicationDate);
             } else {
-                Laconic.LOGGER.logError("Malformed date (“%s”).", value, keyToken);
+                Laconic.LOGGER.logError("Malformed date %s.", value, keyToken);
             }
             break;
         case "PF":
@@ -291,7 +291,7 @@ final class OpinionPollLine extends Line {
                 try {
                     builder.setVerifiedSum(DecimalNumber.parse(value));
                 } catch (NumberFormatException nfe) {
-                    warnings.add(new MalformedDecimalNumberWarning(lineNumber, key, value));
+                    Laconic.LOGGER.logError("Malformed decimal number %s.", value, keyToken);
                 }
             }
             break;

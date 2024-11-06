@@ -256,10 +256,13 @@ public final class ResponseScenarioLineTest {
      */
     @Test
     public void shouldProduceAWarningForAMalformedVerifiedSum() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "VS", "Error"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldProduceAWarningForAMalformedVerifiedSum.");
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldProduceAWarningForAMalformedVerifiedSum.\n"
+                + "‡ ⬐ Processing metadata field VS.\n" + "‡ Malformed decimal number Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
@@ -285,14 +288,18 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
-     * Verifies that a line with a malformed decimal number for excluded produces a warning.
+     * Verifies that a line with a malformed decimal number for excluded logs an error.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 •EX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.");
+        ResponseScenarioLine.parse("& •SS: 999 •EX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected =
+                "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.\n"
+                        + "‡ ⬐ Processing metadata field EX.\n" + "‡ Malformed decimal number X.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

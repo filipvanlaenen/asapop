@@ -388,11 +388,14 @@ public final class OpinionPollLineTest {
      * Verifies that a line with a malformed verified sum produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedVerifiedSum() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •VS:Error",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "VS", "Error"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedVerifiedSum() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedVerifiedSum.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedVerifiedSum.\n"
+                + "‡ ⬐ Processing metadata field VS.\n" + "‡ Malformed decimal number Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
@@ -432,11 +435,15 @@ public final class OpinionPollLineTest {
      * Verifies that a line with a malformed decimal number for excluded produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedDecimalNumberForExcludedResponses() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedDecimalNumberWarning(1, "EX", "X"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected =
+                "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.\n"
+                        + "‡ ⬐ Processing metadata field EX.\n" + "‡ Malformed decimal number X.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
