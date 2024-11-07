@@ -222,33 +222,42 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line with a malformed result value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedResultValue() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 A:Error B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedResultValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedResultValue.");
+        ResponseScenarioLine.parse("& •SS: 999 A:Error B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedResultValue.\n"
+                + "‡ ⬐ Processing result key A.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line with a malformed no responses value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedNoResponsesValue() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedNoResponsesValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.");
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.\n"
+                + "‡ ⬐ Processing metadata field N.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line with a malformed other value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedOtherValue() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedOtherValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.");
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.\n"
+                + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

@@ -147,7 +147,7 @@ final class OpinionPollLine extends Line {
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
             processMetadata(builder, warnings, keyValueBlock, lineNumber, token);
         } else {
-            processResultData(builder, warnings, keyValueBlock, electoralListKeyMap, lineNumber);
+            processResultData(builder, warnings, keyValueBlock, electoralListKeyMap, lineNumber, token);
         }
         return keyValuesMatcher.group(FOUR);
     }
@@ -212,7 +212,7 @@ final class OpinionPollLine extends Line {
             if (builder.hasNoResponses()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
-                ResultValueText noResponse = ResultValueText.parse(value, lineNumber);
+                ResultValueText noResponse = ResultValueText.parse(value, keyToken);
                 warnings.addAll(noResponse.getWarnings());
                 builder.setNoResponses(noResponse.getValue());
             }
@@ -221,7 +221,7 @@ final class OpinionPollLine extends Line {
             if (builder.hasOther()) {
                 warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
             } else {
-                ResultValueText other = ResultValueText.parse(value, lineNumber);
+                ResultValueText other = ResultValueText.parse(value, keyToken);
                 warnings.addAll(other.getWarnings());
                 builder.setOther(other.getValue());
             }
@@ -310,14 +310,16 @@ final class OpinionPollLine extends Line {
      * @param lineNumber          The line number the data block.
      */
     private static void processResultData(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber) {
+            final String keyValueString, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
+            final Token token) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String keysValue = keyValueMatcher.group(1);
+        Token keysToken = Laconic.LOGGER.logMessage(token, "Processing result key %s.", keysValue);
         Set<String> keys = new HashSet<String>(Arrays.asList(keysValue.split(ELECTORAL_LIST_KEY_SEPARATOR)));
         Set<ElectoralList> electoralLists =
                 keys.stream().map(key -> electoralListKeyMap.get(key)).collect(Collectors.toSet());
-        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), lineNumber);
+        ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), keysToken);
         warnings.addAll(value.getWarnings());
         warnings.addAll(keys.stream().filter(Predicate.not(electoralListKeyMap::containsKey))
                 .map(key -> new UnknownElectoralListKeyWarning(lineNumber, key)).collect(Collectors.toSet()));

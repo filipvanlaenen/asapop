@@ -355,33 +355,42 @@ public final class OpinionPollLineTest {
      * Verifies that a line with a malformed result value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedResultValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:Error B:43",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedResultValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedResultValue.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:Error B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedResultValue.\n"
+                + "‡ ⬐ Processing result key A.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line with a malformed other value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedOtherValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedOtherValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherValue.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherValue.\n"
+                + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line with a malformed no responses value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedNoResponsesValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new MalformedResultValueWarning(1, "Error"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAMalformedNoResponsesValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.\n"
+                + "‡ ⬐ Processing metadata field N.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

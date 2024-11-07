@@ -158,20 +158,33 @@ public final class RichOpinionPollsFileTest {
      * Verifies that a line with a malformed result value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForALineWithAMalformedResultValue() {
-        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")), RichOpinionPollsFile
-                .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:x B:45", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                .getWarnings());
+    public void shouldLogAnErrorForALineWithAMalformedResultValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedResultValue.");
+        RichOpinionPollsFile.parse(token, "•PF: ACME •PD: 2021-07-27 A:x B:45", ELECTORAL_LIST_A_LINE,
+                ELECTORAL_LIST_B_LINE);
+        String expected = "‡   Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedResultValue.\n"
+                + "‡   Parsing line number 1.\n" + "‡   Line is recognized as an opinion poll line.\n"
+                + "‡ ⬐ Processing result key A.\n" + "‡ Malformed result value x.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line with a malformed other result value produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForALineWithAMalformedOtherResultValue() {
-        assertEquals(Set.of(new MalformedResultValueWarning(1, "x")), RichOpinionPollsFile
-                .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x", ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                .getWarnings());
+    public void shouldLogAnErrorForALineWithAMalformedOtherResultValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedOtherResultValue.");
+        RichOpinionPollsFile.parse(token, "•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x", ELECTORAL_LIST_A_LINE,
+                ELECTORAL_LIST_B_LINE);
+        String expected =
+                "‡   Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedOtherResultValue.\n"
+                        + "‡   Parsing line number 1.\n" + "‡   Line is recognized as an opinion poll line.\n"
+                        + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value x.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

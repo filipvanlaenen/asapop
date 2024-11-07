@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class representing the a result value text.
@@ -60,10 +62,10 @@ final class ResultValueText {
      * @param lineNumber The number of the line where the text occurs.
      * @return An instance representing the parsed text.
      */
-    static ResultValueText parse(final String value, final int lineNumber) {
+    static ResultValueText parse(final String value, final Token token) {
         Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         if (!WELLFORMED_RESULT_VALUE_PATTERN.matcher(value).matches()) {
-            warnings.add(new MalformedResultValueWarning(lineNumber, value));
+            Laconic.LOGGER.logError("Malformed result value %s.", value, token);
         }
         return new ResultValueText(new ResultValue(value), warnings);
     }
