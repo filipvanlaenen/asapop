@@ -123,7 +123,7 @@ final class OpinionPollLine extends Line {
             Laconic.LOGGER.logError("No dates found.", token);
         }
         if (!builder.hasPollingFirmOrCommissioner()) {
-            warnings.add(new PollingFirmAndCommissionerMissingWarning(lineNumber));
+            Laconic.LOGGER.logError("No polling firm or commissioner.", token);
         }
         return new OpinionPollLine(builder.build(), warnings);
     }
@@ -269,7 +269,7 @@ final class OpinionPollLine extends Line {
                 SampleSize sampleSize = SampleSize.parse(value);
                 builder.setSampleSize(sampleSize);
             } else {
-                warnings.add(new MalformedSampleSizeWarning(lineNumber, value));
+                Laconic.LOGGER.logError("Malformed sample size %s.", value, keyToken);
             }
             break;
         case "U":

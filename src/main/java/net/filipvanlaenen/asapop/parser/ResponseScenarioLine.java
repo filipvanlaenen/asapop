@@ -211,7 +211,7 @@ final class ResponseScenarioLine extends Line {
                 SampleSize sampleSize = SampleSize.parse(value);
                 builder.setSampleSize(sampleSize);
             } else {
-                warnings.add(new MalformedSampleSizeWarning(lineNumber, value));
+                Laconic.LOGGER.logError("Malformed sample size %s.", value, keyToken);
             }
             break;
         case "VS":

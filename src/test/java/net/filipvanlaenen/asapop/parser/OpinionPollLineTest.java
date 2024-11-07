@@ -486,11 +486,14 @@ public final class OpinionPollLineTest {
      * Verifies that a line missing both polling firm and commissioner produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForMissingPollingFirmsAndCommissioner() {
-        OpinionPollLine opinionPollLine =
-                OpinionPollLine.parse("•PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new PollingFirmAndCommissionerMissingWarning(1));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForMissingPollingFirmsAndCommissioner() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForMissingPollingFirmsAndCommissioner.");
+        OpinionPollLine.parse("•PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡ ⬐ Unit test OpinionPollLineTest.shouldLogAnErrorForMissingPollingFirmsAndCommissioner.\n"
+                + "‡ No polling firm or commissioner.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
