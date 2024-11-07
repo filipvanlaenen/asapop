@@ -159,14 +159,14 @@ final class ResponseScenarioLine extends Line {
         switch (key) {
         case "A":
             if (builder.hasArea()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 builder.setArea(value);
             }
             break;
         case "EX":
             if (builder.hasExcluded()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(DECIMAL_NUMBER_PATTERN, value)) {
                 DecimalNumber excluded = DecimalNumber.parse(value);
                 builder.setExcluded(excluded);
@@ -176,7 +176,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "N":
             if (builder.hasNoResponses()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 ResultValueText noResponse = ResultValueText.parse(value, keyToken);
                 warnings.addAll(noResponse.getWarnings());
@@ -185,7 +185,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "O":
             if (builder.hasOther()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 ResultValueText other = ResultValueText.parse(value, keyToken);
                 warnings.addAll(other.getWarnings());
@@ -194,7 +194,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "SC":
             if (builder.hasScope()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 Scope scope = Scope.parse(value);
                 if (scope == null) {
@@ -206,7 +206,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "SS":
             if (builder.hasSampleSize()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(SAMPLE_SIZE_PATTERN, value)) {
                 SampleSize sampleSize = SampleSize.parse(value);
                 builder.setSampleSize(sampleSize);
@@ -216,7 +216,7 @@ final class ResponseScenarioLine extends Line {
             break;
         case "VS":
             if (builder.hasVerifiedSum()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 try {
                     builder.setVerifiedSum(DecimalNumber.parse(value));

@@ -315,13 +315,13 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line missing results produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForMissingResults() {
+    public void shouldLogAnErrorForMissingResults() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
-                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldProduceAWarningForMissingResults.");
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForMissingResults.");
         ResponseScenarioLine.parse("& •SS: 999 •SC: N", ELECTORAL_LIST_KEY_MAP, 1, token);
-        String expected = "‡ ⬐ Unit test ResponseScenarioLineTest.shouldProduceAWarningForMissingResults.\n"
-                + "‡ No results found.\n";
+        String expected =
+                "‡ ⬐ Unit test ResponseScenarioLineTest.shouldLogAnErrorForMissingResults.\n" + "‡ No results found.\n";
         assertEquals(expected, outputStream.toString());
     }
 
@@ -340,65 +340,83 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line adding the area twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenAreaIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •A: A •A: A A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "A"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorWhenAreaIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenAreaIsAddedTwice.");
+        ResponseScenarioLine.parse("& •A: A •A: A A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenAreaIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field A.\n" + "‡ Single value metadata key A occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding no responses twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorWhenNoResponsesIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenNoResponsesIsAddedTwice.");
+        ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenNoResponsesIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field N.\n" + "‡ Single value metadata key N occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding other twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenOtherIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorWhenOtherIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.");
+        ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field O.\n" + "‡ Single value metadata key O occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding verified sum twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenVerifiedSumIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "VS"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorWhenVerifiedSumIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenVerifiedSumIsAddedTwice.");
+        ResponseScenarioLine.parse("& •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenVerifiedSumIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field VS.\n" + "‡ Single value metadata key VS occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding scope twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenScopeIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SC"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorWhenScopeIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.");
+        ResponseScenarioLine.parse("& •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field SC.\n" + "‡ Single value metadata key SC occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding sample size twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenSampleSizeIsAddedTwice() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SS"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorWhenSampleSizeIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.");
+        ResponseScenarioLine.parse("& •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field SS.\n" + "‡ Single value metadata key SS occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 }

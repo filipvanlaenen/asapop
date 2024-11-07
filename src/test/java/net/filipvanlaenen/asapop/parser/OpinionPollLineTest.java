@@ -511,143 +511,180 @@ public final class OpinionPollLineTest {
      * Verifies that a line adding the area twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenAreaIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: A •A: A A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "A"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenAreaIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenAreaIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •A: A •A: A A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenAreaIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field A.\n" + "‡ Single value metadata key A occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding excluded twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenExcludedIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 12 •EX: 12 A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "EX"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenExcludedIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenExcludedIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •EX: 12 •EX: 12 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenExcludedIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field EX.\n" + "‡ Single value metadata key EX occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding fieldwork end twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenFieldworkEndIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 •FE: 2021-07-27 A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "FE"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenFieldworkEndIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenFieldworkEndIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •FE: 2021-07-27 •FE: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenFieldworkEndIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field FE.\n" + "‡ Single value metadata key FE occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding fieldwork start twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenFieldworkStartIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 •FS: 2021-07-27 A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "FS"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenFieldworkStartIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenFieldworkStartIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 •FS: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenFieldworkStartIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field FS.\n" + "‡ Single value metadata key FS occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding no responses twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenNoResponsesIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:53 B:35",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "N"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenNoResponsesIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenNoResponsesIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 12 •N: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenNoResponsesIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field N.\n" + "‡ Single value metadata key N occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding other twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenOtherIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:53 B:35",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "O"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenOtherIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field O.\n" + "‡ Single value metadata key O occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding a verified sum twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenVerifiedSumIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •VS: 88 •VS: 88 A:53 B:35",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "VS"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenVerifiedSumIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenVerifiedSumIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenVerifiedSumIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field VS.\n" + "‡ Single value metadata key VS occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding publication date twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenPublicationDateIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •PD: 2021-07-27 A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PD"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenPublicationDateIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenPublicationDateIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenPublicationDateIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field PD.\n" + "‡ Single value metadata key PD occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding polling firm twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenPollingFirmIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PF: ACME •PD: 2021-07-27 A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PF"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenPollingFirmIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenPollingFirmIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PF: ACME •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenPollingFirmIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field PF.\n" + "‡ Single value metadata key PF occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding polling firm partner twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenPollingFirmPartnerIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine
-                .parse("•PF: ACME •PFP: BCME •PFP: BCME •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "PFP"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenPollingFirmPartnerIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenPollingFirmPartnerIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PFP: BCME •PFP: BCME •PD: 2021-07-27 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1,
+                token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenPollingFirmPartnerIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field PFP.\n" + "‡ Single value metadata key PFP occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding scope twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenScopeIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N •SC: N A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SC"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenScopeIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field SC.\n" + "‡ Single value metadata key SC occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding unit twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenUnitIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: S •U: S A:55 B:45",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "U"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenUnitIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenUnitIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: S •U: S A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenUnitIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field U.\n" + "‡ Single value metadata key U occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line adding sample size twice produces a warning.
      */
     @Test
-    public void shouldProduceAWarningWhenSampleSizeIsAddedTwice() {
-        OpinionPollLine opinionPollLine = OpinionPollLine
-                .parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(1, "SS"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorWhenSampleSizeIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1,
+                token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field SS.\n" + "‡ Single value metadata key SS occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

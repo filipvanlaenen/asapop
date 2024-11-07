@@ -170,7 +170,7 @@ final class OpinionPollLine extends Line {
         switch (key) {
         case "A":
             if (builder.hasArea()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 builder.setArea(value);
             }
@@ -180,7 +180,7 @@ final class OpinionPollLine extends Line {
             break;
         case "EX":
             if (builder.hasExcluded()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(DECIMAL_NUMBER_PATTERN, value)) {
                 DecimalNumber excluded = DecimalNumber.parse(value);
                 builder.setExcluded(excluded);
@@ -190,7 +190,7 @@ final class OpinionPollLine extends Line {
             break;
         case "FE":
             if (builder.hasFieldworkEnd()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(DATE_MONTH_OR_YEAR_PATTERN, value)) {
                 DateMonthOrYear fieldworkEnd = DateMonthOrYear.parse(value);
                 builder.setFieldworkEnd(fieldworkEnd);
@@ -200,7 +200,7 @@ final class OpinionPollLine extends Line {
             break;
         case "FS":
             if (builder.hasFieldworkStart()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(DATE_MONTH_OR_YEAR_PATTERN, value)) {
                 DateMonthOrYear fieldworkStart = DateMonthOrYear.parse(value);
                 builder.setFieldworkStart(fieldworkStart);
@@ -210,7 +210,7 @@ final class OpinionPollLine extends Line {
             break;
         case "N":
             if (builder.hasNoResponses()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 ResultValueText noResponse = ResultValueText.parse(value, keyToken);
                 warnings.addAll(noResponse.getWarnings());
@@ -219,7 +219,7 @@ final class OpinionPollLine extends Line {
             break;
         case "O":
             if (builder.hasOther()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 ResultValueText other = ResultValueText.parse(value, keyToken);
                 warnings.addAll(other.getWarnings());
@@ -228,7 +228,7 @@ final class OpinionPollLine extends Line {
             break;
         case "PD":
             if (builder.hasPublicationDate()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(DATE_PATTERN, value)) {
                 LocalDate publicationDate = LocalDate.parse(value);
                 builder.setPublicationDate(publicationDate);
@@ -238,21 +238,21 @@ final class OpinionPollLine extends Line {
             break;
         case "PF":
             if (builder.hasPollingFirm()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 builder.setPollingFirm(value);
             }
             break;
         case "PFP":
             if (builder.hasPollingFirmPartner()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 builder.setPollingFirmPartner(value);
             }
             break;
         case "SC":
             if (builder.hasScope()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 Scope scope = Scope.parse(value);
                 if (scope == null) {
@@ -264,7 +264,7 @@ final class OpinionPollLine extends Line {
             break;
         case "SS":
             if (builder.hasSampleSize()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else if (textMatchesPattern(SAMPLE_SIZE_PATTERN, value)) {
                 SampleSize sampleSize = SampleSize.parse(value);
                 builder.setSampleSize(sampleSize);
@@ -274,7 +274,7 @@ final class OpinionPollLine extends Line {
             break;
         case "U":
             if (builder.hasUnit()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 Unit unit = Unit.parse(value);
                 if (unit == null) {
@@ -286,7 +286,7 @@ final class OpinionPollLine extends Line {
             break;
         case "VS":
             if (builder.hasVerifiedSum()) {
-                warnings.add(new SingleValueMetadataKeyOccurringMoreThanOnceWarning(lineNumber, key));
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 try {
                     builder.setVerifiedSum(DecimalNumber.parse(value));
