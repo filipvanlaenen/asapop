@@ -411,11 +411,14 @@ public final class OpinionPollLineTest {
      * Verifies that a line with an unknown metadata key produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAnUnknownMetadataKey() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •XX: X •SC: N A:55 B:43",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAnUnknownMetadataKey() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownMetadataKey.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •XX: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownMetadataKey.\n"
+                + "‡ ⬐ Processing metadata field XX.\n" + "‡ Unknown metadata key XX.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

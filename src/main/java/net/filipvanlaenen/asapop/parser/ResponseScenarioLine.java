@@ -226,7 +226,7 @@ final class ResponseScenarioLine extends Line {
             }
             break;
         default:
-            warnings.add(new UnknownMetadataKeyWarning(lineNumber, key));
+            Laconic.LOGGER.logError("Unknown metadata key %s.", key, keyToken);
         }
     }
 

@@ -264,12 +264,12 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line with a malformed verified sum produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAMalformedVerifiedSum() {
+    public void shouldLogAnErrorForAMalformedVerifiedSum() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
-                .logMessage("Unit test ResponseScenarioLineTest.shouldProduceAWarningForAMalformedVerifiedSum.");
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedVerifiedSum.");
         ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
-        String expected = "‡   Unit test ResponseScenarioLineTest.shouldProduceAWarningForAMalformedVerifiedSum.\n"
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedVerifiedSum.\n"
                 + "‡ ⬐ Processing metadata field VS.\n" + "‡ Malformed decimal number Error.\n";
         assertEquals(expected, outputStream.toString());
     }
@@ -278,11 +278,14 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line with an unknown metadata key produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAnUnknownMetadataKey() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 •XX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new UnknownMetadataKeyWarning(1, "XX"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorForAnUnknownMetadataKey() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownMetadataKey.");
+        ResponseScenarioLine.parse("& •SS: 999 •XX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownMetadataKey.\n"
+                + "‡ ⬐ Processing metadata field XX.\n" + "‡ Unknown metadata key XX.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
