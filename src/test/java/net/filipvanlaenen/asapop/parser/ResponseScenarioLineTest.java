@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -292,11 +291,14 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line with an unknown scope produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAnUnknownScopeValue() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new UnknownMetadataValueWarning(1, "scope", "X"));
-        assertEquals(expected, responseScenarioLine.getWarnings());
+    public void shouldLogAnErrorForAnUnknownScopeValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownScopeValue.");
+        ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownScopeValue.\n"
+                + "‡ ⬐ Processing metadata field SC.\n" + "‡ Unknown metadata value X.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**

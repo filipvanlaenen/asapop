@@ -195,7 +195,7 @@ final class ResponseScenarioLine extends Line {
             } else {
                 Scope scope = Scope.parse(value);
                 if (scope == null) {
-                    warnings.add(new UnknownMetadataValueWarning(lineNumber, "scope", value));
+                    Laconic.LOGGER.logError("Unknown metadata value %s.", value, keyToken);
                 } else {
                     builder.setScope(scope);
                 }

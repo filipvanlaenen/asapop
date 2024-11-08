@@ -253,7 +253,7 @@ final class OpinionPollLine extends Line {
             } else {
                 Scope scope = Scope.parse(value);
                 if (scope == null) {
-                    warnings.add(new UnknownMetadataValueWarning(lineNumber, "scope", value));
+                    Laconic.LOGGER.logError("Unknown metadata value %s.", value, keyToken);
                 } else {
                     builder.setScope(scope);
                 }
@@ -275,7 +275,7 @@ final class OpinionPollLine extends Line {
             } else {
                 Unit unit = Unit.parse(value);
                 if (unit == null) {
-                    warnings.add(new UnknownMetadataValueWarning(lineNumber, "unit", value));
+                    Laconic.LOGGER.logError("Unknown metadata value %s.", value, keyToken);
                 } else {
                     builder.setUnit(unit);
                 }

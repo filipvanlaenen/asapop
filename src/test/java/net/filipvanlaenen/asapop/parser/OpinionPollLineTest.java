@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -425,22 +424,27 @@ public final class OpinionPollLineTest {
      * Verifies that a line with an unknown scope produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAnUnknownScopeValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new UnknownMetadataValueWarning(1, "scope", "X"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAnUnknownScopeValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownScopeValue.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownScopeValue.\n"
+                + "‡ ⬐ Processing metadata field SC.\n" + "‡ Unknown metadata value X.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that a line with an unknown unit produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAnUnknownUnitValue() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: X •SC: N A:55 B:43",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new UnknownMetadataValueWarning(1, "unit", "X"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAnUnknownUnitValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownUnitValue.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •U: X •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownUnitValue.\n"
+                + "‡ ⬐ Processing metadata field U.\n" + "‡ Unknown metadata value X.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
