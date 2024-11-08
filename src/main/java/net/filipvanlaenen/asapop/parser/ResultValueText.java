@@ -1,8 +1,5 @@
 package net.filipvanlaenen.asapop.parser;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.ResultValue;
@@ -10,7 +7,7 @@ import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
 /**
- * Class representing the a result value text.
+ * Class representing a result value text.
  */
 final class ResultValueText {
     /**
@@ -21,20 +18,14 @@ final class ResultValueText {
      * The result value.
      */
     private final ResultValue value;
-    /**
-     * The warnings.
-     */
-    private final Set<ParserWarning> warnings;
 
     /**
-     * Constructor taking a result value and the warnings collected while parsing the text.
+     * Constructor taking a result value.
      *
-     * @param value    The result value.
-     * @param warnings The warnings collected while parsing.
+     * @param value The result value.
      */
-    private ResultValueText(final ResultValue value, final Set<ParserWarning> warnings) {
+    private ResultValueText(final ResultValue value) {
         this.value = value;
-        this.warnings = warnings;
     }
 
     /**
@@ -47,15 +38,6 @@ final class ResultValueText {
     }
 
     /**
-     * Returns the warnings.
-     *
-     * @return The warnings.
-     */
-    Set<ParserWarning> getWarnings() {
-        return Collections.unmodifiableSet(warnings);
-    }
-
-    /**
      * Parses a text into a result value text.
      *
      * @param value      The text representing the result value.
@@ -63,10 +45,9 @@ final class ResultValueText {
      * @return An instance representing the parsed text.
      */
     static ResultValueText parse(final String value, final Token token) {
-        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         if (!WELLFORMED_RESULT_VALUE_PATTERN.matcher(value).matches()) {
             Laconic.LOGGER.logError("Malformed result value %s.", value, token);
         }
-        return new ResultValueText(new ResultValue(value), warnings);
+        return new ResultValueText(new ResultValue(value));
     }
 }

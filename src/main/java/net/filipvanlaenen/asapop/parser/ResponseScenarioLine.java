@@ -179,7 +179,6 @@ final class ResponseScenarioLine extends Line {
                 Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 ResultValueText noResponse = ResultValueText.parse(value, keyToken);
-                warnings.addAll(noResponse.getWarnings());
                 builder.setNoResponses(noResponse.getValue());
             }
             break;
@@ -188,7 +187,6 @@ final class ResponseScenarioLine extends Line {
                 Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
             } else {
                 ResultValueText other = ResultValueText.parse(value, keyToken);
-                warnings.addAll(other.getWarnings());
                 builder.setOther(other.getValue());
             }
             break;
@@ -250,7 +248,6 @@ final class ResponseScenarioLine extends Line {
         Set<ElectoralList> electoralLists =
                 keys.stream().map(key -> electoralListKeyMap.get(key)).collect(Collectors.toSet());
         ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), keysToken);
-        warnings.addAll(value.getWarnings());
         warnings.addAll(keys.stream().filter(Predicate.not(electoralListKeyMap::containsKey))
                 .map(key -> new UnknownElectoralListKeyWarning(lineNumber, key)).collect(Collectors.toSet()));
         builder.addResult(electoralLists, value.getValue());
