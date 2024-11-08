@@ -2,7 +2,6 @@ package net.filipvanlaenen.asapop.parser;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,10 +49,6 @@ final class OpinionPollLine extends Line {
      * The opinion poll represented by the line.
      */
     private final OpinionPoll opinionPoll;
-    /**
-     * The warnings.
-     */
-    private final Set<ParserWarning> warnings;
 
     /**
      * Private constructor taking the opinion poll as its parameter.
@@ -61,9 +56,8 @@ final class OpinionPollLine extends Line {
      * @param opinionPoll The opinion poll represented by the line.
      * @param warnings    The warnings related to the line.
      */
-    private OpinionPollLine(final OpinionPoll opinionPoll, final Set<ParserWarning> warnings) {
+    private OpinionPollLine(final OpinionPoll opinionPoll) {
         this.opinionPoll = opinionPoll;
-        this.warnings = warnings;
     }
 
     /**
@@ -73,15 +67,6 @@ final class OpinionPollLine extends Line {
      */
     OpinionPoll getOpinionPoll() {
         return opinionPoll;
-    }
-
-    /**
-     * Returns the warnings.
-     *
-     * @return The warnings.
-     */
-    Set<ParserWarning> getWarnings() {
-        return Collections.unmodifiableSet(warnings);
     }
 
     /**
@@ -104,12 +89,11 @@ final class OpinionPollLine extends Line {
      * @return An OpinionPollLine representing the line.
      */
     static OpinionPollLine parse(final String line, final Map<String, ElectoralList> electoralListKeyMap,
-            final int lineNumber, final Token token) {
+            final Token token) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
-        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         String remainder = line;
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber, token);
+            remainder = parseKeyValue(builder, remainder, electoralListKeyMap, token);
         }
         if (!builder.hasResults()) {
             Laconic.LOGGER.logError("No results found.", token);
@@ -124,7 +108,7 @@ final class OpinionPollLine extends Line {
         if (!builder.hasPollingFirmOrCommissioner()) {
             Laconic.LOGGER.logError("No polling firm or commissioner.", token);
         }
-        return new OpinionPollLine(builder.build(), warnings);
+        return new OpinionPollLine(builder.build());
     }
 
     /**
@@ -137,16 +121,15 @@ final class OpinionPollLine extends Line {
      * @param lineNumber          The line number the data block.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
-            final String remainder, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
-            final Token token) {
+    private static String parseKeyValue(final OpinionPoll.Builder builder, final String remainder,
+            final Map<String, ElectoralList> electoralListKeyMap, final Token token) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, warnings, keyValueBlock, lineNumber, token);
+            processMetadata(builder, keyValueBlock, token);
         } else {
-            processResultData(builder, warnings, keyValueBlock, electoralListKeyMap, lineNumber, token);
+            processResultData(builder, keyValueBlock, electoralListKeyMap, token);
         }
         return keyValuesMatcher.group(FOUR);
     }
@@ -159,8 +142,8 @@ final class OpinionPollLine extends Line {
      * @param keyValueString The data block to process.
      * @param lineNumber     The line number the data block.
      */
-    private static void processMetadata(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final int lineNumber, final Token token) {
+    private static void processMetadata(final OpinionPoll.Builder builder, final String keyValueString,
+            final Token token) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
@@ -306,9 +289,8 @@ final class OpinionPollLine extends Line {
      * @param electoralListKeyMap The map mapping keys to electoral lists.
      * @param lineNumber          The line number the data block.
      */
-    private static void processResultData(final OpinionPoll.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
-            final Token token) {
+    private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString,
+            final Map<String, ElectoralList> electoralListKeyMap, final Token token) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String keysValue = keyValueMatcher.group(1);

@@ -100,10 +100,9 @@ public final class RichOpinionPollsFile {
             Token token = Laconic.LOGGER.logMessage(fileToken, "Parsing line number %d.", lineNumber);
             if (OpinionPollLine.isOpinionPollLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as an opinion poll line.", token);
-                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, lineNumber, token);
+                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, token);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
-                warnings.addAll(opinionPollLine.getWarnings());
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as a response scenario line.", token);
                 ResponseScenarioLine responseScenarioLine =
