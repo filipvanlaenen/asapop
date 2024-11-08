@@ -503,11 +503,14 @@ public final class OpinionPollLineTest {
      * Verifies that a line with an unknown electoral list key produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForAnUnknownElectoralListKey() {
-        OpinionPollLine opinionPollLine = OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 XX:2",
-                ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        Set<ParserWarning> expected = Set.of(new UnknownElectoralListKeyWarning(1, "XX"));
-        assertEquals(expected, opinionPollLine.getWarnings());
+    public void shouldLogAnErrorForAnUnknownElectoralListKey() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownElectoralListKey.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 XX:2", ELECTORAL_LIST_KEY_MAP, 1, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAnUnknownElectoralListKey.\n"
+                + "‡ ⬐ Processing result key XX.\n" + "‡ Unknown electoral list key XX.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
