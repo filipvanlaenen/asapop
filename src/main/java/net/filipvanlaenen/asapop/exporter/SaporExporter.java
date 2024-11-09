@@ -327,6 +327,7 @@ public class SaporExporter extends Exporter {
      * Exports the opinion polls to SAPOR files.
      *
      * @param opinionPolls The opinion polls.
+     * @param token        The Laconic logger token.
      * @return A map with the SAPOR file paths and contents.
      */
     public SaporDirectory export(final OpinionPolls opinionPolls, final Token token) {
@@ -420,7 +421,7 @@ public class SaporExporter extends Exporter {
      * Returns the warnings encountered during the export of an opinion poll.
      *
      * @param opinionPoll The warnings encountered during the export of an opinion poll.
-     * @return A set with exporter warnings for an opinion poll.
+     * @param token       The Laconic logger token.
      */
     void checkSaporMappings(final OpinionPoll opinionPoll, final Token token) {
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();

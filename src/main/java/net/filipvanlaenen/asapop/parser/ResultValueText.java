@@ -40,8 +40,8 @@ final class ResultValueText {
     /**
      * Parses a text into a result value text.
      *
-     * @param value      The text representing the result value.
-     * @param lineNumber The number of the line where the text occurs.
+     * @param value The text representing the result value.
+     * @param token The Laconic logging token.
      * @return An instance representing the parsed text.
      */
     static ResultValueText parse(final String value, final Token token) {

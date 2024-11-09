@@ -47,7 +47,6 @@ final class ResponseScenarioLine extends Line {
      * Private constructor taking the response scenario as its parameter.
      *
      * @param responseScenario The response scenario represented by the line.
-     * @param warnings         The warnings related to this line.
      */
     private ResponseScenarioLine(final ResponseScenario responseScenario) {
         this.responseScenario = responseScenario;
@@ -77,7 +76,6 @@ final class ResponseScenarioLine extends Line {
      *
      * @param line                The line to parse a response scenario from.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
-     * @param lineNumber          The line number the data block.
      * @param token               The Laconic logging token.
      * @return A ResponseScenarioLine instance representing the line.
      */
@@ -104,10 +102,9 @@ final class ResponseScenarioLine extends Line {
      * Processes a key and value from a part of a response scenario line.
      *
      * @param builder             The response scenario builder to build on.
-     * @param warnings            The set to add any warnings too.
      * @param remainder           The remainder of a line to parse a key and value from.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
-     * @param lineNumber          The line number the data block.
+     * @param token               The Laconic logging token.
      * @return The unprocessed part of the line.
      */
     private static String parseKeyValue(final ResponseScenario.Builder builder, final String remainder,
@@ -127,9 +124,8 @@ final class ResponseScenarioLine extends Line {
      * Processes a data block with metadata for a response scenario.
      *
      * @param builder        The response scenario builder to build on.
-     * @param warnings       The set to add any warnings too.
      * @param keyValueString The data block to process.
-     * @param lineNumber     The line number the data block.
+     * @param token          The Laconic logging token.
      */
     private static void processMetadata(final ResponseScenario.Builder builder, final String keyValueString,
             final Token token) {
@@ -214,10 +210,9 @@ final class ResponseScenarioLine extends Line {
      * Processes a data block with results for a response scenario.
      *
      * @param builder             The response scenario builder to build on.
-     * @param warnings            The set to add any warnings too.
      * @param keyValueString      The data block to process.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
-     * @param lineNumber          The line number the data block.
+     * @param token               The Laconic logging token.
      */
     private static void processResultData(final ResponseScenario.Builder builder, final String keyValueString,
             final Map<String, ElectoralList> electoralListKeyMap, final Token token) {

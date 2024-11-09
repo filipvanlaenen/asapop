@@ -66,6 +66,9 @@ public final class RichOpinionPollsFileTest {
      * Comment line.
      */
     private static final String COMMENT_LINE = "‡ Foo";
+    /**
+     * A Laconic logging token for unit testing.
+     */
     private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test RichOpinionPollsFileTest.");
 
     /**

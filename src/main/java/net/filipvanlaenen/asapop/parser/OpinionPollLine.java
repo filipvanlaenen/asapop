@@ -54,7 +54,6 @@ final class OpinionPollLine extends Line {
      * Private constructor taking the opinion poll as its parameter.
      *
      * @param opinionPoll The opinion poll represented by the line.
-     * @param warnings    The warnings related to the line.
      */
     private OpinionPollLine(final OpinionPoll opinionPoll) {
         this.opinionPoll = opinionPoll;
@@ -84,7 +83,6 @@ final class OpinionPollLine extends Line {
      *
      * @param line                The line to parse an opinion poll from.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
-     * @param lineNumber          The line number.
      * @param token               The Laconic logging token.
      * @return An OpinionPollLine representing the line.
      */
@@ -115,10 +113,9 @@ final class OpinionPollLine extends Line {
      * Processes a key and value from a part of an opinion poll line.
      *
      * @param builder             The opinion poll builder to build on.
-     * @param warnings            The set to add any warnings too.
      * @param remainder           The remainder of a line to parse a key and value from.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
-     * @param lineNumber          The line number the data block.
+     * @param token               The Laconic logging token.
      * @return The unprocessed part of the line.
      */
     private static String parseKeyValue(final OpinionPoll.Builder builder, final String remainder,
@@ -138,9 +135,8 @@ final class OpinionPollLine extends Line {
      * Processes a data block with metadata for an opinon poll.
      *
      * @param builder        The opinion poll builder to build on.
-     * @param warnings       The set to add any warnings too.
      * @param keyValueString The data block to process.
-     * @param lineNumber     The line number the data block.
+     * @param token          The Laconic logging token.
      */
     private static void processMetadata(final OpinionPoll.Builder builder, final String keyValueString,
             final Token token) {
@@ -284,10 +280,9 @@ final class OpinionPollLine extends Line {
      * Processes a data block with results for an opinion poll.
      *
      * @param builder             The opinion poll builder to build on.
-     * @param warnings            The set to add any warnings too.
      * @param keyValueString      The data block to process.
      * @param electoralListKeyMap The map mapping keys to electoral lists.
-     * @param lineNumber          The line number the data block.
+     * @param token               The Laconic logging token.
      */
     private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString,
             final Map<String, ElectoralList> electoralListKeyMap, final Token token) {

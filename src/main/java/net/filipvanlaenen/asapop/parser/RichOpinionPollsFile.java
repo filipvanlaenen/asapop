@@ -31,7 +31,6 @@ public final class RichOpinionPollsFile {
      *
      * @param opinionPollsSet The set with the opinion polls.
      * @param commentLines    A list with the comment lines.
-     * @param warnings        The set with warnings collected while parsing.
      */
     private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines) {
         this.opinionPolls = new OpinionPolls(opinionPollsSet);
@@ -59,7 +58,8 @@ public final class RichOpinionPollsFile {
     /**
      * Parses a string array into an RichOpinionPollsFile instance.
      *
-     * @param lines The multiline string to parse.
+     * @param fileToken The Laconic logging token.
+     * @param lines     The multiline string to parse.
      * @return The RichOpinionPollsFile instance.
      */
     public static RichOpinionPollsFile parse(final Token fileToken, final String... lines) {
