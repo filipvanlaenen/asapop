@@ -3,9 +3,12 @@ package net.filipvanlaenen.asapop.exporter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -26,6 +29,8 @@ import net.filipvanlaenen.asapop.yaml.SaporMapping;
 import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Exporter to the SAPOR files format.
@@ -324,7 +329,7 @@ public class SaporExporter extends Exporter {
      * @param opinionPolls The opinion polls.
      * @return A map with the SAPOR file paths and contents.
      */
-    public SaporDirectory export(final OpinionPolls opinionPolls) {
+    public SaporDirectory export(final OpinionPolls opinionPolls, final Token token) {
         SaporDirectory result = new SaporDirectory();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             if (lastElectionDate.isBefore(opinionPoll.getEndDate()) && hasMatchingResponseScenario(opinionPoll)) {
@@ -332,7 +337,7 @@ public class SaporExporter extends Exporter {
                 result.put(getSaporFilePath(opinionPoll),
                         getSaporContent(opinionPoll, opinionPolls.getLowestSampleSize(pollingFirm),
                                 opinionPolls.getLowestEffectiveSampleSize(pollingFirm)));
-                result.addWarnings(getSaporWarnings(opinionPoll));
+                checkSaporMappings(opinionPoll, token);
             }
         }
         return result;
@@ -417,15 +422,15 @@ public class SaporExporter extends Exporter {
      * @param opinionPoll The warnings encountered during the export of an opinion poll.
      * @return A set with exporter warnings for an opinion poll.
      */
-    Set<ExporterWarning> getSaporWarnings(final OpinionPoll opinionPoll) {
-        Set<ExporterWarning> warnings = new HashSet<ExporterWarning>();
+    void checkSaporMappings(final OpinionPoll opinionPoll, final Token token) {
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
         for (Set<ElectoralList> electoralList : electoralLists) {
             if (!mappedElectoralListCombinations.contains(electoralList)) {
-                warnings.add(new MissingSaporMappingWarning(electoralList));
+                List<String> ids = new ArrayList<String>(ElectoralList.getIds(electoralList));
+                Collections.sort(ids);
+                Laconic.LOGGER.logError("SAPOR mapping missing for %s.", String.join("+", ids), token);
             }
         }
-        return warnings;
     }
 
     /**

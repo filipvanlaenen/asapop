@@ -224,8 +224,7 @@ public final class CommandLineInterface {
                 SaporConfiguration saporConfiguration =
                         objectMapper.readValue(new File(saporConfigurationFileName), SaporConfiguration.class);
                 SaporExporter saporExporter = new SaporExporter(saporConfiguration);
-                SaporDirectory saporDirectory = saporExporter.export(opinionPolls);
-                printWarnings(saporDirectory.getWarnings());
+                SaporDirectory saporDirectory = saporExporter.export(opinionPolls, token);
                 writeFiles(saporDirName, saporDirectory.asMap());
             }
         };
@@ -267,17 +266,6 @@ public final class CommandLineInterface {
         abstract void execute(String[] args) throws IOException;
 
         /**
-         * Prints all warnings to <code>System.out</code>.
-         *
-         * @param warnings The warnings to be printed.
-         */
-        private static void printWarnings(final Set<? extends Warning> warnings) {
-            for (Warning warning : warnings) {
-                System.out.println(warning);
-            }
-        }
-
-        /**
          * Reads all the opinion polls related to parliamentary elections.
          *
          * @param ropfDirName          The directory where the ROPF files reside.
@@ -287,8 +275,8 @@ public final class CommandLineInterface {
          */
         private static Map<String, OpinionPolls> readAllParliamentaryOpinionPolls(final String ropfDirName,
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
-            Token token = Laconic.LOGGER
-                    .logMessage("Parsing all parliamentary opinion polls files in the directory %s.", ropfDirName);
+            Token token = Laconic.LOGGER.logMessage("Parsing parliamentary opinion polls files from directory %s.",
+                    ropfDirName);
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
             Set<String> areaCodes =
                     websiteConfiguration.getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null)
@@ -297,7 +285,7 @@ public final class CommandLineInterface {
                 Path ropfPath = Paths.get(ropfDirName, areaCode + ".ropf");
                 if (Files.exists(ropfPath)) {
                     Token fileToken =
-                            Laconic.LOGGER.logMessage(token, "Parsing the file %s.", ropfPath.getFileName().toString());
+                            Laconic.LOGGER.logMessage(token, "Parsing file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
                     opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
@@ -316,8 +304,8 @@ public final class CommandLineInterface {
          */
         private static Map<String, OpinionPolls> readAllPresidentialOpinionPolls(final String ropfDirName,
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
-            Token token = Laconic.LOGGER.logMessage(
-                    "Parsing all presidential election opinion polls files in the directory %s.", ropfDirName);
+            Token token = Laconic.LOGGER
+                    .logMessage("Parsing presidential election opinion polls files from directory %s.", ropfDirName);
             Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
             Set<AreaConfiguration> areasWithPresidentialElections =
                     websiteConfiguration

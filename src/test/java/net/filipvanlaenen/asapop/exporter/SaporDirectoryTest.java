@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,26 +13,6 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the <code>SaporDirectory</code> class.
  */
 public class SaporDirectoryTest {
-    /**
-     * Verifies that the set of warnings is empty by default.
-     */
-    @Test
-    public void warningsShouldBeEmptyByDefault() {
-        assertTrue(new SaporDirectory().getWarnings().isEmpty());
-    }
-
-    /**
-     * Verifies that when a warning is added, it is included in the set of warnings.
-     */
-    @Test
-    public void addedWarningShouldBeInTheSetOfWarnings() {
-        ExporterWarning exporterWarning = new ExporterWarning() {
-        };
-        SaporDirectory saporDirectory = new SaporDirectory();
-        saporDirectory.addWarnings(Set.of(exporterWarning));
-        assertEquals(Set.of(exporterWarning), saporDirectory.getWarnings());
-    }
-
     /**
      * Verifies that the map is empty by default.
      */

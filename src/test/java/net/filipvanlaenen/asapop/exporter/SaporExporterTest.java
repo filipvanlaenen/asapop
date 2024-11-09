@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.exporter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -12,9 +13,9 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
-import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -29,6 +30,9 @@ import net.filipvanlaenen.asapop.yaml.EssentialEntriesSaporMapping;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
 import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>SaporExporter</code> class.
@@ -74,6 +78,10 @@ public class SaporExporterTest {
      * A fourth date or month for the unit tests.
      */
     private static final DateMonthOrYear DATE_OR_MONTH4 = DateMonthOrYear.parse("2021-09-02");
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test SaporExporterTest.");
     /**
      * The SAPOR exporter to run the tests on.
      */
@@ -1108,7 +1116,7 @@ public class SaporExporterTest {
                 .setPollingFirm("CCME").setFieldworkStart(DATE_OR_MONTH3).setFieldworkEnd(DATE_OR_MONTH4)
                 .setScope(Scope.EUROPEAN).build();
         OpinionPolls polls = new OpinionPolls(Set.of(poll1, poll2, poll3, poll4));
-        SaporDirectory saporDirectory = saporExporter.export(polls);
+        SaporDirectory saporDirectory = saporExporter.export(polls, TOKEN);
         assertEquals(2, saporDirectory.asMap().size());
         String actual = saporDirectory.asMap().get(Paths.get("2021-08-02-ACME.poll"));
         StringBuilder expected1 = new StringBuilder();
@@ -1133,38 +1141,51 @@ public class SaporExporterTest {
      * Verifies that no warnings are issued for an opinion poll without conversion problems.
      */
     @Test
-    public void opinionPollShouldNotProduceWarnings() {
+    public void opinionPollShouldNotLogAnError() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test SaporExporterTest.opinionPollShouldNotLogAnError.");
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
-        assertTrue(saporExporter.getSaporWarnings(poll).isEmpty());
+        saporExporter.checkSaporMappings(poll, token);
+        assertTrue(outputStream.toString().isEmpty());
     }
 
     /**
      * Verifies that a warning about a missing mapping is issued.
      */
     @Test
-    public void opinionPollShouldProduceMissingSaporMappingWarning() {
+    public void opinionPollShouldLogAnError() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test SaporExporterTest.opinionPollShouldLogAnError.");
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("Z", "43").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
-        assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))),
-                saporExporter.getSaporWarnings(poll));
+        saporExporter.checkSaporMappings(poll, token);
+        String expected =
+                "‡ ⬐ Unit test SaporExporterTest.opinionPollShouldLogAnError.\n" + "‡ SAPOR mapping missing for Z.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
      * Verifies that no warning about a missing mapping is issued over an electoral list covered by an additive mapping.
      */
     @Test
-    public void noWarningAboutMissingMappingShouldBeIssuedOverElectoralListCoveredByAdditiveMapping() {
+    public void shouldNotLogErrorOverElectoralListCoveredByAdditiveMapping() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test SaporExporterTest.shouldNotLogErrorOverElectoralListCoveredByAdditiveMapping.");
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("B", "55").addResult("C", "43").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
-        assertTrue(createAdditiveSaporExporter().getSaporWarnings(poll).isEmpty());
+        createAdditiveSaporExporter().checkSaporMappings(poll, token);
+        assertTrue(outputStream.toString().isEmpty());
     }
 
     /**
      * Verifies that the export produces warnings.
      */
     @Test
-    public void opinionPollsShouldProduceWarnings() {
+    public void opinionPollsShouldLogErrors() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test SaporExporterTest.opinionPollsShouldLogErrors.");
         OpinionPoll poll1 = new OpinionPollTestBuilder().addResult("A", "55").addResult("Q", "43").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2)
                 .setScope(Scope.NATIONAL).build();
@@ -1172,8 +1193,11 @@ public class SaporExporterTest {
                 .setPollingFirm("BCME").setFieldworkStart(DATE_OR_MONTH3).setFieldworkEnd(DATE_OR_MONTH4)
                 .setScope(Scope.NATIONAL).build();
         OpinionPolls polls = new OpinionPolls(Set.of(poll1, poll2));
-        SaporDirectory saporDirectory = saporExporter.export(polls);
-        assertEquals(Set.of(new MissingSaporMappingWarning(Set.of(ElectoralList.get("Q"))),
-                new MissingSaporMappingWarning(Set.of(ElectoralList.get("Z")))), saporDirectory.getWarnings());
+        saporExporter.export(polls, token);
+        String errorQ =
+                "‡ ⬐ Unit test SaporExporterTest.opinionPollsShouldLogErrors.\n" + "‡ SAPOR mapping missing for Q.\n";
+        String errorZ =
+                "‡ ⬐ Unit test SaporExporterTest.opinionPollsShouldLogErrors.\n" + "‡ SAPOR mapping missing for Z.\n";
+        assertTrue(Collection.of(errorQ + "\n" + errorZ, errorZ + "\n" + errorQ).contains(outputStream.toString()));
     }
 }
