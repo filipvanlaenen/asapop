@@ -1,7 +1,6 @@
 package net.filipvanlaenen.asapop.parser;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -43,10 +42,6 @@ final class ResponseScenarioLine extends Line {
      * The response scenario represented by the line.
      */
     private final ResponseScenario responseScenario;
-    /**
-     * The warnings.
-     */
-    private final Set<ParserWarning> warnings;
 
     /**
      * Private constructor taking the response scenario as its parameter.
@@ -54,9 +49,8 @@ final class ResponseScenarioLine extends Line {
      * @param responseScenario The response scenario represented by the line.
      * @param warnings         The warnings related to this line.
      */
-    private ResponseScenarioLine(final ResponseScenario responseScenario, final Set<ParserWarning> warnings) {
+    private ResponseScenarioLine(final ResponseScenario responseScenario) {
         this.responseScenario = responseScenario;
-        this.warnings = warnings;
     }
 
     /**
@@ -66,15 +60,6 @@ final class ResponseScenarioLine extends Line {
      */
     ResponseScenario getResponseScenario() {
         return responseScenario;
-    }
-
-    /**
-     * Returns the warnings.
-     *
-     * @return The warnings.
-     */
-    Set<ParserWarning> getWarnings() {
-        return Collections.unmodifiableSet(warnings);
     }
 
     /**
@@ -97,14 +82,13 @@ final class ResponseScenarioLine extends Line {
      * @return A ResponseScenarioLine instance representing the line.
      */
     static ResponseScenarioLine parse(final String line, final Map<String, ElectoralList> electoralListKeyMap,
-            final int lineNumber, final Token token) {
+            final Token token) {
         ResponseScenario.Builder builder = new ResponseScenario.Builder();
-        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         Matcher responseScenarioMatcher = RESPONSE_SCENARIO_PATTERN.matcher(line);
         responseScenarioMatcher.find();
         String remainder = responseScenarioMatcher.group(1);
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, warnings, remainder, electoralListKeyMap, lineNumber, token);
+            remainder = parseKeyValue(builder, remainder, electoralListKeyMap, token);
         }
         if (!builder.hasResults()) {
             Laconic.LOGGER.logError("No results found.", token);
@@ -113,7 +97,7 @@ final class ResponseScenarioLine extends Line {
         if (!builder.resultsAddUp()) {
             Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", sumToken);
         }
-        return new ResponseScenarioLine(builder.build(), warnings);
+        return new ResponseScenarioLine(builder.build());
     }
 
     /**
@@ -126,16 +110,15 @@ final class ResponseScenarioLine extends Line {
      * @param lineNumber          The line number the data block.
      * @return The unprocessed part of the line.
      */
-    private static String parseKeyValue(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
-            final String remainder, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
-            final Token token) {
+    private static String parseKeyValue(final ResponseScenario.Builder builder, final String remainder,
+            final Map<String, ElectoralList> electoralListKeyMap, final Token token) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
-            processMetadata(builder, warnings, keyValueBlock, lineNumber, token);
+            processMetadata(builder, keyValueBlock, token);
         } else {
-            processResultData(builder, warnings, keyValueBlock, electoralListKeyMap, lineNumber, token);
+            processResultData(builder, keyValueBlock, electoralListKeyMap, token);
         }
         return keyValuesMatcher.group(FOUR);
     }
@@ -148,8 +131,8 @@ final class ResponseScenarioLine extends Line {
      * @param keyValueString The data block to process.
      * @param lineNumber     The line number the data block.
      */
-    private static void processMetadata(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final int lineNumber, final Token token) {
+    private static void processMetadata(final ResponseScenario.Builder builder, final String keyValueString,
+            final Token token) {
         Matcher keyValueMatcher = METADATA_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String key = keyValueMatcher.group(1);
@@ -236,9 +219,8 @@ final class ResponseScenarioLine extends Line {
      * @param electoralListKeyMap The map mapping keys to electoral lists.
      * @param lineNumber          The line number the data block.
      */
-    private static void processResultData(final ResponseScenario.Builder builder, final Set<ParserWarning> warnings,
-            final String keyValueString, final Map<String, ElectoralList> electoralListKeyMap, final int lineNumber,
-            final Token token) {
+    private static void processResultData(final ResponseScenario.Builder builder, final String keyValueString,
+            final Map<String, ElectoralList> electoralListKeyMap, final Token token) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String keysValue = keyValueMatcher.group(1);

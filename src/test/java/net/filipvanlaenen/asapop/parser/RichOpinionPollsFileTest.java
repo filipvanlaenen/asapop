@@ -149,9 +149,12 @@ public final class RichOpinionPollsFileTest {
      * Verifies that a single line containing a simple opinion poll doesn't produce warnings.
      */
     @Test
-    public void shouldParseSingleLineWithASimpleOpinionPollWithoutWarnings() {
-        assertTrue(RichOpinionPollsFile.parse(TOKEN, SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                .getWarnings().isEmpty());
+    public void shouldParseSingleLineWithASimpleOpinionPollWithoutErrors() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedResultValue.");
+        RichOpinionPollsFile.parse(token, SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE);
+        assertTrue(outputStream.toString().isEmpty());
     }
 
     /**

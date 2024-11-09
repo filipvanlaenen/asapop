@@ -22,10 +22,6 @@ public final class RichOpinionPollsFile {
      */
     private final OpinionPolls opinionPolls;
     /**
-     * The warnings.
-     */
-    private final Set<ParserWarning> warnings;
-    /**
      * A list with the comment lines.
      */
     private final List<CommentLine> commentLines;
@@ -37,11 +33,9 @@ public final class RichOpinionPollsFile {
      * @param commentLines    A list with the comment lines.
      * @param warnings        The set with warnings collected while parsing.
      */
-    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines,
-            final Set<ParserWarning> warnings) {
+    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines) {
         this.opinionPolls = new OpinionPolls(opinionPollsSet);
         this.commentLines = commentLines;
-        this.warnings = warnings;
     }
 
     /**
@@ -63,15 +57,6 @@ public final class RichOpinionPollsFile {
     }
 
     /**
-     * Returns the warnings.
-     *
-     * @return The warnings.
-     */
-    public Set<ParserWarning> getWarnings() {
-        return warnings;
-    }
-
-    /**
      * Parses a string array into an RichOpinionPollsFile instance.
      *
      * @param lines The multiline string to parse.
@@ -80,7 +65,6 @@ public final class RichOpinionPollsFile {
     public static RichOpinionPollsFile parse(final Token fileToken, final String... lines) {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
         List<CommentLine> commentLines = new ArrayList<CommentLine>();
-        Set<ParserWarning> warnings = new HashSet<ParserWarning>();
         Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
         OpinionPoll lastOpinionPoll = null;
         int lineNumber = 0;
@@ -106,13 +90,12 @@ public final class RichOpinionPollsFile {
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as a response scenario line.", token);
                 ResponseScenarioLine responseScenarioLine =
-                        ResponseScenarioLine.parse(line, electoralListKeyMap, lineNumber, token);
+                        ResponseScenarioLine.parse(line, electoralListKeyMap, token);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
                 // set before the change is made, and added again afterwards.
                 opinionPolls.remove(lastOpinionPoll);
                 lastOpinionPoll.addAlternativeResponseScenario(responseScenarioLine.getResponseScenario());
                 opinionPolls.add(lastOpinionPoll);
-                warnings.addAll(responseScenarioLine.getWarnings());
             } else if (CommentLine.isCommentLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as a comment line.", token);
                 commentLines.add(CommentLine.parse(line));
@@ -120,6 +103,6 @@ public final class RichOpinionPollsFile {
                 Laconic.LOGGER.logError("Line doesn't have a recognized line format.", token);
             }
         }
-        return new RichOpinionPollsFile(opinionPolls, commentLines, warnings);
+        return new RichOpinionPollsFile(opinionPolls, commentLines);
     }
 }

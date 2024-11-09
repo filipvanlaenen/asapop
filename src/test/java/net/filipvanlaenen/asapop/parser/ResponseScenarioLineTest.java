@@ -89,7 +89,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithASimpleResponseScenario() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
@@ -101,7 +101,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithCombinedElectoralLists() {
         ResponseScenarioLine responseScenarioLine = ResponseScenarioLine
-                .parse(RESPONSE_SCENARIO_LINE_WITH_COMBINED_ELECTORAL_LISTS, ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                .parse(RESPONSE_SCENARIO_LINE_WITH_COMBINED_ELECTORAL_LISTS, ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected =
                 new ResponseScenarioTestBuilder().addResult("A", "C", "55").addResult("B", "43").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -114,7 +114,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithAResultForNoResponses() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_NO_RESPONSES, ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_NO_RESPONSES, ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected =
                 new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").setNoResponses("2").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -126,7 +126,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithAResultForOther() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER, ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER, ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected =
                 new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").setOther("2").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -138,7 +138,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentArea() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •A: AB A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse("& •A: AB A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected =
                 new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").setArea("AB").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -150,7 +150,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentScope() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SC: E A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse("& •SC: E A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setScope(Scope.EUROPEAN).build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -163,7 +163,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSize() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 999 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse("& •SS: 999 A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setSampleSize("999").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -176,7 +176,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentGreaterThanOrEqualToSampleSize() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: ≥999 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse("& •SS: ≥999 A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setSampleSize("≥999").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -189,7 +189,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseSingleLineWithAResponseScenarioWithADifferentSampleSizeRange() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •SS: 600–700 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse("& •SS: 600–700 A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setSampleSize("600–700").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -201,7 +201,7 @@ public final class ResponseScenarioLineTest {
     @Test
     public void shouldParseAnOpinionPollWithExcluded() {
         ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse("& •EX: 10 A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
+                ResponseScenarioLine.parse("& •EX: 10 A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setExcluded(DecimalNumber.parse("10")).build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
@@ -211,10 +211,12 @@ public final class ResponseScenarioLineTest {
      * Verifies that a wellformed line doesn't produce a warning while parsing.
      */
     @Test
-    public void shouldNotProduceAWarningWhenParsingAWellformedLine() {
-        ResponseScenarioLine responseScenarioLine =
-                ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, ELECTORAL_LIST_KEY_MAP, 1, TOKEN);
-        assertTrue(responseScenarioLine.getWarnings().isEmpty());
+    public void shouldNotLogAnErrorWhenParsingAWellformedLine() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedResultValue.");
+        ResponseScenarioLine.parse(SIMPLE_RESPONSE_SCENARIO_LINE, ELECTORAL_LIST_KEY_MAP, token);
+        assertTrue(outputStream.toString().isEmpty());
     }
 
     /**
@@ -225,7 +227,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedResultValue.");
-        ResponseScenarioLine.parse("& •SS: 999 A:Error B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 A:Error B:43", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedResultValue.\n"
                 + "‡ ⬐ Processing result key A.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
@@ -239,7 +241,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.");
-        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.\n"
                 + "‡ ⬐ Processing metadata field N.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
@@ -253,7 +255,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.");
-        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.\n"
                 + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
@@ -267,7 +269,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedVerifiedSum.");
-        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedVerifiedSum.\n"
                 + "‡ ⬐ Processing metadata field VS.\n" + "‡ Malformed decimal number Error.\n";
         assertEquals(expected, outputStream.toString());
@@ -281,7 +283,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownMetadataKey.");
-        ResponseScenarioLine.parse("& •SS: 999 •XX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 •XX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownMetadataKey.\n"
                 + "‡ ⬐ Processing metadata field XX.\n" + "‡ Unknown metadata key XX.\n";
         assertEquals(expected, outputStream.toString());
@@ -295,7 +297,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownScopeValue.");
-        ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 •SC: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownScopeValue.\n"
                 + "‡ ⬐ Processing metadata field SC.\n" + "‡ Unknown metadata value X.\n";
         assertEquals(expected, outputStream.toString());
@@ -309,7 +311,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER.logMessage(
                 "Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.");
-        ResponseScenarioLine.parse("& •SS: 999 •EX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 •EX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
         String expected =
                 "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.\n"
                         + "‡ ⬐ Processing metadata field EX.\n" + "‡ Malformed decimal number X.\n";
@@ -324,7 +326,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForMissingResults.");
-        ResponseScenarioLine.parse("& •SS: 999 •SC: N", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 •SC: N", ELECTORAL_LIST_KEY_MAP, token);
         String expected =
                 "‡ ⬐ Unit test ResponseScenarioLineTest.shouldLogAnErrorForMissingResults.\n" + "‡ No results found.\n";
         assertEquals(expected, outputStream.toString());
@@ -338,7 +340,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownElectoralListKey.");
-        ResponseScenarioLine.parse("& •SS: 999 •SC: N A:55 B:43 XX:2", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 999 •SC: N A:55 B:43 XX:2", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownElectoralListKey.\n"
                 + "‡ ⬐ Processing result key XX.\n" + "‡ Unknown electoral list key XX.\n";
         assertEquals(expected, outputStream.toString());
@@ -352,7 +354,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenAreaIsAddedTwice.");
-        ResponseScenarioLine.parse("& •A: A •A: A A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •A: A •A: A A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenAreaIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field A.\n" + "‡ Single value metadata key A occurred more than once.\n";
         assertEquals(expected, outputStream.toString());
@@ -366,7 +368,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenNoResponsesIsAddedTwice.");
-        ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("&  •N: 12 •N: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenNoResponsesIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field N.\n" + "‡ Single value metadata key N occurred more than once.\n";
         assertEquals(expected, outputStream.toString());
@@ -380,7 +382,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.");
-        ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field O.\n" + "‡ Single value metadata key O occurred more than once.\n";
         assertEquals(expected, outputStream.toString());
@@ -394,7 +396,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenVerifiedSumIsAddedTwice.");
-        ResponseScenarioLine.parse("& •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •VS: 88 •VS: 88 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenVerifiedSumIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field VS.\n" + "‡ Single value metadata key VS occurred more than once.\n";
         assertEquals(expected, outputStream.toString());
@@ -408,7 +410,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.");
-        ResponseScenarioLine.parse("& •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field SC.\n" + "‡ Single value metadata key SC occurred more than once.\n";
         assertEquals(expected, outputStream.toString());
@@ -422,7 +424,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.");
-        ResponseScenarioLine.parse("& •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, 1, token);
+        ResponseScenarioLine.parse("& •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field SS.\n" + "‡ Single value metadata key SS occurred more than once.\n";
         assertEquals(expected, outputStream.toString());

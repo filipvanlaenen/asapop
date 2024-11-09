@@ -118,7 +118,6 @@ public final class CommandLineInterface {
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                printWarnings(richOpinionPollsFile.getWarnings());
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
@@ -186,7 +185,6 @@ public final class CommandLineInterface {
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                printWarnings(richOpinionPollsFile.getWarnings());
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
@@ -205,7 +203,6 @@ public final class CommandLineInterface {
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", ropfFileName);
                 String[] ropfContent = readFile(ropfFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                printWarnings(richOpinionPollsFile.getWarnings());
                 writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile));
             }
         },
@@ -221,7 +218,6 @@ public final class CommandLineInterface {
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                printWarnings(richOpinionPollsFile.getWarnings());
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
@@ -304,7 +300,6 @@ public final class CommandLineInterface {
                             Laconic.LOGGER.logMessage(token, "Parsing the file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
-                    printWarnings(richOpinionPollsFile.getWarnings());
                     opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
                 }
             }
@@ -343,7 +338,6 @@ public final class CommandLineInterface {
                             Laconic.LOGGER.logMessage(token, "Parsing file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
-                    printWarnings(richOpinionPollsFile.getWarnings());
                     opinionPollsMap.put(presidentialOpinionPollCode, richOpinionPollsFile.getOpinionPolls());
                 }
             }
