@@ -215,16 +215,19 @@ public final class CommandLineInterface {
                 String inputFileName = args[1];
                 String saporDirName = args[2];
                 String saporConfigurationFileName = args[THREE];
-                Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
+                Token inputFileToken = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
-                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
+                RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(inputFileToken, ropfContent);
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
+                Token configurationFileToken =
+                        Laconic.LOGGER.logMessage("Loading configuration file %s.", saporConfigurationFileName);
                 SaporConfiguration saporConfiguration =
                         objectMapper.readValue(new File(saporConfigurationFileName), SaporConfiguration.class);
                 SaporExporter saporExporter = new SaporExporter(saporConfiguration);
-                SaporDirectory saporDirectory = saporExporter.export(opinionPolls, token);
+                SaporDirectory saporDirectory =
+                        saporExporter.export(opinionPolls, configurationFileToken, inputFileToken);
                 writeFiles(saporDirName, saporDirectory.asMap());
             }
         };

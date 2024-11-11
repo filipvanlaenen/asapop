@@ -326,11 +326,12 @@ public class SaporExporter extends Exporter {
     /**
      * Exports the opinion polls to SAPOR files.
      *
-     * @param opinionPolls The opinion polls.
-     * @param token        The Laconic logger token.
+     * @param opinionPolls   The opinion polls.
+     * @param inputFileToken The Laconic logger token.
      * @return A map with the SAPOR file paths and contents.
      */
-    public SaporDirectory export(final OpinionPolls opinionPolls, final Token token) {
+    public SaporDirectory export(final OpinionPolls opinionPolls, final Token configurationFileToken,
+            final Token inputFileToken) {
         SaporDirectory result = new SaporDirectory();
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             if (lastElectionDate.isBefore(opinionPoll.getEndDate()) && hasMatchingResponseScenario(opinionPoll)) {
@@ -338,7 +339,7 @@ public class SaporExporter extends Exporter {
                 result.put(getSaporFilePath(opinionPoll),
                         getSaporContent(opinionPoll, opinionPolls.getLowestSampleSize(pollingFirm),
                                 opinionPolls.getLowestEffectiveSampleSize(pollingFirm)));
-                checkSaporMappings(opinionPoll, token);
+                checkSaporMappings(opinionPoll, configurationFileToken, inputFileToken);
             }
         }
         return result;
@@ -420,16 +421,18 @@ public class SaporExporter extends Exporter {
     /**
      * Returns the warnings encountered during the export of an opinion poll.
      *
-     * @param opinionPoll The warnings encountered during the export of an opinion poll.
-     * @param token       The Laconic logger token.
+     * @param opinionPoll    The warnings encountered during the export of an opinion poll.
+     * @param inputFileToken The Laconic logger token.
      */
-    void checkSaporMappings(final OpinionPoll opinionPoll, final Token token) {
+    void checkSaporMappings(final OpinionPoll opinionPoll, final Token configurationFileToken,
+            final Token inputFileToken) {
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
         for (Set<ElectoralList> electoralList : electoralLists) {
             if (!mappedElectoralListCombinations.contains(electoralList)) {
                 List<String> ids = new ArrayList<String>(ElectoralList.getIds(electoralList));
                 Collections.sort(ids);
-                Laconic.LOGGER.logError("SAPOR mapping missing for %s.", String.join("+", ids), token);
+                Laconic.LOGGER.logError("SAPOR mapping missing for %s.", String.join("+", ids), configurationFileToken,
+                        inputFileToken);
             }
         }
     }
