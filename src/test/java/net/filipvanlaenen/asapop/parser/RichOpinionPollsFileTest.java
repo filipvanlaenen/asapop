@@ -197,7 +197,7 @@ public final class RichOpinionPollsFileTest {
      * Verifies that a line with an unrecognized line format produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForALineWithAnRecognizedFormat() {
+    public void shouldLogAnErrorForALineWithAnUnrecognizedFormat() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         RichOpinionPollsFile.parse(TOKEN, "Foo");
         String expected = "‡   Unit test RichOpinionPollsFileTest.\n" + "‡ ⬐ Parsing line number 1.\n"

@@ -67,18 +67,14 @@ public final class RichOpinionPollsFile {
         List<CommentLine> commentLines = new ArrayList<CommentLine>();
         Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
         OpinionPoll lastOpinionPoll = null;
-        int lineNumber = 0;
         for (String line : lines) {
-            lineNumber++;
-            Token token = Laconic.LOGGER.logMessage(fileToken, "Parsing line number %d.", lineNumber);
             if (ElectoralListLine.isElectoralListLine(line)) {
-                Laconic.LOGGER.logMessage("Line is recognized as an electoral list line.", token);
                 ElectoralListLine electoralListLine = ElectoralListLine.parse(line);
                 electoralListLine.updateElectoralList();
                 electoralListKeyMap.put(electoralListLine.getKey(), electoralListLine.getElectoralList());
             }
         }
-        lineNumber = 0;
+        int lineNumber = 0;
         for (String line : lines) {
             lineNumber++;
             Token token = Laconic.LOGGER.logMessage(fileToken, "Parsing line number %d.", lineNumber);
