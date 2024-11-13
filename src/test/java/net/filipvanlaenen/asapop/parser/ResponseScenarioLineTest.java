@@ -262,6 +262,20 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that a line with a malformed sample size produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedSampleSize() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedSampleSize.");
+        ResponseScenarioLine.parse("& •SS: Error A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedSampleSize.\n"
+                + "‡ ⬐ Processing metadata field SS.\n" + "‡ Malformed sample size Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line with a malformed verified sum produces a warning.
      */
     @Test
@@ -361,6 +375,20 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that a line adding the excluded twice produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenExcludedIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenExcludedIsAddedTwice.");
+        ResponseScenarioLine.parse("& •EX: 4 •EX: 4 A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenExcludedIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field EX.\n" + "‡ Single value metadata key EX occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line adding no responses twice produces a warning.
      */
     @Test
@@ -427,6 +455,20 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine.parse("& •SS: 1000 •SS: 1000 A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenSampleSizeIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field SS.\n" + "‡ Single value metadata key SS occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line for which the results don't add up produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenResultsDoNoAddUp() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenResultsDoNoAddUp.");
+        ResponseScenarioLine.parse("& A:53 B:52", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenResultsDoNoAddUp.\n"
+                + "‡ ⬐ Total sum is 105.000000.\n" + "‡ Results don’t add up within rounding error interval.\n";
         assertEquals(expected, outputStream.toString());
     }
 }
