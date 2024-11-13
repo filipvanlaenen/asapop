@@ -395,6 +395,20 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that a line with a malformed sample size produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedSampleSize() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedSampleSize.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •SS:Error", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedSampleSize.\n"
+                + "‡ ⬐ Processing metadata field SS.\n" + "‡ Malformed sample size Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line with a malformed verified sum produces a warning.
      */
     @Test
@@ -405,6 +419,48 @@ public final class OpinionPollLineTest {
         OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •VS:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedVerifiedSum.\n"
                 + "‡ ⬐ Processing metadata field VS.\n" + "‡ Malformed decimal number Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line with a malformed fieldwork start produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedFieldworkStart() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedFieldworkStart.");
+        OpinionPollLine.parse("•PF: ACME •FS: Error •FE: 2021-07-27 •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedFieldworkStart.\n"
+                + "‡ ⬐ Processing metadata field FS.\n" + "‡ Malformed date, month or year Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line with a malformed fieldwork end produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedFieldworkEnd() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedFieldworkEnd.");
+        OpinionPollLine.parse("•PF: ACME •FE: Error •FS: 2021-07-27 •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedFieldworkEnd.\n"
+                + "‡ ⬐ Processing metadata field FE.\n" + "‡ Malformed date, month or year Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line with a malformed publication date produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedPublicationDate() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedPublicationDate.");
+        OpinionPollLine.parse("•PF: ACME •PD: Error •FE: 2021-07-27 •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedPublicationDate.\n"
+                + "‡ ⬐ Processing metadata field PD.\n" + "‡ Malformed date Error.\n";
         assertEquals(expected, outputStream.toString());
     }
 
@@ -468,7 +524,7 @@ public final class OpinionPollLineTest {
      * Verifies that a line missing results produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForMissingResults() {
+    public void shouldLogAnErrorForMissingResults() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldProduceAWarningForMissingResults.");
@@ -482,7 +538,7 @@ public final class OpinionPollLineTest {
      * Verifies that a line missing dates produces a warning.
      */
     @Test
-    public void shouldProduceAWarningForMissingDates() {
+    public void shouldLogAnErrorForMissingDates() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldProduceAWarningForMissingDates.");
         OpinionPollLine.parse("•PF: ACME •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
@@ -702,7 +758,7 @@ public final class OpinionPollLineTest {
      * Verifies that a line with results that don't add up logs an error message.
      */
     @Test
-    public void shouldLogErrorWhenResultsDoNotAddUp() {
+    public void shouldAnLogErrorWhenResultsDoNotAddUp() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.");
         OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:60 B:50", ELECTORAL_LIST_KEY_MAP, token);
