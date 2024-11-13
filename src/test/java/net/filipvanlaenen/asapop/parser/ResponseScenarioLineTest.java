@@ -321,13 +321,13 @@ public final class ResponseScenarioLineTest {
      * Verifies that a line with a malformed decimal number for excluded logs an error.
      */
     @Test
-    public void shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses() {
+    public void shouldLogAnErrorForAMalformedExcludedResponsesValue() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
-        Token token = Laconic.LOGGER.logMessage(
-                "Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.");
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedExcludedResponsesValue.");
         ResponseScenarioLine.parse("& •SS: 999 •EX: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
         String expected =
-                "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedDecimalNumberForExcludedResponses.\n"
+                "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedExcludedResponsesValue.\n"
                         + "‡ ⬐ Processing metadata field EX.\n" + "‡ Malformed decimal number X.\n";
         assertEquals(expected, outputStream.toString());
     }
