@@ -2,6 +2,8 @@ package net.filipvanlaenen.asapop.model;
 
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.OpinionPoll.Builder;
+
 /**
  * Helper class extending the builder for OpinionPoll with some convenience methods for unit tests.
  */
@@ -50,6 +52,17 @@ public class OpinionPollTestBuilder extends OpinionPoll.Builder {
      */
     public OpinionPollTestBuilder setOther(final String otherString) {
         setOther(new ResultValue(otherString));
+        return this;
+    }
+
+    /**
+     * Sets the result for other and no responses combined.
+     *
+     * @param otherAndNoResponsesString The result for other and no responses combined, assumed to be well-formed.
+     * @return This builder instance.
+     */
+    public Builder setOtherAndNoResponses(final String otherAndNoResponsesString) {
+        setOtherAndNoResponses(new ResultValue(otherAndNoResponsesString));
         return this;
     }
 
