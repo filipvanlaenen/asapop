@@ -326,8 +326,9 @@ public class SaporExporter extends Exporter {
     /**
      * Exports the opinion polls to SAPOR files.
      *
-     * @param opinionPolls   The opinion polls.
-     * @param inputFileToken The Laconic logger token.
+     * @param opinionPolls           The opinion polls.
+     * @param configurationFileToken The Laconic logger token for the configuration file.
+     * @param inputFileToken         The Laconic logger token for the input file.
      * @return A map with the SAPOR file paths and contents.
      */
     public SaporDirectory export(final OpinionPolls opinionPolls, final Token configurationFileToken,
@@ -421,8 +422,9 @@ public class SaporExporter extends Exporter {
     /**
      * Returns the warnings encountered during the export of an opinion poll.
      *
-     * @param opinionPoll    The warnings encountered during the export of an opinion poll.
-     * @param inputFileToken The Laconic logger token.
+     * @param opinionPoll            The warnings encountered during the export of an opinion poll.
+     * @param configurationFileToken The Laconic logger token for the configuration file.
+     * @param inputFileToken         The Laconic logger token for the input file.
      */
     void checkSaporMappings(final OpinionPoll opinionPoll, final Token configurationFileToken,
             final Token inputFileToken) {
