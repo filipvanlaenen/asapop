@@ -38,6 +38,10 @@ public final class ResponseScenario {
      */
     private ResultValue other;
     /**
+     * The result for other and no responses combined.
+     */
+    private ResultValue otherAndNoResponses;
+    /**
      * The results.
      */
     private final Map<Set<ElectoralList>, ResultValue> results;
@@ -80,6 +84,7 @@ public final class ResponseScenario {
         excluded = builder.excluded;
         noResponses = builder.noResponses;
         other = builder.other;
+        otherAndNoResponses = builder.otherAndNoResponses;
         results = Collections.unmodifiableMap(builder.results);
         sampleSize = builder.sampleSize;
         sampleSizeValue = sampleSize == null ? null : sampleSize.getMinimalValue();
@@ -121,6 +126,10 @@ public final class ResponseScenario {
          * The result for other.
          */
         private ResultValue other;
+        /**
+         * The result for other and no responses combined.
+         */
+        private ResultValue otherAndNoResponses;
         /**
          * The results.
          */
@@ -183,6 +192,11 @@ public final class ResponseScenario {
             double sum = calculateSumOfResultsAndOther();
             if (hasNoResponses()) {
                 Double value = noResponses.getNominalValue();
+                if (value != null) {
+                    sum += value;
+                }
+            } else if (hasOtherAndNoResponses()) {
+                Double value = otherAndNoResponses.getNominalValue();
                 if (value != null) {
                     sum += value;
                 }
@@ -249,6 +263,15 @@ public final class ResponseScenario {
         }
 
         /**
+         * Returns whether other and no responses combined has been registered in this builder instance.
+         *
+         * @return True if other and no responses combined has been registered in this builder instance.
+         */
+        public boolean hasOtherAndNoResponses() {
+            return otherAndNoResponses != null;
+        }
+
+        /**
          * Returns whether any results have been registered in this builder instance.
          *
          * @return True if at least one result has been registered in this builder instance.
@@ -312,6 +335,9 @@ public final class ResponseScenario {
             if (hasNoResponses()) {
                 precision = Precision.highest(precision, noResponses.getPrecision());
             }
+            if (hasOtherAndNoResponses()) {
+                precision = Precision.highest(precision, otherAndNoResponses.getPrecision());
+            }
             if (hasVerifiedSum()) {
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 return Math.abs(sum - verifiedSum.value()) < precision.getValue() / HUNDRED;
@@ -359,22 +385,33 @@ public final class ResponseScenario {
         /**
          * Sets the number of no responses.
          *
-         * @param noResponsesString The result for other.
+         * @param noResponsesValue The result for other.
          * @return This builder instance.
          */
-        public Builder setNoResponses(final ResultValue noResponsesString) {
-            this.noResponses = noResponsesString;
+        public Builder setNoResponses(final ResultValue noResponsesValue) {
+            this.noResponses = noResponsesValue;
             return this;
         }
 
         /**
          * Sets the result for other.
          *
-         * @param otherString The result for other.
+         * @param otherValue The result for other.
          * @return This builder instance.
          */
-        public Builder setOther(final ResultValue otherString) {
-            this.other = otherString;
+        public Builder setOther(final ResultValue otherValue) {
+            this.other = otherValue;
+            return this;
+        }
+
+        /**
+         * Sets the result for other and no responses combined.
+         *
+         * @param otherAndNoResponsesValue The result for other and no responses combined.
+         * @return This builder instance.
+         */
+        public Builder setOtherAndNoResponses(final ResultValue otherAndNoResponsesValue) {
+            this.otherAndNoResponses = otherAndNoResponsesValue;
             return this;
         }
 
@@ -420,6 +457,7 @@ public final class ResponseScenario {
                     && equalsOrBothNull(excluded, otherResponseScenario.excluded)
                     && equalsOrBothNull(noResponses, otherResponseScenario.noResponses)
                     && equalsOrBothNull(other, otherResponseScenario.other)
+                    && equalsOrBothNull(otherAndNoResponses, otherResponseScenario.otherAndNoResponses)
                     && otherResponseScenario.results.equals(results)
                     && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
                     && equalsOrBothNull(scope, otherResponseScenario.scope)
@@ -492,6 +530,15 @@ public final class ResponseScenario {
      */
     public ResultValue getOther() {
         return other;
+    }
+
+    /**
+     * Returns the result for other and no responses combined.
+     *
+     * @return The result for other and no responses combined.
+     */
+    public ResultValue getOtherAndNoResponses() {
+        return otherAndNoResponses;
     }
 
     /**
@@ -569,7 +616,8 @@ public final class ResponseScenario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(area, excluded, noResponses, other, results, sampleSize, scope, verifiedSum);
+        return Objects.hash(area, excluded, noResponses, other, otherAndNoResponses, results, sampleSize, scope,
+                verifiedSum);
     }
 
     /**

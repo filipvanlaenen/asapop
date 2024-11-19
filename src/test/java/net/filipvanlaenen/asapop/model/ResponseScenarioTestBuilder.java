@@ -54,6 +54,17 @@ public class ResponseScenarioTestBuilder extends ResponseScenario.Builder {
     }
 
     /**
+     * Sets the result for other and no responses.
+     *
+     * @param otherAndNoResponsesString The result for other and no responses, assumed to be well-formed.
+     * @return This builder instance.
+     */
+    public ResponseScenarioTestBuilder setOtherAndNoResponses(final String otherAndNoResponsesString) {
+        setOtherAndNoResponses(new ResultValue(otherAndNoResponsesString));
+        return this;
+    }
+
+    /**
      * Sets the sample size.
      *
      * @param string The sample size, assumed to be well-formed.

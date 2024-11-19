@@ -137,6 +137,35 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that the setOtherAndNoResponses method in the builder class is wired correctly to the
+     * getOtherAndNoResponses method.
+     */
+    @Test
+    public void setOtherAndNoResponsesInBuilderShouldBeWiredCorrectlyToGetOtherAndNoResponses() {
+        ResponseScenario responseScenario =
+                new ResponseScenarioTestBuilder().setOtherAndNoResponses(new ResultValue("5")).build();
+        assertEquals("5", responseScenario.getOtherAndNoResponses().getText());
+    }
+
+    /**
+     * Verifies that before other and no responses has been added, the builder responds that other and no responses is
+     * missing.
+     */
+    @Test
+    public void hasOtherAndNoResponsesInBuilderShouldReturnFalseBeforeOtherAndNoResponsesIsAdded() {
+        assertFalse(new ResponseScenario.Builder().hasOtherAndNoResponses());
+    }
+
+    /**
+     * Verifies that after other and no responses has been added, the builder responds that other and no responses is
+     * present.
+     */
+    @Test
+    public void hasOtherAndNoResponsesInBuilderShouldReturnTrueAfterOtherAndNoResponsesIsAdded() {
+        assertTrue(new ResponseScenarioTestBuilder().setOtherAndNoResponses("12").hasOtherAndNoResponses());
+    }
+
+    /**
      * Verifies that the setVerifiedSum method in the builder class is wired correctly to the getVerifiedSum method.
      */
     @Test
@@ -438,6 +467,17 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that a response scenario is not equal to another response scenario with a different result for other and
+     * no responses.
+     */
+    @Test
+    public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioWithADifferentOtherAndNoResponsesResult() {
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setOtherAndNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setOtherAndNoResponses("6").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+    }
+
+    /**
      * Verifies that response scenarios have different hash codes if they have different results for other.
      */
     @Test
@@ -454,6 +494,17 @@ public class ResponseScenarioTest {
     public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentNoResponsesResult() {
         ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setNoResponses("5").build();
         ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setNoResponses("6").build();
+        assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
+    }
+
+    /**
+     * Verifies that response scenarios have different hash codes if they have different results for other and no
+     * responses.
+     */
+    @Test
+    public void aResponseScenarioShouldNotHaveSameHashCodeAsAnotherResponseScenarioWithADifferentOtherAndNoResponses() {
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setOtherAndNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setOtherAndNoResponses("6").build();
         assertFalse(responseScenario1.hashCode() == responseScenario2.hashCode());
     }
 
@@ -478,6 +529,17 @@ public class ResponseScenarioTest {
     }
 
     /**
+     * Verifies that a response scenario is not equal to another response scenario missing the result for other and no
+     * responses.
+     */
+    @Test
+    public void aResponseScenarioShouldNotBeEqualToAnotherResponseScenarioMissingTheOtherAndNoResponsesResult() {
+        ResponseScenario responseScenario1 = new ResponseScenarioTestBuilder().setOtherAndNoResponses("5").build();
+        ResponseScenario responseScenario2 = new ResponseScenario.Builder().build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+    }
+
+    /**
      * Verifies that a response scenario without a result for others is not equal to another response scenario with a
      * result for others.
      */
@@ -496,6 +558,17 @@ public class ResponseScenarioTest {
     public void aResponseScenarioMissingNoResponsesShouldNotBeEqualToAnotherResponseScenarioWithNoResponses() {
         ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
         ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setNoResponses("5").build();
+        assertFalse(responseScenario1.equals(responseScenario2));
+    }
+
+    /**
+     * Verifies that a response scenario without a result for other and no responses is not equal to another response
+     * scenario with a result for other and no responses.
+     */
+    @Test
+    public void aResponseScenarioMissingOtherAndNoResponsesResultShouldNotBeEqualToOneWith() {
+        ResponseScenario responseScenario1 = new ResponseScenario.Builder().build();
+        ResponseScenario responseScenario2 = new ResponseScenarioTestBuilder().setOtherAndNoResponses("5").build();
         assertFalse(responseScenario1.equals(responseScenario2));
     }
 
@@ -681,6 +754,16 @@ public class ResponseScenarioTest {
     public void resultShouldAddUpIfSumEqualsVerifiedSum() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "80")
                 .addResult("B", "30").setVerifiedSum(DecimalNumber.parse("110"));
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the results including other and no responses add up if the sum matches the verified sum.
+     */
+    @Test
+    public void resultShouldAddUpIfSumIncludingOtherAndNoReponsesEqualsVerifiedSum() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "80")
+                .addResult("B", "30").setOtherAndNoResponses("10").setVerifiedSum(DecimalNumber.parse("120"));
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
