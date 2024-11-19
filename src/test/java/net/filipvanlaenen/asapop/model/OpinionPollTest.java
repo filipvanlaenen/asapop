@@ -238,6 +238,34 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that the setOtherAndNoResponses method in the builder class is wired correctly to the
+     * getOtherAndNoResponses method.
+     */
+    @Test
+    public void setOtherAndNoResponsesInBuilderShouldBeWiredCorrectlyToGetOtherAndNoResponses() {
+        OpinionPoll poll = new OpinionPollTestBuilder().setOtherAndNoResponses(new ResultValue("2")).build();
+        assertEquals("2", poll.getOtherAndNoResponses().getText());
+    }
+
+    /**
+     * Verifies that before other and no responses has been added, the builder responds that other and no responses is
+     * missing.
+     */
+    @Test
+    public void hasOtherAndNoResponsesInBuilderShouldReturnFalseBeforeOtherAndNoResponsesIsAdded() {
+        assertFalse(new OpinionPoll.Builder().hasOtherAndNoResponses());
+    }
+
+    /**
+     * Verifies that after other and no responses has been added, the builder responds that other and no responses is
+     * present.
+     */
+    @Test
+    public void hasOtherAndNoResponsesInBuilderShouldReturnTrueAfterOtherAndNoResponsesIsAdded() {
+        assertTrue(new OpinionPollTestBuilder().setOtherAndNoResponses("12").hasOtherAndNoResponses());
+    }
+
+    /**
      * Verifies that the setUnit method in the builder class is wired correctly to the getUnit method.
      */
     @Test
@@ -767,6 +795,17 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that an opinion poll is not equal to another opinion poll with a different result for other and no
+     * responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollWithADifferentResultForOtherAndNoResponses() {
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setOtherAndNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().setOtherAndNoResponses("3").build();
+        assertFalse(poll1.equals(poll2));
+    }
+
+    /**
      * Verifies that opinion polls have different hash codes if they have different result for other.
      */
     @Test
@@ -787,6 +826,16 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that opinion polls have different hash codes if they have different result for other and no responses.
+     */
+    @Test
+    public void anOpinionPollShouldNotHaveSameHashCodeAsAnotherOpinionPollWithADifferentResultForOtherAndNoResponses() {
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setOtherAndNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPollTestBuilder().setOtherAndNoResponses("3").build();
+        assertFalse(poll1.hashCode() == poll2.hashCode());
+    }
+
+    /**
      * Verifies that an opinion poll is not equal to another opinion poll missing the result for other.
      */
     @Test
@@ -802,6 +851,17 @@ public class OpinionPollTest {
     @Test
     public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForNoResponses() {
         OpinionPoll poll1 = new OpinionPollTestBuilder().setNoResponses("2").build();
+        OpinionPoll poll2 = new OpinionPoll.Builder().build();
+        assertFalse(poll1.equals(poll2));
+    }
+
+    /**
+     * Verifies that an opinion poll is not equal to another opinion poll missing the result for other and no responses
+     * combined.
+     */
+    @Test
+    public void anOpinionPollShouldNotBeEqualToAnotherOpinionPollMissingTheResultForOtherAndNoResponses() {
+        OpinionPoll poll1 = new OpinionPollTestBuilder().setOtherAndNoResponses("2").build();
         OpinionPoll poll2 = new OpinionPoll.Builder().build();
         assertFalse(poll1.equals(poll2));
     }

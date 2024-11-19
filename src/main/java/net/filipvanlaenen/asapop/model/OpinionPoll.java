@@ -232,6 +232,15 @@ public final class OpinionPoll {
         }
 
         /**
+         * Returns whether other and no responses combined has been registered in this builder instance.
+         *
+         * @return True if other and no responses combined has been registered in this builder instance.
+         */
+        public boolean hasOtherAndNoResponses() {
+            return responseScenarioBuilder.hasOtherAndNoResponses();
+        }
+
+        /**
          * Returns whether a polling firm has been registered in this builder instance.
          *
          * @return True if a polling firm has been registered in this builder instance.
@@ -386,6 +395,17 @@ public final class OpinionPoll {
          */
         public Builder setOther(final ResultValue otherString) {
             responseScenarioBuilder.setOther(otherString);
+            return this;
+        }
+
+        /**
+         * Sets the result for other and no responses combined.
+         *
+         * @param otherAndNoResponsesString The result for other and no responses combined.
+         * @return This builder instance.
+         */
+        public Builder setOtherAndNoResponses(final ResultValue otherAndNoResponsesString) {
+            responseScenarioBuilder.setOtherAndNoResponses(otherAndNoResponsesString);
             return this;
         }
 
@@ -638,6 +658,15 @@ public final class OpinionPoll {
      */
     public ResultValue getOther() {
         return mainResponseScenario.getOther();
+    }
+
+    /**
+     * Returns the result for other and no responses combined.
+     *
+     * @return The result for other and no responses combined.
+     */
+    public ResultValue getOtherAndNoResponses() {
+        return mainResponseScenario.getOtherAndNoResponses();
     }
 
     /**
