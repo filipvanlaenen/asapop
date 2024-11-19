@@ -40,13 +40,19 @@ public class RopfExporterTest {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(TOKEN,
                 "•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27"
                         + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % A:55 B:45 C: 2 D: 2 E: 2 F: 2 •O: 2 •N: 3 •VS: 109",
+                "•PF: ACME •PFP: BCME •C: The Times •C: The Post •FS: 2021-06-25 •FE: 2021-06-26 •PD: 2021-07-27"
+                        + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % A:55 B:45 C: 2 D: 2 E: 2 F: 2 •ON: 5 •VS: 109",
                 "A: AA001 •A:AP •EN: Apple Party •NL: Appelpartij •EO: Pomo Partio •NO: Eplepartiet",
                 "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C", "D: AA004 •A:Δ •R:D", "E: AA005 •A:E", "F: AA006 •A:F");
         StringBuffer expected = new StringBuffer();
         expected.append(
                 "•PF: ACME •PFP: BCME •C: The Post •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •PD: 2021-07-27"
                         + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2 •O: 2 •N: 3"
-                        + " •VS: 109\n");
+                        + "        •VS: 109\n");
+        expected.append(
+                "•PF: ACME •PFP: BCME •C: The Post •C: The Times •FS: 2021-06-25 •FE: 2021-06-26 •PD: 2021-07-27"
+                        + " •SC: N •A: IO •SS: 1000 •EX: 10 •U: % AP: 55 BL: 45 C: 2 E: 2 F: 2 Δ: 2            "
+                        + " •ON: 5 •VS: 109\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP       •EN: Apple Party •EO: Pomo Partio •NL: Appelpartij •NO: Eplepartiet\n");
         expected.append("BL: AA002 •A: Bl                                         •NL: Blauw\n");
@@ -65,17 +71,20 @@ public class RopfExporterTest {
         RichOpinionPollsFile opinionPollsFile = RichOpinionPollsFile.parse(TOKEN,
                 "•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N •A: IO •SS: 1000 •EX: 10 A:55 B:45"
                         + " •O: 2 •N: 3",
-                "& •SC: E •A: OUV •SS: 800  A:50 B:40 C:10  •VS: 110",
-                "& •SC: P1 •A: OUV •SS: 12000 •EX: 19.5 A:50 B:40 C:5.2 D: 5.2 E: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1",
+                "& •SC: N •A: OUV •SS: 800  A:50 B:40 C:10  •VS: 110",
+                "& •SC: E •A: OUV •SS: 12000 •EX: 19.5 A:50 B:40 C:5.2 D: 5.2 E: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1",
+                "& •SC: P1 •A: OUV •SS: 12000 •EX: 19.5 A:50 B:40 C:5.2 D: 5.2 E: 5.2 •ON: 3.3 •VS: 112.1",
                 "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl •NL: Blauw", "C: AA003 •A:C", "D: AA004 •A:D",
                 "E: AA005 •A:E");
         StringBuffer expected = new StringBuffer();
         expected.append("•PF: ACME •C: The Times •FS: 2021-07-25 •FE: 2021-07-26 •SC: N  •A: IO  •SS: 1000  •EX: 10  "
                 + " AP: 55 BL: 45                      •O: 2   •N: 3\n");
-        expected.append("&                                                       •SC: E  •A: OUV •SS: 800            "
-                + " AP: 50 BL: 40 C: 10                                •VS: 110\n");
+        expected.append("&                                                       •SC: N  •A: OUV •SS: 800            "
+                + " AP: 50 BL: 40 C: 10                                         •VS: 110\n");
+        expected.append("&                                                       •SC: E  •A: OUV •SS: 12000 •EX: 19.5"
+                + " AP: 50 BL: 40 C: 5.2 D: 5.2 E: 5.2 •O: 1.2 •N: 2.1          •VS: 112.1\n");
         expected.append("&                                                       •SC: P1 •A: OUV •SS: 12000 •EX: 19.5"
-                + " AP: 50 BL: 40 C: 5.2 D: 5.2 E: 5.2 •O: 1.2 •N: 2.1 •VS: 112.1\n");
+                + " AP: 50 BL: 40 C: 5.2 D: 5.2 E: 5.2                 •ON: 3.3 •VS: 112.1\n");
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl                  •NL: Blauw\n");

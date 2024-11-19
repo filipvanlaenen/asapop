@@ -144,6 +144,7 @@ public final class RopfExporter extends Exporter {
             updateMetadataFieldWidth(result, "FS", opinionPoll.getFieldworkStart());
             updateMetadataFieldWidth(result, "N", opinionPoll.getNoResponses());
             updateMetadataFieldWidth(result, "O", opinionPoll.getOther());
+            updateMetadataFieldWidth(result, "ON", opinionPoll.getOtherAndNoResponses());
             updateMetadataFieldWidth(result, "PD", opinionPoll.getPublicationDate());
             updateMetadataFieldWidth(result, "PF", opinionPoll.getPollingFirm());
             updateMetadataFieldWidth(result, "PFP", opinionPoll.getPollingFirmPartner());
@@ -156,6 +157,7 @@ public final class RopfExporter extends Exporter {
                 updateMetadataFieldWidth(result, "EX", responseScenario.getExcluded());
                 updateMetadataFieldWidth(result, "N", responseScenario.getNoResponses());
                 updateMetadataFieldWidth(result, "O", responseScenario.getOther());
+                updateMetadataFieldWidth(result, "ON", responseScenario.getOtherAndNoResponses());
                 updateMetadataFieldWidth(result, "SC", responseScenario.getScope());
                 updateMetadataFieldWidth(result, "SS", responseScenario.getSampleSize());
                 updateMetadataFieldWidth(result, "VS", responseScenario.getVerifiedSum());
@@ -266,9 +268,8 @@ public final class RopfExporter extends Exporter {
             public int compare(final Set<ElectoralList> arg0, final Set<ElectoralList> arg1) {
                 double difference = opinionPoll.getResult(ElectoralList.getIds(arg1)).getNominalValue()
                         - opinionPoll.getResult(ElectoralList.getIds(arg0)).getNominalValue();
-                return difference < 0 ? -1
-                        : difference > 0 ? 1
-                                : asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1));
+                return difference == 0 ? asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1))
+                        : nonZeroSign(difference);
             }
         });
         StringBuffer results = new StringBuffer();
@@ -282,6 +283,7 @@ public final class RopfExporter extends Exporter {
         sb.append(pad(results.toString(), resultsWidth));
         sb.append(export("O", metadataFieldWidths, opinionPoll.getOther()));
         sb.append(export("N", metadataFieldWidths, opinionPoll.getNoResponses()));
+        sb.append(export("ON", metadataFieldWidths, opinionPoll.getOtherAndNoResponses()));
         sb.append(export("VS", metadataFieldWidths, opinionPoll.getVerifiedSum()));
         StringBuffer result = new StringBuffer();
         result.append(sb.toString().substring(1).stripTrailing());
@@ -321,9 +323,8 @@ public final class RopfExporter extends Exporter {
             public int compare(final Set<ElectoralList> arg0, final Set<ElectoralList> arg1) {
                 double difference = responseScenario.getResult(ElectoralList.getIds(arg1)).getNominalValue()
                         - responseScenario.getResult(ElectoralList.getIds(arg0)).getNominalValue();
-                return difference < 0 ? -1
-                        : difference > 0 ? 1
-                                : asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1));
+                return difference == 0 ? asKeysString(idsToKeysMap, arg0).compareTo(asKeysString(idsToKeysMap, arg1))
+                        : nonZeroSign(difference);
             }
         });
         StringBuffer results = new StringBuffer();
@@ -336,6 +337,7 @@ public final class RopfExporter extends Exporter {
         sb.append(pad(results.toString(), resultsWidth));
         sb.append(export("O", metadataFieldWidths, responseScenario.getOther()));
         sb.append(export("N", metadataFieldWidths, responseScenario.getNoResponses()));
+        sb.append(export("ON", metadataFieldWidths, responseScenario.getOtherAndNoResponses()));
         sb.append(export("VS", metadataFieldWidths, responseScenario.getVerifiedSum()));
         return "&" + sb.toString().substring(2).stripTrailing();
     }
@@ -484,6 +486,17 @@ public final class RopfExporter extends Exporter {
      */
     private static String pad(final String text, final int width) {
         return String.format("%1$-" + width + "s", text);
+    }
+
+    /**
+     * Returns the sign of a double as an int.
+     *
+     * @param number The double.
+     * @return -1 is the number is less than zero, and 1 otherwise.
+     */
+    private static int nonZeroSign(final double number) {
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+        return number < 0 ? -1 : 1;
     }
 
     /**
