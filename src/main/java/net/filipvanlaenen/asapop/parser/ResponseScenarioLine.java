@@ -95,6 +95,10 @@ final class ResponseScenarioLine extends Line {
         if (!builder.resultsAddUp()) {
             Laconic.LOGGER.logError("Results don’t add up within rounding error interval.", sumToken);
         }
+        if (builder.hasOtherAndNoResponses() && (builder.hasOther() || builder.hasNoResponses())) {
+            Laconic.LOGGER.logError(
+                    "Other and no responses (ON) shouldn’t be combined with other (O) and/or no responses (N).", token);
+        }
         return new ResponseScenarioLine(builder.build());
     }
 
@@ -166,6 +170,14 @@ final class ResponseScenarioLine extends Line {
             } else {
                 ResultValueText other = ResultValueText.parse(value, keyToken);
                 builder.setOther(other.getValue());
+            }
+            break;
+        case "ON":
+            if (builder.hasOtherAndNoResponses()) {
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
+            } else {
+                ResultValueText otherAndNoResponses = ResultValueText.parse(value, keyToken);
+                builder.setOtherAndNoResponses(otherAndNoResponses.getValue());
             }
             break;
         case "SC":

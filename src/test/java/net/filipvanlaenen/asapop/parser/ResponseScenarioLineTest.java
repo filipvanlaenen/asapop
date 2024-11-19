@@ -35,6 +35,10 @@ public final class ResponseScenarioLineTest {
      */
     private static final String RESPONSE_SCENARIO_LINE_WITH_OTHER = "& A:55 B:43 •O:2";
     /**
+     * Simple response scenario line, including a result for other and no responses.
+     */
+    private static final String RESPONSE_SCENARIO_LINE_WITH_OTHER_AND_NO_RESPONSES = "& A:55 B:43 •ON:2";
+    /**
      * Simple response scenario line with a combined list.
      */
     private static final String RESPONSE_SCENARIO_LINE_WITH_COMBINED_ELECTORAL_LISTS = "& A+C:55 B:43";
@@ -129,6 +133,19 @@ public final class ResponseScenarioLineTest {
                 ResponseScenarioLine.parse(RESPONSE_SCENARIO_LINE_WITH_OTHER, ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected =
                 new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").setOther("2").build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
+     * Verifies that String with a single line containing a response scenario with a result for other and no responses
+     * can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithAResultForOtherAndNoResponses() {
+        ResponseScenarioLine responseScenarioLine = ResponseScenarioLine
+                .parse(RESPONSE_SCENARIO_LINE_WITH_OTHER_AND_NO_RESPONSES, ELECTORAL_LIST_KEY_MAP, TOKEN);
+        ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setOtherAndNoResponses("2").build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -258,6 +275,21 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.\n"
                 + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line with a malformed other and no responses value produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedOtherAndNoResponsesValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.");
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •ON:Error", ELECTORAL_LIST_KEY_MAP, token);
+        String expected =
+                "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.\n"
+                        + "‡ ⬐ Processing metadata field ON.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
     }
 
@@ -413,6 +445,53 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine.parse("& •O: 12 •O: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field O.\n" + "‡ Single value metadata key O occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line adding other and no responses twice produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenOtherAndNoResponsesIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherAndNoResponsesIsAddedTwice.");
+        ResponseScenarioLine.parse("& •ON: 12 •ON: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
+        String expected =
+                "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherAndNoResponsesIsAddedTwice.\n"
+                        + "‡ ⬐ Processing metadata field ON.\n"
+                        + "‡ Single value metadata key ON occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line adding other and other and no responses produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenOtherAndOtherAndNoResponsesAreAdded() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherAndOtherAndNoResponsesAreAdded.");
+        ResponseScenarioLine.parse("& •O: 6 •ON: 6 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
+        String expected =
+                "‡ ⬐ Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenOtherAndOtherAndNoResponsesAreAdded.\n"
+                        + "‡ Other and no responses (ON) shouldn’t be combined with other (O) and/or no responses"
+                        + " (N).\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line adding no responses and other and no responses produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenNoResponsesAndOtherAndNoResponsesAreAdded() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenNoResponsesAndOtherAndNoResponsesAreAdded.");
+        ResponseScenarioLine.parse("& •N: 6 •ON: 6 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡ ⬐ Unit test "
+                + "ResponseScenarioLineTest.shouldLogAnErrorWhenNoResponsesAndOtherAndNoResponsesAreAdded.\n"
+                + "‡ Other and no responses (ON) shouldn’t be combined with other (O) and/or no responses" + " (N).\n";
         assertEquals(expected, outputStream.toString());
     }
 
