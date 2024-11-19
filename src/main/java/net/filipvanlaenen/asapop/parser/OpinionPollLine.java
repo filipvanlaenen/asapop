@@ -106,6 +106,10 @@ final class OpinionPollLine extends Line {
         if (!builder.hasPollingFirmOrCommissioner()) {
             Laconic.LOGGER.logError("No polling firm or commissioner.", token);
         }
+        if (builder.hasOtherAndNoResponses() && (builder.hasOther() || builder.hasNoResponses())) {
+            Laconic.LOGGER.logError(
+                    "Other and no responses (ON) shouldn’t be combined with other (O) and/or no responses (N).", token);
+        }
         return new OpinionPollLine(builder.build());
     }
 
@@ -200,6 +204,14 @@ final class OpinionPollLine extends Line {
             } else {
                 ResultValueText other = ResultValueText.parse(value, keyToken);
                 builder.setOther(other.getValue());
+            }
+            break;
+        case "ON":
+            if (builder.hasOtherAndNoResponses()) {
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
+            } else {
+                ResultValueText otherAndNoResponses = ResultValueText.parse(value, keyToken);
+                builder.setOtherAndNoResponses(otherAndNoResponses.getValue());
             }
             break;
         case "PD":

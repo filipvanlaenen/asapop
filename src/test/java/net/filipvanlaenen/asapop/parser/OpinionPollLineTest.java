@@ -257,7 +257,7 @@ public final class OpinionPollLineTest {
     }
 
     /**
-     * Verifies that an opinion poll with a result for no reponse can be parsed.
+     * Verifies that an opinion poll with a result for no reponses can be parsed.
      */
     @Test
     public void shouldParseAnOpinionPollWithAResultForNoResponse() {
@@ -265,6 +265,18 @@ public final class OpinionPollLineTest {
                 OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •N:2", ELECTORAL_LIST_KEY_MAP, TOKEN);
         OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setNoResponses("2").setPollingFirm("ACME").setPublicationDate(DATE1).build();
+        assertEquals(expected, opinionPollLine.getOpinionPoll());
+    }
+
+    /**
+     * Verifies that an opinion poll with a result for other and no reponses combined can be parsed.
+     */
+    @Test
+    public void shouldParseAnOpinionPollWithAResultForOtherAndNoResponseCombined() {
+        OpinionPollLine opinionPollLine =
+                OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 A:55 B:43 •ON:2", ELECTORAL_LIST_KEY_MAP, TOKEN);
+        OpinionPoll expected = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "43")
+                .setOtherAndNoResponses("2").setPollingFirm("ACME").setPublicationDate(DATE1).build();
         assertEquals(expected, opinionPollLine.getOpinionPoll());
     }
 
@@ -391,6 +403,20 @@ public final class OpinionPollLineTest {
         OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •N:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedNoResponsesValue.\n"
                 + "‡ ⬐ Processing metadata field N.\n" + "‡ Malformed result value Error.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line with a malformed other and no responses value produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAMalformedOtherAndNoResponsesValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •ON:Error", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.\n"
+                + "‡ ⬐ Processing metadata field ON.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
     }
 
@@ -658,6 +684,50 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that a line adding other and no responses twice produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenOtherAndNoResponsesIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenOtherAndNoResponsesIsAddedTwice.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •ON: 12 •ON: 12 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorWhenOtherAndNoResponsesIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field ON.\n" + "‡ Single value metadata key ON occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line adding both other and other and no responses combined produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenOtherAndOtherAndNoResponsesIsAdded() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorWhenOtherAndOtherAndNoResponsesIsAdded.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •O: 6 •ON: 6 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡ ⬐ Unit test OpinionPollLineTest.shouldLogAnErrorWhenOtherAndOtherAndNoResponsesIsAdded.\n"
+                + "‡ Other and no responses (ON) shouldn’t be combined with other (O) and/or no responses (N).\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line adding both no responses and other and no responses combined produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenNoResponsesAndOtherAndNoResponsesIsAdded() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test OpinionPollLineTest.shouldLogAnErrorWhenNoResponsesAndOtherAndNoResponsesIsAdded.");
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •N: 6 •ON: 6 A:53 B:35", ELECTORAL_LIST_KEY_MAP, token);
+        String expected =
+                "‡ ⬐ Unit test OpinionPollLineTest.shouldLogAnErrorWhenNoResponsesAndOtherAndNoResponsesIsAdded.\n"
+                        + "‡ Other and no responses (ON) shouldn’t be combined with other (O) and/or no responses"
+                        + " (N).\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line adding a verified sum twice produces a warning.
      */
     @Test
@@ -758,7 +828,7 @@ public final class OpinionPollLineTest {
      * Verifies that a line with results that don't add up logs an error message.
      */
     @Test
-    public void shouldAnLogErrorWhenResultsDoNotAddUp() {
+    public void shouldLogAnLogErrorWhenResultsDoNotAddUp() {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogErrorWhenResultsDoNotAddUp.");
         OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SS: 1000 A:60 B:50", ELECTORAL_LIST_KEY_MAP, token);
