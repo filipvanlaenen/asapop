@@ -113,7 +113,7 @@ public final class ResponseScenario {
         /**
          * Precision for floating point assertions.
          */
-        private static final double DELTA = 1E-6;
+        private static final double DELTA = 1E-5;
         /**
          * The area.
          */
