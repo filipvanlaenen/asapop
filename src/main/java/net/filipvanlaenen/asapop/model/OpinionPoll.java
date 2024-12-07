@@ -323,8 +323,8 @@ public final class OpinionPoll {
 
         /**
          * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
-         * provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) × precision, or the
-         * sum is below 100 and either other or no responses is missing.
+         * provided, or within the interval of rounding errors, or the sum is below 100 and either other or other and no
+         * responses is missing.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */

@@ -386,7 +386,7 @@ public final class OpinionPollLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token =
                 Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherValue.");
-        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, token);
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:45 •O:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherValue.\n"
                 + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
@@ -414,7 +414,7 @@ public final class OpinionPollLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.");
-        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:43 •ON:Error", ELECTORAL_LIST_KEY_MAP, token);
+        OpinionPollLine.parse("•PF: ACME •PD: 2021-07-27 •SC: N A:55 B:45 •ON:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test OpinionPollLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.\n"
                 + "‡ ⬐ Processing metadata field ON.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());

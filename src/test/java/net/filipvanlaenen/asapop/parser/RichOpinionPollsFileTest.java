@@ -184,7 +184,7 @@ public final class RichOpinionPollsFileTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER.logMessage(
                 "Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedOtherResultValue.");
-        RichOpinionPollsFile.parse(token, "•PF: ACME •PD: 2021-07-27 A:46 B:45 •O:x", ELECTORAL_LIST_A_LINE,
+        RichOpinionPollsFile.parse(token, "•PF: ACME •PD: 2021-07-27 A:56 B:45 •O:x", ELECTORAL_LIST_A_LINE,
                 ELECTORAL_LIST_B_LINE);
         String expected =
                 "‡   Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithAMalformedOtherResultValue.\n"

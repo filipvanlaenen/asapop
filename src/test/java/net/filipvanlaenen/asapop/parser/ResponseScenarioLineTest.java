@@ -272,7 +272,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER
                 .logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.");
-        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •O:Error", ELECTORAL_LIST_KEY_MAP, token);
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:45 •O:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherValue.\n"
                 + "‡ ⬐ Processing metadata field O.\n" + "‡ Malformed result value Error.\n";
         assertEquals(expected, outputStream.toString());
@@ -286,7 +286,7 @@ public final class ResponseScenarioLineTest {
         ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
         Token token = Laconic.LOGGER.logMessage(
                 "Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.");
-        ResponseScenarioLine.parse("& •SS: 999 A:55 B:43 •ON:Error", ELECTORAL_LIST_KEY_MAP, token);
+        ResponseScenarioLine.parse("& •SS: 999 A:55 B:45 •ON:Error", ELECTORAL_LIST_KEY_MAP, token);
         String expected =
                 "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAMalformedOtherAndNoResponsesValue.\n"
                         + "‡ ⬐ Processing metadata field ON.\n" + "‡ Malformed result value Error.\n";

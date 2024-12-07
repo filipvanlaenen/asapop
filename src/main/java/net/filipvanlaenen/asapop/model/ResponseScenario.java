@@ -195,7 +195,8 @@ public final class ResponseScenario {
                 if (value != null) {
                     sum += value;
                 }
-            } else if (hasOtherAndNoResponses()) {
+            }
+            if (hasOtherAndNoResponses()) {
                 Double value = otherAndNoResponses.getNominalValue();
                 if (value != null) {
                     sum += value;
@@ -309,8 +310,8 @@ public final class ResponseScenario {
 
         /**
          * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
-         * provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) × precision, or the
-         * sum is below 100 and either other or no responses is missing.
+         * provided, or within the interval of rounding errors, or the sum is below 100 and either other or other and no
+         * responses is missing.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */
@@ -320,8 +321,8 @@ public final class ResponseScenario {
 
         /**
          * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
-         * provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) × precision. If they
-         * don't need to add strictly up, the sum can be below 100 if other or no responses is missing.
+         * provided, or within the interval of rounding errors. If they don't need to add strictly up, the sum can be
+         * below 100 if other or no responses is missing.
          *
          * @param strictly True if the results should add up strictly.
          * @return True if the sum of results is within the interval of rounding errors.
@@ -342,17 +343,19 @@ public final class ResponseScenario {
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 return Math.abs(sum - verifiedSum.value()) < precision.getValue() / HUNDRED;
             } else {
-                int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0);
-                double epsilon = ((n - 1) / 2) * precision.getValue();
-                return (ONE_HUNDRED - epsilon <= sum || !strictly && (!hasOther() || !hasNoResponses()))
-                        && sum <= ONE_HUNDRED + epsilon;
+                int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0)
+                        + (hasOtherAndNoResponses() ? 1 : 0);
+                double delta = n * precision.getValue() / 2;
+                boolean isNotAbove = sum <= ONE_HUNDRED + delta;
+                boolean isNotBelow = sum >= ONE_HUNDRED - delta;
+                boolean mayBeBelow = !strictly && !hasOther() && !hasOtherAndNoResponses();
+                return (isNotBelow || mayBeBelow) && isNotAbove;
             }
         }
 
         /**
          * Verifies whether the results add strictly up. The results add up if their sum is equal to the verified sum,
-         * if one is provided, or within the interval of rounding errors, defined as 100 ± floor((n - 1) / 2) ×
-         * precision.
+         * if one is provided, or within the interval of rounding errors.
          *
          * @return True if the sum of results is within the interval of rounding errors.
          */

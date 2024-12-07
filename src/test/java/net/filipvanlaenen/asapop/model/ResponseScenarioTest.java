@@ -691,19 +691,19 @@ public class ResponseScenarioTest {
      * Verifies that the lower bound for the results to add up doesn't apply when no responses have been registered.
      */
     @Test
-    public void lowerBoundForResultsToAddDoesNotApplyWhenNoNoResponses() {
+    public void lowerBoundForResultsToAddUpAppliesWhenNoNoResponses() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
                 .addResult("B", "0").addResult("C", "0").setOther("0");
-        assertTrue(responseScenarioBuilder.resultsAddUp());
+        assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 
     /**
      * Verifies that the lower bound for the results to add up doesn't apply when no other have been registered.
      */
     @Test
-    public void lowerBoundForResultsToAddDoesNotApplyWhenNoOther() {
+    public void lowerBoundForResultsToAddUpDoesNotApplyWhenNoOther() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
-                .addResult("B", "0").addResult("C", "0").setOther("0");
+                .addResult("B", "0").addResult("C", "0").setNoResponses("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
