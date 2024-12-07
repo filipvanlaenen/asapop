@@ -688,32 +688,93 @@ public class ResponseScenarioTest {
     }
 
     /**
-     * Verifies that the lower bound for the results to add up doesn't apply when no responses have been registered.
+     * Verifies that the lower bound does not apply when no other, no no responses and no other and no responses have
+     * been registered.
      */
     @Test
-    public void lowerBoundForResultsToAddUpAppliesWhenNoNoResponses() {
+    public void lowerBoundForResultsToAddUpDoesNotApplyWhenNoOtherOrNoResponsesOrOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder =
+                new ResponseScenarioTestBuilder().addResult("A", "50").addResult("B", "0").addResult("C", "0");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the lower bound applies when only other has been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddUpAppliesWhenOther() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
                 .addResult("B", "0").addResult("C", "0").setOther("0");
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 
     /**
-     * Verifies that the lower bound for the results to add up doesn't apply when no other have been registered.
+     * Verifies that the lower bound applies when only no responses has been registered.
      */
     @Test
-    public void lowerBoundForResultsToAddUpDoesNotApplyWhenNoOther() {
+    public void lowerBoundForResultsToAddUpDoesNotApplyWhenNoResponses() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
                 .addResult("B", "0").addResult("C", "0").setNoResponses("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
     /**
+     * Verifies that the lower bound applies when only other and no responses has been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddUpAppliesWhenOtherAndNoResponsesON() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setOtherAndNoResponses("0");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the lower bound applies when other and no responses have been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddUpAppliesWhenOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setOther("0").setNoResponses("0");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the lower bound applies when other and other and no responses have been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddUpAppliesWhenOtherAndOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setOther("0").setOtherAndNoResponses("0");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the lower bound applies when no responses and other and no responses have been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddUpAppliesWhenNoResponsesAndOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setNoResponses("0").setOtherAndNoResponses("0");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies that the lower bound applies when other, no responses and other and no responses have been registered.
+     */
+    @Test
+    public void lowerBoundForResultsToAddUpAppliesWhenOtherNoResponsesAndOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "50")
+                .addResult("B", "0").addResult("C", "0").setOther("0").setNoResponses("0").setOtherAndNoResponses("0");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
      * Verifies the lower bound of results adding up.
      */
     @Test
-    public void resultsShouldAddUpForLowerBound() {
+    public void resultsShouldAddUpAtLowerBound() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "98")
-                .addResult("B", "0").addResult("C", "0").setOther("0").setNoResponses("0");
+                .addResult("B", "0").addResult("C", "0").setOther("0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -723,7 +784,7 @@ public class ResponseScenarioTest {
     @Test
     public void resultsShouldNotAddUpBelowLowerBound() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "97")
-                .addResult("B", "0").addResult("C", "0").setOther("0").setNoResponses("0");
+                .addResult("B", "0").addResult("C", "0").setOther("0");
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -731,9 +792,9 @@ public class ResponseScenarioTest {
      * Verifies the upper bound of results adding up.
      */
     @Test
-    public void resultsShouldAddUpForUpperBound() {
+    public void resultsShouldAddUpAtUpperBound() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
-                .addResult("B", "1").addResult("C", "1").setOther("0").setNoResponses("0");
+                .addResult("B", "0.1").addResult("C", "0.1").addResult("D", "0");
         assertTrue(responseScenarioBuilder.resultsAddUp());
     }
 
@@ -743,7 +804,67 @@ public class ResponseScenarioTest {
     @Test
     public void resultsShouldNotAddUpAboveUpperBound() {
         ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
-                .addResult("B", "0.1").addResult("C", "0").setOther("0.1").setNoResponses("0.1");
+                .addResult("B", "0.1").addResult("C", "0.1").addResult("D", "0.1");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results adding up with other.
+     */
+    @Test
+    public void resultsShouldAddUpAtUpperBoundWithOther() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setOther("0.1");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results don't add up with other above the upper bound.
+     */
+    @Test
+    public void resultsShouldNotAddUpAboveUpperBoundWithOther() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setOther("0.2");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results adding up with no responses.
+     */
+    @Test
+    public void resultsShouldAddUpAtUpperBoundWithNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setNoResponses("0.1");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results don't add up with no responses above the upper bound.
+     */
+    @Test
+    public void resultsShouldNotAddUpAboveUpperBoundWithNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setNoResponses("0.2");
+        assertFalse(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results adding up with other and no responses.
+     */
+    @Test
+    public void resultsShouldAddUpAtUpperBoundWithOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setOtherAndNoResponses("0.1");
+        assertTrue(responseScenarioBuilder.resultsAddUp());
+    }
+
+    /**
+     * Verifies the upper bound of results don't add up with other and no responses above the upper bound.
+     */
+    @Test
+    public void resultsShouldNotAddUpAboveUpperBoundWithOtherAndNoResponses() {
+        ResponseScenario.Builder responseScenarioBuilder = new ResponseScenarioTestBuilder().addResult("A", "100")
+                .addResult("B", "0.1").addResult("C", "0").setOtherAndNoResponses("0.2");
         assertFalse(responseScenarioBuilder.resultsAddUp());
     }
 

@@ -111,6 +111,10 @@ public final class ResponseScenario {
          */
         private static final double ONE_HUNDRED = 100D;
         /**
+         * Precision for floating point assertions.
+         */
+        private static final double DELTA = 1E-6;
+        /**
          * The area.
          */
         private String area;
@@ -341,13 +345,15 @@ public final class ResponseScenario {
             }
             if (hasVerifiedSum()) {
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-                return Math.abs(sum - verifiedSum.value()) < precision.getValue() / HUNDRED;
+                return Math.abs(sum - verifiedSum.value()) < DELTA;
             } else {
                 int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0)
                         + (hasOtherAndNoResponses() ? 1 : 0);
                 double delta = n * precision.getValue() / 2;
-                boolean isNotAbove = sum <= ONE_HUNDRED + delta;
-                boolean isNotBelow = sum >= ONE_HUNDRED - delta;
+                // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+                boolean isNotAbove = sum < ONE_HUNDRED + delta + DELTA;
+                // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+                boolean isNotBelow = sum > ONE_HUNDRED - delta - DELTA;
                 boolean mayBeBelow = !strictly && !hasOther() && !hasOtherAndNoResponses();
                 return (isNotBelow || mayBeBelow) && isNotAbove;
             }
