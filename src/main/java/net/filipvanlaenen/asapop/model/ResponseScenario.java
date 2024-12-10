@@ -70,6 +70,10 @@ public final class ResponseScenario {
      */
     private double sumOfResultsAndOther;
     /**
+     * The unit.
+     */
+    private Unit unit;
+    /**
      * The verified sum.
      */
     private DecimalNumber verifiedSum;
@@ -99,6 +103,7 @@ public final class ResponseScenario {
         scale = builder.calculateScale();
         scope = builder.scope;
         strictlyWithinRoundingError = builder.resultsAddStrictlyUp();
+        unit = builder.unit;
         verifiedSum = builder.verifiedSum;
     }
 
@@ -146,6 +151,10 @@ public final class ResponseScenario {
          * The scope.
          */
         private Scope scope;
+        /**
+         * The unit.
+         */
+        private Unit unit;
         /**
          * The verified sum.
          */
@@ -304,6 +313,15 @@ public final class ResponseScenario {
         }
 
         /**
+         * Returns whether a unit has been registered in this builder instance.
+         *
+         * @return True if a unit has been registered in this builder instance.
+         */
+        public boolean hasUnit() {
+            return unit != null;
+        }
+
+        /**
          * Returns whether a verified sum has been registered in this builder instance.
          *
          * @return True if a verified sum has been registered in this builder instance.
@@ -447,6 +465,17 @@ public final class ResponseScenario {
         }
 
         /**
+         * Sets the unit.
+         *
+         * @param theUnit The unit.
+         * @return This builder instance.
+         */
+        public Builder setUnit(final Unit theUnit) {
+            this.unit = theUnit;
+            return this;
+        }
+
+        /**
          * Sets the verified sum.
          *
          * @param theVerifiedSum The verified sum.
@@ -470,6 +499,7 @@ public final class ResponseScenario {
                     && otherResponseScenario.results.equals(results)
                     && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
                     && equalsOrBothNull(scope, otherResponseScenario.scope)
+                    && equalsOrBothNull(unit, otherResponseScenario.unit)
                     && equalsOrBothNull(verifiedSum, otherResponseScenario.verifiedSum);
         } else {
             return false;
@@ -615,6 +645,15 @@ public final class ResponseScenario {
     }
 
     /**
+     * Returns the unit.
+     *
+     * @return The unit.
+     */
+    public Unit getUnit() {
+        return unit;
+    }
+
+    /**
      * Returns the verified sum.
      *
      * @return The verified sum.
@@ -625,7 +664,7 @@ public final class ResponseScenario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(area, excluded, noResponses, other, otherAndNoResponses, results, sampleSize, scope,
+        return Objects.hash(area, excluded, noResponses, other, otherAndNoResponses, results, sampleSize, scope, unit,
                 verifiedSum);
     }
 

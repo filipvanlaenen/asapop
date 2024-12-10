@@ -52,10 +52,6 @@ public final class OpinionPoll {
      * The scope.
      */
     private Scope scope;
-    /**
-     * The unit.
-     */
-    private Unit unit;
 
     /**
      * Constructor using a builder instance as its parameter.
@@ -72,7 +68,6 @@ public final class OpinionPoll {
         pollingFirmPartner = builder.pollingFirmPartner;
         publicationDate = builder.publicationDate;
         scope = builder.scope;
-        unit = builder.unit;
     }
 
     /**
@@ -115,10 +110,6 @@ public final class OpinionPoll {
          * The scope.
          */
         private Scope scope;
-        /**
-         * The unit.
-         */
-        private Unit unit;
 
         /**
          * Default constructor.
@@ -309,7 +300,7 @@ public final class OpinionPoll {
          * @return True if a unit has been registered in this builder instance.
          */
         public boolean hasUnit() {
-            return unit != null;
+            return responseScenarioBuilder.hasUnit();
         }
 
         /**
@@ -471,7 +462,7 @@ public final class OpinionPoll {
          * @return This builder instance.
          */
         public Builder setUnit(final Unit theUnit) {
-            this.unit = theUnit;
+            responseScenarioBuilder.setUnit(theUnit);
             return this;
         }
 
@@ -509,7 +500,7 @@ public final class OpinionPoll {
                     && equalsOrBothNull(pollingFirm, otherOpinionPoll.pollingFirm)
                     && equalsOrBothNull(pollingFirmPartner, otherOpinionPoll.pollingFirmPartner)
                     && equalsOrBothNull(publicationDate, otherOpinionPoll.publicationDate)
-                    && equalsOrBothNull(scope, otherOpinionPoll.scope) && equalsOrBothNull(unit, otherOpinionPoll.unit);
+                    && equalsOrBothNull(scope, otherOpinionPoll.scope);
         } else {
             return false;
         }
@@ -748,7 +739,7 @@ public final class OpinionPoll {
      * @return The unit.
      */
     public Unit getUnit() {
-        return unit;
+        return mainResponseScenario.getUnit();
     }
 
     /**
@@ -763,6 +754,6 @@ public final class OpinionPoll {
     @Override
     public int hashCode() {
         return Objects.hash(alternativeResponseScenarios, area, commissioners, fieldworkEnd, fieldworkStart,
-                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, scope, unit);
+                mainResponseScenario, pollingFirm, pollingFirmPartner, publicationDate, scope);
     }
 }

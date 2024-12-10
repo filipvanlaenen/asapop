@@ -272,9 +272,9 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU01ShouldHandleSampleSizeAndResultValues() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
         ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
-                .addResult("C", "20").setSampleSize("1000").build();
+                .addResult("C", "20").setSampleSize("1000").setUnit(Unit.SEATS).build();
         String expected =
                 "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,1.1%,44.4%,33.3%,22.2%,Not"
                         + " Available";
@@ -306,9 +306,10 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU02ShouldHandleSampleSizeExcludedAndResultValues() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
-        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
-                .addResult("C", "20").setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
+        ResponseScenario responseScenario =
+                new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
+                        .setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).setUnit(Unit.SEATS).build();
         String expected =
                 "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,80%,1.1%,44.4%,33.3%,22.2%,Not Available";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, null, A_AND_B_AND_C));
@@ -338,9 +339,9 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU03ShouldHandleSampleSizeResultValuesAndOthers() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
         ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
-                .addResult("C", "20").setOther("10").setSampleSize("1000").build();
+                .addResult("C", "20").setOther("10").setSampleSize("1000").setUnit(Unit.SEATS).build();
         String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,1.0%,40%,30%,20%,10%";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, null, A_AND_B_AND_C));
     }
@@ -369,10 +370,10 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU04ShouldHandleSampleSizeExcludedResultValuesAndOthers() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
-        ResponseScenario responseScenario =
-                new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30").addResult("C", "20")
-                        .setOther("10").setSampleSize("1250").setExcluded(DecimalNumber.parse("20")).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "40").addResult("B", "30")
+                .addResult("C", "20").setOther("10").setSampleSize("1250").setExcluded(DecimalNumber.parse("20"))
+                .setUnit(Unit.SEATS).build();
         String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,80%,1.0%,40%,30%,20%,10%";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, null, A_AND_B_AND_C));
     }
@@ -402,9 +403,9 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU05ShouldHandleSampleSizeResultValuesAndOthersLessThanOneHundred() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
         ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "32").addResult("B", "24")
-                .addResult("C", "16").setOther("8").setSampleSize("1250").build();
+                .addResult("C", "16").setOther("8").setSampleSize("1250").setUnit(Unit.SEATS).build();
         String expected =
                 "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,Not Available,1.2%,40.0%,30.0%,20.0%,10.0%";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, null, A_AND_B_AND_C));
@@ -434,10 +435,10 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU06ShouldHandleSampleSizeExcludedResultValuesAndOthersLessThanOneHundred() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
-        ResponseScenario responseScenario =
-                new ResponseScenarioTestBuilder().addResult("A", "32").addResult("B", "24").addResult("C", "16")
-                        .setOther("8").setSampleSize("1250").setExcluded(DecimalNumber.parse("30")).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
+        ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "32").addResult("B", "24")
+                .addResult("C", "16").setOther("8").setSampleSize("1250").setExcluded(DecimalNumber.parse("30"))
+                .setUnit(Unit.SEATS).build();
         String expected = "ACME,,2021-08-01,2021-08-02,Not Available,1250,Provided,70%,1.2%,40.0%,30.0%,20.0%,10.0%";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, null, A_AND_B_AND_C));
     }
@@ -467,9 +468,9 @@ public class EopaodCsvExporterTest {
     @Test
     public void exportOfResponseScenarioCaseU15ShouldHandleSampleSizeResultValuesAndOthersGreaterThanOneHundred() {
         OpinionPoll poll = new OpinionPoll.Builder().setPollingFirm("ACME").setFieldworkStart(DATE_OR_MONTH1)
-                .setFieldworkEnd(DATE_OR_MONTH2).setUnit(Unit.SEATS).build();
+                .setFieldworkEnd(DATE_OR_MONTH2).build();
         ResponseScenario responseScenario = new ResponseScenarioTestBuilder().addResult("A", "80").addResult("B", "60")
-                .addResult("C", "40").setOther("20").setSampleSize("1000").build();
+                .addResult("C", "40").setOther("20").setSampleSize("1000").setUnit(Unit.SEATS).build();
         String expected =
                 "ACME,,2021-08-01,2021-08-02,Not Available,1000,Provided,Not Available,0.5%,40.0%,30.0%,20.0%,10.0%";
         assertEquals(expected, EopaodCsvExporter.export(responseScenario, poll, null, null, A_AND_B_AND_C));

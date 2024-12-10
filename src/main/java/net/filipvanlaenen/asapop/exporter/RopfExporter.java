@@ -157,6 +157,7 @@ public final class RopfExporter extends Exporter {
                 updateMetadataFieldWidth(result, "EX", responseScenario.getExcluded());
                 updateMetadataFieldWidth(result, "N", responseScenario.getNoResponses());
                 updateMetadataFieldWidth(result, "O", responseScenario.getOther());
+                updateMetadataFieldWidth(result, "U", responseScenario.getUnit());
                 updateMetadataFieldWidth(result, "ON", responseScenario.getOtherAndNoResponses());
                 updateMetadataFieldWidth(result, "SC", responseScenario.getScope());
                 updateMetadataFieldWidth(result, "SS", responseScenario.getSampleSize());
@@ -316,6 +317,7 @@ public final class RopfExporter extends Exporter {
         sb.append(export("A", metadataFieldWidths, responseScenario.getArea()));
         sb.append(export("SS", metadataFieldWidths, responseScenario.getSampleSize()));
         sb.append(export("EX", metadataFieldWidths, responseScenario.getExcluded()));
+        sb.append(export("U", metadataFieldWidths, responseScenario.getUnit()));
         List<Set<ElectoralList>> electoralListCombinations =
                 new ArrayList<Set<ElectoralList>>(responseScenario.getElectoralListSets());
         Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {

@@ -13,6 +13,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -200,6 +201,18 @@ final class ResponseScenarioLine extends Line {
                 builder.setSampleSize(sampleSize);
             } else {
                 Laconic.LOGGER.logError("Malformed sample size %s.", value, keyToken);
+            }
+            break;
+        case "U":
+            if (builder.hasUnit()) {
+                Laconic.LOGGER.logError("Single value metadata key %s occurred more than once.", key, keyToken);
+            } else {
+                Unit unit = Unit.parse(value);
+                if (unit == null) {
+                    Laconic.LOGGER.logError("Unknown metadata value %s.", value, keyToken);
+                } else {
+                    builder.setUnit(unit);
+                }
             }
             break;
         case "VS":

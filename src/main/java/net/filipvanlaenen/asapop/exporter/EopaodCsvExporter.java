@@ -182,7 +182,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(notAvailableIfNull(exportParticipationRatePercentage(responseScenario, opinionPoll)));
         Precision precision = calculatePrecision(responseScenario, electoralListIdSets);
         Double scale = responseScenario.getScale();
-        if (Unit.SEATS == opinionPoll.getUnit()) {
+        if (Unit.SEATS == responseScenario.getUnit()) {
             precision = Precision.TENTH;
             double numberOfSeats = responseScenario.getSumOfResultsAndOther();
             elements.add(Precision.TENTH.getFormat().format(ONE_HUNDRED / numberOfSeats) + "%");

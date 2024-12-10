@@ -219,7 +219,7 @@ public class SaporExporter extends Exporter {
             final Integer lowestEffectiveSampleSize) {
         Map<String, Integer> saporBody = new HashMap<String, Integer>();
         Integer calculationSampleSize = responseScenario.getSampleSizeValue();
-        boolean unitIsSeats = Unit.SEATS == opinionPoll.getUnit();
+        boolean unitIsSeats = Unit.SEATS == responseScenario.getUnit();
         boolean hasNoResponses = responseScenario.getNoResponses() != null;
         boolean hasExcluded = responseScenario.getExcluded() != null;
         boolean hasOther = responseScenario.getOther() != null;

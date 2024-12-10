@@ -124,13 +124,13 @@ The table below gives an overview over the metadata fields and their use:
 | PFP          | Polling firm partner              | Text           | 0…1         | No                |
 | SC           | Scope                             | Scope          | 0…1         | Yes               |
 | SS           | Sample size                       | Sample Size    | 0…1         | Yes               |
-| U            | Unit                              | Unit           | 0…1         | No                |
+| U            | Unit                              | Unit           | 0…1         | Yes²              |
 | VS           | Verified sum                      | Decimal Number | 0…1         | Yes²              |
 
 ¹ The metadata field ON can't be combined together with the metadata fields N or O.
 
 ² As for the regular results, the result for other, the number of no responses, the result for other and no responses
-combined, and the verified sum are not inherited by a response scenario if absent.
+combined, the unit, and the verified sum are not inherited by a response scenario if absent.
 
 
 The table below gives an informal overview over the field types:
