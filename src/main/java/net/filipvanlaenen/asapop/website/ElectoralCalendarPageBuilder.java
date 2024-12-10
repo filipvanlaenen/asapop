@@ -112,7 +112,7 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         TBody tBody = new TBody();
         table.addElement(tBody);
         Token nextElectionsToken = Laconic.LOGGER.logMessage(electoralCalendarPageToken,
-                "Calculating the next election dates starting from  %s.", now.toString());
+                "Calculating the next election dates starting from %s.", now.toString());
         List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now, nextElectionsToken));
         nextElections.sort(new ElectionComparator(now));
         for (Election nextElection : nextElections) {

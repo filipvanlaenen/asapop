@@ -212,7 +212,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
         String areaCode = areaConfiguration.getAreaCode();
         List<LI> upcomingElectionLIs = new ArrayList<LI>();
         Token nextElectionsToken =
-                Laconic.LOGGER.logMessage(token, "Calculating the next election dates for  %s.", areaCode);
+                Laconic.LOGGER.logMessage(token, "Calculating the next election dates for area %s.", areaCode);
         addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.PRESIDENTIAL, nextElectionsToken);
         addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.NATIONAL, nextElectionsToken);
         addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.EUROPEAN, nextElectionsToken);
@@ -239,8 +239,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
             final ElectionType electionType, final Token token) {
         Token nextElectionsToken = Laconic.LOGGER.logMessage(token,
                 "Calculating the next election date for election type %s.", electionType.getTermKey());
-        Laconic.LOGGER.logMessage(nextElectionsToken, "Calculating the next election dates starting from  %s.",
-                now.toString());
+        Laconic.LOGGER.logMessage("Calculating the next election dates starting from %s.", now.toString(),
+                nextElectionsToken);
         Election nextElection = elections.getNextElection(areaCode, electionType, now, nextElectionsToken);
         if (nextElection != null) {
             LI li = new LI();

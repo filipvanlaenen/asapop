@@ -98,7 +98,7 @@ final class IndexPageBuilder extends PageBuilder {
      */
     private void calculateGitHubWebsiteUrlsSortedByNextElectionDate(final Token token) {
         Token nextElectionsToken = Laconic.LOGGER.logMessage(token,
-                "Calculating the next election dates starting from  %s.", now.toString());
+                "Calculating the next election dates starting from %s.", now.toString());
         List<Election> nextNationalElections = elections.getNextElections(now, nextElectionsToken).stream()
                 .filter(ne -> ne.electionType() == ElectionType.NATIONAL).collect(Collectors.toList());
         nextNationalElections.sort(new ElectionComparator(now));
