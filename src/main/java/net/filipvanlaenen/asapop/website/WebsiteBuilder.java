@@ -7,6 +7,8 @@ import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class building the website.
@@ -103,13 +105,15 @@ public class WebsiteBuilder {
      * @return The website.
      */
     public Website build() {
+        Token token = Laconic.LOGGER.logMessage("Building the website.");
         Website website = new Website();
         JavaScriptsBuilder javaScriptsBuilder =
                 new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, tooltipScriptContent, terms);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
-        website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build());
-        website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build());
+        website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build(token));
+        website.put("calendar.html",
+                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build(token));
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.put("statistics.html",
                 new StatisticsPageBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap, now, startOfYear)
@@ -118,8 +122,8 @@ public class WebsiteBuilder {
                 new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
                         .build());
         website.putAll(new WidgetsBuilder(websiteConfiguration, parliamentaryOpinionPollsMap).build());
-        website.putAll(
-                new AreaIndexPagesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, elections, now).build());
+        website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, elections, now)
+                .build(token));
         return website;
     }
 }

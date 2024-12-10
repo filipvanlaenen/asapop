@@ -25,11 +25,17 @@ import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test WebsiteBuilderTest.");
     /**
      * Today's date.
      */
@@ -116,22 +122,23 @@ public class WebsiteBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+        map.put(Paths.get("index.html"),
+                new IndexPageBuilder(websiteConfiguration, elections, NOW).build(TOKEN).asString());
         map.put(Paths.get("calendar.html"),
-                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build(TOKEN).asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
                 new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, NOW, START_OF_YEAR).build()
                         .asString());
         map.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(latvia));
+                        .createAreaIndexPage(latvia, TOKEN));
         map.put(Paths.get("mk", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(northMacedonia));
+                        .createAreaIndexPage(northMacedonia, TOKEN));
         map.put(Paths.get("se", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(sweden));
+                        .createAreaIndexPage(sweden, TOKEN));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         String navigationScriptContent = "function moveToArea(level) {}";
@@ -144,29 +151,20 @@ public class WebsiteBuilderTest {
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
         map.put(Paths.get("_widgets", "tables", "mk.html"), "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "  <head>\n"
-                + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
-                + "    <link href=\"https://fonts.googleapis.com/css?family=Alegreya+Sans%3A400%2C700%2C400italic%2C700italic%2C600%2C600italic%7CAlegreya+Sans%3A400%2C500%2C600%2C700%2C400italic%2C700italic&amp;ver=1\" rel=\"stylesheet\" type=\"text/css\"/>\n"
-                + "    <link href=\"https://europeelects.eu/wp-content/themes/chaplin/style.css?ver=2.6.7\" rel=\"stylesheet\" type=\"text/css\"/>\n"
-                + "    <style>body { background-color: #F9F9F9; }\n"
-                + "table{font-family: Alegreya Sans,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;}\n"
-                + "th{min-width:65px}</style>\n"
-                + "  </head>\n"
-                + "  <body>\n"
-                + "    <table>\n"
-                + "      <thead>\n"
-                + "        <tr>\n"
-                + "          <th>Fieldwork Period</th>\n"
-                + "          <th>Polling Firm</th>\n"
-                + "          <th>Commissioner(s)</th>\n"
-                + "          <th>Sample Size</th>\n"
-                + "          <th>Other</th>\n"
-                + "        </tr>\n"
-                + "      </thead>\n"
-                + "      <tbody/>\n"
-                + "    </table>\n"
-                + "  </body>\n"
-                + "</html>");
+                + "  <head>\n" + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
+                + "    <link"
+                + " href=\"https://fonts.googleapis.com/css?family=Alegreya+Sans%3A400%2C700%2C400italic%2C700italic"
+                + "%2C600%2C600italic%7CAlegreya+Sans%3A400%2C500%2C600%2C700%2C400italic%2C700italic&amp;ver=1\""
+                + " rel=\"stylesheet\" type=\"text/css\"/>\n"
+                + "    <link href=\"https://europeelects.eu/wp-content/themes/chaplin/style.css?ver=2.6.7\""
+                + " rel=\"stylesheet\" type=\"text/css\"/>\n" + "    <style>body { background-color: #F9F9F9; }\n"
+                + "table{font-family:"
+                + " Alegreya Sans,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;}\n"
+                + "th{min-width:65px}</style>\n" + "  </head>\n" + "  <body>\n" + "    <table>\n" + "      <thead>\n"
+                + "        <tr>\n" + "          <th>Fieldwork Period</th>\n" + "          <th>Polling Firm</th>\n"
+                + "          <th>Commissioner(s)</th>\n" + "          <th>Sample Size</th>\n"
+                + "          <th>Other</th>\n" + "        </tr>\n" + "      </thead>\n" + "      <tbody/>\n"
+                + "    </table>\n" + "  </body>\n" + "</html>");
         String baseStyleSheetContent = "header { display: block; width: 100%; }";
         map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";

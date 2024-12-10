@@ -28,6 +28,8 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectoralSystem;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -203,13 +205,17 @@ class AreaIndexPagesBuilder extends PageBuilder {
      *
      * @param section           The section to add the upcoming election to.
      * @param areaConfiguration The configuration for the area.
+     * @param token             The Laconic logging token.
      */
-    private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration) {
+    private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration,
+            final Token token) {
         String areaCode = areaConfiguration.getAreaCode();
         List<LI> upcomingElectionLIs = new ArrayList<LI>();
-        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.PRESIDENTIAL);
-        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.NATIONAL);
-        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.EUROPEAN);
+        Token nextElectionsToken =
+                Laconic.LOGGER.logMessage(token, "Calculating the next election dates for  %s.", areaCode);
+        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.PRESIDENTIAL, nextElectionsToken);
+        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.NATIONAL, nextElectionsToken);
+        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.EUROPEAN, nextElectionsToken);
         if (upcomingElectionLIs.isEmpty()) {
             addNoneParagraph(section);
         } else {
@@ -227,10 +233,15 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param upcomingElectionLIs The list to add the upcoming elections to as LI elements.
      * @param areaCode            The area code.
      * @param electionType        The election type.
+     * @param token               The Laconic logging token.
      */
     private void addUpcomingElectionLI(final List<LI> upcomingElectionLIs, final String areaCode,
-            final ElectionType electionType) {
-        Election nextElection = elections.getNextElection(areaCode, electionType, now);
+            final ElectionType electionType, final Token token) {
+        Token nextElectionsToken = Laconic.LOGGER.logMessage(token,
+                "Calculating the next election date for election type %s.", electionType.getTermKey());
+        Laconic.LOGGER.logMessage(nextElectionsToken, "Calculating the next election dates starting from  %s.",
+                now.toString());
+        Election nextElection = elections.getNextElection(areaCode, electionType, now, nextElectionsToken);
         if (nextElection != null) {
             LI li = new LI();
             ElectionDate nextElectionDate = nextElection.getNextElectionDate(now);
@@ -249,14 +260,19 @@ class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * Builds the index pages for all areas.
      *
+     * @param token The Laconic logging token.
      * @return A map with the index pages for all areas.
      */
-    Map<Path, String> build() {
+    Map<Path, String> build(final Token token) {
+        Token areaIndexPagesToken = Laconic.LOGGER.logMessage(token, "Building the area index pages.");
         Map<Path, String> result = new HashMap<Path, String>();
         for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
             String areaCode = areaConfiguration.getAreaCode();
             if (areaCode != null) {
-                result.put(Paths.get(areaCode, "index.html"), createAreaIndexPage(areaConfiguration));
+                Token areaIndexPageToken = Laconic.LOGGER.logMessage(areaIndexPagesToken,
+                        "Building the area index page for %s.", areaCode);
+                result.put(Paths.get(areaCode, "index.html"),
+                        createAreaIndexPage(areaConfiguration, areaIndexPageToken));
             }
         }
         return result;
@@ -351,9 +367,10 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * Creates the index page for an area.
      *
      * @param areaConfiguration The configuration for the area.
+     * @param token             The Laconic logging token.
      * @return The index page for an area.
      */
-    String createAreaIndexPage(final AreaConfiguration areaConfiguration) {
+    String createAreaIndexPage(final AreaConfiguration areaConfiguration, final Token token) {
         Html html = new Html();
         html.addElement(createHead(1));
         Body body = new Body().onload("initializeLanguage();");
@@ -363,7 +380,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
         body.addElement(section);
         section.addElement(new H1(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
         section.addElement(new H2(" ").clazz("upcoming-elections"));
-        addUpcomingElections(section, areaConfiguration);
+        addUpcomingElections(section, areaConfiguration, token);
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
         addOpinionPolls(section, areaConfiguration);
         addPollingFirmsNotIncluded(section, areaConfiguration);

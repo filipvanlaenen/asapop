@@ -13,6 +13,8 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 import net.filipvanlaenen.tsvgj.A;
 import net.filipvanlaenen.tsvgj.Image;
 import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
@@ -65,9 +67,11 @@ final class IndexPageBuilder extends PageBuilder {
     /**
      * Builds the content of the index page.
      *
+     * @param token The Laconic logging token.
      * @return The content of the index page
      */
-    Html build() {
+    Html build(final Token token) {
+        Token indexPageToken = Laconic.LOGGER.logMessage(token, "Building the index page.");
         Html html = new Html();
         html.addElement(createHead());
         Body body = new Body().onload("initializeLanguage();");
@@ -78,19 +82,24 @@ final class IndexPageBuilder extends PageBuilder {
         section.addElement(new H1(" ").clazz("upcoming-elections"));
         Div twoSvgChartsContainer = new Div().clazz("two-svg-charts-container");
         section.addElement(twoSvgChartsContainer);
-        twoSvgChartsContainer
-                .addElement(createDivWithImage("svg-chart-container-left", getGitHubWebsiteUrlByNextElectionDate(0)));
-        twoSvgChartsContainer
-                .addElement(createDivWithImage("svg-chart-container-right", getGitHubWebsiteUrlByNextElectionDate(1)));
+        Token gitHubWebsiteUrlsToken = Laconic.LOGGER.logMessage(indexPageToken, "Adding the GitHub website URLs.");
+        twoSvgChartsContainer.addElement(createDivWithImage("svg-chart-container-left",
+                getGitHubWebsiteUrlByNextElectionDate(0, gitHubWebsiteUrlsToken)));
+        twoSvgChartsContainer.addElement(createDivWithImage("svg-chart-container-right",
+                getGitHubWebsiteUrlByNextElectionDate(1, gitHubWebsiteUrlsToken)));
         body.addElement(createFooter());
         return html;
     }
 
     /**
      * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
+     *
+     * @param token The Laconic logging token.
      */
-    private void calculateGitHubWebsiteUrlsSortedByNextElectionDate() {
-        List<Election> nextNationalElections = elections.getNextElections(now).stream()
+    private void calculateGitHubWebsiteUrlsSortedByNextElectionDate(final Token token) {
+        Token nextElectionsToken = Laconic.LOGGER.logMessage(token,
+                "Calculating the next election dates starting from  %s.", now.toString());
+        List<Election> nextNationalElections = elections.getNextElections(now, nextElectionsToken).stream()
                 .filter(ne -> ne.electionType() == ElectionType.NATIONAL).collect(Collectors.toList());
         nextNationalElections.sort(new ElectionComparator(now));
         gitHubWebsiteUrlsByNextElectionDate = new ArrayList<String>();
@@ -140,12 +149,15 @@ final class IndexPageBuilder extends PageBuilder {
      * area.
      *
      * @param index The index for which the GitHub website URL should be returned.
+     * @param token The Laconic logging token.
      * @return The GitHub website URL at a given index, with the websites being sorted by the next election date for the
      *         area.
      */
-    private String getGitHubWebsiteUrlByNextElectionDate(final int index) {
+    private String getGitHubWebsiteUrlByNextElectionDate(final int index, final Token token) {
         if (gitHubWebsiteUrlsByNextElectionDate == null) {
-            calculateGitHubWebsiteUrlsSortedByNextElectionDate();
+            Token gitHubWebsiteUrlToken =
+                    Laconic.LOGGER.logMessage(token, "Adding the GitHub website URL with index %d.", index);
+            calculateGitHubWebsiteUrlsSortedByNextElectionDate(gitHubWebsiteUrlToken);
         }
         return gitHubWebsiteUrlsByNextElectionDate.size() <= index ? ""
                 : gitHubWebsiteUrlsByNextElectionDate.get(index);

@@ -9,6 +9,8 @@ import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -85,9 +87,11 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
     /**
      * Builds the content of the CSV files page.
      *
+     * @param token The Laconic logging token.
      * @return The content of the CSV files page
      */
-    Html build() {
+    Html build(final Token token) {
+        Token electoralCalendarPageToken = Laconic.LOGGER.logMessage(token, "Building the electoral calendar page.");
         Html html = new Html();
         html.addElement(createHead());
         Body body = new Body().onload("initializeLanguage();");
@@ -107,7 +111,9 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
         tr.addElement(new TH(" ").clazz("election-type"));
         TBody tBody = new TBody();
         table.addElement(tBody);
-        List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now));
+        Token nextElectionsToken = Laconic.LOGGER.logMessage(electoralCalendarPageToken,
+                "Calculating the next election dates starting from  %s.", now.toString());
+        List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now, nextElectionsToken));
         nextElections.sort(new ElectionComparator(now));
         for (Election nextElection : nextElections) {
             TR areaTr = new TR();

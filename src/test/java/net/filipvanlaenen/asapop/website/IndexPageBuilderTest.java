@@ -16,11 +16,17 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>IndexPageBuilder</code> class.
  */
 public class IndexPageBuilderTest {
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test IndexPageBuilderTest.");
     /**
      * First today's date.
      */
@@ -125,7 +131,7 @@ public class IndexPageBuilderTest {
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(expected.toString(),
-                new IndexPageBuilder(websiteConfiguration, elections, NOW1).build().asString());
+                new IndexPageBuilder(websiteConfiguration, elections, NOW1).build(TOKEN).asString());
     }
 
     /**
@@ -156,7 +162,7 @@ public class IndexPageBuilderTest {
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
         assertEquals(expected.toString(),
-                new IndexPageBuilder(websiteConfiguration, elections, NOW3).build().asString());
+                new IndexPageBuilder(websiteConfiguration, elections, NOW3).build(TOKEN).asString());
     }
 
     /**

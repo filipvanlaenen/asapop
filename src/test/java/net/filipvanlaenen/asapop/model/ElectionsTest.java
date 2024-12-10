@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -12,10 +13,22 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
+
 /**
  * Unit tests on the <code>Elections</code> class.
  */
 public class ElectionsTest {
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test ElectionsTest.");
+    /**
+     * The magic number three.
+     */
+    private static final int THREE = 3;
     /**
      * An early date for the unit tests.
      */
@@ -42,7 +55,7 @@ public class ElectionsTest {
      */
     @Test
     public void anEmptyInstanceShouldReturnEmptySetForTheNextElections() {
-        assertTrue(EMPTY_ELECTIONS.getNextElections(EARLY_NOW).isEmpty());
+        assertTrue(EMPTY_ELECTIONS.getNextElections(EARLY_NOW, TOKEN).isEmpty());
     }
 
     /**
@@ -89,6 +102,22 @@ public class ElectionsTest {
     }
 
     /**
+     * Verifies that when one election with a date in the past is added, getting the next election logs an error.
+     */
+    @Test
+    public void getNextElectionShouldLogAnErrorWhenElectionWithDateInThePastIsAdded() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test ElectionsTest.getNextElectionShouldLogAnErrorWhenElectionWithDateInThePastIsAdded.");
+        Elections elections = createElectionsInstanceWithOneElection();
+        elections.getNextElection("aa", ElectionType.NATIONAL, LATE_NOW, token);
+        String expected =
+                "‡ ⬐ Unit test ElectionsTest.getNextElectionShouldLogAnErrorWhenElectionWithDateInThePastIsAdded.\n"
+                        + "‡ No election dates set in the future.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that when one election with a date in the future is added, it is returned in the set.
      */
     @Test
@@ -96,7 +125,7 @@ public class ElectionsTest {
         Elections elections = createElectionsInstanceWithOneElection();
         Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
                 List.of(List.of()), null);
-        assertEquals(Set.of(expected), elections.getNextElections(EARLY_NOW));
+        assertEquals(Set.of(expected), elections.getNextElections(EARLY_NOW, TOKEN));
     }
 
     /**
@@ -106,7 +135,25 @@ public class ElectionsTest {
     @Test
     public void shouldReturnEmptySetWhenElectionWithDateInThePastIsAdded() {
         Elections elections = createElectionsInstanceWithOneElection();
-        assertTrue(elections.getNextElections(LATE_NOW).isEmpty());
+        assertTrue(elections.getNextElections(LATE_NOW, TOKEN).isEmpty());
+    }
+
+    /**
+     * Verifies that when one election with a date in the past is added, getting the next elections logs an error.
+     */
+    @Test
+    public void getNextElectionsShouldLogAnErrorWhenElectionWithDateInThePastIsAdded() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage(
+                "Unit test ElectionsTest.getNextElectionsShouldLogAnErrorWhenElectionWithDateInThePastIsAdded.");
+        Elections elections = createElectionsInstanceWithOneElection();
+        assertTrue(elections.getNextElections(LATE_NOW, token).isEmpty());
+        String expected =
+                "‡   Unit test ElectionsTest.getNextElectionsShouldLogAnErrorWhenElectionWithDateInThePastIsAdded.\n"
+                        + "‡   Calculating the next election dates for area aa.\n"
+                        + "‡ ⬐ Calculating the next election date for election type parliament.\n"
+                        + "‡ No election dates set in the future.\n";
+        assertEquals(expected, outputStream.toString());
     }
 
     /**
@@ -117,7 +164,7 @@ public class ElectionsTest {
         Elections elections = new Elections();
         elections.addElection("aa", ElectionType.NATIONAL, 1, "2023-04-15", null);
         elections.addElection("aa", ElectionType.NATIONAL, 2, "2024-04-15", null);
-        elections.addElection("aa", ElectionType.NATIONAL, 3, "2025-04-15", null);
+        elections.addElection("aa", ElectionType.NATIONAL, THREE, "2025-04-15", null);
         Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
                 List.of(List.of()), null);
         assertEquals(expected, elections.getNextElection("aa", ElectionType.NATIONAL, EARLY_NOW));
