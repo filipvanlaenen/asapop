@@ -36,6 +36,14 @@ import net.filipvanlaenen.txhtmlj.Table;
 
 final class WidgetsBuilder {
     /**
+     * The magic number fifty.
+     */
+    private static final int FIFTY = 50;
+    private static final String[] STYLES = new String[] {
+            "https://fonts.googleapis.com/css?family=Alegreya+Sans%3A400%2C700%2C400italic%2C700italic%2C600%2C600italic%7CAlegreya+Sans%3A400%2C500%2C600%2C700%2C400italic%2C700italic&ver=1",
+            "https://europeelects.eu/wp-content/themes/chaplin/style.css?ver=2.6.7"};
+
+    /**
      * A map with the opinion polls related to parliamentary elections.
      */
     private final Map<String, OpinionPolls> parliamentaryOpinionPollsMap;
@@ -44,7 +52,8 @@ final class WidgetsBuilder {
      */
     private final WebsiteConfiguration websiteConfiguration;
 
-    WidgetsBuilder(WebsiteConfiguration websiteConfiguration, Map<String, OpinionPolls> parliamentaryOpinionPollsMap) {
+    WidgetsBuilder(final WebsiteConfiguration websiteConfiguration,
+            final Map<String, OpinionPolls> parliamentaryOpinionPollsMap) {
         this.websiteConfiguration = websiteConfiguration;
         this.parliamentaryOpinionPollsMap = parliamentaryOpinionPollsMap;
     }
@@ -75,11 +84,7 @@ final class WidgetsBuilder {
         return result;
     }
 
-    private static final String[] STYLES = new String[] {
-            "https://fonts.googleapis.com/css?family=Alegreya+Sans%3A400%2C700%2C400italic%2C700italic%2C600%2C600italic%7CAlegreya+Sans%3A400%2C500%2C600%2C700%2C400italic%2C700italic&ver=1",
-            "https://europeelects.eu/wp-content/themes/chaplin/style.css?ver=2.6.7"};
-
-    private String createHtmlTableFragment(List<OpinionPoll> opinionPolls) {
+    private String createHtmlTableFragment(final List<OpinionPoll> opinionPolls) {
         Html html = new Html();
         Head head = new Head();
         html.addElement(head);
@@ -243,7 +248,7 @@ final class WidgetsBuilder {
         });
         int numberOfOpinionPolls = opinionPollList.size();
         // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        return opinionPollList.subList(0, numberOfOpinionPolls > 50 ? 50 : numberOfOpinionPolls);
+        return opinionPollList.subList(0, numberOfOpinionPolls > FIFTY ? FIFTY : numberOfOpinionPolls);
     }
 
 }
