@@ -30,17 +30,16 @@ public final class ElectionsBuilder {
      */
     private static void addElectionList(final Elections elections, final ElectionList electionList,
             final String areaCode, final ElectionType electionType, final Map<String, ElectionData> electionDataFiles,
-            final Token token) {
+            final LocalDate now, final Token token) {
         if (electionList != null) {
             Token electionTypeToken = Laconic.LOGGER.logMessage(token,
                     "Extracting and validating the election dates for election type %s.", electionType.getTermKey());
-            boolean hasFutureElectionDate = false;
             for (Map.Entry<Integer, String> entry : electionList.getDates().entrySet()) {
                 int electionNumber = entry.getKey();
                 ElectionData electionData = electionDataFiles.getOrDefault(areaCode + "-" + electionNumber, null);
                 elections.addElection(areaCode, electionType, electionNumber, entry.getValue(), electionData);
             }
-            if (!hasFutureElectionDate) {
+            if (elections.getNextElection(areaCode, electionType, now) == null) {
                 Laconic.LOGGER.logError("No election dates set in the future.", electionTypeToken);
             }
         }
@@ -69,11 +68,11 @@ public final class ElectionsBuilder {
             ElectionLists electionLists = areaConfiguration.getElections();
             if (electionLists != null) {
                 addElectionList(elections, electionLists.getNational(), areaCode, ElectionType.NATIONAL,
-                        electionDataFiles, areaToken);
+                        electionDataFiles, now, areaToken);
                 addElectionList(elections, electionLists.getPresidential(), areaCode, ElectionType.PRESIDENTIAL,
-                        electionDataFiles, areaToken);
+                        electionDataFiles, now, areaToken);
                 addElectionList(elections, electionLists.getEuropean(), areaCode, ElectionType.EUROPEAN,
-                        electionDataFiles, areaToken);
+                        electionDataFiles, now, areaToken);
             }
         }
         return elections;
