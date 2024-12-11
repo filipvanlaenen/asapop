@@ -105,15 +105,13 @@ public class WebsiteBuilder {
      * @return The website.
      */
     public Website build() {
-        Token token = Laconic.LOGGER.logMessage("Building the website.");
         Website website = new Website();
         JavaScriptsBuilder javaScriptsBuilder =
                 new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, tooltipScriptContent, terms);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
-        website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build(token));
-        website.put("calendar.html",
-                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build(token));
+        website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build());
+        website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build());
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.put("statistics.html",
                 new StatisticsPageBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap, now, startOfYear)
@@ -122,8 +120,8 @@ public class WebsiteBuilder {
                 new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
                         .build());
         website.putAll(new WidgetsBuilder(websiteConfiguration, parliamentaryOpinionPollsMap).build());
-        website.putAll(new AreaIndexPagesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, elections, now)
-                .build(token));
+        website.putAll(
+                new AreaIndexPagesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, elections, now).build());
         return website;
     }
 }

@@ -25,17 +25,11 @@ import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
-import net.filipvanlaenen.laconic.Laconic;
-import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
-    /**
-     * A Laconic logging token for unit testing.
-     */
-    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test WebsiteBuilderTest.");
     /**
      * Today's date.
      */
@@ -118,27 +112,27 @@ public class WebsiteBuilderTest {
         Map<Path, String> map = new HashMap<Path, String>();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         Terms terms = createTerms();
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
+        Elections elections =
+                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        map.put(Paths.get("index.html"),
-                new IndexPageBuilder(websiteConfiguration, elections, NOW).build(TOKEN).asString());
+        map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("calendar.html"),
-                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build(TOKEN).asString());
+                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
                 new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, NOW, START_OF_YEAR).build()
                         .asString());
         map.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(latvia, TOKEN));
+                        .createAreaIndexPage(latvia));
         map.put(Paths.get("mk", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
         map.put(Paths.get("se", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(sweden, TOKEN));
+                        .createAreaIndexPage(sweden));
         map.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createTerms()).build());
         String navigationScriptContent = "function moveToArea(level) {}";

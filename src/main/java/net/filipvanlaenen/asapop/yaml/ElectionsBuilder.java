@@ -1,10 +1,13 @@
 package net.filipvanlaenen.asapop.yaml;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Utility class to extract elections from a website configuration.
@@ -26,12 +29,19 @@ public final class ElectionsBuilder {
      * @param electionDataFiles
      */
     private static void addElectionList(final Elections elections, final ElectionList electionList,
-            final String areaCode, final ElectionType electionType, final Map<String, ElectionData> electionDataFiles) {
+            final String areaCode, final ElectionType electionType, final Map<String, ElectionData> electionDataFiles,
+            final Token token) {
         if (electionList != null) {
+            Token electionTypeToken = Laconic.LOGGER.logMessage(token,
+                    "Extracting and validating the election dates for election type %s.", electionType.getTermKey());
+            boolean hasFutureElectionDate = false;
             for (Map.Entry<Integer, String> entry : electionList.getDates().entrySet()) {
                 int electionNumber = entry.getKey();
                 ElectionData electionData = electionDataFiles.getOrDefault(areaCode + "-" + electionNumber, null);
                 elections.addElection(areaCode, electionType, electionNumber, entry.getValue(), electionData);
+            }
+            if (!hasFutureElectionDate) {
+                Laconic.LOGGER.logError("No election dates set in the future.", electionTypeToken);
             }
         }
     }
@@ -43,8 +53,10 @@ public final class ElectionsBuilder {
      * @param electionDataFiles
      * @return The extracted elections.
      */
-    public static Elections extractElections(final WebsiteConfiguration websiteConfiguration,
-            Map<String, ElectionData> electionDataFiles) {
+    public static Elections extractAndValidateElections(final WebsiteConfiguration websiteConfiguration,
+            final Map<String, ElectionData> electionDataFiles, final LocalDate now) {
+        Token token = Laconic.LOGGER.logMessage("Extracting and validating the election dates.");
+        Laconic.LOGGER.logMessage("Validating for future election dates against the date %s.", now.toString(), token);
         Elections elections = new Elections();
         Set<AreaConfiguration> areaConfigurations = websiteConfiguration.getAreaConfigurations();
         if (areaConfigurations == null) {
@@ -52,14 +64,16 @@ public final class ElectionsBuilder {
         }
         for (AreaConfiguration areaConfiguration : areaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
+            Token areaToken = Laconic.LOGGER.logMessage(token,
+                    "Extracting and validating the election dates for area %s.", areaCode);
             ElectionLists electionLists = areaConfiguration.getElections();
             if (electionLists != null) {
                 addElectionList(elections, electionLists.getNational(), areaCode, ElectionType.NATIONAL,
-                        electionDataFiles);
+                        electionDataFiles, areaToken);
                 addElectionList(elections, electionLists.getPresidential(), areaCode, ElectionType.PRESIDENTIAL,
-                        electionDataFiles);
+                        electionDataFiles, areaToken);
                 addElectionList(elections, electionLists.getEuropean(), areaCode, ElectionType.EUROPEAN,
-                        electionDataFiles);
+                        electionDataFiles, areaToken);
             }
         }
         return elections;

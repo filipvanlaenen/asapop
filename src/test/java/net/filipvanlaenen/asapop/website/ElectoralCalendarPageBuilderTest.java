@@ -22,17 +22,11 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
-import net.filipvanlaenen.laconic.Laconic;
-import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>ElectoralCalendarPageBuilder</code> class.
  */
 public class ElectoralCalendarPageBuilderTest {
-    /**
-     * A Laconic logging token for unit testing.
-     */
-    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test ElectoralCalendarPageBuilderTest.");
     /**
      * Today's date.
      */
@@ -212,9 +206,10 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
+        Elections elections =
+                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
         assertEquals(expected.toString(),
-                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build(TOKEN).asString());
+                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
     }
 
     /**

@@ -11,8 +11,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.yaml.ElectionData;
-import net.filipvanlaenen.laconic.Laconic;
-import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class holding elections indexed by area and election type.
@@ -110,29 +108,12 @@ public final class Elections {
      * @param areaCode     The area code.
      * @param electionType The election type.
      * @param now          The date to calculate the next election from.
-     * @return The first election of the requested type at the area after the provided date.
-     */
-    public Election getNextElection(final String areaCode, final ElectionType electionType, final LocalDate now) {
-        return getNextElection(areaCode, electionType, now, null);
-    }
-
-    /**
-     * Returns the first election after a given date of a type in an area.
-     *
-     * @param areaCode     The area code.
-     * @param electionType The election type.
-     * @param now          The date to calculate the next election from.
      * @param token        The Laconic logging token.
      * @return The first election of the requested type at the area after the provided date.
      */
-    public Election getNextElection(final String areaCode, final ElectionType electionType, final LocalDate now,
-            final Token token) {
+    public Election getNextElection(final String areaCode, final ElectionType electionType, final LocalDate now) {
         if (map.containsKey(areaCode)) {
-            Election result = calculateNextElection(map.get(areaCode), electionType, now);
-            if (result == null && token != null) {
-                Laconic.LOGGER.logError("No election dates set in the future.", token);
-            }
-            return result;
+            return calculateNextElection(map.get(areaCode), electionType, now);
         } else {
             return null;
         }
@@ -145,12 +126,10 @@ public final class Elections {
      * @param token The Laconic logging token.
      * @return A set with all first elections after the provided date.
      */
-    public Set<Election> getNextElections(final LocalDate now, final Token token) {
+    public Set<Election> getNextElections(final LocalDate now) {
         Set<Election> result = new HashSet<Election>();
         for (String areaCode : map.keySet()) {
-            Token areaToken =
-                    Laconic.LOGGER.logMessage(token, "Calculating the next election dates for area %s.", areaCode);
-            result.addAll(getNextElections(areaCode, now, areaToken));
+            result.addAll(getNextElections(areaCode, now));
         }
         return result;
     }
@@ -163,19 +142,15 @@ public final class Elections {
      * @param areaToken The Laconic logging token for the area.
      * @return A set with all the first elections after the provided date for the area.
      */
-    private Set<Election> getNextElections(final String areaCode, final LocalDate now, final Token areaToken) {
+    private Set<Election> getNextElections(final String areaCode, final LocalDate now) {
         Map<ElectionType, List<Election>> electionsAtArea = map.get(areaCode);
         if (electionsAtArea == null) {
             return Collections.emptySet();
         }
         Set<Election> result = new HashSet<Election>();
         for (ElectionType electionType : electionsAtArea.keySet()) {
-            Token electionTypeToken = Laconic.LOGGER.logMessage(areaToken,
-                    "Calculating the next election date for election type %s.", electionType.getTermKey());
             Election nextElection = calculateNextElection(electionsAtArea, electionType, now);
-            if (nextElection == null) {
-                Laconic.LOGGER.logError("No election dates set in the future.", electionTypeToken);
-            } else {
+            if (nextElection != null) {
                 result.add(nextElection);
             }
         }

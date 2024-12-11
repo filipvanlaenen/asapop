@@ -53,9 +53,8 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Collections.EMPTY_MAP;
         AreaIndexPagesBuilder builder =
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW);
-        Map<Path, String> expected =
-                Map.of(Paths.get("mk", "index.html"), builder.createAreaIndexPage(northMacedonia, TOKEN));
-        assertEquals(expected, builder.build(TOKEN));
+        Map<Path, String> expected = Map.of(Paths.get("mk", "index.html"), builder.createAreaIndexPage(northMacedonia));
+        assertEquals(expected, builder.build());
     }
 
     /**
@@ -70,7 +69,7 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         assertEquals(createEmptyAreaIndexPage(false),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -85,7 +84,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createEmptyAreaIndexPage(true),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -103,7 +102,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithASmallOpinionPoll(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -123,7 +122,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithAnOpinionPollWithResultsInNumberOfSeats(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -143,7 +142,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithASmallOpinionPoll("BCME", "foo"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -166,7 +165,7 @@ public class AreaIndexPagesBuilderTest {
                 createAreaIndexPageWithASmallOpinionPoll("BCME", "foo", "CCME", "foo-bar", "DCME", "bar", "ECME", "qux",
                         "FCME", "foo-bar", "GCME", "foo"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -189,7 +188,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithManyAndLargeOpinionPolls(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**
@@ -213,10 +212,11 @@ public class AreaIndexPagesBuilderTest {
         electionLists.setEuropean(europeanElections);
         northMacedonia.setElections(electionLists);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
-        Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, Collections.EMPTY_MAP);
+        Elections elections =
+                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
         assertEquals(createAreaIndexPageWithUpcomingElections(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
-                        .createAreaIndexPage(northMacedonia, TOKEN));
+                        .createAreaIndexPage(northMacedonia));
     }
 
     /**

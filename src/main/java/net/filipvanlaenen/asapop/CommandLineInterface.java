@@ -146,7 +146,9 @@ public final class CommandLineInterface {
                 addAreaTerms(terms, websiteConfiguration);
                 Map<String, ElectionData> electionDataFiles =
                         readElectionDataFiles(websiteConfiguration, siteConfigurationFile.getParent());
-                Elections elections = ElectionsBuilder.extractElections(websiteConfiguration, electionDataFiles);
+                LocalDate now = LocalDate.now();
+                Elections elections =
+                        ElectionsBuilder.extractAndValidateElections(websiteConfiguration, electionDataFiles, now);
                 Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
                         readAllParliamentaryOpinionPolls(ropfDirName, websiteConfiguration);
                 Map<String, OpinionPolls> presidentialOpinionPollsMap =
@@ -156,7 +158,6 @@ public final class CommandLineInterface {
                 String navigationScriptContent = readResource("/navigation.js");
                 String sortingScriptContent = readResource("/sorting.js");
                 String tooltipScriptContent = readResource("/tooltip.js");
-                LocalDate now = LocalDate.now();
                 Website website = new WebsiteBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap,
                         presidentialOpinionPollsMap, elections, baseStyleSheetContent, customStyleSheetContent,
                         navigationScriptContent, sortingScriptContent, tooltipScriptContent, now).build();
