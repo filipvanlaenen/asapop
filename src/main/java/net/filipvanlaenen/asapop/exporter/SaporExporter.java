@@ -296,19 +296,14 @@ public class SaporExporter extends Exporter {
                         scale, remainder);
             }
         }
-        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        if (remainder <= 0) {
-            saporBody.put("Other", 0);
-        } else {
-            for (SaporMapping map : mapping) {
-                if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                    remainder = processMapping(saporBody, map.getEssentialEntriesMapping(), calculationSampleSize,
-                            scale, remainder);
-                }
+        for (SaporMapping map : mapping) {
+            if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
+                remainder = processMapping(saporBody, map.getEssentialEntriesMapping(), calculationSampleSize, scale,
+                        remainder);
             }
-            // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-            saporBody.put("Other", remainder < 0 ? 0 : remainder);
         }
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+        saporBody.put("Other", remainder < 0 ? 0 : remainder);
         return saporBody;
     }
 
@@ -590,7 +585,7 @@ public class SaporExporter extends Exporter {
             }
         }
         Map<String, Integer> relativeTargets = essentialEntriesSaporMapping.getRelativeTargets();
-        if (relativeTargets != null) {
+        if (relativeTargets != null && finalRemainder > 0) {
             Set<Entry<String, Integer>> absentTargets = relativeTargets.entrySet().stream()
                     .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());
             int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum)
