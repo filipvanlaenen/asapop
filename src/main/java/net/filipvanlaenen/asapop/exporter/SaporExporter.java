@@ -206,6 +206,18 @@ public class SaporExporter extends Exporter {
     }
 
     /**
+     * Calculates the sample value for a value.
+     *
+     * @param value                 The value to calculate the sample value for.
+     * @param calculationSampleSize The sample size.
+     * @param scale                 The scale factor.
+     * @return The sample value for the value.
+     */
+    private int calculateSampleValue(final double value, final int calculationSampleSize, final double scale) {
+        return (int) Math.round(value * calculationSampleSize * scale / ONE_HUNDRED);
+    }
+
+    /**
      * Calculates the Sapor body from a response scenario and returns it as a map.
      *
      * @param opinionPoll               The opinion poll to which the response scenario belongs.
@@ -473,7 +485,7 @@ public class SaporExporter extends Exporter {
             }
         }
         if (termPresent) {
-            int sample = (int) Math.round(actualValue * calculationSampleSize * scale / ONE_HUNDRED);
+            int sample = calculateSampleValue(actualValue, calculationSampleSize, scale);
             saporBody.put(additiveSaporMapping.getTarget(), sample);
             return remainder - sample;
         } else {
@@ -545,8 +557,7 @@ public class SaporExporter extends Exporter {
         }
         Set<ElectoralList> electoralLists = asElectoralListCombination(directSaporMapping.getSource());
         if (actualValues.containsKey(electoralLists)) {
-            int sample =
-                    (int) Math.round(actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED);
+            int sample = calculateSampleValue(actualValues.get(electoralLists), calculationSampleSize, scale);
             if (directSaporMapping.getCompensationFactor() == null) {
                 saporBody.put(directSaporMapping.getTarget(), sample);
             } else {
@@ -581,12 +592,13 @@ public class SaporExporter extends Exporter {
             Set<Entry<String, Double>> absentTargets = absoluteTargets.entrySet().stream()
                     .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());
             for (Entry<String, Double> target : absentTargets) {
-                int sample = (int) Math.round(target.getValue() * calculationSampleSize * scale / ONE_HUNDRED);
+                int sample = calculateSampleValue(target.getValue(), calculationSampleSize, scale);
                 saporBody.put(target.getKey(), sample);
                 finalRemainder -= sample;
             }
         }
         Map<String, Integer> relativeTargets = essentialEntriesSaporMapping.getRelativeTargets();
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
         if (relativeTargets != null && finalRemainder > 0) {
             Set<Entry<String, Integer>> absentTargets = relativeTargets.entrySet().stream()
                     .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());

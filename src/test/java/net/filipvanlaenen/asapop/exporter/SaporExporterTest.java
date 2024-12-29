@@ -43,6 +43,14 @@ public class SaporExporterTest {
      */
     private static final double ONE_HALF = 0.5D;
     /**
+     * The magic number five.
+     */
+    private static final double FIVE = 5D;
+    /**
+     * The magic number ten.
+     */
+    private static final double TEN = 10D;
+    /**
      * The magic number thousand.
      */
     private static final int THOUSAND = 1000;
@@ -204,16 +212,18 @@ public class SaporExporterTest {
     /**
      * Creates an essential entries SAPOR mapping.
      *
-     * @param residual The residual weight for the essential entries SAPOR mapping.
-     * @param targets  The targets with weights for the essential entries SAPOR mapping.
+     * @param absoluteTargets The absolute targets for the essential entries SAPOR mapping.
+     * @param residual        The residual weight for the essential entries SAPOR mapping.
+     * @param relativeTargets The targets with weights for the essential entries SAPOR mapping.
      * @return A SAPOR mapping with an essential entries SAPOR mapping.
      */
-    private static SaporMapping createEssentialEntriesSaporMapping(final Integer residual,
-            final Map<String, Integer> targets) {
+    private static SaporMapping createEssentialEntriesSaporMapping(final Map<String, Double> absoluteTargets,
+            final Integer residual, final Map<String, Integer> relativeTargets) {
         SaporMapping saporMapping = new SaporMapping();
         EssentialEntriesSaporMapping essentialEntriesSaporMapping = new EssentialEntriesSaporMapping();
+        essentialEntriesSaporMapping.setAbsoluteTargets(absoluteTargets);
         essentialEntriesSaporMapping.setResidual(residual);
-        essentialEntriesSaporMapping.setRelativeTargets(targets);
+        essentialEntriesSaporMapping.setRelativeTargets(relativeTargets);
         saporMapping.setEssentialEntriesMapping(essentialEntriesSaporMapping);
         return saporMapping;
     }
@@ -321,7 +331,8 @@ public class SaporExporterTest {
         saporConfiguration.setLastElectionDate(LAST_ELECTION_DATE);
         saporConfiguration
                 .setMapping(Set.of(createDirectSaporMapping("A", "Party A"), createDirectSaporMapping("B", "Party B"),
-                        createEssentialEntriesSaporMapping(1, Map.of("Party B", 1, "Party C", 1, "Party D", 2))));
+                        createEssentialEntriesSaporMapping(Map.of("Party A", TEN, "Party E", FIVE), 1,
+                                Map.of("Party B", 1, "Party C", 1, "Party D", 2))));
         saporConfiguration.setArea("AR");
         return new SaporExporter(saporConfiguration);
     }
@@ -1053,11 +1064,12 @@ public class SaporExporterTest {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "40").addResult("B", "30").setSampleSize("1000")
                 .setPollingFirm("ACME").setFieldworkEnd(DATE_OR_MONTH2).setScope(Scope.NATIONAL).build();
         StringBuilder expected = new StringBuilder();
-        expected.append("Other=75\n");
+        expected.append("Other=25\n");
         expected.append("Party A=400\n");
         expected.append("Party B=300\n");
         expected.append("Party C=75\n");
-        expected.append("Party D=150");
+        expected.append("Party D=150\n");
+        expected.append("Party E=50");
         assertEquals(expected.toString(), getSortedSaporBody(poll, 1, 1, createEssentialEntriesSaporExporter()));
     }
 
