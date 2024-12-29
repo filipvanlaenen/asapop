@@ -564,6 +564,8 @@ public class SaporExporter extends Exporter {
      *
      * @param saporBody                    A map with the values for the Sapor body.
      * @param essentialEntriesSaporMapping The essential entries SAPOR mapping.
+     * @param calculationSampleSize        The sample size to be used for the calculations.
+     * @param scale                        The scale.
      * @param remainder                    The remainder so far.
      * @return The updated remainder.
      */

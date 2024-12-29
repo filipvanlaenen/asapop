@@ -59,7 +59,7 @@ public class EssentialEntriesSaporMapping {
     /**
      * Sets the absolute targets in the SAPOR file.
      *
-     * @param relativeTargets The absolute targets in the SAPOR file.
+     * @param absoluteTargets The absolute targets in the SAPOR file.
      */
     public void setAbsoluteTargets(final Map<String, Double> absoluteTargets) {
         this.absoluteTargets = absoluteTargets;
