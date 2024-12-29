@@ -29,7 +29,7 @@ public class EssentialEntriesSaporMappingTest {
     public void getTargetsShouldBeWiredCorrectlyToSetTargets() {
         EssentialEntriesSaporMapping essentialEntriesSaporMapping = new EssentialEntriesSaporMapping();
         Map<String, Integer> targets = Map.of("Party A", 1, "Party B", 2);
-        essentialEntriesSaporMapping.setTargets(targets);
-        assertEquals(targets, essentialEntriesSaporMapping.getTargets());
+        essentialEntriesSaporMapping.setRelativeTargets(targets);
+        assertEquals(targets, essentialEntriesSaporMapping.getRelativeTargets());
     }
 }

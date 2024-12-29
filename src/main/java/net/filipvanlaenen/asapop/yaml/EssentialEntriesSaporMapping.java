@@ -12,9 +12,13 @@ public class EssentialEntriesSaporMapping {
      */
     private Integer residual;
     /**
-     * The targets in the SAPOR file.
+     * The absolute targets in the SAPOR file.
      */
-    private Map<String, Integer> targets;
+    private Map<String, Double> absoluteTargets;
+    /**
+     * The relative targets in the SAPOR file.
+     */
+    private Map<String, Integer> relativeTargets;
 
     /**
      * Returns the residual weight in the SAPOR file.
@@ -26,12 +30,21 @@ public class EssentialEntriesSaporMapping {
     }
 
     /**
-     * Returns the targets in the SAPOR file.
+     * Returns the absolute targets in the SAPOR file.
      *
-     * @return The targets in the SAPOR file.
+     * @return The absolute targets in the SAPOR file.
      */
-    public Map<String, Integer> getTargets() {
-        return targets;
+    public Map<String, Double> getAbsoluteTargets() {
+        return absoluteTargets;
+    }
+
+    /**
+     * Returns the relative targets in the SAPOR file.
+     *
+     * @return The relative targets in the SAPOR file.
+     */
+    public Map<String, Integer> getRelativeTargets() {
+        return relativeTargets;
     }
 
     /**
@@ -44,11 +57,20 @@ public class EssentialEntriesSaporMapping {
     }
 
     /**
-     * Sets the targets in the SAPOR file.
+     * Sets the absolute targets in the SAPOR file.
      *
-     * @param targets The targets in the SAPOR file.
+     * @param relativeTargets The absolute targets in the SAPOR file.
      */
-    public void setTargets(final Map<String, Integer> targets) {
-        this.targets = targets;
+    public void setAbsoluteTargets(final Map<String, Double> absoluteTargets) {
+        this.absoluteTargets = absoluteTargets;
+    }
+
+    /**
+     * Sets the relative targets in the SAPOR file.
+     *
+     * @param relativeTargets The relative targets in the SAPOR file.
+     */
+    public void setRelativeTargets(final Map<String, Integer> relativeTargets) {
+        this.relativeTargets = relativeTargets;
     }
 }

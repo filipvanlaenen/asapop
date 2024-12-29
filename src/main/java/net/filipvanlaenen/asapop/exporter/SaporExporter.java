@@ -302,7 +302,8 @@ public class SaporExporter extends Exporter {
         } else {
             for (SaporMapping map : mapping) {
                 if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                    remainder = processMapping(saporBody, map.getEssentialEntriesMapping(), remainder);
+                    remainder = processMapping(saporBody, map.getEssentialEntriesMapping(), calculationSampleSize,
+                            scale, remainder);
                 }
             }
             // EQMU: Changing the conditional boundary below produces an equivalent mutant.
@@ -572,21 +573,35 @@ public class SaporExporter extends Exporter {
      * @return The updated remainder.
      */
     private int processMapping(final Map<String, Integer> saporBody,
-            final EssentialEntriesSaporMapping essentialEntriesSaporMapping, final int remainder) {
+            final EssentialEntriesSaporMapping essentialEntriesSaporMapping, final Integer calculationSampleSize,
+            final double scale, final int remainder) {
         if (essentialEntriesSaporMapping == null) {
             return remainder;
         }
-        int sumOfSamples = 0;
-        Set<Entry<String, Integer>> absentTargets = essentialEntriesSaporMapping.getTargets().entrySet().stream()
-                .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());
-        int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum)
-                + essentialEntriesSaporMapping.getResidual();
-        for (Entry<String, Integer> target : absentTargets) {
-            int sample = (int) Math.round(remainder * target.getValue() / sumOfWeights);
-            saporBody.put(target.getKey(), sample);
-            sumOfSamples += sample;
+        int finalRemainder = remainder;
+        Map<String, Double> absoluteTargets = essentialEntriesSaporMapping.getAbsoluteTargets();
+        if (absoluteTargets != null) {
+            Set<Entry<String, Double>> absentTargets = absoluteTargets.entrySet().stream()
+                    .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());
+            for (Entry<String, Double> target : absentTargets) {
+                int sample = (int) Math.round(target.getValue() * calculationSampleSize * scale / ONE_HUNDRED);
+                saporBody.put(target.getKey(), sample);
+                finalRemainder -= sample;
+            }
         }
-        return remainder - sumOfSamples;
+        Map<String, Integer> relativeTargets = essentialEntriesSaporMapping.getRelativeTargets();
+        if (relativeTargets != null) {
+            Set<Entry<String, Integer>> absentTargets = relativeTargets.entrySet().stream()
+                    .filter(k -> !saporBody.containsKey(k.getKey())).collect(Collectors.toSet());
+            int sumOfWeights = absentTargets.stream().map(e -> e.getValue()).reduce(0, Integer::sum)
+                    + essentialEntriesSaporMapping.getResidual();
+            for (Entry<String, Integer> target : absentTargets) {
+                int sample = (int) Math.round(((double) remainder) * target.getValue() / sumOfWeights);
+                saporBody.put(target.getKey(), sample);
+                finalRemainder -= sample;
+            }
+        }
+        return finalRemainder;
     }
 
     /**

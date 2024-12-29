@@ -213,7 +213,7 @@ public class SaporExporterTest {
         SaporMapping saporMapping = new SaporMapping();
         EssentialEntriesSaporMapping essentialEntriesSaporMapping = new EssentialEntriesSaporMapping();
         essentialEntriesSaporMapping.setResidual(residual);
-        essentialEntriesSaporMapping.setTargets(targets);
+        essentialEntriesSaporMapping.setRelativeTargets(targets);
         saporMapping.setEssentialEntriesMapping(essentialEntriesSaporMapping);
         return saporMapping;
     }
