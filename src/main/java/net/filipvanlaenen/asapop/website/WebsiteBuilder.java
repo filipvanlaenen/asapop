@@ -7,8 +7,6 @@ import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
-import net.filipvanlaenen.laconic.Laconic;
-import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class building the website.
