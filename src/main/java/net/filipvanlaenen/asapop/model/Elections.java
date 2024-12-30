@@ -108,7 +108,6 @@ public final class Elections {
      * @param areaCode     The area code.
      * @param electionType The election type.
      * @param now          The date to calculate the next election from.
-     * @param token        The Laconic logging token.
      * @return The first election of the requested type at the area after the provided date.
      */
     public Election getNextElection(final String areaCode, final ElectionType electionType, final LocalDate now) {
@@ -122,8 +121,7 @@ public final class Elections {
     /**
      * Returns the first elections for all areas and all types after a given date.
      *
-     * @param now   The date to calculate the next elections from.
-     * @param token The Laconic logging token.
+     * @param now The date to calculate the next elections from.
      * @return A set with all first elections after the provided date.
      */
     public Set<Election> getNextElections(final LocalDate now) {
@@ -137,9 +135,8 @@ public final class Elections {
     /**
      * Returns the first elections of all types for an area after a given date.
      *
-     * @param areaCode  The area code.
-     * @param now       The date to calculate the next elections from.
-     * @param areaToken The Laconic logging token for the area.
+     * @param areaCode The area code.
+     * @param now      The date to calculate the next elections from.
      * @return A set with all the first elections after the provided date for the area.
      */
     private Set<Election> getNextElections(final String areaCode, final LocalDate now) {
