@@ -144,21 +144,16 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
-        map.put(Paths.get("_widgets", "tables", "mk.html"), "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "  <head>\n" + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
-                + "    <link"
-                + " href=\"https://fonts.googleapis.com/css?family=Alegreya+Sans%3A400%2C700%2C400italic%2C700italic"
-                + "%2C600%2C600italic%7CAlegreya+Sans%3A400%2C500%2C600%2C700%2C400italic%2C700italic&amp;ver=1\""
-                + " rel=\"stylesheet\" type=\"text/css\"/>\n"
-                + "    <link href=\"https://europeelects.eu/wp-content/themes/chaplin/style.css?ver=2.6.7\""
-                + " rel=\"stylesheet\" type=\"text/css\"/>\n" + "    <style>body { background-color: #F9F9F9; }\n"
-                + "table{font-family:"
-                + " Alegreya Sans,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;}\n"
-                + "th{min-width:65px}</style>\n" + "  </head>\n" + "  <body>\n" + "    <table>\n" + "      <thead>\n"
-                + "        <tr>\n" + "          <th>Fieldwork Period</th>\n" + "          <th>Polling Firm</th>\n"
-                + "          <th>Commissioner(s)</th>\n" + "          <th>Sample Size</th>\n"
-                + "          <th>Other</th>\n" + "        </tr>\n" + "      </thead>\n" + "      <tbody/>\n"
-                + "    </table>\n" + "  </body>\n" + "</html>");
+        map.put(Paths.get("_widgets", "tables", "mk.html"),
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" + "  <head>\n"
+                        + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
+                        + "    <style>body { background-color: #F9F9F9; }\n" + "table{font-family:"
+                        + " Alegreya Sans,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;}\n"
+                        + "th{min-width:65px}</style>\n" + "  </head>\n" + "  <body>\n" + "    <table>\n"
+                        + "      <thead>\n" + "        <tr>\n" + "          <th>Fieldwork Period</th>\n"
+                        + "          <th>Polling Firm</th>\n" + "          <th>Commissioner(s)</th>\n"
+                        + "          <th>Sample Size</th>\n" + "          <th>Other</th>\n" + "        </tr>\n"
+                        + "      </thead>\n" + "      <tbody/>\n" + "    </table>\n" + "  </body>\n" + "</html>");
         String baseStyleSheetContent = "header { display: block; width: 100%; }";
         map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";

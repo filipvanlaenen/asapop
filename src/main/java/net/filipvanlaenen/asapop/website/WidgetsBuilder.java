@@ -19,6 +19,7 @@ import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.asapop.yaml.WidgetsConfiguration;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Html;
@@ -34,14 +35,11 @@ import net.filipvanlaenen.txhtmlj.THead;
 import net.filipvanlaenen.txhtmlj.TR;
 import net.filipvanlaenen.txhtmlj.Table;
 
-final class WidgetsBuilder {
+public class WidgetsBuilder {
     /**
      * The magic number fifty.
      */
     private static final int FIFTY = 50;
-    private static final String[] STYLES = new String[] {
-            "https://fonts.googleapis.com/css?family=Alegreya+Sans%3A400%2C700%2C400italic%2C700italic%2C600%2C600italic%7CAlegreya+Sans%3A400%2C500%2C600%2C700%2C400italic%2C700italic&ver=1",
-            "https://europeelects.eu/wp-content/themes/chaplin/style.css?ver=2.6.7"};
 
     /**
      * A map with the opinion polls related to parliamentary elections.
@@ -52,7 +50,7 @@ final class WidgetsBuilder {
      */
     private final WebsiteConfiguration websiteConfiguration;
 
-    WidgetsBuilder(final WebsiteConfiguration websiteConfiguration,
+    public WidgetsBuilder(final WebsiteConfiguration websiteConfiguration,
             final Map<String, OpinionPolls> parliamentaryOpinionPollsMap) {
         this.websiteConfiguration = websiteConfiguration;
         this.parliamentaryOpinionPollsMap = parliamentaryOpinionPollsMap;
@@ -60,13 +58,20 @@ final class WidgetsBuilder {
 
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
+        String[] tableStylesheets = new String[] {};
+        if (websiteConfiguration.getWidgetsConfiguration() != null) {
+            WidgetsConfiguration widgetsConfiguration = websiteConfiguration.getWidgetsConfiguration();
+            if (widgetsConfiguration.getTableStylesheets() != null) {
+                tableStylesheets = widgetsConfiguration.getTableStylesheets();
+            }
+        }
         for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
             String areaCode = areaConfiguration.getAreaCode();
             if (areaConfiguration.getCsvConfiguration() != null) {
                 OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
                 List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
                 result.put(Paths.get("_widgets", "tables", areaCode + ".html"),
-                        createHtmlTableFragment(latestOpinionPolls));
+                        createHtmlTableFragment(latestOpinionPolls, tableStylesheets));
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
             if (subdivisions != null) {
@@ -76,7 +81,7 @@ final class WidgetsBuilder {
                         List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         result.put(Paths.get("_widgets", "tables", areaCode + "-" + subdivisionAreaCode + ".html"),
-                                createHtmlTableFragment(latestOpinionPolls));
+                                createHtmlTableFragment(latestOpinionPolls, tableStylesheets));
                     }
                 }
             }
@@ -84,13 +89,13 @@ final class WidgetsBuilder {
         return result;
     }
 
-    private String createHtmlTableFragment(final List<OpinionPoll> opinionPolls) {
+    private String createHtmlTableFragment(final List<OpinionPoll> opinionPolls, final String[] stylesheets) {
         Html html = new Html();
         Head head = new Head();
         html.addElement(head);
         head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
-        for (String style : STYLES) {
-            head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(style).type("text/css"));
+        for (String stylesheet : stylesheets) {
+            head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(stylesheet).type("text/css"));
         }
         head.addElement(new Style("body { background-color: #F9F9F9; }\n"
                 + "table{font-family: Alegreya Sans,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;}\n"

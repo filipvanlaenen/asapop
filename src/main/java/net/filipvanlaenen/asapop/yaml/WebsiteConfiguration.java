@@ -10,6 +10,10 @@ public class WebsiteConfiguration {
      * The area configurations.
      */
     private Set<AreaConfiguration> areaConfigurations;
+    /**
+     * The widgets configuration.
+     */
+    private WidgetsConfiguration widgetsConfiguration;
 
     /**
      * Default constructor.
@@ -27,11 +31,29 @@ public class WebsiteConfiguration {
     }
 
     /**
+     * Returns the widgets configuration.
+     *
+     * @return The widgets configuration.
+     */
+    public WidgetsConfiguration getWidgetsConfiguration() {
+        return widgetsConfiguration;
+    }
+
+    /**
      * Sets the set with the area configurations.
      *
      * @param areaConfigurations The set with the area configurations.
      */
     public void setAreaConfigurations(final Set<AreaConfiguration> areaConfigurations) {
         this.areaConfigurations = areaConfigurations;
+    }
+
+    /**
+     * Sets the widgets configuration.
+     *
+     * @param widgetsConfiguration The widgets configuration.
+     */
+    public void setWidgetsConfiguration(final WidgetsConfiguration widgetsConfiguration) {
+        this.widgetsConfiguration = widgetsConfiguration;
     }
 }
