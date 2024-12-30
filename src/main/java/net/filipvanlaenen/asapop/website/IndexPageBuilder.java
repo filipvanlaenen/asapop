@@ -65,7 +65,6 @@ final class IndexPageBuilder extends PageBuilder {
     /**
      * Builds the content of the index page.
      *
-     * @param token The Laconic logging token.
      * @return The content of the index page
      */
     Html build() {
@@ -89,8 +88,6 @@ final class IndexPageBuilder extends PageBuilder {
 
     /**
      * Calculates the list of GitHub website URLs sorted by the next election date for the areas.
-     *
-     * @param token The Laconic logging token.
      */
     private void calculateGitHubWebsiteUrlsSortedByNextElectionDate() {
         List<Election> nextNationalElections = elections.getNextElections(now).stream()
@@ -143,7 +140,6 @@ final class IndexPageBuilder extends PageBuilder {
      * area.
      *
      * @param index The index for which the GitHub website URL should be returned.
-     * @param token The Laconic logging token.
      * @return The GitHub website URL at a given index, with the websites being sorted by the next election date for the
      *         area.
      */
