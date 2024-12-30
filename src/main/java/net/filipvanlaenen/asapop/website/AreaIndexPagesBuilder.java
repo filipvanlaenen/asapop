@@ -203,7 +203,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
      *
      * @param section           The section to add the upcoming election to.
      * @param areaConfiguration The configuration for the area.
-     * @param token             The Laconic logging token.
      */
     private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration) {
         String areaCode = areaConfiguration.getAreaCode();
@@ -228,7 +227,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param upcomingElectionLIs The list to add the upcoming elections to as LI elements.
      * @param areaCode            The area code.
      * @param electionType        The election type.
-     * @param token               The Laconic logging token.
      */
     private void addUpcomingElectionLI(final List<LI> upcomingElectionLIs, final String areaCode,
             final ElectionType electionType) {
@@ -251,7 +249,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * Builds the index pages for all areas.
      *
-     * @param token The Laconic logging token.
      * @return A map with the index pages for all areas.
      */
     Map<Path, String> build() {
