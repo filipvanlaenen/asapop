@@ -85,7 +85,6 @@ final class ElectoralCalendarPageBuilder extends PageBuilder {
     /**
      * Builds the content of the CSV files page.
      *
-     * @param token The Laconic logging token.
      * @return The content of the CSV files page
      */
     Html build() {
