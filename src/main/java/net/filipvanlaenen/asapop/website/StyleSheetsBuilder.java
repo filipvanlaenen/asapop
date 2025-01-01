@@ -19,7 +19,7 @@ class StyleSheetsBuilder {
     private final String customStyleSheetContent;
 
     /**
-     * Constructor taking the base style sheet content as its parameter.
+     * Constructor taking the base and custom style sheet contents as its parameters.
      *
      * @param baseStyleSheetContent   The base style sheet content.
      * @param customStyleSheetContent The custom style sheet content.

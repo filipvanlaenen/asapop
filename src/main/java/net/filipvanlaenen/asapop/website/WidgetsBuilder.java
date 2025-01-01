@@ -35,12 +35,14 @@ import net.filipvanlaenen.txhtmlj.THead;
 import net.filipvanlaenen.txhtmlj.TR;
 import net.filipvanlaenen.txhtmlj.Table;
 
+/**
+ * Classing building the widgets.
+ */
 public class WidgetsBuilder {
     /**
      * The magic number fifty.
      */
     private static final int FIFTY = 50;
-
     /**
      * A map with the opinion polls related to parliamentary elections.
      */
@@ -50,12 +52,23 @@ public class WidgetsBuilder {
      */
     private final WebsiteConfiguration websiteConfiguration;
 
+    /**
+     * Constructor taking the website configuration and a map with the parliamentary opinion polls as its parameters.
+     *
+     * @param websiteConfiguration         The website configuration.
+     * @param parliamentaryOpinionPollsMap A map with the parliamentary opinion polls as its parameters.
+     */
     public WidgetsBuilder(final WebsiteConfiguration websiteConfiguration,
             final Map<String, OpinionPolls> parliamentaryOpinionPollsMap) {
         this.websiteConfiguration = websiteConfiguration;
         this.parliamentaryOpinionPollsMap = parliamentaryOpinionPollsMap;
     }
 
+    /**
+     * Builds the widgets.
+     *
+     * @return A map with the widgets and their paths.
+     */
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
         String fontFamily = "sans-serif";
@@ -75,7 +88,7 @@ public class WidgetsBuilder {
                 OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
                 List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
                 result.put(Paths.get("_widgets", "tables", areaCode + ".html"),
-                        createHtmlTableFragment(latestOpinionPolls, fontFamily, tableStylesheets));
+                        createTableWidget(latestOpinionPolls, fontFamily, tableStylesheets));
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
             if (subdivisions != null) {
@@ -85,7 +98,7 @@ public class WidgetsBuilder {
                         List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         result.put(Paths.get("_widgets", "tables", areaCode + "-" + subdivisionAreaCode + ".html"),
-                                createHtmlTableFragment(latestOpinionPolls, fontFamily, tableStylesheets));
+                                createTableWidget(latestOpinionPolls, fontFamily, tableStylesheets));
                     }
                 }
             }
@@ -93,44 +106,13 @@ public class WidgetsBuilder {
         return result;
     }
 
-    private String createHtmlTableFragment(final List<OpinionPoll> opinionPolls, final String fontFamily,
-            final String[] stylesheets) {
-        Html html = new Html();
-        Head head = new Head();
-        html.addElement(head);
-        head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
-        for (String stylesheet : stylesheets) {
-            head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(stylesheet).type("text/css"));
-        }
-        head.addElement(new Style("body {\n" + "  background-color: #F9F9F9;\n" + "}\n\n" + "table {\n"
-                + "  font-family: " + fontFamily + ";\n" + "}\n\n" + "th {\n" + "  min-width: 65px;\n" + "}"));
-        Body body = new Body();
-        html.addElement(body);
-        Table table = new Table();
-        body.addElement(table);
-        THead tHead = new THead();
-        table.addElement(tHead);
-        TR tr = new TR();
-        tHead.addElement(tr);
-        tr.addElement(new TH("Fieldwork Period"));
-        tr.addElement(new TH("Polling Firm"));
-        tr.addElement(new TH("Commissioner(s)"));
-        tr.addElement(new TH("Sample Size"));
-        Map<Set<ElectoralList>, String> electoralListSetAbbreviation = new HashMap<Set<ElectoralList>, String>();
-        List<Set<ElectoralList>> electoralListSets =
-                calculateElectoralListSetsAndAbbreviations(electoralListSetAbbreviation, opinionPolls);
-        for (Set<ElectoralList> electoralListSet : electoralListSets) {
-            tr.addElement(new TH(electoralListSetAbbreviation.get(electoralListSet)));
-        }
-        tr.addElement(new TH("Other"));
-        TBody tBody = new TBody();
-        table.addElement(tBody);
-        for (OpinionPoll opinionPoll : opinionPolls) {
-            tBody.addElement(createOpinionPollRow(electoralListSets, opinionPoll));
-        }
-        return html.asString();
-    }
-
+    /**
+     * Calculates the electoral list sets and their abbreviations for the table.
+     *
+     * @param electoralListSetAbbreviation The abbreviations for the electoral lists.
+     * @param opinionPolls                 The opinion polls to be included in the table.
+     * @return A list of electoral lists for a widget table.
+     */
     private List<Set<ElectoralList>> calculateElectoralListSetsAndAbbreviations(
             final Map<Set<ElectoralList>, String> electoralListSetAbbreviation, final List<OpinionPoll> opinionPolls) {
         Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
@@ -167,6 +149,32 @@ public class WidgetsBuilder {
         return sortedElectoralListSets;
     }
 
+    /**
+     * Calculates the latest opinion polls.
+     *
+     * @param opinionPolls The list of opinion polls.
+     * @return The latest opinion polls.
+     */
+    private List<OpinionPoll> calculateLatestOpinionPolls(final OpinionPolls opinionPolls) {
+        List<OpinionPoll> opinionPollList = new ArrayList<OpinionPoll>(opinionPolls.getOpinionPolls());
+        opinionPollList.sort(new Comparator<OpinionPoll>() {
+            @Override
+            public int compare(final OpinionPoll op1, final OpinionPoll op2) {
+                return op2.getEndDate().compareTo(op1.getEndDate());
+            }
+        });
+        int numberOfOpinionPolls = opinionPollList.size();
+        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
+        return opinionPollList.subList(0, numberOfOpinionPolls > FIFTY ? FIFTY : numberOfOpinionPolls);
+    }
+
+    /**
+     * Creates a row with an opinion poll.
+     *
+     * @param largestElectoralListSets The electoral list sets that the row should include.
+     * @param opinionPoll              The opinion poll.
+     * @return A row with an opinion poll.
+     */
     private TR createOpinionPollRow(final List<Set<ElectoralList>> largestElectoralListSets,
             final OpinionPoll opinionPoll) {
         TR opinionPollRow = new TR();
@@ -247,17 +255,49 @@ public class WidgetsBuilder {
         return opinionPollRow;
     }
 
-    private List<OpinionPoll> calculateLatestOpinionPolls(final OpinionPolls opinionPolls) {
-        List<OpinionPoll> opinionPollList = new ArrayList<OpinionPoll>(opinionPolls.getOpinionPolls());
-        opinionPollList.sort(new Comparator<OpinionPoll>() {
-            @Override
-            public int compare(final OpinionPoll op1, final OpinionPoll op2) {
-                return op2.getEndDate().compareTo(op1.getEndDate());
-            }
-        });
-        int numberOfOpinionPolls = opinionPollList.size();
-        // EQMU: Changing the conditional boundary below produces an equivalent mutant.
-        return opinionPollList.subList(0, numberOfOpinionPolls > FIFTY ? FIFTY : numberOfOpinionPolls);
+    /**
+     * Creates a table widget for a collection of opinion polls.
+     *
+     * @param opinionPolls The opinion polls.
+     * @param fontFamily   The font family.
+     * @param stylesheets  The stylesheets.
+     * @return The content of a table widget for the opinion polls.
+     */
+    private String createTableWidget(final List<OpinionPoll> opinionPolls, final String fontFamily,
+            final String[] stylesheets) {
+        Html html = new Html();
+        Head head = new Head();
+        html.addElement(head);
+        head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
+        for (String stylesheet : stylesheets) {
+            head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(stylesheet).type("text/css"));
+        }
+        head.addElement(new Style("body {\n" + "  background-color: #F9F9F9;\n" + "}\n\n" + "table {\n"
+                + "  font-family: " + fontFamily + ";\n" + "}\n\n" + "th {\n" + "  min-width: 65px;\n" + "}"));
+        Body body = new Body();
+        html.addElement(body);
+        Table table = new Table();
+        body.addElement(table);
+        THead tHead = new THead();
+        table.addElement(tHead);
+        TR tr = new TR();
+        tHead.addElement(tr);
+        tr.addElement(new TH("Fieldwork Period"));
+        tr.addElement(new TH("Polling Firm"));
+        tr.addElement(new TH("Commissioner(s)"));
+        tr.addElement(new TH("Sample Size"));
+        Map<Set<ElectoralList>, String> electoralListSetAbbreviation = new HashMap<Set<ElectoralList>, String>();
+        List<Set<ElectoralList>> electoralListSets =
+                calculateElectoralListSetsAndAbbreviations(electoralListSetAbbreviation, opinionPolls);
+        for (Set<ElectoralList> electoralListSet : electoralListSets) {
+            tr.addElement(new TH(electoralListSetAbbreviation.get(electoralListSet)));
+        }
+        tr.addElement(new TH("Other"));
+        TBody tBody = new TBody();
+        table.addElement(tBody);
+        for (OpinionPoll opinionPoll : opinionPolls) {
+            tBody.addElement(createOpinionPollRow(electoralListSets, opinionPoll));
+        }
+        return html.asString();
     }
-
 }
