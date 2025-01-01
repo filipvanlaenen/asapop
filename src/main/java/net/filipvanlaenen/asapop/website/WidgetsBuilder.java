@@ -58,9 +58,13 @@ public class WidgetsBuilder {
 
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
+        String fontFamily = "sans-serif";
         String[] tableStylesheets = new String[] {};
         if (websiteConfiguration.getWidgetsConfiguration() != null) {
             WidgetsConfiguration widgetsConfiguration = websiteConfiguration.getWidgetsConfiguration();
+            if (widgetsConfiguration.getTableFontFamily() != null) {
+                fontFamily = widgetsConfiguration.getTableFontFamily();
+            }
             if (widgetsConfiguration.getTableStylesheets() != null) {
                 tableStylesheets = widgetsConfiguration.getTableStylesheets();
             }
@@ -71,7 +75,7 @@ public class WidgetsBuilder {
                 OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
                 List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
                 result.put(Paths.get("_widgets", "tables", areaCode + ".html"),
-                        createHtmlTableFragment(latestOpinionPolls, tableStylesheets));
+                        createHtmlTableFragment(latestOpinionPolls, fontFamily, tableStylesheets));
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
             if (subdivisions != null) {
@@ -81,7 +85,7 @@ public class WidgetsBuilder {
                         List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         result.put(Paths.get("_widgets", "tables", areaCode + "-" + subdivisionAreaCode + ".html"),
-                                createHtmlTableFragment(latestOpinionPolls, tableStylesheets));
+                                createHtmlTableFragment(latestOpinionPolls, fontFamily, tableStylesheets));
                     }
                 }
             }
@@ -89,7 +93,8 @@ public class WidgetsBuilder {
         return result;
     }
 
-    private String createHtmlTableFragment(final List<OpinionPoll> opinionPolls, final String[] stylesheets) {
+    private String createHtmlTableFragment(final List<OpinionPoll> opinionPolls, final String fontFamily,
+            final String[] stylesheets) {
         Html html = new Html();
         Head head = new Head();
         html.addElement(head);
@@ -97,9 +102,8 @@ public class WidgetsBuilder {
         for (String stylesheet : stylesheets) {
             head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(stylesheet).type("text/css"));
         }
-        head.addElement(new Style("body { background-color: #F9F9F9; }\n"
-                + "table{font-family: Alegreya Sans,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,sans-serif;}\n"
-                + "th{min-width:65px}"));
+        head.addElement(new Style("body {\n" + "  background-color: #F9F9F9;\n" + "}\n\n" + "table {\n"
+                + "  font-family: " + fontFamily + ";\n" + "}\n\n" + "th {\n" + "  min-width: 65px;\n" + "}"));
         Body body = new Body();
         html.addElement(body);
         Table table = new Table();
