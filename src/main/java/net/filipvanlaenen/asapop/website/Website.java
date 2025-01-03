@@ -33,7 +33,11 @@ public class Website {
      * @param content The content of the page.
      */
     void put(final String path, final Html content) {
-        map.put(Paths.get(path), content.asString());
+        put(path, content.asString());
+    }
+
+    void put(final String path, final String content) {
+        map.put(Paths.get(path), content);
     }
 
     /**

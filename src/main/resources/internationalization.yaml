@@ -96,6 +96,22 @@ terms:
       fr: "Aller à"
       nl: "Ga naar"
       no: "Gå til"
+  - key: "icalendar-file"
+    translations:
+      de: "iCalendar-Datei"
+      en: "iCalendar file"
+      eo: "iCalendar-dosieron"
+      fr: "fichier iCalendar"
+      nl: "iCalendar-bestand"
+      no: "iCalendar-fil"
+  - key: "import-this-calendar-as-an"
+    translations:
+      de: "Importieren Sie diesen Kalender als"
+      en: "Import this calendar as an"
+      eo: "Importu ĉi tiun kalendaron kiel"
+      fr: "Importez ce calendrier sous forme de"
+      nl: "Importeer deze kalender als een"
+      no: "Importer denne kalenderen som en"
   - key: "instant-seat-projection"
     translations:
       de: "Sofortprojektion von Sitze"

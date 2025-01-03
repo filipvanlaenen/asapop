@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.ElectionDate.ExpectedDay;
 import net.filipvanlaenen.asapop.model.ElectionDate.Qualifier;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
@@ -49,15 +49,17 @@ public class ICalendarFileBuilder {
         List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now));
         for (Election nextElection : nextElections) {
             ElectionDate nextElectionDate = nextElection.getNextElectionDate(now);
-            if (nextElectionDate.qualifier().equals(Qualifier.EXACT_DATE) && nextElectionDate instanceof ExpectedDay) {
+            String areaCode = nextElection.areaCode();
+            Term areaTerm = terms.getTerm("_area_" + areaCode);
+            if (areaCode != null && areaTerm != null && nextElectionDate.qualifier().equals(Qualifier.EXACT_DATE)
+                    && nextElectionDate instanceof ExpectedDay) {
                 String isoDate = nextElectionDate.getEndDate().format(DateTimeFormatter.BASIC_ISO_DATE);
-                String areaCode = nextElection.areaCode();
                 sb.append("BEGIN:VEVENT\n");
                 sb.append("SUMMARY:🗳️");
                 sb.append(Character.toChars(127365 + areaCode.charAt(0)));
                 sb.append(Character.toChars(127365 + areaCode.charAt(1)));
                 sb.append(" Election in ");
-                sb.append(terms.getTerm("_area_" + areaCode).getTranslations().get("en"));
+                sb.append(areaTerm.getTranslations().get("en"));
                 sb.append(": ");
                 sb.append(terms.getTerm(nextElection.electionType().getTermKey()).getTranslations().get("en"));
                 sb.append("\n");

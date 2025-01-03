@@ -109,6 +109,7 @@ public class StatisticsPageBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         AreaConfiguration denmark = new AreaConfiguration();
@@ -162,7 +163,7 @@ public class StatisticsPageBuilderTest {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        expected.append("    <title>ASAPOP Website</title>\n");
+        expected.append("    <title>ASAPOP Website Test</title>\n");
         expected.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""

@@ -46,6 +46,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void buildShouldBuildTheCorrectPages() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         AreaConfiguration serbia = new AreaConfiguration();
@@ -63,6 +64,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void absentAreaIndexPageShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         Map<String, OpinionPolls> opinionPollsMap = Collections.EMPTY_MAP;
         websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
         AreaConfiguration northMacedonia = new AreaConfiguration();
@@ -78,6 +80,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void emptyAreaIndexPageShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -93,6 +96,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void areaIndexPageWithASmallOpinionPollShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
                 .getOpinionPolls();
@@ -112,6 +116,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void areaIndexPageWithAnOpinionPollWithResultsInNumberOfSeatsShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN,
                 "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 •U: S A:55 B:40 C: 10 D: 9 E: 8 F: 7 G: 6 H: 5 I: 4",
                 "A: MK001 •A:AP", "B: MK002 •A:BL", "C: MK003 •A:C", "D: MK004 •A:D", "E: MK005 •A:E", "F: MK006 •A:F",
@@ -132,6 +137,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void areaIndexPageWithASmallOpinionPollAndOnePollingFirmNotIncludedShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
                 .getOpinionPolls();
@@ -152,6 +158,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void areaIndexPageWithASmallOpinionPollAndManyPollingFirmsNotIncludedShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
                 .getOpinionPolls();
@@ -174,6 +181,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void areaIndexPageWithManyAndLargeOpinionPollsShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN,
                 "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:10 C:5 D:5 E+I+J+K:5 F:5 G:5 H:5",
                 "•C: The Times •FS: 2022-10-16 •PD: 2022-10-26 A:55 B:40 D:4",
@@ -197,6 +205,7 @@ public class AreaIndexPagesBuilderTest {
     @Test
     public void areaIndexPageWithUpcomingElectionsShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -442,7 +451,7 @@ public class AreaIndexPagesBuilderTest {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        expected.append("    <title>ASAPOP Website</title>\n");
+        expected.append("    <title>ASAPOP Website Test</title>\n");
         expected.append("    <link href=\"../_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <link href=\"../_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""

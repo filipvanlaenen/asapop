@@ -11,6 +11,16 @@ public class Terms {
      */
     private Set<Term> terms;
 
+    public Term getTerm(final String key) {
+        // TODO: Add a Map.
+        for (Term term : terms) {
+            if (term.getKey().equals(key)) {
+                return term;
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns a set with all the terms.
      *

@@ -153,7 +153,7 @@ abstract class PageBuilder {
         String relativePath = createRelativePath(level);
         Head head = new Head();
         head.addElement(new Meta().httpEquiv(HttpEquivValue.CONTENT_TYPE).content("text/html; charset=UTF-8"));
-        head.addElement(new Title("ASAPOP Website"));
+        head.addElement(new Title("ASAPOP Website " + websiteConfiguration.getName()));
         head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(relativePath + "_css/base.css").type("text/css"));
         head.addElement(new Link().rel(LinkTypeValue.STYLESHEET).href(relativePath + "_css/skin.css").type("text/css"));
         head.addElement(new Script(" ").type(JavaScriptMimeTypeValue.APPLICATION_JAVASCRIPT)

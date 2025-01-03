@@ -34,6 +34,7 @@ public class PageBuilderTest {
      */
     private LocalPageBuilder createLocalPageBuilder() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         AreaConfiguration serbia = new AreaConfiguration();
@@ -64,7 +65,7 @@ public class PageBuilderTest {
         StringBuilder expected = new StringBuilder();
         expected.append("<head>\n");
         expected.append("  <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        expected.append("  <title>ASAPOP Website</title>\n");
+        expected.append("  <title>ASAPOP Website Test</title>\n");
         expected.append("  <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("  <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""

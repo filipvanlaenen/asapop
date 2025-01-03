@@ -39,6 +39,7 @@ public class ElectoralCalendarPageBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         AreaConfiguration denmark = new AreaConfiguration();
@@ -95,7 +96,7 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         expected.append("  <head>\n");
         expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        expected.append("    <title>ASAPOP Website</title>\n");
+        expected.append("    <title>ASAPOP Website Test</title>\n");
         expected.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
@@ -132,6 +133,8 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("    </header>\n");
         expected.append("    <section>\n");
         expected.append("      <h1 class=\"electoral-calendar\"> </h1>\n");
+        expected.append("      <p><span class=\"import-this-calendar-as-an\"> </span> <a class=\"icalendar-file\""
+                + " href=\"calendar.ical\"> </a>.</p>\n");
         expected.append("      <table>\n");
         expected.append("        <thead>\n");
         expected.append("          <tr>\n");

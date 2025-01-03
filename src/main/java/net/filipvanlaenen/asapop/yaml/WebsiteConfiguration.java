@@ -10,6 +10,8 @@ public class WebsiteConfiguration {
      * The area configurations.
      */
     private Set<AreaConfiguration> areaConfigurations;
+    private String id;
+    private String name;
     /**
      * The widgets configuration.
      */
@@ -30,6 +32,14 @@ public class WebsiteConfiguration {
         return areaConfigurations;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     /**
      * Returns the widgets configuration.
      *
@@ -46,6 +56,14 @@ public class WebsiteConfiguration {
      */
     public void setAreaConfigurations(final Set<AreaConfiguration> areaConfigurations) {
         this.areaConfigurations = areaConfigurations;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 
     /**

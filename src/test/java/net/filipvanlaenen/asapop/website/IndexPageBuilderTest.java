@@ -37,6 +37,7 @@ public class IndexPageBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         ElectionLists electionListsForSweden = new ElectionLists();
@@ -184,7 +185,7 @@ public class IndexPageBuilderTest {
         stringBuilder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         stringBuilder.append("  <head>\n");
         stringBuilder.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        stringBuilder.append("    <title>ASAPOP Website</title>\n");
+        stringBuilder.append("    <title>ASAPOP Website Test</title>\n");
         stringBuilder.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         stringBuilder.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
         stringBuilder.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""

@@ -58,10 +58,10 @@ public class WebsiteBuilderTest {
      */
     private Terms createTerms() {
         Terms terms = new Terms();
-        Term term = new Term();
-        term.setKey("language");
-        term.setTranslations(Map.of("en", "Language"));
-        terms.setTerms(Set.of(term));
+        Term language = new Term();
+        language.setKey("language");
+        language.setTranslations(Map.of("en", "Language"));
+        terms.setTerms(Set.of(language));
         return terms;
     }
 
@@ -72,6 +72,7 @@ public class WebsiteBuilderTest {
      */
     private WebsiteConfiguration createWebsiteConfiguration() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        websiteConfiguration.setName("Test");
         sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         ElectionLists electionListsForSweden = new ElectionLists();
@@ -120,6 +121,8 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("calendar.html"),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+        map.put(Paths.get("calendar.ical"),
+                new ICalendarFileBuilder(websiteConfiguration, elections, NOW, terms).build());
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
                 new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, NOW, START_OF_YEAR).build()
