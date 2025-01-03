@@ -36,6 +36,12 @@ public class Website {
         put(path, content.asString());
     }
 
+    /**
+     * Sets the content of a page.
+     *
+     * @param path    The path to the page.
+     * @param content The content of the page.
+     */
     void put(final String path, final String content) {
         map.put(Paths.get(path), content);
     }
