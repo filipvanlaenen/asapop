@@ -25,6 +25,8 @@ import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>WebsiteBuilder</code> class.
@@ -38,6 +40,10 @@ public class WebsiteBuilderTest {
      * The start of the year 2022.
      */
     private static final LocalDate START_OF_YEAR = NOW.withDayOfYear(1);
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test WebsiteBuilderTest.");
     /**
      * The area configuration for Latvia.
      */
@@ -122,7 +128,7 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("calendar.html"),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("calendar.ical"),
-                new ICalendarFileBuilder(websiteConfiguration, elections, NOW, terms).build());
+                new ICalendarFileBuilder(websiteConfiguration, elections, NOW, terms).build(TOKEN));
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         map.put(Paths.get("statistics.html"),
                 new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, NOW, START_OF_YEAR).build()
