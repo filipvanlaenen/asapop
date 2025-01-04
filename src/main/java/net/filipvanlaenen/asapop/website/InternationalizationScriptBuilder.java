@@ -16,7 +16,7 @@ class InternationalizationScriptBuilder {
     /**
      * Constructor using the terms as its parameter.
      *
-     * @param terms The terms.
+     * @param internationalization The internationalization dictionary.
      */
     InternationalizationScriptBuilder(final Internationalization internationalization) {
         this.internationalization = internationalization;
