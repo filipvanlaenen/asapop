@@ -22,8 +22,6 @@ import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
-import net.filipvanlaenen.asapop.yaml.Term;
-import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
@@ -58,17 +56,14 @@ public class WebsiteBuilderTest {
     private AreaConfiguration sweden;
 
     /**
-     * Creates a set of terms for the internationalization script builder.
+     * Creates the internationalization dictionary.
      *
-     * @return A set of terms for the internationalization script builder.
+     * @return The internationalization dictionary.
      */
-    private Terms createTerms() {
-        Terms terms = new Terms();
-        Term language = new Term();
-        language.setKey("language");
-        language.setTranslations(Map.of("en", "Language"));
-        terms.setTerms(Set.of(language));
-        return terms;
+    private Internationalization createInternationalization() {
+        Internationalization internationalization = new Internationalization();
+        internationalization.addTranslations("language", Map.of("en", "Language"));
+        return internationalization;
     }
 
     /**
@@ -118,7 +113,7 @@ public class WebsiteBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         Map<Path, String> map = new HashMap<Path, String>();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Terms terms = createTerms();
+        Internationalization internationalization = createInternationalization();
         Elections elections =
                 ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
@@ -128,11 +123,10 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("calendar.html"),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
         map.put(Paths.get("calendar.ical"),
-                new ICalendarFileBuilder(websiteConfiguration, elections, NOW, terms).build(TOKEN));
+                new ICalendarFileBuilder(websiteConfiguration, elections, NOW, internationalization).build(TOKEN));
         map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
-        map.put(Paths.get("statistics.html"),
-                new StatisticsPageBuilder(websiteConfiguration, terms, opinionPollsMap, NOW, START_OF_YEAR).build()
-                        .asString());
+        map.put(Paths.get("statistics.html"), new StatisticsPageBuilder(websiteConfiguration, internationalization,
+                opinionPollsMap, NOW, START_OF_YEAR).build().asString());
         map.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(latvia));
@@ -143,7 +137,7 @@ public class WebsiteBuilderTest {
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(sweden));
         map.put(Paths.get("_js", "internationalization.js"),
-                new InternationalizationScriptBuilder(createTerms()).build());
+                new InternationalizationScriptBuilder(createInternationalization()).build());
         String navigationScriptContent = "function moveToArea(level) {}";
         map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         String sortingScriptContent = "function sortTable(table) {}";
@@ -167,7 +161,7 @@ public class WebsiteBuilderTest {
         map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
-        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), terms, opinionPollsMap,
+        WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), internationalization, opinionPollsMap,
                 Collections.EMPTY_MAP, elections, baseStyleSheetContent, customStyleSheetContent,
                 navigationScriptContent, sortingScriptContent, tooltipScriptContent, NOW);
         assertEquals(map, builder.build().asMap());

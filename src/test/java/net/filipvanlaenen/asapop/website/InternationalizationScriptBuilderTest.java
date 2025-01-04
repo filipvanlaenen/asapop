@@ -3,38 +3,25 @@ package net.filipvanlaenen.asapop.website;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-
-import net.filipvanlaenen.asapop.yaml.Term;
-import net.filipvanlaenen.asapop.yaml.Terms;
 
 /**
  * Unit tests on the <code>InternationalizationScriptBuilder</code> class.
  */
 public class InternationalizationScriptBuilderTest {
     /**
-     * Creates a set of terms for the internationalization script builder.
+     * Creates the internationalization dictionary.
      *
-     * @return A set of terms for the internationalization script builder.
+     * @return The internationalization dictionary.
      */
-    private Terms createTerms() {
-        Terms terms = new Terms();
-        Term termCountry = new Term();
-        termCountry.setKey("country");
-        termCountry.setTranslations(Map.of("en", "Country"));
-        Term termDate = new Term();
-        termDate.setKey("date");
-        termDate.setTranslations(Map.of("en", "Date"));
-        Term termLanguage = new Term();
-        termLanguage.setKey("language");
-        termLanguage.setTranslations(Map.of("en", "Language"));
-        Term termMainPage = new Term();
-        termMainPage.setKey("main-page");
-        termMainPage.setTranslations(Map.of("en", "Main Page"));
-        terms.setTerms(Set.of(termCountry, termDate, termLanguage, termMainPage));
-        return terms;
+    private Internationalization createInternationalization() {
+        Internationalization internationalization = new Internationalization();
+        internationalization.addTranslations("country", Map.of("en", "Country"));
+        internationalization.addTranslations("date", Map.of("en", "Date"));
+        internationalization.addTranslations("language", Map.of("en", "Language"));
+        internationalization.addTranslations("main-page", Map.of("en", "Main Page"));
+        return internationalization;
     }
 
     /**
@@ -42,7 +29,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void scriptShouldContainSwitchForEnglishLanguage() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         assertTrue(builder.build().contains("case \"en\":"));
     }
 
@@ -51,7 +38,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void switchStatementForGermanShouldComeBeforeSwitchStatementForEnglish() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         String pageContent = builder.build();
         assertTrue(pageContent.indexOf("case \"de\":") < pageContent.indexOf("case \"en\":"));
     }
@@ -61,7 +48,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void scriptShouldContainEnglishTermForLanguage() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         assertTrue(builder.build().contains("$('.language').text(\"Language\");"));
     }
 
@@ -70,7 +57,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void scriptShouldContainSubstituteDutchTermForLanguage() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         assertTrue(builder.build().contains("$('.language').text(\"[Language]\");"));
     }
 
@@ -79,7 +66,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void loadStatementsForTermsShouldBeSortedByTermsKeys() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         String pageContent = builder.build();
         assertTrue(pageContent.indexOf("$('.country').text(\"Country\");") < pageContent
                 .indexOf("$('.date').text(\"Date\");"));
@@ -94,7 +81,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void scriptShouldContainInitializeLanguageFunction() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         assertTrue(builder.build().contains("initializeLanguage()"));
     }
 
@@ -103,7 +90,7 @@ public class InternationalizationScriptBuilderTest {
      */
     @Test
     public void scriptShouldContainLoadLanguageFunction() {
-        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createTerms());
+        InternationalizationScriptBuilder builder = new InternationalizationScriptBuilder(createInternationalization());
         assertTrue(builder.build().contains("loadLanguage()"));
     }
 }

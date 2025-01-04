@@ -1,17 +1,20 @@
 package net.filipvanlaenen.asapop;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.yaml.Terms;
+import net.filipvanlaenen.asapop.website.Internationalization;
+import net.filipvanlaenen.asapop.website.Language;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
+import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -24,17 +27,16 @@ public class CommandLineInterfaceTest {
     @Test
     public void translationOfAnAreaShouldBeAddedToTerms() {
         Terms terms = new Terms();
-        terms.setTerms(new HashSet<Term>());
+        terms.setTerms(new Term[] {});
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         sweden.setTranslations(Map.of("en", "Sweden"));
         websiteConfiguration.setAreaConfigurations(Set.of(sweden));
-        CommandLineInterface.Command.addAreaTranslations(terms, websiteConfiguration);
-        assertEquals(1, terms.getTerms().size());
-        Term term = terms.getTerms().iterator().next();
-        assertEquals("_area_se", term.getKey());
-        assertEquals("Sweden", term.getTranslations().get("en"));
+        Internationalization internationalization = new Internationalization(terms);
+        CommandLineInterface.Command.addAreaTranslations(internationalization, websiteConfiguration);
+        assertTrue(internationalization.containsKey("_area_se"));
+        assertEquals("Sweden", internationalization.getTranslation("_area_se", Language.ENGLISH));
     }
 
     /**
@@ -43,13 +45,14 @@ public class CommandLineInterfaceTest {
     @Test
     public void areaWithoutTranslationShouldNotAddToTerms() {
         Terms terms = new Terms();
-        terms.setTerms(new HashSet<Term>());
+        terms.setTerms(new Term[] {});
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         websiteConfiguration.setAreaConfigurations(Set.of(sweden));
-        CommandLineInterface.Command.addAreaTranslations(terms, websiteConfiguration);
-        assertEquals(0, terms.getTerms().size());
+        Internationalization internationalization = new Internationalization(terms);
+        CommandLineInterface.Command.addAreaTranslations(internationalization, websiteConfiguration);
+        assertFalse(internationalization.containsKey("_area_se"));
     }
 
     /**
@@ -58,7 +61,7 @@ public class CommandLineInterfaceTest {
     @Test
     public void translationOfASubdivisionShouldBeAddedToTerms() {
         Terms terms = new Terms();
-        terms.setTerms(new HashSet<Term>());
+        terms.setTerms(new Term[] {});
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         AreaConfiguration belgium = new AreaConfiguration();
         belgium.setAreaCode("be");
@@ -68,10 +71,9 @@ public class CommandLineInterfaceTest {
         AreaSubdivisionConfiguration[] subdivisions = new AreaSubdivisionConfiguration[] {flanders};
         belgium.setSubdivisions(subdivisions);
         websiteConfiguration.setAreaConfigurations(Set.of(belgium));
-        CommandLineInterface.Command.addAreaTranslations(terms, websiteConfiguration);
-        assertEquals(1, terms.getTerms().size());
-        Term term = terms.getTerms().iterator().next();
-        assertEquals("_area_be-vlg", term.getKey());
-        assertEquals("Flanders", term.getTranslations().get("en"));
+        Internationalization internationalization = new Internationalization(terms);
+        CommandLineInterface.Command.addAreaTranslations(internationalization, websiteConfiguration);
+        assertTrue(internationalization.containsKey("_area_be-vlg"));
+        assertEquals("Flanders", internationalization.getTranslation("_area_be-vlg", Language.ENGLISH));
     }
 }

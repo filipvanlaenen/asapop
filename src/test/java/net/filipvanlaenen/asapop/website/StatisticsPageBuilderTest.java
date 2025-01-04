@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,8 +16,6 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.Term;
-import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 
 /**
@@ -123,35 +120,21 @@ public class StatisticsPageBuilderTest {
     }
 
     /**
-     * Creates a set of terms for the statistics page builder.
+     * Creates the internationalization dictionary.
      *
-     * @return A set of terms for the statistics page builder.
+     * @return The internationalization dictionary.
      */
-    private Terms createTerms() {
-        Terms terms = new Terms();
-        terms.setTerms(createTerms("dk", "ee", "no", "se"));
-        return terms;
-    }
-
-    /**
-     * Creates a set of terms for the statistics page builder for the provided area codes.
-     *
-     * @param areaCodes The area codes for which to create terms.
-     * @return A set of terms for the statistics page builder.
-     */
-    private Set<Term> createTerms(final String... areaCodes) {
-        Set<Term> terms = new HashSet<Term>();
-        for (String areaCode : areaCodes) {
-            Term term = new Term();
-            term.setKey("_area_" + areaCode);
+    private Internationalization createInternationalization() {
+        Internationalization internationalization = new Internationalization();
+        for (String areaCode : new String[] {"dk", "ee", "no", "se"}) {
+            String key = "_area_" + areaCode;
             Map<String, String> translations = new HashMap<String, String>();
             for (Language language : Language.values()) {
                 translations.put(language.getId(), areaCode + "-" + language.getId());
             }
-            term.setTranslations(translations);
-            terms.add(term);
+            internationalization.addTranslations(key, translations);
         }
-        return terms;
+        return internationalization;
     }
 
     /**
@@ -504,8 +487,8 @@ public class StatisticsPageBuilderTest {
                         + " id=\"pieChartTooltipPercentage\"> </span>%)</div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
-        assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(), createTerms(),
-                createOpinionPollsMap(), NOW, START_OF_YEAR).build().asString());
+        assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(),
+                createInternationalization(), createOpinionPollsMap(), NOW, START_OF_YEAR).build().asString());
     }
 
     /**

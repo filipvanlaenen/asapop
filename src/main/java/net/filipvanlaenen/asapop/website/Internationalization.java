@@ -12,6 +12,9 @@ public class Internationalization {
     private ModifiableSortedMap<String, Translations> translations =
             new ModifiableSortedTreeMap<String, Translations>(Comparator.naturalOrder());
 
+    Internationalization() {
+    }
+
     public Internationalization(final Terms terms) {
         for (Term term : terms.getTerms()) {
             String key = term.getKey();
