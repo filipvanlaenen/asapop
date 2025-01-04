@@ -33,6 +33,7 @@ import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFil
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.asapop.website.Internationalization;
 import net.filipvanlaenen.asapop.website.Website;
 import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
@@ -44,7 +45,6 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
-import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.laconic.Laconic;
@@ -78,7 +78,8 @@ public final class CommandLineInterface {
         try {
             Command.valueOf(args[0].toUpperCase()).execute(args);
         } catch (IllegalArgumentException iae) {
-            printUsage();
+            Laconic.LOGGER.logError("An exception occurred: %s:", iae.getMessage());
+            iae.printStackTrace();
         }
     }
 
@@ -143,7 +144,8 @@ public final class CommandLineInterface {
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(siteConfigurationFile, WebsiteConfiguration.class);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
-                addAreaTerms(terms, websiteConfiguration);
+                Internationalization internationalization = new Internationalization(terms);
+                addAreaTranslations(internationalization, websiteConfiguration);
                 Map<String, ElectionData> electionDataFiles =
                         readElectionDataFiles(websiteConfiguration, siteConfigurationFile.getParent());
                 LocalDate now = LocalDate.now();
@@ -158,9 +160,10 @@ public final class CommandLineInterface {
                 String navigationScriptContent = readResource("/navigation.js");
                 String sortingScriptContent = readResource("/sorting.js");
                 String tooltipScriptContent = readResource("/tooltip.js");
-                Website website = new WebsiteBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap,
-                        presidentialOpinionPollsMap, elections, baseStyleSheetContent, customStyleSheetContent,
-                        navigationScriptContent, sortingScriptContent, tooltipScriptContent, now).build();
+                Website website =
+                        new WebsiteBuilder(websiteConfiguration, internationalization, parliamentaryOpinionPollsMap,
+                                presidentialOpinionPollsMap, elections, baseStyleSheetContent, customStyleSheetContent,
+                                navigationScriptContent, sortingScriptContent, tooltipScriptContent, now).build();
                 writeFiles(siteDirName, website.asMap());
             }
         },
@@ -234,27 +237,23 @@ public final class CommandLineInterface {
         };
 
         /**
-         * Adds the translations of all the areas to the terms.
+         * Adds the translations of all the areas to the internationalization dictionary.
          *
-         * @param terms                The terms to add the translations to.
+         * @param internationalization The internationalization dictionary to add the translations to.
          * @param websiteConfiguration The website configuration to extract the translations of the areas from.
          */
-        static void addAreaTerms(final Terms terms, final WebsiteConfiguration websiteConfiguration) {
+        static void addAreaTranslations(final Internationalization internationalization,
+                final WebsiteConfiguration websiteConfiguration) {
             for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
                 String areaCode = areaConfiguration.getAreaCode();
                 if (areaConfiguration.getTranslations() != null) {
-                    Term term = new Term();
-                    term.setKey("_area_" + areaCode);
-                    term.setTranslations(areaConfiguration.getTranslations());
-                    terms.getTerms().add(term);
+                    internationalization.addTranslations("_area_" + areaCode, areaConfiguration.getTranslations());
                 }
                 if (areaConfiguration.getSubdivsions() != null) {
                     for (AreaSubdivisionConfiguration subdivision : areaConfiguration.getSubdivsions()) {
                         if (subdivision.getTranslations() != null) {
-                            Term term = new Term();
-                            term.setKey("_area_" + areaCode + "-" + subdivision.getAreaCode());
-                            term.setTranslations(subdivision.getTranslations());
-                            terms.getTerms().add(term);
+                            internationalization.addTranslations("_area_" + areaCode + "-" + subdivision.getAreaCode(),
+                                    subdivision.getTranslations());
                         }
                     }
                 }

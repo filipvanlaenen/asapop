@@ -5,12 +5,14 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.filipvanlaenen.asapop.yaml.Terms;
-
 /**
  * Class building the JavaScripts files.
  */
 class JavaScriptsBuilder {
+    /**
+     * The internationalization dictionary.
+     */
+    private final Internationalization internationalization;
     /**
      * The content of the navigation script.
      */
@@ -19,10 +21,6 @@ class JavaScriptsBuilder {
      * The content of the sorting script.
      */
     private final String sortingScriptContent;
-    /**
-     * The internationalization terms.
-     */
-    private final Terms terms;
     /**
      * The content of the tooltip script.
      */
@@ -34,14 +32,14 @@ class JavaScriptsBuilder {
      * @param navigationScriptContent The content of the navigation script.
      * @param sortingScriptContent    The content of the sorting script.
      * @param tooltipScriptContent    The content of the tooltip script.
-     * @param terms                   The internationalization terms.
+     * @param internationalization    The internationalization dictionary.
      */
     JavaScriptsBuilder(final String navigationScriptContent, final String sortingScriptContent,
-            final String tooltipScriptContent, final Terms terms) {
+            final String tooltipScriptContent, final Internationalization internationalization) {
         this.navigationScriptContent = navigationScriptContent;
         this.sortingScriptContent = sortingScriptContent;
         this.tooltipScriptContent = tooltipScriptContent;
-        this.terms = terms;
+        this.internationalization = internationalization;
     }
 
     /**
@@ -51,7 +49,8 @@ class JavaScriptsBuilder {
      */
     Map<Path, String> build() {
         Map<Path, String> result = new HashMap<Path, String>();
-        result.put(Paths.get("_js", "internationalization.js"), new InternationalizationScriptBuilder(terms).build());
+        result.put(Paths.get("_js", "internationalization.js"),
+                new InternationalizationScriptBuilder(internationalization).build());
         result.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         result.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         result.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);

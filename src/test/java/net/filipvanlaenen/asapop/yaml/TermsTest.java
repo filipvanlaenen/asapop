@@ -2,8 +2,6 @@ package net.filipvanlaenen.asapop.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -17,7 +15,7 @@ public class TermsTest {
     @Test
     public void getTermsShouldBeWiredCorrectlyToSetTerms() {
         Terms terms = new Terms();
-        Set<Term> termSet = Set.of(new Term());
+        Term[] termSet = new Term[] {new Term()};
         terms.setTerms(termSet);
         assertEquals(termSet, terms.getTerms());
     }

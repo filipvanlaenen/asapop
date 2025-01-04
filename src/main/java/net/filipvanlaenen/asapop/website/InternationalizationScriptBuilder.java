@@ -1,35 +1,25 @@
 package net.filipvanlaenen.asapop.website;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import net.filipvanlaenen.asapop.yaml.Term;
-import net.filipvanlaenen.asapop.yaml.Terms;
 
 /**
  * Class building the internationalization script.
  */
 class InternationalizationScriptBuilder {
     /**
-     * The internationalization terms, sorted.
+     * The internationalization dictionary.
      */
-    private final List<Term> sortedTerms;
+    private final Internationalization internationalization;
 
     /**
      * Constructor using the terms as its parameter.
      *
      * @param terms The terms.
      */
-    InternationalizationScriptBuilder(final Terms terms) {
-        this.sortedTerms = new ArrayList<Term>(terms.getTerms());
-        sortedTerms.sort(new Comparator<Term>() {
-            @Override
-            public int compare(final Term t1, final Term t2) {
-                return t1.getKey().compareTo(t2.getKey());
-            }
-        });
+    InternationalizationScriptBuilder(final Internationalization internationalization) {
+        this.internationalization = internationalization;
     }
 
     /**
@@ -97,17 +87,18 @@ class InternationalizationScriptBuilder {
                 return l1.getId().compareTo(l2.getId());
             }
         });
+        Translations[] translations = internationalization.getTranslations();
         for (Language language : sortedLanguages) {
             sb.append("    case \"" + language.getId() + "\":\n");
-            for (Term term : sortedTerms) {
+            for (Translations translation : translations) {
                 sb.append("      $('.");
-                sb.append(term.getKey());
+                sb.append(translation.getKey());
                 sb.append("').text(\"");
-                if (term.getTranslations().containsKey(language.getId())) {
-                    sb.append(term.getTranslations().get(language.getId()));
+                if (translation.containsLanguage(language)) {
+                    sb.append(translation.getTranslation(language));
                 } else {
                     sb.append("[");
-                    sb.append(term.getTranslations().get(Language.ENGLISH.getId()));
+                    sb.append(translation.getTranslation(Language.ENGLISH));
                     sb.append("]");
                 }
                 sb.append("\");\n");

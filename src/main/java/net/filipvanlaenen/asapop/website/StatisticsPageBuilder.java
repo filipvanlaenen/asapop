@@ -9,13 +9,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.Term;
-import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
@@ -175,6 +172,10 @@ final class StatisticsPageBuilder extends PageBuilder {
     private static final int THREE_YEARS_AS_DAYS = 1 + 3 * 365;
 
     /**
+     * The internationalization dictionary.
+     */
+    private final Internationalization internationalization;
+    /**
      * Today's day.
      */
     private final LocalDate now;
@@ -186,25 +187,22 @@ final class StatisticsPageBuilder extends PageBuilder {
      * The start of the year.
      */
     private final LocalDate startOfYear;
-    /**
-     * The terms.
-     */
-    private final Terms terms;
 
     /**
      * Constructor taking the website configuration and the map with the opinion polls as its parameter.
      *
      * @param websiteConfiguration The website configuration.
-     * @param terms                The terms.
+     * @param internationalization The internationalization dictionary.
      * @param opinionPollsMap      The map with the opinion polls.
      * @param now                  Today's day.
      * @param startOfYear          The start of the year.
      */
-    StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
-            final Map<String, OpinionPolls> opinionPollsMap, final LocalDate now, final LocalDate startOfYear) {
+    StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
+            final Internationalization internationalization, final Map<String, OpinionPolls> opinionPollsMap,
+            final LocalDate now, final LocalDate startOfYear) {
         super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
-        this.terms = terms;
+        this.internationalization = internationalization;
         this.now = now;
         this.startOfYear = startOfYear;
     }
@@ -323,12 +321,10 @@ final class StatisticsPageBuilder extends PageBuilder {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
             String areaKey = "_area_" + areaCode;
-            Optional<Term> term = terms.getTerms().stream().filter(t -> t.getKey().equals(areaKey)).findFirst();
-            if (term.isPresent()) {
-                Map<String, String> translations = term.get().getTranslations();
+            if (internationalization.containsKey(areaKey)) {
+                Translations translations = internationalization.getTranslations(areaKey);
                 for (Language language : Language.values()) {
-                    String languageId = language.getId();
-                    areaTr.data("area-name-" + languageId, translations.get(languageId));
+                    areaTr.data("area-name-" + language.getId(), translations.getTranslation(language));
                 }
             }
             tBody.addElement(areaTr);

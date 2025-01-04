@@ -5,7 +5,6 @@ import java.util.Map;
 
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
-import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
@@ -26,6 +25,10 @@ public class WebsiteBuilder {
      * The elections.
      */
     private final Elections elections;
+    /**
+     * The internationalization dictionary.
+     */
+    private final Internationalization internationalization;
     /**
      * The content of the navigation script.
      */
@@ -51,10 +54,6 @@ public class WebsiteBuilder {
      */
     private final LocalDate startOfYear;
     /**
-     * The internationalization terms.
-     */
-    private final Terms terms;
-    /**
      * The tooptip script content.
      */
     private final String tooltipScriptContent;
@@ -68,7 +67,7 @@ public class WebsiteBuilder {
      * its parameters.
      *
      * @param websiteConfiguration         The website configuration.
-     * @param terms                        The internationalization terms.
+     * @param internationalization         The internationalization dictionary.
      * @param parliamentaryOpinionPollsMap The map with all the opinion polls related to parliamentary elections.
      * @param presidentialOpinionPollsMap  The map with all the opinion polls related to presidential elections.
      * @param elections                    The elections.
@@ -79,14 +78,15 @@ public class WebsiteBuilder {
      * @param tooltipScriptContent         The content of the tooltip script.
      * @param now                          Today's date.
      */
-    public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration, final Terms terms,
+    public WebsiteBuilder(final WebsiteConfiguration websiteConfiguration,
+            final Internationalization internationalization,
             final Map<String, OpinionPolls> parliamentaryOpinionPollsMap,
             final Map<String, OpinionPolls> presidentialOpinionPollsMap, final Elections elections,
             final String baseStyleSheetContent, final String customStyleSheetContent,
             final String navigationScriptContent, final String sortingScriptContent, final String tooltipScriptContent,
             final LocalDate now) {
         this.websiteConfiguration = websiteConfiguration;
-        this.terms = terms;
+        this.internationalization = internationalization;
         this.parliamentaryOpinionPollsMap = parliamentaryOpinionPollsMap;
         this.presidentialOpinionPollsMap = presidentialOpinionPollsMap;
         this.elections = elections;
@@ -107,18 +107,17 @@ public class WebsiteBuilder {
     public Website build() {
         Token token = Laconic.LOGGER.logMessage("Building the website.");
         Website website = new Website();
-        JavaScriptsBuilder javaScriptsBuilder =
-                new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent, tooltipScriptContent, terms);
+        JavaScriptsBuilder javaScriptsBuilder = new JavaScriptsBuilder(navigationScriptContent, sortingScriptContent,
+                tooltipScriptContent, internationalization);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
         website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build());
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build());
         website.put("calendar.ical",
-                new ICalendarFileBuilder(websiteConfiguration, elections, now, terms).build(token));
+                new ICalendarFileBuilder(websiteConfiguration, elections, now, internationalization).build(token));
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
-        website.put("statistics.html",
-                new StatisticsPageBuilder(websiteConfiguration, terms, parliamentaryOpinionPollsMap, now, startOfYear)
-                        .build());
+        website.put("statistics.html", new StatisticsPageBuilder(websiteConfiguration, internationalization,
+                parliamentaryOpinionPollsMap, now, startOfYear).build());
         website.putAll(
                 new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
                         .build());

@@ -30,7 +30,7 @@ public class CommandLineInterfaceTest {
         sweden.setAreaCode("se");
         sweden.setTranslations(Map.of("en", "Sweden"));
         websiteConfiguration.setAreaConfigurations(Set.of(sweden));
-        CommandLineInterface.Command.addAreaTerms(terms, websiteConfiguration);
+        CommandLineInterface.Command.addAreaTranslations(terms, websiteConfiguration);
         assertEquals(1, terms.getTerms().size());
         Term term = terms.getTerms().iterator().next();
         assertEquals("_area_se", term.getKey());
@@ -48,7 +48,7 @@ public class CommandLineInterfaceTest {
         AreaConfiguration sweden = new AreaConfiguration();
         sweden.setAreaCode("se");
         websiteConfiguration.setAreaConfigurations(Set.of(sweden));
-        CommandLineInterface.Command.addAreaTerms(terms, websiteConfiguration);
+        CommandLineInterface.Command.addAreaTranslations(terms, websiteConfiguration);
         assertEquals(0, terms.getTerms().size());
     }
 
@@ -68,7 +68,7 @@ public class CommandLineInterfaceTest {
         AreaSubdivisionConfiguration[] subdivisions = new AreaSubdivisionConfiguration[] {flanders};
         belgium.setSubdivisions(subdivisions);
         websiteConfiguration.setAreaConfigurations(Set.of(belgium));
-        CommandLineInterface.Command.addAreaTerms(terms, websiteConfiguration);
+        CommandLineInterface.Command.addAreaTranslations(terms, websiteConfiguration);
         assertEquals(1, terms.getTerms().size());
         Term term = terms.getTerms().iterator().next();
         assertEquals("_area_be-vlg", term.getKey());

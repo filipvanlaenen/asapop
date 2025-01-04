@@ -1,5 +1,8 @@
 package net.filipvanlaenen.asapop.website;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Enumeration containing the languages supported by the website builder.
  */
@@ -33,6 +36,16 @@ public enum Language {
      * The identifier for the language.
      */
     private final String id;
+    /**
+     * A map mapping string values to their language.
+     */
+    private static final Map<String, Language> VALUE_MAP = new HashMap<String, Language>();
+
+    static {
+        for (Language language : values()) {
+            VALUE_MAP.put(language.id, language);
+        }
+    }
 
     /**
      * Constructor using the identifier of the language as its parameter.
@@ -50,5 +63,15 @@ public enum Language {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Parses a string into a language.
+     *
+     * @param string The string to parse.
+     * @return The language represented by the string.
+     */
+    public static Language parse(final String id) {
+        return VALUE_MAP.get(id);
     }
 }
