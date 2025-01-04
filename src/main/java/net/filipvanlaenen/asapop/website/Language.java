@@ -68,7 +68,7 @@ public enum Language {
     /**
      * Parses a string into a language.
      *
-     * @param string The string to parse.
+     * @param id The string to parse.
      * @return The language represented by the string.
      */
     public static Language parse(final String id) {
