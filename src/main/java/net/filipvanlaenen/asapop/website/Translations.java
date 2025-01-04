@@ -58,6 +58,6 @@ class Translations {
      * @return The translation for a language.
      */
     String getTranslation(final Language language) {
-        return translations.get(language);
+        return translations.get(language, null);
     }
 }

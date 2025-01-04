@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
@@ -51,5 +52,13 @@ public class TranslationsTest {
     @Test
     public void getTranslationShouldReturnTheCorrectTranslation() {
         assertEquals("Foo", createTranslations().getTranslation(Language.ENGLISH));
+    }
+
+    /**
+     * Verifies that <code>getTranslation</code> returns <code>null</code> for a language that's absent.
+     */
+    @Test
+    public void getTranslationShouldReturnNullForAbsentLanguage() {
+        assertNull(createTranslations().getTranslation(Language.FRENCH));
     }
 }
