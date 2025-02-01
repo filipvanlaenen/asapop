@@ -66,11 +66,11 @@ public class SortableProbabilityMassFunctionTest {
     /**
      * The range from 350 to 359.
      */
-    private static final Range RANGE_350_359 = Range.get(350L, 359L);
+    private static final Range RANGE_350_359 = new Range(350L, 359L);
     /**
      * The range from 640 to 649.
      */
-    private static final Range RANGE_640_649 = Range.get(640L, 649L);
+    private static final Range RANGE_640_649 = new Range(640L, 649L);
     /**
      * Test object to run the tests on.
      */

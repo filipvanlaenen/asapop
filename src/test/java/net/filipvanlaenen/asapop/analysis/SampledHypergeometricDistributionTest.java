@@ -71,7 +71,7 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void keyWeightShouldBeLengthOfRange() {
-        assertEquals(new BigDecimal(2), DISTRIBUTION_1_4_5_9.getKeyWeight(Range.get(0, 1)));
+        assertEquals(new BigDecimal(2), DISTRIBUTION_1_4_5_9.getKeyWeight(new Range(0, 1)));
     }
 
     /**
@@ -79,9 +79,9 @@ public class SampledHypergeometricDistributionTest {
      */
     @Test
     public void probabilityMassShouldBeCalculatedCorrectly() {
-        assertEquals(new BigDecimal(SEVENTY), DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)));
+        assertEquals(new BigDecimal(SEVENTY), DISTRIBUTION_1_4_5_9.getProbabilityMass(new Range(2, THREE)));
         assertEquals(new BigDecimal(ONE_HUNDRED_FIVE),
-                new SampledHypergeometricDistribution(1L, FOUR, FOUR, TEN).getProbabilityMass(Range.get(2, FOUR)));
+                new SampledHypergeometricDistribution(1L, FOUR, FOUR, TEN).getProbabilityMass(new Range(2, FOUR)));
     }
 
     /**
@@ -90,9 +90,9 @@ public class SampledHypergeometricDistributionTest {
     @Test
     public void rangesShouldBeDistributedCorrectlyOverThePopulationSize() {
         assertNotNull(
-                new SampledHypergeometricDistribution(1L, FOUR, FOUR, NINE).getProbabilityMass(Range.get(SEVEN, NINE)));
+                new SampledHypergeometricDistribution(1L, FOUR, FOUR, NINE).getProbabilityMass(new Range(SEVEN, NINE)));
         assertNotNull(
-                new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).getProbabilityMass(Range.get(EIGHT, TEN)));
+                new SampledHypergeometricDistribution(1L, FOUR, FIVE, TEN).getProbabilityMass(new Range(EIGHT, TEN)));
     }
 
     /**
@@ -112,7 +112,7 @@ public class SampledHypergeometricDistributionTest {
     public void probabilityMassFractionShouldBeReducedForPartOfLowestRange() {
         BigDecimal sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum();
         BigDecimal expected =
-                sum.subtract(DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)), MathContext.DECIMAL128)
+                sum.subtract(DISTRIBUTION_1_4_5_9.getProbabilityMass(new Range(2, THREE)), MathContext.DECIMAL128)
                         .divide(sum, MathContext.DECIMAL128);
         assertEquals(expected, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(2L));
     }
@@ -125,7 +125,7 @@ public class SampledHypergeometricDistributionTest {
     public void probabilityMassFractionShouldBeReducedForEntireLowestRange() {
         BigDecimal sum = DISTRIBUTION_1_4_5_9.getProbabilityMassSum();
         BigDecimal expected =
-                sum.subtract(DISTRIBUTION_1_4_5_9.getProbabilityMass(Range.get(2, THREE)).multiply(new BigDecimal("2"),
+                sum.subtract(DISTRIBUTION_1_4_5_9.getProbabilityMass(new Range(2, THREE)).multiply(new BigDecimal("2"),
                         MathContext.DECIMAL128), MathContext.DECIMAL128).divide(sum, MathContext.DECIMAL128);
         assertEquals(expected, DISTRIBUTION_1_4_5_9.getProbabilityMassFractionAbove(THREE));
     }

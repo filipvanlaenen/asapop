@@ -23,7 +23,7 @@ public class SampledHypergeometricDistributionDataBuilder {
     public SampledHypergeometricDistribution fromData(final SampledHypergeometricDistributionData data) {
         Map<Range, BigDecimal> pmf = new HashMap<Range, BigDecimal>();
         for (RangeProbabilityMass rpm : data.getProbabilityMassFunction()) {
-            Range range = Range.get(rpm.getLowerBound(), rpm.getUpperBound());
+            Range range = new Range(rpm.getLowerBound(), rpm.getUpperBound());
             pmf.put(range, rpm.getProbabilityMass());
         }
         return new SampledHypergeometricDistribution(pmf);

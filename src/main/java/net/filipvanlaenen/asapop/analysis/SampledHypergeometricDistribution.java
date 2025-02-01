@@ -53,7 +53,7 @@ public final class SampledHypergeometricDistribution extends SortableProbability
         long rangeEndIndex;
         for (long i = 0; i < numberOfSamples; i++) {
             rangeEndIndex = rangeStartIndex + baseLength + (i >= numberOfRangesOfBaseLength ? 0L : -1L);
-            Range range = Range.get(rangeStartIndex, rangeEndIndex);
+            Range range = new Range(rangeStartIndex, rangeEndIndex);
             long m = range.getMidpoint();
             pmf.put(range, BinomialCoefficients.get(m, value).multiply(
                     BinomialCoefficients.get(populationSize - m, sampleSize - value), MathContext.DECIMAL128));

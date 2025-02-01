@@ -103,7 +103,7 @@ public class SampledMultivariateHypergeometricDistributionTest {
      * Confidence interval to test the utility methods on.
      */
     private static final ConfidenceInterval<Range> CONFIDENCE_INTERVAL = new ConfidenceInterval<Range>(
-            Range.get(ONE_HUNDRED, TWO_HUNDRED_NINETY_NINE), Range.get(FOUR_HUNDRED_NINETY_NINE, FIVE_HUNDRED));
+            new Range(ONE_HUNDRED, TWO_HUNDRED_NINETY_NINE), new Range(FOUR_HUNDRED_NINETY_NINE, FIVE_HUNDRED));
     /**
      * Multivariate distribution to run the equality tests on.
      */
@@ -368,9 +368,9 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void firstRangeAfterInitializationShouldBeSetAsLargest() {
         WinnersRegister winnersRegister = new WinnersRegister();
         winnersRegister.initialize();
-        winnersRegister.update(Range.get(0L, 1L), 0);
+        winnersRegister.update(new Range(0L, 1L), 0);
         assertEquals(0, winnersRegister.getIndexOfLargestRange());
-        assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
+        assertEquals(new Range(0L, 1L), winnersRegister.getLargestRange());
     }
 
     /**
@@ -381,10 +381,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void largerSecondRangeShouldBeSetAsLargest() {
         WinnersRegister winnersRegister = new WinnersRegister();
         winnersRegister.initialize();
-        winnersRegister.update(Range.get(0L, 1L), 0);
-        winnersRegister.update(Range.get(2L, THREE), 1);
+        winnersRegister.update(new Range(0L, 1L), 0);
+        winnersRegister.update(new Range(2L, THREE), 1);
         assertEquals(1, winnersRegister.getIndexOfLargestRange());
-        assertEquals(Range.get(2L, THREE), winnersRegister.getLargestRange());
+        assertEquals(new Range(2L, THREE), winnersRegister.getLargestRange());
         assertEquals(0, winnersRegister.getIndexOfSecondLargestRange());
     }
 
@@ -395,10 +395,10 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void equalSecondRangeShouldBeSetAsSecondLargest() {
         WinnersRegister winnersRegister = new WinnersRegister();
         winnersRegister.initialize();
-        winnersRegister.update(Range.get(0L, 1L), 0);
-        winnersRegister.update(Range.get(0L, 1L), 1);
+        winnersRegister.update(new Range(0L, 1L), 0);
+        winnersRegister.update(new Range(0L, 1L), 1);
         assertEquals(0, winnersRegister.getIndexOfLargestRange());
-        assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
+        assertEquals(new Range(0L, 1L), winnersRegister.getLargestRange());
         assertEquals(1, winnersRegister.getIndexOfSecondLargestRange());
     }
 
@@ -410,11 +410,11 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void largerThirdRangeShouldBeSetAsLargest() {
         WinnersRegister winnersRegister = new WinnersRegister();
         winnersRegister.initialize();
-        winnersRegister.update(Range.get(0L, 1L), 0);
-        winnersRegister.update(Range.get(0L, 1L), 1);
-        winnersRegister.update(Range.get(2L, THREE), 2);
+        winnersRegister.update(new Range(0L, 1L), 0);
+        winnersRegister.update(new Range(0L, 1L), 1);
+        winnersRegister.update(new Range(2L, THREE), 2);
         assertEquals(2, winnersRegister.getIndexOfLargestRange());
-        assertEquals(Range.get(2L, THREE), winnersRegister.getLargestRange());
+        assertEquals(new Range(2L, THREE), winnersRegister.getLargestRange());
         assertEquals(0, winnersRegister.getIndexOfSecondLargestRange());
     }
 
@@ -426,11 +426,11 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void equalThirdRangeLargestThanSecondShouldBeSetAsSecond() {
         WinnersRegister winnersRegister = new WinnersRegister();
         winnersRegister.initialize();
-        winnersRegister.update(Range.get(2L, THREE), 0);
-        winnersRegister.update(Range.get(0L, 1L), 1);
-        winnersRegister.update(Range.get(2L, THREE), 2);
+        winnersRegister.update(new Range(2L, THREE), 0);
+        winnersRegister.update(new Range(0L, 1L), 1);
+        winnersRegister.update(new Range(2L, THREE), 2);
         assertEquals(0, winnersRegister.getIndexOfLargestRange());
-        assertEquals(Range.get(2L, THREE), winnersRegister.getLargestRange());
+        assertEquals(new Range(2L, THREE), winnersRegister.getLargestRange());
         assertEquals(2, winnersRegister.getIndexOfSecondLargestRange());
     }
 
@@ -441,11 +441,11 @@ public class SampledMultivariateHypergeometricDistributionTest {
     public void equalThirdRangeShouldNotBeRetained() {
         WinnersRegister winnersRegister = new WinnersRegister();
         winnersRegister.initialize();
-        winnersRegister.update(Range.get(0L, 1L), 0);
-        winnersRegister.update(Range.get(0L, 1L), 1);
-        winnersRegister.update(Range.get(0L, 1L), 2);
+        winnersRegister.update(new Range(0L, 1L), 0);
+        winnersRegister.update(new Range(0L, 1L), 1);
+        winnersRegister.update(new Range(0L, 1L), 2);
         assertEquals(0, winnersRegister.getIndexOfLargestRange());
-        assertEquals(Range.get(0L, 1L), winnersRegister.getLargestRange());
+        assertEquals(new Range(0L, 1L), winnersRegister.getLargestRange());
         assertEquals(1, winnersRegister.getIndexOfSecondLargestRange());
     }
 
