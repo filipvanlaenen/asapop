@@ -1,9 +1,9 @@
 package net.filipvanlaenen.asapop.analysis;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,7 @@ import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.kolektoj.Collection;
 
 /**
  * Unit tests on the <code>AnalysisEngine</code> class.
@@ -125,7 +126,7 @@ public class AnalysisEngineTest {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
-        assertEquals(Set.of(opinionPoll), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+        assertTrue(engine.calculateMostRecentPolls().containsSame(Collection.of(opinionPoll)));
     }
 
     /**
@@ -141,7 +142,7 @@ public class AnalysisEngineTest {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
-        assertEquals(Set.of(opinionPoll1), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+        assertTrue(engine.calculateMostRecentPolls().containsSame(Collection.of(opinionPoll1)));
     }
 
     /**
@@ -157,7 +158,7 @@ public class AnalysisEngineTest {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
-        assertEquals(Set.of(opinionPoll1, opinionPoll2), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+        assertTrue(engine.calculateMostRecentPolls().containsSame(Collection.of(opinionPoll1, opinionPoll2)));
     }
 
     /**
@@ -173,7 +174,7 @@ public class AnalysisEngineTest {
         OpinionPolls opinionPolls = new OpinionPolls(Set.of(opinionPoll1, opinionPoll2));
         ElectionData electionData = new ElectionData();
         AnalysisEngine engine = new AnalysisEngine(opinionPolls, electionData);
-        assertEquals(Set.of(opinionPoll1, opinionPoll2), new HashSet<OpinionPoll>(engine.calculateMostRecentPolls()));
+        assertTrue(engine.calculateMostRecentPolls().containsSame(Collection.of(opinionPoll1, opinionPoll2)));
     }
 
     /**

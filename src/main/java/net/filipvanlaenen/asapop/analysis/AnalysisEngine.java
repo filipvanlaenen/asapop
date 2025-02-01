@@ -1,9 +1,9 @@
 package net.filipvanlaenen.asapop.analysis;
 
+import static net.filipvanlaenen.kolektoj.Map.KeyAndValueCardinality.DUPLICATE_KEYS_WITH_DISTINCT_VALUES;
+
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +14,9 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
+import net.filipvanlaenen.kolektoj.hash.ModifiableHashMap;
 
 /**
  * Class implementing the engine running the statistical analyses.
@@ -84,31 +87,24 @@ public class AnalysisEngine {
      * @return A collection with the most recent polls.
      */
     Collection<OpinionPoll> calculateMostRecentPolls() {
-        Map<String, Set<OpinionPoll>> mostRecentPollMap = new HashMap<String, Set<OpinionPoll>>();
+        ModifiableMap<String, OpinionPoll> mostRecentPollMap =
+                new ModifiableHashMap<String, OpinionPoll>(DUPLICATE_KEYS_WITH_DISTINCT_VALUES);
         for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
             String pollingFirm = opinionPoll.getPollingFirm();
             if (mostRecentPollMap.containsKey(pollingFirm)) {
-                LocalDate mostRecentDate =
-                        mostRecentPollMap.get(pollingFirm).iterator().next().getFieldworkEnd().getEnd();
+                LocalDate mostRecentDate = mostRecentPollMap.get(pollingFirm).getFieldworkEnd().getEnd();
                 int moreRecent = mostRecentDate.compareTo(opinionPoll.getFieldworkEnd().getEnd());
                 if (moreRecent < 0) {
-                    Set<OpinionPoll> value = new HashSet<OpinionPoll>();
-                    value.add(opinionPoll);
-                    mostRecentPollMap.put(pollingFirm, value);
+                    mostRecentPollMap.removeIf(e -> e.key().equals(pollingFirm));
+                    mostRecentPollMap.put(pollingFirm, opinionPoll);
                 } else if (moreRecent == 0) {
-                    mostRecentPollMap.get(pollingFirm).add(opinionPoll);
+                    mostRecentPollMap.add(pollingFirm, opinionPoll);
                 }
             } else {
-                Set<OpinionPoll> value = new HashSet<OpinionPoll>();
-                value.add(opinionPoll);
-                mostRecentPollMap.put(pollingFirm, value);
+                mostRecentPollMap.add(pollingFirm, opinionPoll);
             }
         }
-        Set<OpinionPoll> result = new HashSet<OpinionPoll>();
-        for (Set<OpinionPoll> value : mostRecentPollMap.values()) {
-            result.addAll(value);
-        }
-        return result;
+        return mostRecentPollMap.getValues();
     }
 
     /**
