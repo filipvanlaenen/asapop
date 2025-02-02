@@ -1,9 +1,10 @@
 package net.filipvanlaenen.asapop.exporter;
 
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
+import net.filipvanlaenen.kolektoj.hash.HashMap;
 
 /**
  * Class modeling a directory with SAPOR files.
@@ -12,7 +13,7 @@ public class SaporDirectory {
     /**
      * A map with the SAPOR file paths and their content.
      */
-    private final Map<Path, String> map = new HashMap<Path, String>();
+    private final ModifiableMap<Path, String> map = ModifiableMap.empty();
 
     /**
      * Returns an unmodifiable map with the SAPOR file paths and their content.
@@ -20,7 +21,7 @@ public class SaporDirectory {
      * @return An unmodifiable map with the SAPOR file paths and their content.
      */
     public Map<Path, String> asMap() {
-        return Collections.unmodifiableMap(map);
+        return new HashMap<Path, String>(map);
     }
 
     /**

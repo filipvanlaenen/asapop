@@ -443,6 +443,22 @@ public final class CommandLineInterface {
          * @param fileNamesAndContents The file names and contents.
          * @throws IOException Thrown if an exception occurs related to IO.
          */
+        private static void writeFiles(final String baseDir,
+                final net.filipvanlaenen.kolektoj.Map<Path, String> fileNamesAndContents) throws IOException {
+            for (net.filipvanlaenen.kolektoj.Map.Entry<Path, String> entry : fileNamesAndContents) {
+                Path path = Paths.get(baseDir, entry.key().toString());
+                Files.createDirectories(path.getParent());
+                writeFile(path, entry.value());
+            }
+        }
+
+        /**
+         * Utility method to write a map with names and contents to files.
+         *
+         * @param baseDir              The base directory for the files.
+         * @param fileNamesAndContents The file names and contents.
+         * @throws IOException Thrown if an exception occurs related to IO.
+         */
         private static void writeFiles(final String baseDir, final Map<Path, String> fileNamesAndContents)
                 throws IOException {
             for (Entry<Path, String> entry : fileNamesAndContents.entrySet()) {

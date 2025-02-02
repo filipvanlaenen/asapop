@@ -1,13 +1,13 @@
 package net.filipvanlaenen.asapop.exporter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>SaporDirectory</code> class.
@@ -29,6 +29,6 @@ public class SaporDirectoryTest {
         Path path = Paths.get("foo.poll");
         SaporDirectory saporDirectory = new SaporDirectory();
         saporDirectory.put(path, "Foo");
-        assertEquals(Map.of(path, "Foo"), saporDirectory.asMap());
+        assertTrue(saporDirectory.asMap().containsSame(Map.of(path, "Foo")));
     }
 }
