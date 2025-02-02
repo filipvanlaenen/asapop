@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.kolektoj.Collection;
+
 /**
  * Class representing an electoral list.
  */
@@ -43,6 +45,17 @@ public final class ElectoralList {
         ElectoralList newInstance = new ElectoralList(id);
         instances.put(id, newInstance);
         return newInstance;
+    }
+
+    /**
+     * Returns the set of electoral lists with the given IDs. New electoral lists will be created for the IDs for which
+     * an electoral list didn't already exist.
+     *
+     * @param ids IDs of the electoral lists.
+     * @return A set with the electoral list with the IDs.
+     */
+    public static Set<ElectoralList> get(final Collection<String> ids) {
+        return ids.stream().map(id -> get(id)).collect(Collectors.toSet());
     }
 
     /**

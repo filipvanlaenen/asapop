@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -169,8 +168,7 @@ public class SaporExporter extends Exporter {
      * @return A set of electoral lists converted from the source string.
      */
     private Set<ElectoralList> asElectoralListCombination(final String source) {
-        Set<String> ids = new HashSet<String>(Arrays.asList(source.split(ELECTORAL_LIST_ID_SEPARATOR)));
-        return ElectoralList.get(ids);
+        return ElectoralList.get(Collection.of(source.split(ELECTORAL_LIST_ID_SEPARATOR)));
     }
 
     /**
