@@ -3,11 +3,9 @@ package net.filipvanlaenen.asapop.exporter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,7 +25,10 @@ import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.SaporMapping;
 import net.filipvanlaenen.asapop.yaml.SplittingSaporMapping;
 import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.EmptyArrays;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.kolektoj.SortedCollection;
+import net.filipvanlaenen.kolektoj.array.SortedArrayCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -437,8 +438,8 @@ public class SaporExporter extends Exporter {
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
         for (Set<ElectoralList> electoralList : electoralLists) {
             if (!mappedElectoralListCombinations.contains(electoralList)) {
-                List<String> ids = new ArrayList<String>(ElectoralList.getIds(electoralList));
-                Collections.sort(ids);
+                SortedCollection<String> ids = new SortedArrayCollection<String>(Comparator.naturalOrder(),
+                        ElectoralList.getIds(electoralList).toArray(EmptyArrays.STRINGS));
                 Laconic.LOGGER.logError("SAPOR mapping missing for %s.", String.join("+", ids), configurationFileToken,
                         inputFileToken);
             }
