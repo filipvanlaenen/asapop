@@ -16,6 +16,8 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 
 /**
  * Superclass for all exporters.
@@ -179,8 +181,8 @@ public abstract class Exporter {
      * @param opinionPoll The opinion poll to export the dates from.
      * @return A list with two elements containing the dates for the EOPAOD CSV file.
      */
-    static List<String> exportDates(final OpinionPoll opinionPoll) {
-        List<String> elements = new ArrayList<String>();
+    static OrderedCollection<String> exportDates(final OpinionPoll opinionPoll) {
+        ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
         DateMonthOrYear fieldworkStart = opinionPoll.getFieldworkStart();
         DateMonthOrYear fieldworkEnd = opinionPoll.getFieldworkEnd();
         LocalDate publicationDate = opinionPoll.getPublicationDate();

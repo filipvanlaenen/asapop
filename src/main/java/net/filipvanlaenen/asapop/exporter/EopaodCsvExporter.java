@@ -1,6 +1,5 @@
 package net.filipvanlaenen.asapop.exporter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +13,7 @@ import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
+import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 
 /**
  * Exporter to the EOPAOD CSV file format.
@@ -114,9 +114,9 @@ public final class EopaodCsvExporter extends Exporter {
      */
     static String export(final OpinionPoll opinionPoll, final String area, final String includeAreaAsNational,
             final List<Set<String>> electoralListIdSets) {
-        List<String> lines = new ArrayList<String>();
+        ModifiableOrderedCollection<String> lines = ModifiableOrderedCollection.empty();
         if (areaMatches(area, includeAreaAsNational, opinionPoll.getArea())) {
-            List<String> elements = new ArrayList<String>();
+            ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
@@ -170,7 +170,7 @@ public final class EopaodCsvExporter extends Exporter {
                 secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
         }
-        List<String> elements = new ArrayList<String>();
+        ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
         elements.add(escapeCommasAndQuotes(exportPollingFirms(opinionPoll)));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));

@@ -19,6 +19,7 @@ import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.model.ResultValue;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 
 /**
  * Unit tests on the class <code>Exporter</code>.
@@ -68,8 +69,8 @@ public class ExporterTest {
     public void shouldUsePublicationDateAsFieldworkPeriodWhenOtherDatesAbsent() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
                 .setPublicationDate(DATE1).build();
-        List<String> expected = List.of("2021-08-02", "2021-08-02");
-        assertEquals(expected, Exporter.exportDates(poll));
+        OrderedCollection<String> expected = OrderedCollection.of("2021-08-02", "2021-08-02");
+        assertTrue(Exporter.exportDates(poll).containsSame(expected));
     }
 
     /**
@@ -79,8 +80,8 @@ public class ExporterTest {
     public void shouldUseFieldworkStartAndEndAsFieldworkPeriod() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
                 .setFieldworkStart(DATE_OR_MONTH1).setFieldworkEnd(DATE_OR_MONTH2).build();
-        List<String> expected = List.of("2021-08-01", "2021-08-02");
-        assertEquals(expected, Exporter.exportDates(poll));
+        OrderedCollection<String> expected = OrderedCollection.of("2021-08-01", "2021-08-02");
+        assertTrue(Exporter.exportDates(poll).containsSame(expected));
     }
 
     /**
@@ -90,8 +91,8 @@ public class ExporterTest {
     public void shouldUseFieldworkEndDateAsFieldworkPeriodWhenOtherDatesAbsent() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
                 .setFieldworkEnd(DATE_OR_MONTH2).build();
-        List<String> expected = List.of("2021-08-02", "2021-08-02");
-        assertEquals(expected, Exporter.exportDates(poll));
+        OrderedCollection<String> expected = OrderedCollection.of("2021-08-02", "2021-08-02");
+        assertTrue(Exporter.exportDates(poll).containsSame(expected));
     }
 
     /**
@@ -101,8 +102,8 @@ public class ExporterTest {
     public void shouldUseFieldworkStartAndPublicationDateAsFieldworkPeriodWhenFieldworkEndIsAbsent() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55").addResult("B", "45").setPollingFirm("ACME")
                 .setFieldworkStart(DATE_OR_MONTH1).setPublicationDate(DATE1).build();
-        List<String> expected = List.of("2021-08-01", "2021-08-02");
-        assertEquals(expected, Exporter.exportDates(poll));
+        OrderedCollection<String> expected = OrderedCollection.of("2021-08-01", "2021-08-02");
+        assertTrue(Exporter.exportDates(poll).containsSame(expected));
     }
 
     /**
