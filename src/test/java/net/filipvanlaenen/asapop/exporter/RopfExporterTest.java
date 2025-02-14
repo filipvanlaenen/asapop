@@ -133,6 +133,23 @@ public class RopfExporterTest {
     }
 
     /**
+     * Verifies that the metadata field U width is correct if it occurs in a response scenario only.
+     */
+    @Test
+    public void shouldPadMetadataFieldUFromResponseScenarioCorrectly() {
+        RichOpinionPollsFile opinionPollsFile =
+                RichOpinionPollsFile.parse(TOKEN, "•PF: ACME •FS: 2021-07-26 •FE: 2021-07-27 A:55 B:45",
+                        "& •U: % A:54 B:45 •O: 1 ", "A: AA001 •A:AP •EN: Apple Party", "B: AA002 •A:Bl");
+        StringBuffer expected = new StringBuffer();
+        expected.append("•PF: ACME •FS: 2021-07-26 •FE: 2021-07-27       AP: 55 BL: 45\n");
+        expected.append("&                                         •U: % AP: 54 BL: 45 •O: 1\n");
+        expected.append("\n");
+        expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
+        expected.append("BL: AA002 •A: Bl\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+    }
+
+    /**
      * Verifies that the commissioners field width is correct.
      */
     @Test
