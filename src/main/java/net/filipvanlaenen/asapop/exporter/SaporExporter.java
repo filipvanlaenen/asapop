@@ -319,6 +319,26 @@ public class SaporExporter extends Exporter {
     }
 
     /**
+     * Returns the warnings encountered during the export of an opinion poll.
+     *
+     * @param opinionPoll            The warnings encountered during the export of an opinion poll.
+     * @param configurationFileToken The Laconic logger token for the configuration file.
+     * @param inputFileToken         The Laconic logger token for the input file.
+     */
+    void checkSaporMappings(final OpinionPoll opinionPoll, final Token configurationFileToken,
+            final Token inputFileToken) {
+        Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
+        for (Set<ElectoralList> electoralList : electoralLists) {
+            if (!mappedElectoralListCombinations.contains(electoralList)) {
+                SortedCollection<String> ids = new SortedArrayCollection<String>(Comparator.naturalOrder(),
+                        ElectoralList.getIds(electoralList).toArray(EmptyArrays.STRINGS));
+                Laconic.LOGGER.logError("SAPOR mapping missing for %s.", String.join("+", ids), configurationFileToken,
+                        inputFileToken);
+            }
+        }
+    }
+
+    /**
      * Verifies that the date is within the validity period of the SAPOR mapping.
      *
      * @param map  The SAPOR mapping.
@@ -354,6 +374,18 @@ public class SaporExporter extends Exporter {
     }
 
     /**
+     * Gets the area for a response scenario, which is either the one registered on the response scenario, or the one
+     * registered on the poll.
+     * 
+     * @param opinionPoll      The opinion poll.
+     * @param responseScenario The response scenario.
+     * @return The area.
+     */
+    private String getArea(final OpinionPoll opinionPoll, final ResponseScenario responseScenario) {
+        return responseScenario.getArea() == null ? opinionPoll.getArea() : responseScenario.getArea();
+    }
+
+    /**
      * Returns an opinion poll's response scenarios that match the conditions to be exported. If the main response
      * scenario matches, it will be returned, and otherwise one of the matching alternative responses scenarios.
      * However, if the results should be averaged, all matching response scenarios will be returned. If no response
@@ -364,26 +396,16 @@ public class SaporExporter extends Exporter {
      */
     private Collection<ResponseScenario> getMatchingResponseScenarios(final OpinionPoll opinionPoll) {
         ResponseScenario mainResponseScenario = opinionPoll.getMainResponseScenario();
-        String mainResponseScenarioArea =
-                mainResponseScenario.getArea() == null ? opinionPoll.getArea() : mainResponseScenario.getArea();
-        Scope mainResponseScenarioScope =
-                mainResponseScenario.getScope() == null ? opinionPoll.getScope() : mainResponseScenario.getScope();
-        ModifiableCollection<ResponseScenario> result = ModifiableCollection.of();
-        if ((region == null || region.equals(mainResponseScenarioArea))
-                && (scope == null || scope.equals(mainResponseScenarioScope))) {
+        ModifiableCollection<ResponseScenario> result = ModifiableCollection.empty();
+        if (isMatchingResponseScenario(opinionPoll, mainResponseScenario)) {
             if (averageResponseScenarios) {
-                result.add(opinionPoll.getMainResponseScenario());
+                result.add(mainResponseScenario);
             } else {
-                return Collection.of(opinionPoll.getMainResponseScenario());
+                return Collection.of(mainResponseScenario);
             }
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            String responseScenarioArea =
-                    responseScenario.getArea() == null ? opinionPoll.getArea() : responseScenario.getArea();
-            Scope responseScenarioScope =
-                    responseScenario.getScope() == null ? opinionPoll.getScope() : responseScenario.getScope();
-            if ((region == null || region.equals(responseScenarioArea))
-                    && (scope == null || scope.equals(responseScenarioScope))) {
+            if (isMatchingResponseScenario(opinionPoll, responseScenario)) {
                 if (averageResponseScenarios) {
                     result.add(responseScenario);
                 } else {
@@ -428,23 +450,15 @@ public class SaporExporter extends Exporter {
     }
 
     /**
-     * Returns the warnings encountered during the export of an opinion poll.
-     *
-     * @param opinionPoll            The warnings encountered during the export of an opinion poll.
-     * @param configurationFileToken The Laconic logger token for the configuration file.
-     * @param inputFileToken         The Laconic logger token for the input file.
+     * Gets the scope for a response scenario, which is either the one registered on the response scenario, or the one
+     * registered on the poll.
+     * 
+     * @param opinionPoll      The opinion poll.
+     * @param responseScenario The response scenario.
+     * @return The scope.
      */
-    void checkSaporMappings(final OpinionPoll opinionPoll, final Token configurationFileToken,
-            final Token inputFileToken) {
-        Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
-        for (Set<ElectoralList> electoralList : electoralLists) {
-            if (!mappedElectoralListCombinations.contains(electoralList)) {
-                SortedCollection<String> ids = new SortedArrayCollection<String>(Comparator.naturalOrder(),
-                        ElectoralList.getIds(electoralList).toArray(EmptyArrays.STRINGS));
-                Laconic.LOGGER.logError("SAPOR mapping missing for %s.", String.join("+", ids), configurationFileToken,
-                        inputFileToken);
-            }
-        }
+    private Scope getScope(final OpinionPoll opinionPoll, final ResponseScenario responseScenario) {
+        return responseScenario.getScope() == null ? opinionPoll.getScope() : responseScenario.getScope();
     }
 
     /**
@@ -455,6 +469,18 @@ public class SaporExporter extends Exporter {
      */
     private boolean hasMatchingResponseScenario(final OpinionPoll opinionPoll) {
         return !getMatchingResponseScenarios(opinionPoll).isEmpty();
+    }
+
+    /**
+     * Returns whether a response scenario matches.
+     * 
+     * @param opinionPoll      The opinion poll.
+     * @param responseScenario The response scenario.
+     * @return True of the response scenario matches.
+     */
+    private boolean isMatchingResponseScenario(final OpinionPoll opinionPoll, ResponseScenario responseScenario) {
+        return (region == null || region.equals(getArea(opinionPoll, responseScenario)))
+                && (scope == null || scope.equals(getScope(opinionPoll, responseScenario)));
     }
 
     /**
