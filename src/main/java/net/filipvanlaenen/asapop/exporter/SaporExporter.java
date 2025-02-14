@@ -354,12 +354,13 @@ public class SaporExporter extends Exporter {
     }
 
     /**
-     * Returns an opinion poll's response scenario that matches the conditions to be exported. If the main response
-     * scenario matches, it will be returned, and otherwise one of the matching alternative responses scenarios. If no
-     * response scenarios match, <code>null</code> will be returned.
+     * Returns an opinion poll's response scenarios that match the conditions to be exported. If the main response
+     * scenario matches, it will be returned, and otherwise one of the matching alternative responses scenarios.
+     * However, if the results should be averaged, all matching response scenarios will be returned. If no response
+     * scenarios match, an empty collection will be returned.
      *
      * @param opinionPoll The opinion poll for which to find a matching response scenario.
-     * @return A matching response scenario, or <code>null</code>.
+     * @return All matching response scenarios.
      */
     private Collection<ResponseScenario> getMatchingResponseScenarios(final OpinionPoll opinionPoll) {
         ResponseScenario mainResponseScenario = opinionPoll.getMainResponseScenario();
