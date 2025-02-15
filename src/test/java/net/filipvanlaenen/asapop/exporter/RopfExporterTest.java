@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -29,7 +31,8 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -60,7 +63,8 @@ public class RopfExporterTest {
         expected.append("E:  AA005 •A: E\n");
         expected.append("F:  AA006 •A: F\n");
         expected.append("Δ:  AA004 •A: Δ  •R: D\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -91,7 +95,8 @@ public class RopfExporterTest {
         expected.append("C:  AA003 •A: C\n");
         expected.append("D:  AA004 •A: D\n");
         expected.append("E:  AA005 •A: E\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -109,7 +114,8 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -129,7 +135,8 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -146,7 +153,8 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -168,7 +176,8 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AP: AA001 •A: AP •EN: Apple Party\n");
         expected.append("BL: AA002 •A: Bl\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -188,7 +197,8 @@ public class RopfExporterTest {
         expected.append("D:  AA004 •A: D\n");
         expected.append("E:  AA005 •A: E\n");
         expected.append("F:  AA006 •A: F\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 
     /**
@@ -204,6 +214,7 @@ public class RopfExporterTest {
         expected.append("\n");
         expected.append("AA001: AA001 •A: +  •EN: Apple Party\n");
         expected.append("N3S:   AA002 •A: 3S •EN: 3 Stars\n");
-        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile));
+        assertEquals(expected.toString(),
+                RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
 }

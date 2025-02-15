@@ -442,6 +442,12 @@ the file:
 java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar format nn.ropf
 ```
 
+If some of the electoral lists or combinations of electoral lists should follow a fixed order, you can use the option
+`-o` with a comma-separated list of IDs as follows:
+
+```
+java -jar asapop-1.0-SNAPSHOT-jar-with-dependencies.jar format nn.ropf -o=NN001,NN002,NN001+NN002,NN003
+```
 
 ## Provide SAPOR Files
 

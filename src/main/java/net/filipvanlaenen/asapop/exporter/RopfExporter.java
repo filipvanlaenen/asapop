@@ -16,6 +16,9 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.parser.CommentLine;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 
 /**
  * Exporter to the ROPF file format.
@@ -242,14 +245,16 @@ public final class RopfExporter extends Exporter {
     /**
      * Exports an opinion poll.
      *
-     * @param opinionPoll         The opinion poll to export.
-     * @param idsToKeysMap        A map mapping the electoral list IDs to keys.
-     * @param metadataFieldWidths The map with the metadata field widths.
-     * @param resultsWidth        The width for the result values.
+     * @param opinionPoll                         The opinion poll to export.
+     * @param idsToKeysMap                        A map mapping the electoral list IDs to keys.
+     * @param metadataFieldWidths                 The map with the metadata field widths.
+     * @param resultsWidth                        The width for the result values.
+     * @param preorderedElectoralListCombinations An ordered collection with combinations of electoral lists.
      * @return A string representation of the opinion poll.
      */
     private static String export(final OpinionPoll opinionPoll, final Map<String, String> idsToKeysMap,
-            final Map<String, Integer> metadataFieldWidths, final int resultsWidth) {
+            final Map<String, Integer> metadataFieldWidths, final int resultsWidth,
+            final OrderedCollection<Set<ElectoralList>> preorderedElectoralListCombinations) {
         StringBuffer sb = new StringBuffer();
         sb.append(export("PF", metadataFieldWidths, opinionPoll.getPollingFirm()));
         sb.append(export("PFP", metadataFieldWidths, opinionPoll.getPollingFirmPartner()));
@@ -262,8 +267,13 @@ public final class RopfExporter extends Exporter {
         sb.append(export("SS", metadataFieldWidths, opinionPoll.getSampleSize()));
         sb.append(export("EX", metadataFieldWidths, opinionPoll.getExcluded()));
         sb.append(export("U", metadataFieldWidths, opinionPoll.getUnit()));
+        ModifiableOrderedCollection<Set<ElectoralList>> orderedElectoralListCombinations =
+                ModifiableOrderedCollection.<Set<ElectoralList>>empty();
         List<Set<ElectoralList>> electoralListCombinations =
                 new ArrayList<Set<ElectoralList>>(opinionPoll.getMainResponseScenario().getElectoralListSets());
+        orderedElectoralListCombinations.addAll(preorderedElectoralListCombinations);
+        orderedElectoralListCombinations.removeIf(elc -> !electoralListCombinations.contains(elc));
+        electoralListCombinations.removeIf(elc -> orderedElectoralListCombinations.contains(elc));
         Collections.sort(electoralListCombinations, new Comparator<Set<ElectoralList>>() {
             @Override
             public int compare(final Set<ElectoralList> arg0, final Set<ElectoralList> arg1) {
@@ -273,8 +283,11 @@ public final class RopfExporter extends Exporter {
                         : nonZeroSign(difference);
             }
         });
-        StringBuffer results = new StringBuffer();
         for (Set<ElectoralList> electoralListCombination : electoralListCombinations) {
+            orderedElectoralListCombinations.add(electoralListCombination);
+        }
+        StringBuffer results = new StringBuffer();
+        for (Set<ElectoralList> electoralListCombination : orderedElectoralListCombinations) {
             results.append(" ");
             results.append(asKeysString(idsToKeysMap, electoralListCombination));
             results.append(": ");
@@ -348,20 +361,32 @@ public final class RopfExporter extends Exporter {
      * Exports the rich opinion polls file.
      *
      * @param richOpinionPollsFile The rich opinion polls file to export.
+     * @param idCombinations       An ordered collection with ID combinations.
      * @return A string representing of the rich opinion polls file.
      */
-    public static String export(final RichOpinionPollsFile richOpinionPollsFile) {
+    public static String export(final RichOpinionPollsFile richOpinionPollsFile,
+            final OrderedCollection<Collection<String>> idCombinations) {
         StringBuffer sb = new StringBuffer();
         Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
         for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
             electoralLists.addAll(getElectoralLists(opinionPoll));
         }
         Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
+        ModifiableOrderedCollection<Set<ElectoralList>> preorderedElectoralListCombinations =
+                ModifiableOrderedCollection.<Set<ElectoralList>>empty();
+        for (Collection<String> idCombination : idCombinations) {
+            Set<ElectoralList> combination = new HashSet<ElectoralList>();
+            for (String id : idCombination) {
+                combination.add(ElectoralList.get(id));
+            }
+            preorderedElectoralListCombinations.add(combination);
+        }
         Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPolls().getOpinionPolls();
         Map<String, Integer> metadataFieldWidths = calculateMetadataFieldWidths(opinionPolls);
         Integer resultsWidth = calculateResultsWidth(opinionPolls, idsToKeysMap);
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls)) {
-            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths, resultsWidth));
+            sb.append(export(opinionPoll, idsToKeysMap, metadataFieldWidths, resultsWidth,
+                    preorderedElectoralListCombinations));
             sb.append("\n");
         }
         sb.append("\n");

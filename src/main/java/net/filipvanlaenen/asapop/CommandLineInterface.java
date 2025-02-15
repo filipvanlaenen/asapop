@@ -47,6 +47,9 @@ import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -92,7 +95,7 @@ public final class CommandLineInterface {
         System.out.println(
                 "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
-        System.out.println("  format <ropf-file-name>");
+        System.out.println("  format <ropf-file-name> [-o=<ID-combinations>]");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
     }
 
@@ -204,10 +207,22 @@ public final class CommandLineInterface {
             @Override
             void execute(final String[] args) throws IOException {
                 String ropfFileName = args[1];
+                OrderedCollection<Collection<String>> idCombinations = OrderedCollection.<Collection<String>>empty();
+                if (args.length > 2 && args[2].startsWith("-o=")) {
+                    String idCombinationsOption = args[2];
+                    String idCombinationsString = idCombinationsOption.substring(THREE, idCombinationsOption.length());
+                    String[] idCombinationsArray = idCombinationsString.split(",");
+                    ModifiableOrderedCollection<Collection<String>> result =
+                            ModifiableOrderedCollection.<Collection<String>>empty();
+                    for (String idCombination : idCombinationsArray) {
+                        result.add(Collection.of(idCombination.split("\\+")));
+                    }
+                    idCombinations = result;
+                }
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", ropfFileName);
                 String[] ropfContent = readFile(ropfFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile));
+                writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile, idCombinations));
             }
         },
         /**
