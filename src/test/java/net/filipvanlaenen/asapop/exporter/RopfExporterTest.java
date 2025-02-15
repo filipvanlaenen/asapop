@@ -217,4 +217,26 @@ public class RopfExporterTest {
         assertEquals(expected.toString(),
                 RopfExporter.export(opinionPollsFile, OrderedCollection.<Collection<String>>empty()));
     }
+
+    /**
+     * Verifies the correct export of an opinion poll when some of the electoral lists are preordered from the command
+     * line.
+     */
+    @Test
+    public void shouldIncludePreorderingIntoSortingOfElectoralLists() {
+        RichOpinionPollsFile opinionPollsFile =
+                RichOpinionPollsFile.parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:40 B:30 C+D:20 E+F:10", "A: AA001 •A:A",
+                        "B: AA002 •A:B", "C: AA003 •A:C", "D: AA004 •A:D", "E: AA005 •A:E", "F: AA006 •A:F");
+        StringBuffer expected = new StringBuffer();
+        expected.append("•PF: ACME •PD: 2021-07-27 B: 30 E+F: 10 A: 40 C+D: 20\n");
+        expected.append("\n");
+        expected.append("A: AA001 •A: A\n");
+        expected.append("B: AA002 •A: B\n");
+        expected.append("C: AA003 •A: C\n");
+        expected.append("D: AA004 •A: D\n");
+        expected.append("E: AA005 •A: E\n");
+        expected.append("F: AA006 •A: F\n");
+        assertEquals(expected.toString(), RopfExporter.export(opinionPollsFile,
+                OrderedCollection.of(Collection.of("AA002"), Collection.of("AA005", "AA006"), Collection.of("AA007"))));
+    }
 }
