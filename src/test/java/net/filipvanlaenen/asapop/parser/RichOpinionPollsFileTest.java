@@ -194,6 +194,21 @@ public final class RichOpinionPollsFileTest {
     }
 
     /**
+     * Verifies that a line with non-permanent ID for an electoral list produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForALineWithANonpermanentId() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER
+                .logMessage("Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithANonpermanentId.");
+        RichOpinionPollsFile.parse(token, SAMPLE_POLL_LINE, "A: AA001 •A: A", ELECTORAL_LIST_B_LINE);
+        String expected = "‡   Unit test RichOpinionPollsFileTest.shouldLogAnErrorForALineWithANonpermanentId.\n"
+                + "‡   Parsing line number 2.\n" + "‡ ⬐ Line is recognized as an electoral list line.\n"
+                + "‡ Electoral list ID AA001 is a non-permanent electoral list ID.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line with an unrecognized line format produces a warning.
      */
     @Test
