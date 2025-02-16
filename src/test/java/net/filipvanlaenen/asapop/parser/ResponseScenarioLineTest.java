@@ -15,6 +15,7 @@ import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
+import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -170,6 +171,18 @@ public final class ResponseScenarioLineTest {
                 ResponseScenarioLine.parse("& •SC: E A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
         ResponseScenario expected = new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43")
                 .setScope(Scope.EUROPEAN).build();
+        assertEquals(expected, responseScenarioLine.getResponseScenario());
+    }
+
+    /**
+     * Verifies that String with a single line containing a response scenario with a different unit can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithAResponseScenarioWithADifferentUnit() {
+        ResponseScenarioLine responseScenarioLine =
+                ResponseScenarioLine.parse("& •U: S A:55 B:43", ELECTORAL_LIST_KEY_MAP, TOKEN);
+        ResponseScenario expected =
+                new ResponseScenarioTestBuilder().addResult("A", "55").addResult("B", "43").setUnit(Unit.SEATS).build();
         assertEquals(expected, responseScenarioLine.getResponseScenario());
     }
 
@@ -350,6 +363,20 @@ public final class ResponseScenarioLineTest {
     }
 
     /**
+     * Verifies that a line with an unknown unit produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForAnUnknownUnitValue() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownUnitValue.");
+        ResponseScenarioLine.parse("& •SS: 999 •U: X A:55 B:43", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorForAnUnknownUnitValue.\n"
+                + "‡ ⬐ Processing metadata field U.\n" + "‡ Unknown metadata value X.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line with a malformed decimal number for excluded logs an error.
      */
     @Test
@@ -520,6 +547,20 @@ public final class ResponseScenarioLineTest {
         ResponseScenarioLine.parse("& •SC: N •SC: N A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
         String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenScopeIsAddedTwice.\n"
                 + "‡ ⬐ Processing metadata field SC.\n" + "‡ Single value metadata key SC occurred more than once.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
+     * Verifies that a line adding unit twice produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorWhenUnitIsAddedTwice() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token =
+                Laconic.LOGGER.logMessage("Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenUnitIsAddedTwice.");
+        ResponseScenarioLine.parse("& •U: S •U: S A:55 B:45", ELECTORAL_LIST_KEY_MAP, token);
+        String expected = "‡   Unit test ResponseScenarioLineTest.shouldLogAnErrorWhenUnitIsAddedTwice.\n"
+                + "‡ ⬐ Processing metadata field U.\n" + "‡ Single value metadata key U occurred more than once.\n";
         assertEquals(expected, outputStream.toString());
     }
 
