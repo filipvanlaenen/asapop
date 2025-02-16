@@ -105,7 +105,8 @@ final class ElectoralListLine extends Line {
     /**
      * Parses an electoral list line.
      *
-     * @param line The line to parse.
+     * @param token The Laconic logging token.
+     * @param line  The line to parse.
      * @return An ElectoralListLine representing the line.
      */
     static ElectoralListLine parse(final Token token, final String line) {

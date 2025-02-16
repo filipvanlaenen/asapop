@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
@@ -17,7 +20,7 @@ public final class ElectoralListLineTest {
     /**
      * A sample electoral list line.
      */
-    private static final String SAMPLE_LINE = "A: AA001 •A: AP •EN: Apple Party";
+    private static final String SAMPLE_LINE = "A: AA202501 •A: AP •EN: Apple Party";
     /**
      * A Laconic logging token for unit testing.
      */
@@ -73,7 +76,7 @@ public final class ElectoralListLineTest {
     @Test
     public void shouldReturnTheElectoralList() {
         ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, SAMPLE_LINE);
-        assertEquals(ElectoralList.get("AA001"), electoralListLine.getElectoralList());
+        assertEquals(ElectoralList.get("AA202501"), electoralListLine.getElectoralList());
     }
 
     /**
@@ -92,7 +95,7 @@ public final class ElectoralListLineTest {
     public void shouldUpdateTheAbbreviationOfAnElectoralList() {
         ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, SAMPLE_LINE);
         electoralListLine.updateElectoralList();
-        assertEquals("AP", ElectoralList.get("AA001").getAbbreviation());
+        assertEquals("AP", ElectoralList.get("AA202501").getAbbreviation());
     }
 
     /**
@@ -100,9 +103,10 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldUpdateTheRomanizedAbbreviationOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, "A: AA001 •A: ΑΠ •R:AP •EN: Apple Party");
+        ElectoralListLine electoralListLine =
+                ElectoralListLine.parse(TOKEN, "A: AA202501 •A: ΑΠ •R:AP •EN: Apple Party");
         electoralListLine.updateElectoralList();
-        assertEquals("AP", ElectoralList.get("AA001").getRomanizedAbbreviation());
+        assertEquals("AP", ElectoralList.get("AA202501").getRomanizedAbbreviation());
     }
 
     /**
@@ -111,8 +115,32 @@ public final class ElectoralListLineTest {
     @Test
     public void shouldUpdateTheNamesOfAnElectoralList() {
         ElectoralListLine electoralListLine =
-                ElectoralListLine.parse(TOKEN, "A: AA001 •A: AP •EN: Apple Party •NL: Appelpartij");
+                ElectoralListLine.parse(TOKEN, "A: AA202501 •A: AP •EN: Apple Party •NL: Appelpartij");
         electoralListLine.updateElectoralList();
-        assertEquals("Appelpartij", ElectoralList.get("AA001").getName("NL"));
+        assertEquals("Appelpartij", ElectoralList.get("AA202501").getName("NL"));
+    }
+
+    /**
+     * Verifies that no warning is logged for a valid electoral list line.
+     */
+    @Test
+    public void shouldNotLogAWarningForValidLine() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test ElectoralListLineTest.shouldNotLogAWarningForValidLine.");
+        ElectoralListLine.parse(token, "A: AA202501 •A: AP •EN: Apple Party •NL: Appelpartij");
+        assertTrue(outputStream.toString().isEmpty());
+    }
+
+    /**
+     * Verifies that a warning is logged when a non-permanent ID is used.
+     */
+    @Test
+    public void shouldLogAWarningForANonpermanentId() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test ElectoralListLineTest.shouldNotLogAWarningForValidLine.");
+        ElectoralListLine.parse(token, "A: AA001 •A: AP •EN: Apple Party •NL: Appelpartij");
+        String expected = "‡ ⬐ Unit test ElectoralListLineTest.shouldNotLogAWarningForValidLine.\n"
+                + "‡ Electoral list ID AA001 is a non-permanent electoral list ID.\n";
+        assertEquals(expected, outputStream.toString());
     }
 }
