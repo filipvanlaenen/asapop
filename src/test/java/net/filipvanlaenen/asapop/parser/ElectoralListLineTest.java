@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Unit tests on the <code>ElectoralListLine</code> class.
@@ -16,6 +18,10 @@ public final class ElectoralListLineTest {
      * A sample electoral list line.
      */
     private static final String SAMPLE_LINE = "A: AA001 •A: AP •EN: Apple Party";
+    /**
+     * A Laconic logging token for unit testing.
+     */
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test RichOpinionPollsFileTest.");
 
     /**
      * Verifies that the <code>isElecoralListLine</code> method can detect a line with an electoral list.
@@ -66,7 +72,7 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldReturnTheElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, SAMPLE_LINE);
         assertEquals(ElectoralList.get("AA001"), electoralListLine.getElectoralList());
     }
 
@@ -75,7 +81,7 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldReturnTheKey() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, SAMPLE_LINE);
         assertEquals("A", electoralListLine.getKey());
     }
 
@@ -84,7 +90,7 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldUpdateTheAbbreviationOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse(SAMPLE_LINE);
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, SAMPLE_LINE);
         electoralListLine.updateElectoralList();
         assertEquals("AP", ElectoralList.get("AA001").getAbbreviation());
     }
@@ -94,7 +100,7 @@ public final class ElectoralListLineTest {
      */
     @Test
     public void shouldUpdateTheRomanizedAbbreviationOfAnElectoralList() {
-        ElectoralListLine electoralListLine = ElectoralListLine.parse("A: AA001 •A: ΑΠ •R:AP •EN: Apple Party");
+        ElectoralListLine electoralListLine = ElectoralListLine.parse(TOKEN, "A: AA001 •A: ΑΠ •R:AP •EN: Apple Party");
         electoralListLine.updateElectoralList();
         assertEquals("AP", ElectoralList.get("AA001").getRomanizedAbbreviation());
     }
@@ -105,7 +111,7 @@ public final class ElectoralListLineTest {
     @Test
     public void shouldUpdateTheNamesOfAnElectoralList() {
         ElectoralListLine electoralListLine =
-                ElectoralListLine.parse("A: AA001 •A: AP •EN: Apple Party •NL: Appelpartij");
+                ElectoralListLine.parse(TOKEN, "A: AA001 •A: AP •EN: Apple Party •NL: Appelpartij");
         electoralListLine.updateElectoralList();
         assertEquals("Appelpartij", ElectoralList.get("AA001").getName("NL"));
     }

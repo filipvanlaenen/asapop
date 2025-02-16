@@ -39,8 +39,8 @@ public final class RichOpinionPollsFileTest {
     /**
      * Sample poll corresponding to the sample poll line.
      */
-    private static final OpinionPoll SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA001", "55")
-            .addResult("AA002", "45").setPollingFirm("ACME").setPublicationDate(DATE1).build();
+    private static final OpinionPoll SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA202501", "55")
+            .addResult("AA202502", "45").setPollingFirm("ACME").setPublicationDate(DATE1).build();
     /**
      * Other sample poll line.
      */
@@ -48,20 +48,20 @@ public final class RichOpinionPollsFileTest {
     /**
      * Sample poll corresponding to the other sample poll line.
      */
-    private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA001", "56")
-            .addResult("AA003", "43").setPollingFirm("BCME").setPublicationDate(DATE2).build();
+    private static final OpinionPoll OTHER_SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA202501", "56")
+            .addResult("AA202503", "43").setPollingFirm("BCME").setPublicationDate(DATE2).build();
     /**
      * Line for electoral list A.
      */
-    private static final String ELECTORAL_LIST_A_LINE = "A: AA001 •A: A";
+    private static final String ELECTORAL_LIST_A_LINE = "A: AA202501 •A: A";
     /**
      * Line for electoral list B.
      */
-    private static final String ELECTORAL_LIST_B_LINE = "B: AA002 •A: B";
+    private static final String ELECTORAL_LIST_B_LINE = "B: AA202502 •A: B";
     /**
      * Line for electoral list C.
      */
-    private static final String ELECTORAL_LIST_C_LINE = "C: AA003 •A: C";
+    private static final String ELECTORAL_LIST_C_LINE = "C: AA202503 •A: C";
     /**
      * Comment line.
      */
@@ -129,10 +129,10 @@ public final class RichOpinionPollsFileTest {
     public void shouldParseTwoLinesWithOpinionPollAndAlternativeResponseScenario() {
         String[] content = new String[] {SAMPLE_POLL_LINE, "& A:50 B:40 C:10", ELECTORAL_LIST_A_LINE,
                 ELECTORAL_LIST_B_LINE, ELECTORAL_LIST_C_LINE};
-        OpinionPoll poll = new OpinionPollTestBuilder().addResult("AA001", "55").addResult("AA002", "45")
+        OpinionPoll poll = new OpinionPollTestBuilder().addResult("AA202501", "55").addResult("AA202502", "45")
                 .setPollingFirm("ACME").setPublicationDate(DATE1).build();
-        ResponseScenario scenario = new ResponseScenarioTestBuilder().addResult("AA001", "50").addResult("AA002", "40")
-                .addResult("AA003", "10").build();
+        ResponseScenario scenario = new ResponseScenarioTestBuilder().addResult("AA202501", "50")
+                .addResult("AA202502", "40").addResult("AA202503", "10").build();
         poll.addAlternativeResponseScenario(scenario);
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);

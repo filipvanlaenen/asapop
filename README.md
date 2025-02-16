@@ -215,7 +215,8 @@ Below are a number of ways in which the results can be registered:
 The second part of a rich opinion poll file contains the lines with electoral lists. Each electoral list appearing in
 the opinion polls should be on a line, and a line should always contain one electoral list. The line should start with
 the electoral list key, as used in the opinion poll results, followed by a colon (":") and a global ID for the electoral
-list. The ID should consist of two letters and three digits. The rest of the line contains
+list. The ID should consist of two letters and three digits for a temporary ID, and two letters and six digits for a
+permanent ID. The rest of the line contains
 fields with information about the electoral list, using a bullet ("•") to mark the start of a new field key, followed
 by a key, which is either "A" for the official abbreviation of the electoral list, "R" for the romanized version of the
 official abbreviation, or a two-letter language code for the name of the electoral list, followed by a colon (":") and
@@ -228,10 +229,10 @@ official abbreviation "AP", the English name "Apple Party" and a traduction into
 A: AA001 •A: AP •EN: Apple Party •EO: Pomo Partio
 ```
 
-The example below shows how to include a romanized abbreviation:
+The example below shows how to use a permanent ID and include a romanized abbreviation:
 
 ```
-A: AA001 •A: ΑΠ •R: AP •EN: Apple Party •EO: Pomo Partio
+A: AA201501 •A: ΑΠ •R: AP •EN: Apple Party •EO: Pomo Partio
 ```
 
 ### Comments and Empty Lines

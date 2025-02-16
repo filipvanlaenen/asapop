@@ -1,12 +1,13 @@
 package net.filipvanlaenen.asapop.parser;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.filipvanlaenen.asapop.model.ElectoralList;
+import net.filipvanlaenen.laconic.Laconic;
+import net.filipvanlaenen.laconic.Token;
 
 /**
  * Class implementing a line representing the definition of an electoral list.
@@ -20,6 +21,14 @@ final class ElectoralListLine extends Line {
      * The integer number four.
      */
     private static final int FOUR = 4;
+    /**
+     * The integer number eight.
+     */
+    private static final int EIGHT = 8;
+    /**
+     * The string for the pattern to match the ID of an electoral list.
+     */
+    private static final String ELECTORAL_LIST_ID_PATTERN = "\\p{Upper}{2}\\p{Digit}{3,6}";
     /**
      * The pattern to match an electoral list line.
      */
@@ -99,11 +108,14 @@ final class ElectoralListLine extends Line {
      * @param line The line to parse.
      * @return An ElectoralListLine representing the line.
      */
-    static ElectoralListLine parse(final String line) {
+    static ElectoralListLine parse(final Token token, final String line) {
         Matcher electoralListKeyMatcher = KEY_EXTRACTION_PATTERN.matcher(line);
         electoralListKeyMatcher.find();
         String key = electoralListKeyMatcher.group(1);
         String id = electoralListKeyMatcher.group(2);
+        if (id.length() < EIGHT) {
+            Laconic.LOGGER.logError("Electoral list ID %s isn't permanent.", id, token);
+        }
         String remainder = electoralListKeyMatcher.group(THREE);
         ElectoralListLine electoralListLine = new ElectoralListLine(key, id);
         while (!remainder.isEmpty()) {
