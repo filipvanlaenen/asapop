@@ -114,7 +114,7 @@ final class ElectoralListLine extends Line {
         String key = electoralListKeyMatcher.group(1);
         String id = electoralListKeyMatcher.group(2);
         if (id.length() < EIGHT) {
-            Laconic.LOGGER.logError("Electoral list ID %s isn't permanent.", id, token);
+            Laconic.LOGGER.logError("Electoral list ID %s is a non-permanent electoral list ID.", id, token);
         }
         String remainder = electoralListKeyMatcher.group(THREE);
         ElectoralListLine electoralListLine = new ElectoralListLine(key, id);
