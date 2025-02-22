@@ -171,7 +171,7 @@ public final class EopaodCsvExporter extends Exporter {
             return null;
         }
         ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
-        elements.add(escapeCommasAndQuotes(exportPollingFirms(opinionPoll)));
+        elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
         elements.add(notAvailableIfNull(
