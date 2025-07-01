@@ -2,15 +2,12 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -20,6 +17,9 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.ModifiableSortedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
+import net.filipvanlaenen.kolektoj.collectors.OrderedCollectionCollector;
 
 /**
  * Class building the CSV files.
@@ -76,8 +76,9 @@ public class CsvFilesBuilder {
             CsvConfiguration csvConfiguration = areaConfiguration.getCsvConfiguration();
             if (csvConfiguration != null) {
                 OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
-                List<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
-                        .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+")))).collect(Collectors.toList());
+                OrderedCollection<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
+                        .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
+                        .collect(OrderedCollectionCollector.toCollection());
                 String outputContent = EopaodCsvExporter.export(opinionPolls, "--",
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets);
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
@@ -88,9 +89,9 @@ public class CsvFilesBuilder {
                     csvConfiguration = subdivision.getCsvConfiguration();
                     if (csvConfiguration != null) {
                         OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
-                        List<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
-                                .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
-                                .collect(Collectors.toList());
+                        OrderedCollection<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds()
+                                .stream().map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
+                                .collect(OrderedCollectionCollector.toCollection());
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
                                 null, electoralListKeySets);
@@ -110,7 +111,13 @@ public class CsvFilesBuilder {
     private void buildAndAddPresidentialCsvFiles(final Map<Path, String> csvFilesMap) {
         for (String presidentialElectionCode : presidentialOpinionPollsMap.keySet()) {
             OpinionPolls opinionPolls = presidentialOpinionPollsMap.get(presidentialElectionCode);
-            List<Set<String>> candidateKeys = new ArrayList<Set<String>>();
+            ModifiableSortedCollection<Set<String>> candidateKeys =
+                    ModifiableSortedCollection.<Set<String>>empty(new Comparator<Set<String>>() {
+                        @Override
+                        public int compare(final Set<String> k1, final Set<String> k2) {
+                            return k1.iterator().next().compareTo(k2.iterator().next());
+                        }
+                    });
             for (OpinionPoll opinionPoll : opinionPolls.getOpinionPolls()) {
                 for (Set<ElectoralList> candidateKeySet : opinionPoll.getElectoralListSets()) {
                     Set<String> candidateKey = new HashSet<String>();
@@ -120,12 +127,6 @@ public class CsvFilesBuilder {
                     }
                 }
             }
-            candidateKeys.sort(new Comparator<Set<String>>() {
-                @Override
-                public int compare(final Set<String> k1, final Set<String> k2) {
-                    return k1.iterator().next().compareTo(k2.iterator().next());
-                }
-            });
             String outputContent = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys);
             csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent);
         }

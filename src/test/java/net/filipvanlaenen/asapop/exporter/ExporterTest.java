@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
@@ -60,7 +60,7 @@ public class ExporterTest {
     /**
      * A list with the electoral lists A and B.
      */
-    private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
+    private static final OrderedCollection<Set<String>> A_AND_B = OrderedCollection.of(Set.of("A"), Set.of("B"));
 
     /**
      * Verifies that when only a publication date is provided, it is used as the fieldwork period.

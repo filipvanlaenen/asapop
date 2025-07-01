@@ -1,6 +1,5 @@
 package net.filipvanlaenen.asapop.exporter;
 
-import java.util.List;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -14,6 +13,7 @@ import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 
 /**
  * Exporter to the EOPAOD CSV file format.
@@ -84,7 +84,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string containing the opinion polls in the CSV file format for EOPAOD.
      */
     public static String export(final OpinionPolls opinionPolls, final String area, final String includeAreaAsNational,
-            final List<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         sb.append(",Sample Size Qualification,Participation,Precision");
@@ -113,7 +113,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string containing the opinion poll in the CSV file format for EOPAOD.
      */
     static String export(final OpinionPoll opinionPoll, final String area, final String includeAreaAsNational,
-            final List<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets) {
         ModifiableOrderedCollection<String> lines = ModifiableOrderedCollection.empty();
         if (areaMatches(area, includeAreaAsNational, opinionPoll.getArea())) {
             ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
@@ -165,7 +165,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string containing the response scenario in the CSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
-            final String includeAreaAsNational, final List<Set<String>> electoralListIdSets) {
+            final String includeAreaAsNational, final OrderedCollection<Set<String>> electoralListIdSets) {
         if (!areaMatches(area, includeAreaAsNational,
                 secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;

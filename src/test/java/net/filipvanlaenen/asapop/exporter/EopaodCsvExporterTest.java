@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -41,20 +41,22 @@ public class EopaodCsvExporterTest {
     /**
      * A list with the keys of the electoral lists A and B.
      */
-    private static final List<Set<String>> A_AND_B = List.of(Set.of("A"), Set.of("B"));
+    private static final OrderedCollection<Set<String>> A_AND_B = OrderedCollection.of(Set.of("A"), Set.of("B"));
     /**
      * A list with the IDs of the electoral lists A and B.
      */
-    private static final List<Set<String>> A_AND_B_IDS = List.of(Set.of("AA001"), Set.of("AA002"));
+    private static final OrderedCollection<Set<String>> A_AND_B_IDS =
+            OrderedCollection.of(Set.of("AA001"), Set.of("AA002"));
     /**
      * A list with the electoral lists A, B and C.
      */
-    private static final List<Set<String>> A_AND_B_AND_C = List.of(Set.of("A"), Set.of("B"), Set.of("C"));
+    private static final OrderedCollection<Set<String>> A_AND_B_AND_C =
+            OrderedCollection.of(Set.of("A"), Set.of("B"), Set.of("C"));
     /**
      * A list with the IDs of the electoral lists A, B and C.
      */
-    private static final List<Set<String>> A_AND_B_AND_C_IDS =
-            List.of(Set.of("AA001"), Set.of("AA002"), Set.of("AA003"));
+    private static final OrderedCollection<Set<String>> A_AND_B_AND_C_IDS =
+            OrderedCollection.of(Set.of("AA001"), Set.of("AA002"), Set.of("AA003"));
     /**
      * A Laconic logging token for unit testing.
      */
@@ -89,7 +91,7 @@ public class EopaodCsvExporterTest {
         expected.append("ACME,,2021-07-27,2021-07-27,Not Available,Not Available,Not Available");
         expected.append(",Not Available,1%,55%,45%,Not Available\n");
         assertEquals(expected.toString(), EopaodCsvExporter.export(opinionPolls, null, null,
-                List.of(Set.of("AA001", "AA003"), Set.of("AA002", "AA004"))));
+                OrderedCollection.of(Set.of("AA001", "AA003"), Set.of("AA002", "AA004"))));
     }
 
     /**

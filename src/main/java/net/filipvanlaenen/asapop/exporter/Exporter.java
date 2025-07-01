@@ -71,7 +71,7 @@ public abstract class Exporter {
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll,
-            final List<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets) {
         return ResultValue.Precision.getHighestPrecision(extractResults(opinionPoll, electoralListIdSets));
     }
 
@@ -98,7 +98,7 @@ public abstract class Exporter {
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario,
-            final List<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets) {
         return ResultValue.Precision.getHighestPrecision(extractResults(responseScenario, electoralListIdSets));
     }
 
@@ -255,7 +255,7 @@ public abstract class Exporter {
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll,
-            final List<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets) {
         Set<ResultValue> result = new HashSet<ResultValue>();
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             addToSetUnlessNull(result, opinionPoll.getResult(electoralListIdSet));
@@ -272,7 +272,7 @@ public abstract class Exporter {
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
-            final List<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets) {
         Set<ResultValue> result = new HashSet<ResultValue>();
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListIdSet));
