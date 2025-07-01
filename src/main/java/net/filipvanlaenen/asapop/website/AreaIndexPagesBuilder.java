@@ -28,6 +28,7 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectoralSystem;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -206,7 +207,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      */
     private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration) {
         String areaCode = areaConfiguration.getAreaCode();
-        List<LI> upcomingElectionLIs = new ArrayList<LI>();
+        ModifiableOrderedCollection<LI> upcomingElectionLIs = ModifiableOrderedCollection.<LI>empty();
         addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.PRESIDENTIAL);
         addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.NATIONAL);
         addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.EUROPEAN);
@@ -228,7 +229,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param areaCode            The area code.
      * @param electionType        The election type.
      */
-    private void addUpcomingElectionLI(final List<LI> upcomingElectionLIs, final String areaCode,
+    private void addUpcomingElectionLI(final ModifiableOrderedCollection<LI> upcomingElectionLIs, final String areaCode,
             final ElectionType electionType) {
         Election nextElection = elections.getNextElection(areaCode, electionType, now);
         if (nextElection != null) {
