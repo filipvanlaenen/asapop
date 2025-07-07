@@ -19,7 +19,7 @@ import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.ModifiableSortedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
-import net.filipvanlaenen.kolektoj.collectors.OrderedCollectionCollector;
+import net.filipvanlaenen.kolektoj.collectors.Collectors;
 
 /**
  * Class building the CSV files.
@@ -78,7 +78,7 @@ public class CsvFilesBuilder {
                 OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
                 OrderedCollection<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
                         .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
-                        .collect(OrderedCollectionCollector.toCollection());
+                        .collect(Collectors.toOrderedCollection());
                 String outputContent = EopaodCsvExporter.export(opinionPolls, "--",
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets);
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
@@ -91,7 +91,7 @@ public class CsvFilesBuilder {
                         OpinionPolls opinionPolls = parliamentaryOpinionPollsMap.get(areaCode);
                         OrderedCollection<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds()
                                 .stream().map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
-                                .collect(OrderedCollectionCollector.toCollection());
+                                .collect(Collectors.toOrderedCollection());
                         String subdivisionAreaCode = subdivision.getAreaCode();
                         String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
                                 null, electoralListKeySets);
