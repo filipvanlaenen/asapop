@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>ElectoralCalendarPageBuilder</code> class.
@@ -46,40 +46,40 @@ public class ElectoralCalendarPageBuilderTest {
         denmark.setAreaCode("dk");
         ElectionLists electionListsForDenmark = new ElectionLists();
         ElectionList nationalElectionsInDenmark = new ElectionList();
-        nationalElectionsInDenmark.setDates(Map.of(1, "2022-11-01"));
+        nationalElectionsInDenmark.setDates(java.util.Map.of(1, "2022-11-01"));
         electionListsForDenmark.setNational(nationalElectionsInDenmark);
         denmark.setElections(electionListsForDenmark);
         AreaConfiguration estonia = new AreaConfiguration();
         estonia.setAreaCode("ee");
         ElectionLists electionListsForEstonia = new ElectionLists();
         ElectionList nationalElectionsInEstonia = new ElectionList();
-        nationalElectionsInEstonia.setDates(Map.of(1, "2023-03-05"));
+        nationalElectionsInEstonia.setDates(java.util.Map.of(1, "2023-03-05"));
         electionListsForEstonia.setNational(nationalElectionsInEstonia);
         ElectionList presidentialElectionsInEstonia = new ElectionList();
-        presidentialElectionsInEstonia.setDates(Map.of(1, "≈2024-03"));
+        presidentialElectionsInEstonia.setDates(java.util.Map.of(1, "≈2024-03"));
         electionListsForEstonia.setPresidential(presidentialElectionsInEstonia);
         estonia.setElections(electionListsForEstonia);
         AreaConfiguration france = new AreaConfiguration();
         france.setAreaCode("fr");
         ElectionLists electionListsForFrance = new ElectionLists();
         ElectionList nationalElectionsInFrance = new ElectionList();
-        nationalElectionsInFrance.setDates(Map.of(1, "2023-03-05"));
+        nationalElectionsInFrance.setDates(java.util.Map.of(1, "2023-03-05"));
         electionListsForFrance.setNational(nationalElectionsInFrance);
         ElectionList presidentialElectionsInFrance = new ElectionList();
-        presidentialElectionsInFrance.setDates(Map.of(1, "2023-03-05"));
+        presidentialElectionsInFrance.setDates(java.util.Map.of(1, "2023-03-05"));
         electionListsForFrance.setPresidential(presidentialElectionsInFrance);
         ElectionList europeanElectionsInFrance = new ElectionList();
-        europeanElectionsInFrance.setDates(Map.of(1, "2023-03-05"));
+        europeanElectionsInFrance.setDates(java.util.Map.of(1, "2023-03-05"));
         electionListsForFrance.setEuropean(europeanElectionsInFrance);
         france.setElections(electionListsForFrance);
         AreaConfiguration greenland = new AreaConfiguration();
         greenland.setAreaCode("gl");
         ElectionLists electionListsForGreenland = new ElectionLists();
         ElectionList nationalElectionsInGreenland = new ElectionList();
-        nationalElectionsInGreenland.setDates(Map.of(1, "≤2025-04-06"));
+        nationalElectionsInGreenland.setDates(java.util.Map.of(1, "≤2025-04-06"));
         electionListsForGreenland.setNational(nationalElectionsInGreenland);
         ElectionList presidentialElectionsInGreenland = new ElectionList();
-        presidentialElectionsInGreenland.setDates(Map.of(1, "2023-03-05"));
+        presidentialElectionsInGreenland.setDates(java.util.Map.of(1, "2023-03-05"));
         electionListsForGreenland.setPresidential(presidentialElectionsInGreenland);
         greenland.setElections(electionListsForGreenland);
         websiteConfiguration
@@ -209,8 +209,7 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections =
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
         assertEquals(expected.toString(),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
     }

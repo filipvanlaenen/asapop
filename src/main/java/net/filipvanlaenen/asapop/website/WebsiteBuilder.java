@@ -1,11 +1,11 @@
 package net.filipvanlaenen.asapop.website;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 

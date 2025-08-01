@@ -2,8 +2,9 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
  * Class building the JavaScripts files.
@@ -48,7 +49,7 @@ class JavaScriptsBuilder {
      * @return A map with the JavaScript files and their paths.
      */
     Map<Path, String> build() {
-        Map<Path, String> result = new HashMap<Path, String>();
+        ModifiableMap<Path, String> result = ModifiableMap.<Path, String>empty();
         result.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(internationalization).build());
         result.put(Paths.get("_js", "navigation.js"), navigationScriptContent);

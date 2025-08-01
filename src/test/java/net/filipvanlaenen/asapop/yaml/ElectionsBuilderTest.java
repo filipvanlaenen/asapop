@@ -4,14 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>ElectionsBuilder</code> class.
@@ -36,7 +35,7 @@ public class ElectionsBuilderTest {
     @Test
     public void shouldExtractEmptyElectionsFromEmptyWebsiteConfiguration() {
         Elections elections =
-                ElectionsBuilder.extractAndValidateElections(new WebsiteConfiguration(), Collections.EMPTY_MAP, NOW);
+                ElectionsBuilder.extractAndValidateElections(new WebsiteConfiguration(), Map.empty(), NOW);
         assertEquals(new Elections(), elections);
     }
 
@@ -51,8 +50,7 @@ public class ElectionsBuilderTest {
         elections.setEuropean(createElectionList());
         Elections expected = new Elections();
         expected.addElection(AREA_CODE, ElectionType.EUROPEAN, 1, ELECTION_DATE, null);
-        assertEquals(expected,
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW));
+        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW));
     }
 
     /**
@@ -66,8 +64,7 @@ public class ElectionsBuilderTest {
         elections.setNational(createElectionList());
         Elections expected = new Elections();
         expected.addElection(AREA_CODE, ElectionType.NATIONAL, 1, ELECTION_DATE, null);
-        assertEquals(expected,
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW));
+        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW));
     }
 
     /**
@@ -81,8 +78,7 @@ public class ElectionsBuilderTest {
         elections.setPresidential(createElectionList());
         Elections expected = new Elections();
         expected.addElection(AREA_CODE, ElectionType.PRESIDENTIAL, 1, ELECTION_DATE, null);
-        assertEquals(expected,
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW));
+        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW));
     }
 
     /**
@@ -107,7 +103,7 @@ public class ElectionsBuilderTest {
      */
     private ElectionList createElectionList() {
         ElectionList electionList = new ElectionList();
-        electionList.setDates(Map.of(1, ELECTION_DATE));
+        electionList.setDates(java.util.Map.of(1, ELECTION_DATE));
         return electionList;
     }
 }

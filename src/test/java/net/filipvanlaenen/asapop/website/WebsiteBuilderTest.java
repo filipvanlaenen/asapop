@@ -1,15 +1,13 @@
 package net.filipvanlaenen.asapop.website;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +21,8 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -62,7 +62,7 @@ public class WebsiteBuilderTest {
      */
     private Internationalization createInternationalization() {
         Internationalization internationalization = new Internationalization();
-        internationalization.addTranslations("language", Map.of("en", "Language"));
+        internationalization.addTranslations("language", java.util.Map.of("en", "Language"));
         return internationalization;
     }
 
@@ -78,7 +78,7 @@ public class WebsiteBuilderTest {
         sweden.setAreaCode("se");
         ElectionLists electionListsForSweden = new ElectionLists();
         ElectionList nationalElectionsInSweden = new ElectionList();
-        nationalElectionsInSweden.setDates(Map.of(1, "2022-09-11"));
+        nationalElectionsInSweden.setDates(java.util.Map.of(1, "2022-09-11"));
         nationalElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
         electionListsForSweden.setNational(nationalElectionsInSweden);
         sweden.setElections(electionListsForSweden);
@@ -86,14 +86,14 @@ public class WebsiteBuilderTest {
         latvia.setAreaCode("lv");
         ElectionLists electionListsForLatvia = new ElectionLists();
         ElectionList nationalElectionsInLatvia = new ElectionList();
-        nationalElectionsInLatvia.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInLatvia.setDates(java.util.Map.of(1, "2022-10-01"));
         nationalElectionsInLatvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
         electionListsForLatvia.setNational(nationalElectionsInLatvia);
         latvia.setElections(electionListsForLatvia);
         AreaConfiguration bulgaria = new AreaConfiguration();
         ElectionLists electionListsForBulgaria = new ElectionLists();
         ElectionList nationalElectionsInBulgaria = new ElectionList();
-        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-02"));
+        nationalElectionsInBulgaria.setDates(java.util.Map.of(1, "2022-10-02"));
         nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
         bulgaria.setElections(electionListsForBulgaria);
@@ -111,11 +111,10 @@ public class WebsiteBuilderTest {
      */
     @Test
     public void websiteShouldBeBuiltCorrectly() {
-        Map<Path, String> map = new HashMap<Path, String>();
+        ModifiableMap<Path, String> map = ModifiableMap.<Path, String>empty();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         Internationalization internationalization = createInternationalization();
-        Elections elections =
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
@@ -162,8 +161,8 @@ public class WebsiteBuilderTest {
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
         map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), internationalization, opinionPollsMap,
-                Collections.EMPTY_MAP, elections, baseStyleSheetContent, customStyleSheetContent,
-                navigationScriptContent, sortingScriptContent, tooltipScriptContent, NOW);
-        assertEquals(map, builder.build().asMap());
+                Map.empty(), elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent,
+                sortingScriptContent, tooltipScriptContent, NOW);
+        assertTrue(map.containsSame(builder.build().asMap()));
     }
 }

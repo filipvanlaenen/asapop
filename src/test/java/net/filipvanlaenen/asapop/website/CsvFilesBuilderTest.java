@@ -1,13 +1,11 @@
 package net.filipvanlaenen.asapop.website;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +17,8 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -61,7 +61,7 @@ public class CsvFilesBuilderTest {
      */
     @Test
     public void websiteShouldBeBuiltCorrectly() {
-        Map<Path, String> map = new HashMap<Path, String>();
+        ModifiableMap<Path, String> map = ModifiableMap.<Path, String>empty();
         map.put(Paths.get("_csv", "be-vlg.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                         + "Participation,Precision,P,Q,Other\n");
@@ -85,6 +85,6 @@ public class CsvFilesBuilderTest {
         Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
                 presidentialOpinionPollsMap);
-        assertEquals(map, builder.build());
+        assertTrue(map.containsSame(builder.build()));
     }
 }

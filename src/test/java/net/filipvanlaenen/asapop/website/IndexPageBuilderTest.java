@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +14,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>IndexPageBuilder</code> class.
@@ -42,11 +41,11 @@ public class IndexPageBuilderTest {
         sweden.setAreaCode("se");
         ElectionLists electionListsForSweden = new ElectionLists();
         ElectionList nationalElectionsInSweden = new ElectionList();
-        nationalElectionsInSweden.setDates(Map.of(1, "2022-09-11"));
+        nationalElectionsInSweden.setDates(java.util.Map.of(1, "2022-09-11"));
         nationalElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
         electionListsForSweden.setNational(nationalElectionsInSweden);
         ElectionList europeanElectionsInSweden = new ElectionList();
-        europeanElectionsInSweden.setDates(Map.of(1, "2022-09-10"));
+        europeanElectionsInSweden.setDates(java.util.Map.of(1, "2022-09-10"));
         europeanElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_ep_polls");
         electionListsForSweden.setEuropean(europeanElectionsInSweden);
         sweden.setElections(electionListsForSweden);
@@ -54,7 +53,7 @@ public class IndexPageBuilderTest {
         latvia.setAreaCode("lv");
         ElectionLists electionListsForLatvia = new ElectionLists();
         ElectionList nationalElectionsInLatvia = new ElectionList();
-        nationalElectionsInLatvia.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInLatvia.setDates(java.util.Map.of(1, "2022-10-01"));
         nationalElectionsInLatvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
         electionListsForLatvia.setNational(nationalElectionsInLatvia);
         latvia.setElections(electionListsForLatvia);
@@ -62,7 +61,7 @@ public class IndexPageBuilderTest {
         poland.setAreaCode("pl");
         ElectionLists electionListsForPoland = new ElectionLists();
         ElectionList nationalElectionsInPoland = new ElectionList();
-        nationalElectionsInPoland.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInPoland.setDates(java.util.Map.of(1, "2022-10-01"));
         nationalElectionsInPoland.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/polish_polls");
         electionListsForPoland.setNational(nationalElectionsInPoland);
         poland.setElections(electionListsForPoland);
@@ -70,7 +69,7 @@ public class IndexPageBuilderTest {
         netherlands.setAreaCode("nl");
         ElectionLists electionListsForNetherlands = new ElectionLists();
         ElectionList nationalElectionsInNetherlands = new ElectionList();
-        nationalElectionsInNetherlands.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInNetherlands.setDates(java.util.Map.of(1, "2022-10-01"));
         nationalElectionsInNetherlands.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/dutch_polls");
         electionListsForNetherlands.setNational(nationalElectionsInNetherlands);
         netherlands.setElections(electionListsForNetherlands);
@@ -78,7 +77,7 @@ public class IndexPageBuilderTest {
         portugal.setAreaCode("pt");
         ElectionLists electionListsForPortugal = new ElectionLists();
         ElectionList nationalElectionsInPortugal = new ElectionList();
-        nationalElectionsInPortugal.setDates(Map.of(1, "2022-10-01"));
+        nationalElectionsInPortugal.setDates(java.util.Map.of(1, "2022-10-01"));
         nationalElectionsInPortugal.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/portuguese_polls");
         electionListsForPortugal.setNational(nationalElectionsInPortugal);
         portugal.setElections(electionListsForPortugal);
@@ -86,7 +85,7 @@ public class IndexPageBuilderTest {
         bulgaria.setAreaCode("bg");
         ElectionLists electionListsForBulgaria = new ElectionLists();
         ElectionList nationalElectionsInBulgaria = new ElectionList();
-        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-03"));
+        nationalElectionsInBulgaria.setDates(java.util.Map.of(1, "2022-10-03"));
         nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
         bulgaria.setElections(electionListsForBulgaria);
@@ -124,8 +123,7 @@ public class IndexPageBuilderTest {
         expected.append("      </div>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections =
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW1);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW1);
         assertEquals(expected.toString(),
                 new IndexPageBuilder(websiteConfiguration, elections, NOW1).build().asString());
     }
@@ -156,8 +154,7 @@ public class IndexPageBuilderTest {
         expected.append("      </div>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections =
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW3);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW3);
         assertEquals(expected.toString(),
                 new IndexPageBuilder(websiteConfiguration, elections, NOW3).build().asString());
     }

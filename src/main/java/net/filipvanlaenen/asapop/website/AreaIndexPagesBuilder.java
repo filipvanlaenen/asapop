@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,9 @@ import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.ElectoralSystem;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Body;
@@ -67,9 +68,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
     /**
      * A map converting scopes to election types.
      */
-    private static final net.filipvanlaenen.kolektoj.Map<Scope, ElectionType> ELECTION_TYPES_BY_SCOPE =
-            net.filipvanlaenen.kolektoj.Map.of(Scope.EUROPEAN, ElectionType.EUROPEAN, Scope.NATIONAL,
-                    ElectionType.NATIONAL, Scope.PRESIDENTIAL_FIRST_ROUND, null, null, null);
+    private static final Map<Scope, ElectionType> ELECTION_TYPES_BY_SCOPE =
+            Map.of(Scope.EUROPEAN, ElectionType.EUROPEAN, Scope.NATIONAL, ElectionType.NATIONAL,
+                    Scope.PRESIDENTIAL_FIRST_ROUND, null, null, null);
 
     /**
      * The elections.
@@ -129,12 +130,13 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param areaConfiguration The configuration for the area.
      */
     private void addOpinionPolls(final Section section, final AreaConfiguration areaConfiguration) {
-        OpinionPolls opinionPolls = opinionPollsMap.get(areaConfiguration.getAreaCode());
+        OpinionPolls opinionPolls = opinionPollsMap.get(areaConfiguration.getAreaCode(), null);
         if (opinionPolls == null || opinionPolls.getOpinionPolls().isEmpty()) {
             addNoneParagraph(section);
         } else {
             List<OpinionPoll> latestOpinionPolls = calculateLatestOpinionPolls(opinionPolls);
-            Map<Set<ElectoralList>, String> electoralListSetAbbreviation = new HashMap<Set<ElectoralList>, String>();
+            java.util.Map<Set<ElectoralList>, String> electoralListSetAbbreviation =
+                    new HashMap<Set<ElectoralList>, String>();
             List<Set<ElectoralList>> largestElectoralListSets =
                     calculateLargestElectoralListSetsAndAbbreviations(electoralListSetAbbreviation, latestOpinionPolls);
             Table table = new Table().clazz("opinion-polls-table");
@@ -176,7 +178,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param areaConfiguration The area configuration.
      */
     private void addPollingFirmsNotIncluded(final Section section, final AreaConfiguration areaConfiguration) {
-        Map<String, String> pollingFirmsNotIncluded = areaConfiguration.getPollingFirmsNotIncluded();
+        java.util.Map<String, String> pollingFirmsNotIncluded = areaConfiguration.getPollingFirmsNotIncluded();
         if (pollingFirmsNotIncluded == null || pollingFirmsNotIncluded.isEmpty()) {
             return;
         }
@@ -253,7 +255,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @return A map with the index pages for all areas.
      */
     Map<Path, String> build() {
-        Map<Path, String> result = new HashMap<Path, String>();
+        ModifiableMap<Path, String> result = ModifiableMap.<Path, String>empty();
         for (AreaConfiguration areaConfiguration : getAreaConfigurations()) {
             String areaCode = areaConfiguration.getAreaCode();
             if (areaCode != null) {
@@ -272,9 +274,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @return A list with the largest electoral list sets.
      */
     private List<Set<ElectoralList>> calculateLargestElectoralListSetsAndAbbreviations(
-            final Map<Set<ElectoralList>, String> electoralListSetAbbreviation,
+            final java.util.Map<Set<ElectoralList>, String> electoralListSetAbbreviation,
             final List<OpinionPoll> latestOpinionPolls) {
-        Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
+        java.util.Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
         for (OpinionPoll opinionPoll : latestOpinionPolls) {
             for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario().getElectoralListSets()) {
                 ResultValue resultValue = opinionPoll.getResult(ElectoralList.getIds(electoralListSet));

@@ -1,16 +1,13 @@
 package net.filipvanlaenen.asapop.website;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.txhtmlj.Html;
 
 /**
@@ -27,7 +24,7 @@ public class WebsiteTest {
      */
     @Test
     public void emptyWebsiteShouldReturnAnEmptyContentMap() {
-        assertEquals(Collections.EMPTY_MAP, new Website().asMap());
+        assertTrue(new Website().asMap().isEmpty());
     }
 
     /**
@@ -37,9 +34,8 @@ public class WebsiteTest {
     public void aWebsiteWithASinglePageShouldReturnAMapWithTheContentOfThatPage() {
         Website website = new Website();
         website.put("foo", new Html());
-        Map<Path, String> expected = new HashMap<Path, String>();
-        expected.put(FOO_PATH, new Html().asString());
-        assertEquals(expected, website.asMap());
+        Map<Path, String> expected = Map.of(FOO_PATH, new Html().asString());
+        assertTrue(expected.containsSame(website.asMap()));
     }
 
     /**
@@ -49,18 +45,7 @@ public class WebsiteTest {
     public void aWebsiteWithASinglePageAddedAsAMapShouldReturnAMapWithTheContentOfThatPage() {
         Website website = new Website();
         website.putAll(Map.of(FOO_PATH, new Html().asString()));
-        Map<Path, String> expected = new HashMap<Path, String>();
-        expected.put(FOO_PATH, new Html().asString());
-        assertEquals(expected, website.asMap());
-    }
-
-    /**
-     * Verifies that <code>asMap</code> returns an UnmodifiableMap.
-     */
-    @Test
-    public void asMapReturnsAnUnmodifiableMap() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            new Website().asMap().put(FOO_PATH, new Html().asString());
-        });
+        Map<Path, String> expected = Map.of(FOO_PATH, new Html().asString());
+        assertTrue(expected.containsSame(website.asMap()));
     }
 }

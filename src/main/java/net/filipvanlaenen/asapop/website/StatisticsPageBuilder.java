@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.array.ModifiableArrayCollection;
@@ -425,7 +425,7 @@ final class StatisticsPageBuilder extends PageBuilder {
      */
     private Div createCurrencyCharts(final List<CurrencyQualification> currencyQualifications,
             final long numberOfAreasWithoutOpinionPolls) {
-        Map<CurrencyQualification, Long> currencyQualificationsMap =
+        java.util.Map<CurrencyQualification, Long> currencyQualificationsMap =
                 currencyQualifications.stream().collect(Collectors.groupingBy(p -> p, Collectors.counting()));
         ModifiableOrderedCollection<PieChart.Entry> entries = new ModifiableOrderedArrayCollection<PieChart.Entry>();
         for (CurrencyQualification cq : CurrencyQualification.values()) {

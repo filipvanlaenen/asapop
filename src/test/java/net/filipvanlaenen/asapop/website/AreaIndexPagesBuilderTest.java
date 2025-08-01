@@ -1,13 +1,13 @@
 package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionList;
 import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -51,11 +52,10 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         AreaConfiguration serbia = new AreaConfiguration();
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia, serbia));
-        Map<String, OpinionPolls> opinionPollsMap = Collections.EMPTY_MAP;
         AreaIndexPagesBuilder builder =
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW);
+                new AreaIndexPagesBuilder(websiteConfiguration, Map.empty(), new Elections(), NOW);
         Map<Path, String> expected = Map.of(Paths.get("mk", "index.html"), builder.createAreaIndexPage(northMacedonia));
-        assertEquals(expected, builder.build());
+        assertTrue(expected.containsSame(builder.build()));
     }
 
     /**
@@ -65,12 +65,11 @@ public class AreaIndexPagesBuilderTest {
     public void absentAreaIndexPageShouldBeBuiltCorrectly() {
         WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
         websiteConfiguration.setName("Test");
-        Map<String, OpinionPolls> opinionPollsMap = Collections.EMPTY_MAP;
         websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         assertEquals(createEmptyAreaIndexPage(false),
-                new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
+                new AreaIndexPagesBuilder(websiteConfiguration, Map.empty(), new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
     }
 
@@ -144,7 +143,7 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setPollingFirmsNotIncluded(Map.of("BCME", "foo"));
+        northMacedonia.setPollingFirmsNotIncluded(java.util.Map.of("BCME", "foo"));
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithASmallOpinionPoll("BCME", "foo"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
@@ -165,8 +164,8 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setPollingFirmsNotIncluded(Map.of("FCME", "foo-bar", "ECME", "qux", "DCME", "bar", "CCME",
-                "foo-bar", "BCME", "foo", "GCME", "foo"));
+        northMacedonia.setPollingFirmsNotIncluded(java.util.Map.of("FCME", "foo-bar", "ECME", "qux", "DCME", "bar",
+                "CCME", "foo-bar", "BCME", "foo", "GCME", "foo"));
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(
                 createAreaIndexPageWithASmallOpinionPoll("BCME", "foo", "CCME", "foo-bar", "DCME", "bar", "ECME", "qux",
@@ -211,18 +210,17 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         ElectionLists electionLists = new ElectionLists();
         ElectionList nationalElections = new ElectionList();
-        nationalElections.setDates(Map.of(1, "2023-03-05"));
+        nationalElections.setDates(java.util.Map.of(1, "2023-03-05"));
         electionLists.setNational(nationalElections);
         ElectionList presidentialElections = new ElectionList();
-        presidentialElections.setDates(Map.of(2, "≈2024-03"));
+        presidentialElections.setDates(java.util.Map.of(2, "≈2024-03"));
         electionLists.setPresidential(presidentialElections);
         ElectionList europeanElections = new ElectionList();
-        europeanElections.setDates(Map.of(THREE, "≤2025-03"));
+        europeanElections.setDates(java.util.Map.of(THREE, "≤2025-03"));
         electionLists.setEuropean(europeanElections);
         northMacedonia.setElections(electionLists);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
-        Elections elections =
-                ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Collections.EMPTY_MAP, NOW);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
         assertEquals(createAreaIndexPageWithUpcomingElections(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(northMacedonia));

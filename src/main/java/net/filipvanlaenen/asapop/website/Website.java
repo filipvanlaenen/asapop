@@ -2,10 +2,9 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.txhtmlj.Html;
 
 /**
@@ -15,7 +14,7 @@ public class Website {
     /**
      * The map holding the page paths and their content.
      */
-    private final Map<Path, String> map = new HashMap<Path, String>();
+    private final ModifiableMap<Path, String> map = ModifiableMap.<Path, String>empty();
 
     /**
      * Returns the content of the website as a map with the paths and the contents of the website pages.
@@ -23,7 +22,7 @@ public class Website {
      * @return A map containing the paths and the contents of the website pages.
      */
     public Map<Path, String> asMap() {
-        return Collections.unmodifiableMap(map);
+        return Map.of(map);
     }
 
     /**

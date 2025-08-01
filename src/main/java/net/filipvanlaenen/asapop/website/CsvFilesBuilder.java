@@ -4,9 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
@@ -17,6 +15,8 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableSortedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.collectors.Collectors;
@@ -59,7 +59,7 @@ public class CsvFilesBuilder {
      * @return A map with the CSV files and their paths.
      */
     public Map<Path, String> build() {
-        Map<Path, String> result = new HashMap<Path, String>();
+        ModifiableMap<Path, String> result = ModifiableMap.<Path, String>empty();
         buildAndAddParliamentaryCsvFiles(result);
         buildAndAddPresidentialCsvFiles(result);
         return result;
@@ -70,7 +70,7 @@ public class CsvFilesBuilder {
      *
      * @param csvFilesMap The map with the CSV files.
      */
-    private void buildAndAddParliamentaryCsvFiles(final Map<Path, String> csvFilesMap) {
+    private void buildAndAddParliamentaryCsvFiles(final ModifiableMap<Path, String> csvFilesMap) {
         for (AreaConfiguration areaConfiguration : websiteConfiguration.getAreaConfigurations()) {
             String areaCode = areaConfiguration.getAreaCode();
             CsvConfiguration csvConfiguration = areaConfiguration.getCsvConfiguration();
@@ -108,8 +108,8 @@ public class CsvFilesBuilder {
      *
      * @param csvFilesMap The map with the CSV files.
      */
-    private void buildAndAddPresidentialCsvFiles(final Map<Path, String> csvFilesMap) {
-        for (String presidentialElectionCode : presidentialOpinionPollsMap.keySet()) {
+    private void buildAndAddPresidentialCsvFiles(final ModifiableMap<Path, String> csvFilesMap) {
+        for (String presidentialElectionCode : presidentialOpinionPollsMap.getKeys()) {
             OpinionPolls opinionPolls = presidentialOpinionPollsMap.get(presidentialElectionCode);
             ModifiableSortedCollection<Set<String>> candidateKeys =
                     ModifiableSortedCollection.<Set<String>>empty(new Comparator<Set<String>>() {

@@ -1,11 +1,11 @@
 package net.filipvanlaenen.asapop.yaml;
 
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -34,9 +34,9 @@ public final class ElectionsBuilder {
         if (electionList != null) {
             Token electionTypeToken = Laconic.LOGGER.logMessage(token,
                     "Extracting and validating the election dates for election type %s.", electionType.getTermKey());
-            for (Map.Entry<Integer, String> entry : electionList.getDates().entrySet()) {
+            for (java.util.Map.Entry<Integer, String> entry : electionList.getDates().entrySet()) {
                 int electionNumber = entry.getKey();
-                ElectionData electionData = electionDataFiles.getOrDefault(areaCode + "-" + electionNumber, null);
+                ElectionData electionData = electionDataFiles.get(areaCode + "-" + electionNumber, null);
                 elections.addElection(areaCode, electionType, electionNumber, entry.getValue(), electionData);
             }
             if (elections.getNextElection(areaCode, electionType, now) == null) {

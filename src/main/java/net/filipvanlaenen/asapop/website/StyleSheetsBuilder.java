@@ -2,8 +2,9 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
  * Classing building the style sheets.
@@ -35,7 +36,7 @@ class StyleSheetsBuilder {
      * @return A map with the style sheets files and their paths.
      */
     Map<Path, String> build() {
-        Map<Path, String> result = new HashMap<Path, String>();
+        ModifiableMap<Path, String> result = ModifiableMap.<Path, String>empty();
         result.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         result.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         return result;

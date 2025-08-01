@@ -11,10 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +43,8 @@ import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.laconic.Laconic;
@@ -294,7 +293,7 @@ public final class CommandLineInterface {
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
             Token token = Laconic.LOGGER.logMessage("Parsing parliamentary opinion polls files from directory %s.",
                     ropfDirName);
-            Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
+            ModifiableMap<String, OpinionPolls> opinionPollsMap = ModifiableMap.<String, OpinionPolls>empty();
             Set<String> areaCodes =
                     websiteConfiguration.getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null)
                             .map(areaConfigutation -> areaConfigutation.getAreaCode()).collect(Collectors.toSet());
@@ -323,7 +322,7 @@ public final class CommandLineInterface {
                 final WebsiteConfiguration websiteConfiguration) throws IOException {
             Token token = Laconic.LOGGER
                     .logMessage("Parsing presidential election opinion polls files from directory %s.", ropfDirName);
-            Map<String, OpinionPolls> opinionPollsMap = new HashMap<String, OpinionPolls>();
+            ModifiableMap<String, OpinionPolls> opinionPollsMap = ModifiableMap.<String, OpinionPolls>empty();
             Set<AreaConfiguration> areasWithPresidentialElections =
                     websiteConfiguration
                             .getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null
@@ -358,7 +357,7 @@ public final class CommandLineInterface {
          */
         private static Map<String, ElectionData> readElectionDataFiles(final WebsiteConfiguration websiteConfiguration,
                 final String dir) {
-            Map<String, ElectionData> result = new HashMap<String, ElectionData>();
+            ModifiableMap<String, ElectionData> result = ModifiableMap.<String, ElectionData>empty();
             Set<AreaConfiguration> areaConfigurations = websiteConfiguration.getAreaConfigurations();
             if (areaConfigurations == null) {
                 return result;
@@ -457,28 +456,12 @@ public final class CommandLineInterface {
          * @param fileNamesAndContents The file names and contents.
          * @throws IOException Thrown if an exception occurs related to IO.
          */
-        private static void writeFiles(final String baseDir,
-                final net.filipvanlaenen.kolektoj.Map<Path, String> fileNamesAndContents) throws IOException {
-            for (net.filipvanlaenen.kolektoj.Map.Entry<Path, String> entry : fileNamesAndContents) {
+        private static void writeFiles(final String baseDir, final Map<Path, String> fileNamesAndContents)
+                throws IOException {
+            for (Map.Entry<Path, String> entry : fileNamesAndContents) {
                 Path path = Paths.get(baseDir, entry.key().toString());
                 Files.createDirectories(path.getParent());
                 writeFile(path, entry.value());
-            }
-        }
-
-        /**
-         * Utility method to write a map with names and contents to files.
-         *
-         * @param baseDir              The base directory for the files.
-         * @param fileNamesAndContents The file names and contents.
-         * @throws IOException Thrown if an exception occurs related to IO.
-         */
-        private static void writeFiles(final String baseDir, final Map<Path, String> fileNamesAndContents)
-                throws IOException {
-            for (Entry<Path, String> entry : fileNamesAndContents.entrySet()) {
-                Path path = Paths.get(baseDir, entry.getKey().toString());
-                Files.createDirectories(path.getParent());
-                writeFile(path, entry.getValue());
             }
         }
     }

@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +19,8 @@ import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.asapop.yaml.WidgetsConfiguration;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Head;
 import net.filipvanlaenen.txhtmlj.Html;
@@ -70,7 +71,7 @@ public class WidgetsBuilder {
      * @return A map with the widgets and their paths.
      */
     Map<Path, String> build() {
-        Map<Path, String> result = new HashMap<Path, String>();
+        ModifiableMap<Path, String> result = ModifiableMap.<Path, String>empty();
         String fontFamily = "sans-serif";
         String[] tableStylesheets = new String[] {};
         if (websiteConfiguration.getWidgetsConfiguration() != null) {
@@ -114,8 +115,9 @@ public class WidgetsBuilder {
      * @return A list of electoral lists for a widget table.
      */
     private List<Set<ElectoralList>> calculateElectoralListSetsAndAbbreviations(
-            final Map<Set<ElectoralList>, String> electoralListSetAbbreviation, final List<OpinionPoll> opinionPolls) {
-        Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
+            final java.util.Map<Set<ElectoralList>, String> electoralListSetAbbreviation,
+            final List<OpinionPoll> opinionPolls) {
+        java.util.Map<Set<ElectoralList>, Double> electoralListSetMax = new HashMap<Set<ElectoralList>, Double>();
         for (OpinionPoll opinionPoll : opinionPolls) {
             for (Set<ElectoralList> electoralListSet : opinionPoll.getMainResponseScenario().getElectoralListSets()) {
                 ResultValue resultValue = opinionPoll.getResult(ElectoralList.getIds(electoralListSet));
@@ -286,7 +288,8 @@ public class WidgetsBuilder {
         tr.addElement(new TH("Polling Firm"));
         tr.addElement(new TH("Commissioner(s)"));
         tr.addElement(new TH("Sample Size"));
-        Map<Set<ElectoralList>, String> electoralListSetAbbreviation = new HashMap<Set<ElectoralList>, String>();
+        java.util.Map<Set<ElectoralList>, String> electoralListSetAbbreviation =
+                new HashMap<Set<ElectoralList>, String>();
         List<Set<ElectoralList>> electoralListSets =
                 calculateElectoralListSetsAndAbbreviations(electoralListSetAbbreviation, opinionPolls);
         for (Set<ElectoralList> electoralListSet : electoralListSets) {
