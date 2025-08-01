@@ -21,6 +21,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -143,7 +144,7 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setPollingFirmsNotIncluded(java.util.Map.of("BCME", "foo"));
+        northMacedonia.setPollingFirmsNotIncluded(Map.of("BCME", "foo"));
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(createAreaIndexPageWithASmallOpinionPoll("BCME", "foo"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
@@ -164,8 +165,14 @@ public class AreaIndexPagesBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
-        northMacedonia.setPollingFirmsNotIncluded(java.util.Map.of("FCME", "foo-bar", "ECME", "qux", "DCME", "bar",
-                "CCME", "foo-bar", "BCME", "foo", "GCME", "foo"));
+        ModifiableMap<String, String> pollingFirmsNotIncluded = ModifiableMap.empty();
+        pollingFirmsNotIncluded.put("FCME", "foo-bar");
+        pollingFirmsNotIncluded.put("ECME", "qux");
+        pollingFirmsNotIncluded.put("DCME", "bar");
+        pollingFirmsNotIncluded.put("CCME", "foo-bar");
+        pollingFirmsNotIncluded.put("BCME", "foo");
+        pollingFirmsNotIncluded.put("GCME", "foo");
+        northMacedonia.setPollingFirmsNotIncluded(pollingFirmsNotIncluded);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         assertEquals(
                 createAreaIndexPageWithASmallOpinionPoll("BCME", "foo", "CCME", "foo-bar", "DCME", "bar", "ECME", "qux",

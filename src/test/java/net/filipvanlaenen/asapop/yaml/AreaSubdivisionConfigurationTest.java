@@ -2,10 +2,9 @@ package net.filipvanlaenen.asapop.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>AreaSubdivisionConfiguration</code> class.
@@ -41,8 +40,7 @@ public class AreaSubdivisionConfigurationTest {
     @Test
     public void getTranslationsShouldBeWiredCorrectlyToSetTranslations() {
         AreaSubdivisionConfiguration areaSubdivisionConfiguration = new AreaSubdivisionConfiguration();
-        Map<String, String> translations = new HashMap<String, String>();
-        translations.put("en", "Foo");
+        Map<String, String> translations = Map.of("en", "Foo");
         areaSubdivisionConfiguration.setTranslations(translations);
         assertEquals(translations, areaSubdivisionConfiguration.getTranslations());
     }

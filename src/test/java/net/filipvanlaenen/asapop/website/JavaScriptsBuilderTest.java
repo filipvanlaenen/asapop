@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
@@ -20,7 +21,7 @@ public class JavaScriptsBuilderTest {
      */
     private Internationalization createInternationalization() {
         Internationalization internationalization = new Internationalization();
-        internationalization.addTranslations("language", java.util.Map.of("en", "Language"));
+        internationalization.addTranslations("language", Map.of("en", "Language"));
         return internationalization;
     }
 

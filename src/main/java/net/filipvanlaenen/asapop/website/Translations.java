@@ -19,15 +19,15 @@ class Translations {
     /**
      * Constructor taking the key and a map with the translations as its parameters.
      *
-     * @param key The key.
-     * @param map A map with the translations for the key.
+     * @param key             The key.
+     * @param newTranslations A map with the translations for the key.
      */
-    Translations(final String key, final java.util.Map<String, String> map) {
+    Translations(final String key, final Map<String, String> newTranslations) {
         this.key = key;
-        Entry<Language, String>[] entries = new Entry[map.size()];
+        Entry<Language, String>[] entries = new Entry[newTranslations.size()];
         int i = 0;
-        for (java.util.Map.Entry<String, String> entry : map.entrySet()) {
-            entries[i++] = new Entry<Language, String>(Language.parse(entry.getKey()), entry.getValue());
+        for (Map.Entry<String, String> entry : newTranslations) {
+            entries[i++] = new Entry<Language, String>(Language.parse(entry.key()), entry.value());
         }
         translations = Map.of(entries);
     }

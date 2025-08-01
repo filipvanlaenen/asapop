@@ -2,9 +2,9 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>InternationalizationScriptBuilder</code> class.

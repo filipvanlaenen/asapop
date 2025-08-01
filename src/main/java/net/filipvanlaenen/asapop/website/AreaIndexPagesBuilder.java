@@ -30,6 +30,7 @@ import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.SortedCollection;
 import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -178,7 +179,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * @param areaConfiguration The area configuration.
      */
     private void addPollingFirmsNotIncluded(final Section section, final AreaConfiguration areaConfiguration) {
-        java.util.Map<String, String> pollingFirmsNotIncluded = areaConfiguration.getPollingFirmsNotIncluded();
+        Map<String, String> pollingFirmsNotIncluded = areaConfiguration.getPollingFirmsNotIncluded();
         if (pollingFirmsNotIncluded == null || pollingFirmsNotIncluded.isEmpty()) {
             return;
         }
@@ -188,8 +189,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
         p.addContent(":");
         section.addElement(p);
         UL ul = new UL();
-        List<String> pollingFirmsNotIncludedSorted = new ArrayList<String>(pollingFirmsNotIncluded.keySet());
-        Collections.sort(pollingFirmsNotIncludedSorted);
+        SortedCollection<String> pollingFirmsNotIncludedSorted =
+                SortedCollection.of(Comparator.naturalOrder(), pollingFirmsNotIncluded.getKeys());
         for (String pollingFirmNotIncluded : pollingFirmsNotIncludedSorted) {
             LI li = new LI();
             li.addElement(new Span(pollingFirmNotIncluded));

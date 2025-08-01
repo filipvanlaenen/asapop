@@ -1,6 +1,6 @@
 package net.filipvanlaenen.asapop.yaml;
 
-import java.util.Map;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Class representing the area configuration element for the YAML file containing the website configuration.

@@ -1,6 +1,6 @@
 package net.filipvanlaenen.asapop.yaml;
 
-import java.util.Map;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Class representing a term with a key and the translation in a number of languages.

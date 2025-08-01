@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.HashMap;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
  * Unit tests on the <code>StatisticsPageBuilder</code> class.
@@ -128,7 +128,7 @@ public class StatisticsPageBuilderTest {
         Internationalization internationalization = new Internationalization();
         for (String areaCode : new String[] {"dk", "ee", "no", "se"}) {
             String key = "_area_" + areaCode;
-            java.util.Map<String, String> translations = new HashMap<String, String>();
+            ModifiableMap<String, String> translations = ModifiableMap.<String, String>empty();
             for (Language language : Language.values()) {
                 translations.put(language.getId(), areaCode + "-" + language.getId());
             }

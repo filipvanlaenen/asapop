@@ -62,7 +62,7 @@ public class WebsiteBuilderTest {
      */
     private Internationalization createInternationalization() {
         Internationalization internationalization = new Internationalization();
-        internationalization.addTranslations("language", java.util.Map.of("en", "Language"));
+        internationalization.addTranslations("language", Map.of("en", "Language"));
         return internationalization;
     }
 
