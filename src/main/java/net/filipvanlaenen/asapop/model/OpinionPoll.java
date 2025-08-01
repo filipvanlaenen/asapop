@@ -169,15 +169,6 @@ public final class OpinionPoll {
         }
 
         /**
-         * Returns whether any date has been registered in this builder instance.
-         *
-         * @return True if at least one date has been registered in this builder instance.
-         */
-        public boolean hasDates() {
-            return hasFieldworkEnd() || hasFieldworkStart() || hasPublicationDate();
-        }
-
-        /**
          * Returns whether the dates are consistent. The dates are consistent when the fieldwork start is before or
          * equal to the fieldwork end, and when the fieldwork start and end are before or equal to the publication date.
          *
@@ -186,7 +177,7 @@ public final class OpinionPoll {
         public boolean hasConsistentDates() {
             if (fieldworkStart == null) {
                 if (fieldworkEnd == null) {
-                    return true;
+                    return publicationDate != null;
                 } else if (publicationDate == null) {
                     return true;
                 } else {
@@ -208,6 +199,15 @@ public final class OpinionPoll {
                     }
                 }
             }
+        }
+
+        /**
+         * Returns whether any date has been registered in this builder instance.
+         *
+         * @return True if at least one date has been registered in this builder instance.
+         */
+        public boolean hasDates() {
+            return hasFieldworkEnd() || hasFieldworkStart() || hasPublicationDate();
         }
 
         /**

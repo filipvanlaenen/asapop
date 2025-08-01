@@ -118,6 +118,32 @@ public class OpinionPollTest {
     }
 
     /**
+     * Verifies that before a date has been added, the builder responds that the dates aren't consistent.
+     */
+    @Test
+    public void hasConsistentDatesInBuilderShouldReturnFalseBeforeDatesAreAdded() {
+        assertFalse(new OpinionPoll.Builder().hasConsistentDates());
+    }
+
+    /**
+     * Verifies that when only the fieldwork start date has been added, the builder responds that the dates are
+     * consistent.
+     */
+    @Test
+    public void hasConsistentDatesInBuilderShouldReturnTrueWhenOnlyFieldworkStartIsSet() {
+        assertTrue(new OpinionPoll.Builder().setFieldworkStart(DATE_OR_MONTH1).hasConsistentDates());
+    }
+
+    /**
+     * Verifies that when only the fieldwork end date has been added, the builder responds that the dates are
+     * consistent.
+     */
+    @Test
+    public void hasConsistentDatesInBuilderShouldReturnTrueWhenOnlyFieldworkEndIsSet() {
+        assertTrue(new OpinionPoll.Builder().setFieldworkEnd(DATE_OR_MONTH1).hasConsistentDates());
+    }
+
+    /**
      * Verifies that after instantiation, the builder responds that the polling firm and the commissioner are missing.
      */
     @Test
