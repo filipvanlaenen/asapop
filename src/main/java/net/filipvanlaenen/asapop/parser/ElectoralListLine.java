@@ -1,11 +1,10 @@
 package net.filipvanlaenen.asapop.parser;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.filipvanlaenen.asapop.model.ElectoralList;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -57,7 +56,7 @@ final class ElectoralListLine extends Line {
     /**
      * The map with the names for the electoral list.
      */
-    private Map<String, String> names = new HashMap<String, String>();
+    private ModifiableMap<String, String> names = ModifiableMap.<String, String>empty();
     /**
      * The romanized abbreviation for the electoral list.
      */

@@ -1,11 +1,11 @@
 package net.filipvanlaenen.asapop.model;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
  * Class representing an electoral list.
@@ -14,7 +14,7 @@ public final class ElectoralList {
     /**
      * A map with all the instances.
      */
-    private static Map<String, ElectoralList> instances = new HashMap<String, ElectoralList>();
+    private static ModifiableMap<String, ElectoralList> instances = ModifiableMap.<String, ElectoralList>empty();
     /**
      * The abbreviation for the electoral list.
      */
@@ -26,7 +26,7 @@ public final class ElectoralList {
     /**
      * The map with the names for the electoral list.
      */
-    private Map<String, String> names = new HashMap<String, String>();
+    private Map<String, String> names = Map.<String, String>empty();
     /**
      * The romanized abbreviation for the electoral list.
      */
@@ -89,6 +89,16 @@ public final class ElectoralList {
     }
 
     /**
+     * Returns whether the electoral list has a name registered for the provided language code.
+     *
+     * @param languageCode The language code.
+     * @return True if there's a name registered for the provided language code.
+     */
+    public boolean containsLanguageCode(final String languageCode) {
+        return names.containsKey(languageCode);
+    }
+
+    /**
      * Returns the abbreviation for the electoral list.
      *
      * @return The abbreviation for the electoral list.
@@ -111,8 +121,8 @@ public final class ElectoralList {
      *
      * @return A set with the language codes for which names are provided for this electoral list.
      */
-    public Set<String> getLanguageCodes() {
-        return names.keySet();
+    public Collection<String> getLanguageCodes() {
+        return names.getKeys();
     }
 
     /**
@@ -149,7 +159,7 @@ public final class ElectoralList {
      * @param names The names for the electoral list.
      */
     public void setNames(final Map<String, String> names) {
-        this.names = new HashMap<String, String>(names);
+        this.names = Map.of(names);
     }
 
     /**

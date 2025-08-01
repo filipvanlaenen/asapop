@@ -2,13 +2,15 @@ package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the class <code>ElectoralList</code>.
@@ -79,8 +81,7 @@ public class ElectoralListTest {
     @Test
     public void getNameShouldReturnValueFromSetNames() {
         ElectoralList electoralList = ElectoralList.get("ElectoralListTestGetName");
-        Map<String, String> names = new HashMap<String, String>();
-        names.put("EN", "English Name");
+        Map<String, String> names = Map.of("EN", "English Name");
         electoralList.setNames(names);
         assertEquals("English Name", electoralList.getName("EN"));
     }
@@ -91,9 +92,8 @@ public class ElectoralListTest {
     @Test
     public void shouldReturnTheLanguageCodes() {
         ElectoralList electoralList = ElectoralList.get("ElectoralListTestGetLanguageCodes");
-        Map<String, String> names = new HashMap<String, String>();
-        names.put("EN", "English Name");
+        Map<String, String> names = Map.of("EN", "English Name");
         electoralList.setNames(names);
-        assertEquals(Set.of("EN"), electoralList.getLanguageCodes());
+        assertTrue(Collection.of("EN").containsSame(electoralList.getLanguageCodes()));
     }
 }

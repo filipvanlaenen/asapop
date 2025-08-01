@@ -229,7 +229,7 @@ public final class RopfExporter extends Exporter {
         List<String> languageCodes = new ArrayList<String>(electoralListWidths.languageCode.keySet());
         Collections.sort(languageCodes);
         for (String languageCode : languageCodes) {
-            if (electoralList.getName(languageCode) == null) {
+            if (!electoralList.containsLanguageCode(languageCode)) {
                 sb.append(pad("", electoralListWidths.languageCode().get(languageCode) + languageCode.length() + FOUR));
             } else {
                 sb.append(" •");
