@@ -178,6 +178,39 @@ public final class OpinionPoll {
         }
 
         /**
+         * Returns whether the dates are consistent. The dates are consistent when the fieldwork start is before or
+         * equal to the fieldwork end, and when the fieldwork start and end are before or equal to the publication date.
+         *
+         * @return True if the dates are consistent.
+         */
+        public boolean hasConsistentDates() {
+            if (fieldworkStart == null) {
+                if (fieldworkEnd == null) {
+                    return true;
+                } else if (publicationDate == null) {
+                    return true;
+                } else {
+                    return !fieldworkEnd.getEnd().isAfter(publicationDate);
+                }
+            } else {
+                if (fieldworkEnd == null) {
+                    if (publicationDate == null) {
+                        return true;
+                    } else {
+                        return !fieldworkStart.getEnd().isAfter(publicationDate);
+                    }
+                } else {
+                    if (publicationDate == null) {
+                        return !fieldworkStart.getEnd().isAfter(fieldworkEnd.getEnd());
+                    } else {
+                        return !fieldworkStart.getEnd().isAfter(fieldworkEnd.getEnd())
+                                && !fieldworkEnd.getEnd().isAfter(publicationDate);
+                    }
+                }
+            }
+        }
+
+        /**
          * Returns whether excluded has been registered in this builder instance.
          *
          * @return True if excluded has been registered in this builder instance.
