@@ -2,9 +2,9 @@ package net.filipvanlaenen.asapop.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Unit tests on the <code>ElectionList</code> class.

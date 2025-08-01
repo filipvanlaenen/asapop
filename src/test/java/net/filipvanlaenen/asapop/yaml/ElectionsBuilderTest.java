@@ -103,7 +103,7 @@ public class ElectionsBuilderTest {
      */
     private ElectionList createElectionList() {
         ElectionList electionList = new ElectionList();
-        electionList.setDates(java.util.Map.of(1, ELECTION_DATE));
+        electionList.setDates(Map.of(1, ELECTION_DATE));
         return electionList;
     }
 }

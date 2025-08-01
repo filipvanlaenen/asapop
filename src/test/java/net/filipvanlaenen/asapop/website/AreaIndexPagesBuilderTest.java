@@ -217,13 +217,13 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         ElectionLists electionLists = new ElectionLists();
         ElectionList nationalElections = new ElectionList();
-        nationalElections.setDates(java.util.Map.of(1, "2023-03-05"));
+        nationalElections.setDates(Map.of(1, "2023-03-05"));
         electionLists.setNational(nationalElections);
         ElectionList presidentialElections = new ElectionList();
-        presidentialElections.setDates(java.util.Map.of(2, "≈2024-03"));
+        presidentialElections.setDates(Map.of(2, "≈2024-03"));
         electionLists.setPresidential(presidentialElections);
         ElectionList europeanElections = new ElectionList();
-        europeanElections.setDates(java.util.Map.of(THREE, "≤2025-03"));
+        europeanElections.setDates(Map.of(THREE, "≤2025-03"));
         electionLists.setEuropean(europeanElections);
         northMacedonia.setElections(electionLists);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));

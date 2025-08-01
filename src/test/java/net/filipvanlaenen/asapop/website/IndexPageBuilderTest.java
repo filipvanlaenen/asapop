@@ -41,11 +41,11 @@ public class IndexPageBuilderTest {
         sweden.setAreaCode("se");
         ElectionLists electionListsForSweden = new ElectionLists();
         ElectionList nationalElectionsInSweden = new ElectionList();
-        nationalElectionsInSweden.setDates(java.util.Map.of(1, "2022-09-11"));
+        nationalElectionsInSweden.setDates(Map.of(1, "2022-09-11"));
         nationalElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
         electionListsForSweden.setNational(nationalElectionsInSweden);
         ElectionList europeanElectionsInSweden = new ElectionList();
-        europeanElectionsInSweden.setDates(java.util.Map.of(1, "2022-09-10"));
+        europeanElectionsInSweden.setDates(Map.of(1, "2022-09-10"));
         europeanElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_ep_polls");
         electionListsForSweden.setEuropean(europeanElectionsInSweden);
         sweden.setElections(electionListsForSweden);
@@ -53,7 +53,7 @@ public class IndexPageBuilderTest {
         latvia.setAreaCode("lv");
         ElectionLists electionListsForLatvia = new ElectionLists();
         ElectionList nationalElectionsInLatvia = new ElectionList();
-        nationalElectionsInLatvia.setDates(java.util.Map.of(1, "2022-10-01"));
+        nationalElectionsInLatvia.setDates(Map.of(1, "2022-10-01"));
         nationalElectionsInLatvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
         electionListsForLatvia.setNational(nationalElectionsInLatvia);
         latvia.setElections(electionListsForLatvia);
@@ -61,7 +61,7 @@ public class IndexPageBuilderTest {
         poland.setAreaCode("pl");
         ElectionLists electionListsForPoland = new ElectionLists();
         ElectionList nationalElectionsInPoland = new ElectionList();
-        nationalElectionsInPoland.setDates(java.util.Map.of(1, "2022-10-01"));
+        nationalElectionsInPoland.setDates(Map.of(1, "2022-10-01"));
         nationalElectionsInPoland.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/polish_polls");
         electionListsForPoland.setNational(nationalElectionsInPoland);
         poland.setElections(electionListsForPoland);
@@ -69,7 +69,7 @@ public class IndexPageBuilderTest {
         netherlands.setAreaCode("nl");
         ElectionLists electionListsForNetherlands = new ElectionLists();
         ElectionList nationalElectionsInNetherlands = new ElectionList();
-        nationalElectionsInNetherlands.setDates(java.util.Map.of(1, "2022-10-01"));
+        nationalElectionsInNetherlands.setDates(Map.of(1, "2022-10-01"));
         nationalElectionsInNetherlands.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/dutch_polls");
         electionListsForNetherlands.setNational(nationalElectionsInNetherlands);
         netherlands.setElections(electionListsForNetherlands);
@@ -77,7 +77,7 @@ public class IndexPageBuilderTest {
         portugal.setAreaCode("pt");
         ElectionLists electionListsForPortugal = new ElectionLists();
         ElectionList nationalElectionsInPortugal = new ElectionList();
-        nationalElectionsInPortugal.setDates(java.util.Map.of(1, "2022-10-01"));
+        nationalElectionsInPortugal.setDates(Map.of(1, "2022-10-01"));
         nationalElectionsInPortugal.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/portuguese_polls");
         electionListsForPortugal.setNational(nationalElectionsInPortugal);
         portugal.setElections(electionListsForPortugal);
@@ -85,7 +85,7 @@ public class IndexPageBuilderTest {
         bulgaria.setAreaCode("bg");
         ElectionLists electionListsForBulgaria = new ElectionLists();
         ElectionList nationalElectionsInBulgaria = new ElectionList();
-        nationalElectionsInBulgaria.setDates(java.util.Map.of(1, "2022-10-03"));
+        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-03"));
         nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
         bulgaria.setElections(electionListsForBulgaria);

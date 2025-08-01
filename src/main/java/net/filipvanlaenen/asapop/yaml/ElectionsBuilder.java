@@ -34,10 +34,10 @@ public final class ElectionsBuilder {
         if (electionList != null) {
             Token electionTypeToken = Laconic.LOGGER.logMessage(token,
                     "Extracting and validating the election dates for election type %s.", electionType.getTermKey());
-            for (java.util.Map.Entry<Integer, String> entry : electionList.getDates().entrySet()) {
-                int electionNumber = entry.getKey();
+            for (Map.Entry<Integer, String> entry : electionList.getDates()) {
+                int electionNumber = entry.key();
                 ElectionData electionData = electionDataFiles.get(areaCode + "-" + electionNumber, null);
-                elections.addElection(areaCode, electionType, electionNumber, entry.getValue(), electionData);
+                elections.addElection(areaCode, electionType, electionNumber, entry.value(), electionData);
             }
             if (elections.getNextElection(areaCode, electionType, now) == null) {
                 Laconic.LOGGER.logError("No election dates set in the future.", electionTypeToken);

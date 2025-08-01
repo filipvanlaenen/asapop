@@ -78,7 +78,7 @@ public class WebsiteBuilderTest {
         sweden.setAreaCode("se");
         ElectionLists electionListsForSweden = new ElectionLists();
         ElectionList nationalElectionsInSweden = new ElectionList();
-        nationalElectionsInSweden.setDates(java.util.Map.of(1, "2022-09-11"));
+        nationalElectionsInSweden.setDates(Map.of(1, "2022-09-11"));
         nationalElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
         electionListsForSweden.setNational(nationalElectionsInSweden);
         sweden.setElections(electionListsForSweden);
@@ -86,14 +86,14 @@ public class WebsiteBuilderTest {
         latvia.setAreaCode("lv");
         ElectionLists electionListsForLatvia = new ElectionLists();
         ElectionList nationalElectionsInLatvia = new ElectionList();
-        nationalElectionsInLatvia.setDates(java.util.Map.of(1, "2022-10-01"));
+        nationalElectionsInLatvia.setDates(Map.of(1, "2022-10-01"));
         nationalElectionsInLatvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
         electionListsForLatvia.setNational(nationalElectionsInLatvia);
         latvia.setElections(electionListsForLatvia);
         AreaConfiguration bulgaria = new AreaConfiguration();
         ElectionLists electionListsForBulgaria = new ElectionLists();
         ElectionList nationalElectionsInBulgaria = new ElectionList();
-        nationalElectionsInBulgaria.setDates(java.util.Map.of(1, "2022-10-02"));
+        nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-02"));
         nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
         bulgaria.setElections(electionListsForBulgaria);

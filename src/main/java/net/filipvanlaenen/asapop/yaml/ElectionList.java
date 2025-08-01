@@ -1,6 +1,6 @@
 package net.filipvanlaenen.asapop.yaml;
 
-import java.util.Map;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
  * Class representing a list with elections for the YAML file containing the website configuration.

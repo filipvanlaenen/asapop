@@ -331,7 +331,7 @@ public final class CommandLineInterface {
             Set<String> presidentialOpinionPollCodes = new HashSet<String>();
             for (AreaConfiguration areaConfiguration : areasWithPresidentialElections) {
                 String areaCode = areaConfiguration.getAreaCode();
-                for (int index : areaConfiguration.getElections().getPresidential().getDates().keySet()) {
+                for (int index : areaConfiguration.getElections().getPresidential().getDates().getKeys()) {
                     presidentialOpinionPollCodes.add(areaCode + "_p" + index);
                 }
             }
@@ -370,7 +370,7 @@ public final class CommandLineInterface {
                 if (electionLists != null) {
                     ElectionList nationalElections = electionLists.getNational();
                     if (nationalElections != null) {
-                        for (int i : nationalElections.getDates().keySet()) {
+                        for (int i : nationalElections.getDates().getKeys()) {
                             File electionDataFile = new File(dir + "/" + areaCode + "-" + i + ".yaml");
                             if (electionDataFile.exists()) {
                                 try {
