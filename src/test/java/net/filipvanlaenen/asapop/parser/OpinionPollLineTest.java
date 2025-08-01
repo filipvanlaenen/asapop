@@ -574,6 +574,20 @@ public final class OpinionPollLineTest {
     }
 
     /**
+     * Verifies that a line with inconsistent dates produces a warning.
+     */
+    @Test
+    public void shouldLogAnErrorForInconsistentDates() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        Token token = Laconic.LOGGER.logMessage("Unit test OpinionPollLineTest.shouldLogAnErrorForInconsistentDates.");
+        OpinionPollLine.parse("•PF: ACME •FS: 2021-07-27 •FE: 2021-07-26 •SC: N A:55 B:43", ELECTORAL_LIST_KEY_MAP,
+                token);
+        String expected = "‡ ⬐ Unit test OpinionPollLineTest.shouldLogAnErrorForInconsistentDates.\n"
+                + "‡ Dates aren't consistent (FS ≤ FE ≤ PD).\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that a line missing both polling firm and commissioner produces a warning.
      */
     @Test
