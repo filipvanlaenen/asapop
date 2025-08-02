@@ -181,21 +181,22 @@ public final class OpinionPoll {
                 } else if (publicationDate == null) {
                     return true;
                 } else {
-                    return !fieldworkEnd.getEnd().isAfter(publicationDate);
+                    return !fieldworkEnd.getStart().isAfter(publicationDate);
                 }
             } else {
                 if (fieldworkEnd == null) {
                     if (publicationDate == null) {
                         return true;
                     } else {
-                        return !fieldworkStart.getEnd().isAfter(publicationDate);
+                        return !fieldworkStart.getStart().isAfter(publicationDate);
                     }
                 } else {
                     if (publicationDate == null) {
-                        return !fieldworkStart.getEnd().isAfter(fieldworkEnd.getEnd());
+                        return !fieldworkStart.getStart().isAfter(fieldworkEnd.getEnd());
                     } else {
-                        return !fieldworkStart.getEnd().isAfter(fieldworkEnd.getEnd())
-                                && !fieldworkEnd.getEnd().isAfter(publicationDate);
+                        return !fieldworkStart.getStart().isAfter(fieldworkEnd.getEnd())
+                                && !fieldworkStart.getStart().isAfter(publicationDate)
+                                && !fieldworkEnd.getStart().isAfter(publicationDate);
                     }
                 }
             }
