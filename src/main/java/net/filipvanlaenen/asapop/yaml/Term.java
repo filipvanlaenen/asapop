@@ -1,5 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import net.filipvanlaenen.kolektoj.Map;
 
 /**
@@ -13,6 +15,7 @@ public class Term {
     /**
      * A map with the translation of the term in a number of languages.
      */
+    @JsonDeserialize(using = StringStringMapDeserializer.class)
     private Map<String, String> translations;
 
     /**

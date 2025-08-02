@@ -1,5 +1,7 @@
 package net.filipvanlaenen.asapop.yaml;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import net.filipvanlaenen.kolektoj.Map;
 
 /**
@@ -9,6 +11,7 @@ public class ElectionList {
     /**
      * A map holding the election dates.
      */
+    @JsonDeserialize(using = IntegerStringMapDeserializer.class)
     private Map<Integer, String> dates;
     /**
      * The URL for the GitHub website.
