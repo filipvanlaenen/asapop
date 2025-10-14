@@ -102,8 +102,7 @@ final class OpinionPollLine extends Line {
         }
         if (!builder.hasDates()) {
             Laconic.LOGGER.logError("No dates found.", token);
-        }
-        if (!builder.hasConsistentDates()) {
+        } else if (!builder.hasConsistentDates()) {
             Laconic.LOGGER.logError("Dates aren't consistent (FS ≤ FE ≤ PD).", token);
         }
         if (!builder.hasPollingFirmOrCommissioner()) {
