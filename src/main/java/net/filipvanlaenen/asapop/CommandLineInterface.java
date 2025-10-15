@@ -93,6 +93,7 @@ public final class CommandLineInterface {
                 "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  format <ropf-file-name> [-o=<ID-combinations>]");
+        System.out.println("  parse <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
     }
 
@@ -221,6 +222,19 @@ public final class CommandLineInterface {
                 String[] ropfContent = readFile(ropfFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
                 writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile, idCombinations));
+            }
+        },
+        /**
+         * Command to parse an ROPF file.
+         */
+        PARSE {
+            @Override
+            void execute(final String[] args) throws IOException {
+                String ropfFileName = args[1];
+                Token token = Laconic.LOGGER.logMessage("Parsing file %s.", ropfFileName);
+                Laconic.LOGGER.setPrintStream(System.out);
+                String[] ropfContent = readFile(ropfFileName);
+                RichOpinionPollsFile.parse(token, ropfContent);
             }
         },
         /**
