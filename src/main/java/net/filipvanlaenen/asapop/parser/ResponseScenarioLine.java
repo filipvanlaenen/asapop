@@ -1,7 +1,5 @@
 package net.filipvanlaenen.asapop.parser;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -14,6 +12,7 @@ import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.SampleSize;
 import net.filipvanlaenen.asapop.model.Scope;
 import net.filipvanlaenen.asapop.model.Unit;
+import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -245,7 +244,7 @@ final class ResponseScenarioLine extends Line {
         keyValueMatcher.find();
         String keysValue = keyValueMatcher.group(1);
         Token keysToken = Laconic.LOGGER.logMessage(token, "Processing result key %s.", keysValue);
-        Set<String> keys = new HashSet<String>(Arrays.asList(keysValue.split(ELECTORAL_LIST_KEY_SEPARATOR)));
+        Collection<String> keys = Collection.of(keysValue.split(ELECTORAL_LIST_KEY_SEPARATOR));
         Set<ElectoralList> electoralLists =
                 keys.stream().map(key -> electoralListKeyMap.get(key)).collect(Collectors.toSet());
         ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), keysToken);
