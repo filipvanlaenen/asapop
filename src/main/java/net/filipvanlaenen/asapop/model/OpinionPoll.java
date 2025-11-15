@@ -132,6 +132,18 @@ public final class OpinionPoll {
         /**
          * Adds a result value to the response scenario builder.
          *
+         * @param candidate   The candidate.
+         * @param resultValue The result value.
+         * @return This builder instance.
+         */
+        public Builder addResult(final Candidate candidate, final ResultValue resultValue) {
+            responseScenarioBuilder.addResult(candidate, resultValue);
+            return this;
+        }
+
+        /**
+         * Adds a result value to the response scenario builder.
+         *
          * @param electoralLists The set of electoral lists.
          * @param resultValue    The result value.
          * @return This builder instance.

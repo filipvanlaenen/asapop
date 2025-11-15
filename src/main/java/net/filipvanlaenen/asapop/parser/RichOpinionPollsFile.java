@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -66,6 +67,7 @@ public final class RichOpinionPollsFile {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
         List<CommentLine> commentLines = new ArrayList<CommentLine>();
         Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
+        Map<String, Candidate> candidateKeyMap = new HashMap<String, Candidate>();
         OpinionPoll lastOpinionPoll = null;
         int lineNumber = 0;
         for (String line : lines) {
@@ -76,6 +78,11 @@ public final class RichOpinionPollsFile {
                 ElectoralListLine electoralListLine = ElectoralListLine.parse(token, line);
                 electoralListLine.updateElectoralList();
                 electoralListKeyMap.put(electoralListLine.getKey(), electoralListLine.getElectoralList());
+            } else if (CandidateLine.isCandidateLine(line)) {
+                Laconic.LOGGER.logMessage("Line is recognized as a candidate line.", token);
+                CandidateLine candidateLine = CandidateLine.parse(token, line);
+                candidateLine.updateCandidate();
+                candidateKeyMap.put(candidateLine.getKey(), candidateLine.getCandidate());
             }
         }
         lineNumber = 0;
@@ -84,7 +91,8 @@ public final class RichOpinionPollsFile {
             Token token = Laconic.LOGGER.logMessage(fileToken, "Parsing line number %d.", lineNumber);
             if (OpinionPollLine.isOpinionPollLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as an opinion poll line.", token);
-                OpinionPollLine opinionPollLine = OpinionPollLine.parse(line, electoralListKeyMap, token);
+                OpinionPollLine opinionPollLine =
+                        OpinionPollLine.parse(line, electoralListKeyMap, candidateKeyMap, token);
                 lastOpinionPoll = opinionPollLine.getOpinionPoll();
                 opinionPolls.add(lastOpinionPoll);
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
@@ -99,7 +107,8 @@ public final class RichOpinionPollsFile {
             } else if (CommentLine.isCommentLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as a comment line.", token);
                 commentLines.add(CommentLine.parse(line));
-            } else if (!ElectoralListLine.isElectoralListLine(line) && !EmptyLine.isEmptyLine(line)) {
+            } else if (!ElectoralListLine.isElectoralListLine(line) && !CandidateLine.isCandidateLine(line)
+                    && !EmptyLine.isEmptyLine(line)) {
                 Laconic.LOGGER.logError("Line doesn't have a recognized line format.", token);
             }
         }

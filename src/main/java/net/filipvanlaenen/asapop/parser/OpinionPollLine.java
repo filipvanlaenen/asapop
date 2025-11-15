@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -86,11 +87,11 @@ final class OpinionPollLine extends Line {
      * @return An OpinionPollLine representing the line.
      */
     static OpinionPollLine parse(final String line, final Map<String, ElectoralList> electoralListKeyMap,
-            final Token token) {
+            final Map<String, Candidate> candidateKeyMap, final Token token) {
         OpinionPoll.Builder builder = new OpinionPoll.Builder();
         String remainder = line;
         while (!remainder.isEmpty()) {
-            remainder = parseKeyValue(builder, remainder, electoralListKeyMap, token);
+            remainder = parseKeyValue(builder, remainder, electoralListKeyMap, candidateKeyMap, token);
         }
         if (!builder.hasResults()) {
             Laconic.LOGGER.logError("No results found.", token);
@@ -124,14 +125,15 @@ final class OpinionPollLine extends Line {
      * @return The unprocessed part of the line.
      */
     private static String parseKeyValue(final OpinionPoll.Builder builder, final String remainder,
-            final Map<String, ElectoralList> electoralListKeyMap, final Token token) {
+            final Map<String, ElectoralList> electoralListKeyMap, final Map<String, Candidate> candidateKeyMap,
+            final Token token) {
         Matcher keyValuesMatcher = KEY_VALUES_PATTERN.matcher(remainder);
         keyValuesMatcher.find();
         String keyValueBlock = keyValuesMatcher.group(1);
         if (keyValueBlock.startsWith(METADATA_MARKER_PATTERN)) {
             processMetadata(builder, keyValueBlock, token);
         } else {
-            processResultData(builder, keyValueBlock, electoralListKeyMap, token);
+            processResultData(builder, keyValueBlock, electoralListKeyMap, candidateKeyMap, token);
         }
         return keyValuesMatcher.group(FOUR);
     }
@@ -298,20 +300,25 @@ final class OpinionPollLine extends Line {
      * @param token               The Laconic logging token.
      */
     private static void processResultData(final OpinionPoll.Builder builder, final String keyValueString,
-            final Map<String, ElectoralList> electoralListKeyMap, final Token token) {
+            final Map<String, ElectoralList> electoralListKeyMap, final Map<String, Candidate> candidateKeyMap,
+            final Token token) {
         Matcher keyValueMatcher = RESULT_KEY_VALUE_PATTERN.matcher(keyValueString);
         keyValueMatcher.find();
         String keysValue = keyValueMatcher.group(1);
         Token keysToken = Laconic.LOGGER.logMessage(token, "Processing result key %s.", keysValue);
-        Collection<String> keys = Collection.of(keysValue.split(ELECTORAL_LIST_KEY_SEPARATOR));
-        Set<ElectoralList> electoralLists =
-                keys.stream().map(key -> electoralListKeyMap.get(key)).collect(Collectors.toSet());
         ResultValueText value = ResultValueText.parse(keyValueMatcher.group(THREE), keysToken);
-        for (String key : keys) {
-            if (!electoralListKeyMap.containsKey(key)) {
-                Laconic.LOGGER.logError("Unknown electoral list key %s.", key, keysToken);
+        if (candidateKeyMap.containsKey(keysValue)) {
+            builder.addResult(candidateKeyMap.get(keysValue), value.getValue());
+        } else {
+            Collection<String> keys = Collection.of(keysValue.split(ELECTORAL_LIST_KEY_SEPARATOR));
+            Set<ElectoralList> electoralLists =
+                    keys.stream().map(key -> electoralListKeyMap.get(key)).collect(Collectors.toSet());
+            for (String key : keys) {
+                if (!electoralListKeyMap.containsKey(key)) {
+                    Laconic.LOGGER.logError("Unknown electoral list key %s.", key, keysToken);
+                }
             }
+            builder.addResult(electoralLists, value.getValue());
         }
-        builder.addResult(electoralLists, value.getValue());
     }
 }

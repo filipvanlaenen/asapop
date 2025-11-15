@@ -9,6 +9,18 @@ import net.filipvanlaenen.asapop.model.OpinionPoll.Builder;
  */
 public class OpinionPollTestBuilder extends OpinionPoll.Builder {
     /**
+     * Adds a result value for a candidate.
+     *
+     * @param id    The ID for a candidate.
+     * @param value The result value to be added for the candidate.
+     * @return This builder instance.
+     */
+    public OpinionPollTestBuilder addCandidateResult(final String id, final String value) {
+        addResult(Candidate.get(id), new ResultValue(value));
+        return this;
+    }
+
+    /**
      * Adds a result value for an electoral list.
      *
      * @param id    The ID for an electoral list.

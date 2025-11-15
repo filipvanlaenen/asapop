@@ -37,10 +37,20 @@ public final class RichOpinionPollsFileTest {
      */
     private static final String SAMPLE_POLL_LINE = "•PF: ACME •PD: 2021-07-27 A:55 B:45";
     /**
+     * Sample candidate poll line.
+     */
+    private static final String SAMPLE_CANDIDATE_POLL_LINE = "•PF: ACME •PD: 2021-07-27 P:55 Q:45";
+    /**
      * Sample poll corresponding to the sample poll line.
      */
     private static final OpinionPoll SAMPLE_POLL = new OpinionPollTestBuilder().addResult("AA202501", "55")
             .addResult("AA202502", "45").setPollingFirm("ACME").setPublicationDate(DATE1).build();
+    /**
+     * Sample poll corresponding to the sample poll line.
+     */
+    private static final OpinionPoll SAMPLE_CANDIDATE_POLL =
+            new OpinionPollTestBuilder().addCandidateResult("AA2025P", "55").addCandidateResult("AA2025Q", "45")
+                    .setPollingFirm("ACME").setPublicationDate(DATE1).build();
     /**
      * Other sample poll line.
      */
@@ -67,6 +77,14 @@ public final class RichOpinionPollsFileTest {
      */
     private static final String COMMENT_LINE = "‡ Foo";
     /**
+     * Line for candidate P.
+     */
+    private static final String CANDIDATE_P_LINE = "P: AA2025P •A: P";
+    /**
+     * Line for candidate Q.
+     */
+    private static final String CANDIDATE_Q_LINE = "Q: AA2025Q •A: Q";
+    /**
      * A Laconic logging token for unit testing.
      */
     private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test RichOpinionPollsFileTest.");
@@ -80,6 +98,18 @@ public final class RichOpinionPollsFileTest {
         polls.add(SAMPLE_POLL);
         assertEquals(polls,
                 RichOpinionPollsFile.parse(TOKEN, SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
+                        .getOpinionPolls().getOpinionPolls());
+    }
+
+    /**
+     * Verifies that a single line containing a simple opinion poll with candidates can be parsed.
+     */
+    @Test
+    public void shouldParseSingleLineWithASimpleCandidateOpinionPoll() {
+        Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
+        polls.add(SAMPLE_CANDIDATE_POLL);
+        assertEquals(polls,
+                RichOpinionPollsFile.parse(TOKEN, SAMPLE_CANDIDATE_POLL_LINE, CANDIDATE_P_LINE, CANDIDATE_Q_LINE)
                         .getOpinionPolls().getOpinionPolls());
     }
 

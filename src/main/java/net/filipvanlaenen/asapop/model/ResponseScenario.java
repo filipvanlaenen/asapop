@@ -42,7 +42,7 @@ public final class ResponseScenario {
      */
     private ResultValue otherAndNoResponses;
     /**
-     * The results.
+     * The electoralListResults.
      */
     private final Map<Set<ElectoralList>, ResultValue> results;
     /**
@@ -62,11 +62,11 @@ public final class ResponseScenario {
      */
     private Scope scope;
     /**
-     * Whether the results add up to 100 percent within rounding error.
+     * Whether the electoralListResults add up to 100 percent within rounding error.
      */
     private boolean strictlyWithinRoundingError;
     /**
-     * The sum of all the results and other.
+     * The sum of all the electoralListResults and other.
      */
     private double sumOfResultsAndOther;
     /**
@@ -89,7 +89,7 @@ public final class ResponseScenario {
         noResponses = builder.noResponses;
         other = builder.other;
         otherAndNoResponses = builder.otherAndNoResponses;
-        results = Collections.unmodifiableMap(builder.results);
+        results = Collections.unmodifiableMap(builder.electoralListResults);
         sampleSize = builder.sampleSize;
         sampleSizeValue = sampleSize == null ? null : sampleSize.getMinimalValue();
         if (sampleSize != null) {
@@ -140,9 +140,14 @@ public final class ResponseScenario {
          */
         private ResultValue otherAndNoResponses;
         /**
-         * The results.
+         * The candidate results.
          */
-        private final Map<Set<ElectoralList>, ResultValue> results = new HashMap<Set<ElectoralList>, ResultValue>();
+        private final Map<Candidate, ResultValue> candidateResults = new HashMap<Candidate, ResultValue>();
+        /**
+         * The electoral list results.
+         */
+        private final Map<Set<ElectoralList>, ResultValue> electoralListResults =
+                new HashMap<Set<ElectoralList>, ResultValue>();
         /**
          * The sample size.
          */
@@ -163,12 +168,24 @@ public final class ResponseScenario {
         /**
          * Adds a result.
          *
+         * @param candidate   The candidate.
+         * @param resultValue The result value.
+         * @return This builder instance.
+         */
+        public Builder addResult(final Candidate candidate, final ResultValue resultValue) {
+            candidateResults.put(candidate, resultValue);
+            return this;
+        }
+
+        /**
+         * Adds a result.
+         *
          * @param electoralLists The set of electoral lists.
          * @param resultValue    The result value.
          * @return This builder instance.
          */
         public Builder addResult(final Set<ElectoralList> electoralLists, final ResultValue resultValue) {
-            results.put(electoralLists, resultValue);
+            electoralListResults.put(electoralLists, resultValue);
             return this;
         }
 
@@ -182,7 +199,8 @@ public final class ResponseScenario {
         }
 
         /**
-         * Calculates the scale. If the results add up, the scale is 1D, and otherwise the sum of all results.
+         * Calculates the scale. If the electoralListResults add up, the scale is 1D, and otherwise the sum of all
+         * electoralListResults.
          *
          * @return The scale.
          */
@@ -219,13 +237,13 @@ public final class ResponseScenario {
         }
 
         /**
-         * Calculates the sum of the results and other.
+         * Calculates the sum of the electoralListResults and other.
          *
-         * @return The sum of the results and other.
+         * @return The sum of the electoralListResults and other.
          */
         private double calculateSumOfResultsAndOther() {
             double sum = 0D;
-            for (ResultValue resultValue : results.values()) {
+            for (ResultValue resultValue : electoralListResults.values()) {
                 Double value = resultValue.getNominalValue();
                 if (value != null) {
                     sum += value;
@@ -286,12 +304,12 @@ public final class ResponseScenario {
         }
 
         /**
-         * Returns whether any results have been registered in this builder instance.
+         * Returns whether any electoralListResults have been registered in this builder instance.
          *
          * @return True if at least one result has been registered in this builder instance.
          */
         public boolean hasResults() {
-            return !results.isEmpty();
+            return !candidateResults.isEmpty() || !electoralListResults.isEmpty();
         }
 
         /**
@@ -331,27 +349,27 @@ public final class ResponseScenario {
         }
 
         /**
-         * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
-         * provided, or within the interval of rounding errors, or the sum is below 100 and either other or other and no
-         * responses is missing.
+         * Verifies whether the electoralListResults add up. The electoralListResults add up if their sum is equal to
+         * the verified sum, if one is provided, or within the interval of rounding errors, or the sum is below 100 and
+         * either other or other and no responses is missing.
          *
-         * @return True if the sum of results is within the interval of rounding errors.
+         * @return True if the sum of electoralListResults is within the interval of rounding errors.
          */
         public boolean resultsAddUp() {
             return resultsAddUp(false);
         }
 
         /**
-         * Verifies whether the results add up. The results add up if their sum is equal to the verified sum, if one is
-         * provided, or within the interval of rounding errors. If they don't need to add strictly up, the sum can be
-         * below 100 if other or no responses is missing.
+         * Verifies whether the electoralListResults add up. The electoralListResults add up if their sum is equal to
+         * the verified sum, if one is provided, or within the interval of rounding errors. If they don't need to add
+         * strictly up, the sum can be below 100 if other or no responses is missing.
          *
-         * @param strictly True if the results should add up strictly.
-         * @return True if the sum of results is within the interval of rounding errors.
+         * @param strictly True if the electoralListResults should add up strictly.
+         * @return True if the sum of electoralListResults is within the interval of rounding errors.
          */
         private boolean resultsAddUp(final boolean strictly) {
             double sum = getSum();
-            Precision precision = Precision.getHighestPrecision(results.values());
+            Precision precision = Precision.getHighestPrecision(electoralListResults.values());
             if (hasOther()) {
                 precision = Precision.highest(precision, other.getPrecision());
             }
@@ -365,7 +383,7 @@ public final class ResponseScenario {
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 return Math.abs(sum - verifiedSum.value()) < DELTA;
             } else {
-                int n = results.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0)
+                int n = electoralListResults.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0)
                         + (hasOtherAndNoResponses() ? 1 : 0);
                 double delta = n * precision.getValue() / 2;
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
@@ -378,10 +396,10 @@ public final class ResponseScenario {
         }
 
         /**
-         * Verifies whether the results add strictly up. The results add up if their sum is equal to the verified sum,
-         * if one is provided, or within the interval of rounding errors.
+         * Verifies whether the electoralListResults add strictly up. The electoralListResults add up if their sum is
+         * equal to the verified sum, if one is provided, or within the interval of rounding errors.
          *
-         * @return True if the sum of results is within the interval of rounding errors.
+         * @return True if the sum of electoralListResults is within the interval of rounding errors.
          */
         public boolean resultsAddStrictlyUp() {
             return resultsAddUp(true);
@@ -591,9 +609,9 @@ public final class ResponseScenario {
     }
 
     /**
-     * Returns all the results.
+     * Returns all the electoralListResults.
      *
-     * @return All the results.
+     * @return All the electoralListResults.
      */
     public Collection<ResultValue> getResults() {
         return results.values();
@@ -636,9 +654,9 @@ public final class ResponseScenario {
     }
 
     /**
-     * Returns the sum of all results and other.
+     * Returns the sum of all electoralListResults and other.
      *
-     * @return The sum of all results and other.
+     * @return The sum of all electoralListResults and other.
      */
     public Double getSumOfResultsAndOther() {
         return sumOfResultsAndOther;
@@ -669,9 +687,9 @@ public final class ResponseScenario {
     }
 
     /**
-     * Returns true if the results add up to 100 percent within rounding error.
+     * Returns true if the electoralListResults add up to 100 percent within rounding error.
      *
-     * @return True if the results add up to 100 percent within rounding error.
+     * @return True if the electoralListResults add up to 100 percent within rounding error.
      */
     public boolean isStrictlyWithinRoundingError() {
         return strictlyWithinRoundingError;
