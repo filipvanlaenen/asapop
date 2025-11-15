@@ -19,6 +19,10 @@ abstract class Line {
      */
     static final String METADATA_KEY_PATTERN = "\\p{Upper}+";
     /**
+     * The string for the pattern to match the key of a candidate.
+     */
+    static final String CANDIDATE_KEY_PATTERN = "\\p{javaUpperCase}+";
+    /**
      * The string for the pattern to match the key of an electoral list.
      */
     static final String ELECTORAL_LIST_KEY_PATTERN = "\\p{javaUpperCase}[\\p{javaUpperCase}\\p{Digit}]*";

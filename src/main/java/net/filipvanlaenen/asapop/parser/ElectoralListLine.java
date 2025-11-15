@@ -63,7 +63,7 @@ final class ElectoralListLine extends Line {
     private String romanizedAbbreviation;
 
     /**
-     * Private constructor taking the key for the electoral list as the parameter.
+     * Private constructor taking the key and the ID for the electoral list as the parameter.
      *
      * @param key The key for the electoral list.
      * @param id  The ID for the electoral list.

@@ -24,7 +24,7 @@ public final class ElectoralListLineTest {
     /**
      * A Laconic logging token for unit testing.
      */
-    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test RichOpinionPollsFileTest.");
+    private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test ElectoralListLineTest.");
 
     /**
      * Verifies that the <code>isElecoralListLine</code> method can detect a line with an electoral list.
