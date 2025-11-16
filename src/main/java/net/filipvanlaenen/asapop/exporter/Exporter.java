@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
 import net.filipvanlaenen.asapop.model.DecimalNumber;
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -71,8 +72,9 @@ public abstract class Exporter {
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll,
-            final OrderedCollection<Set<String>> electoralListIdSets) {
-        return ResultValue.Precision.getHighestPrecision(extractResults(opinionPoll, electoralListIdSets));
+            final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
+        return ResultValue.Precision
+                .getHighestPrecision(extractResults(opinionPoll, electoralListIdSets, candidateIds));
     }
 
     /**
@@ -98,8 +100,19 @@ public abstract class Exporter {
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario,
-            final OrderedCollection<Set<String>> electoralListIdSets) {
-        return ResultValue.Precision.getHighestPrecision(extractResults(responseScenario, electoralListIdSets));
+            final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
+        return ResultValue.Precision
+                .getHighestPrecision(extractResults(responseScenario, electoralListIdSets, candidateIds));
+    }
+
+    /**
+     * Converts a candidate's ID to a string with their abbreviation.
+     *
+     * @param candidateId The ID for the candidate.
+     * @return A string with the abbreviation for the candidate.
+     */
+    static String candidateIdToAbbreviation(final String candidateId) {
+        return Candidate.get(candidateId).getAbbreviation();
     }
 
     /**
@@ -255,10 +268,13 @@ public abstract class Exporter {
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll,
-            final OrderedCollection<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
         Set<ResultValue> result = new HashSet<ResultValue>();
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             addToSetUnlessNull(result, opinionPoll.getResult(electoralListIdSet));
+        }
+        for (String candidateId : candidateIds) {
+            addToSetUnlessNull(result, opinionPoll.getResult(candidateId));
         }
         addToSetUnlessNull(result, opinionPoll.getOther());
         return result;
@@ -272,10 +288,13 @@ public abstract class Exporter {
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
-            final OrderedCollection<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
         Set<ResultValue> result = new HashSet<ResultValue>();
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             addToSetUnlessNull(result, responseScenario.getResult(electoralListIdSet));
+        }
+        for (String candidateId : candidateIds) {
+            addToSetUnlessNull(result, responseScenario.getResult(candidateId));
         }
         addToSetUnlessNull(result, responseScenario.getOther());
         return result;

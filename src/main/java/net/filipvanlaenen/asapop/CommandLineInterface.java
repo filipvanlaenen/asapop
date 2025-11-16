@@ -194,7 +194,8 @@ public final class CommandLineInterface {
                 OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
-                    outputContent = EopaodCsvExporter.export(opinionPolls, area, null, electoralListKeySets);
+                    outputContent = EopaodCsvExporter.export(opinionPolls, area, null, electoralListKeySets,
+                            OrderedCollection.empty());
                 }
                 writeFile(outputFileName, outputContent);
             }

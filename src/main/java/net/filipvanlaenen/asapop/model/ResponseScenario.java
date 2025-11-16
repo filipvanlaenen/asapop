@@ -557,6 +557,10 @@ public final class ResponseScenario {
         return area;
     }
 
+    public Set<Candidate> getCandidates() {
+        return candidateResults.keySet();
+    }
+
     /**
      * Returns the effective sample size. The effective sample size is the sample size minus the excluded responses.
      *
@@ -619,6 +623,16 @@ public final class ResponseScenario {
      */
     public ResultValue getResult(final Set<String> electoralListIds) {
         return electoralListResults.get(ElectoralList.get(electoralListIds));
+    }
+
+    /**
+     * Returns the result for a candidate.
+     *
+     * @param candidateId The ID for a candidate.
+     * @return The result for the candidate.
+     */
+    public ResultValue getResult(final String candidateId) {
+        return candidateResults.get(Candidate.get(candidateId));
     }
 
     /**

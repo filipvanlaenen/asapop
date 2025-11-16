@@ -581,6 +581,10 @@ public final class OpinionPoll {
         return area;
     }
 
+    public Set<Candidate> getCandidates() {
+        return mainResponseScenario.getCandidates();
+    }
+
     /**
      * Returns the commissioners.
      *
@@ -741,6 +745,16 @@ public final class OpinionPoll {
      */
     public ResultValue getResult(final Set<String> electoralListIds) {
         return mainResponseScenario.getResult(electoralListIds);
+    }
+
+    /**
+     * Returns the result for a candidate.
+     *
+     * @param candidateId The ID of a candidate.
+     * @return The result for the candidate.
+     */
+    public ResultValue getResult(final String candidateId) {
+        return mainResponseScenario.getResult(candidateId);
     }
 
     /**

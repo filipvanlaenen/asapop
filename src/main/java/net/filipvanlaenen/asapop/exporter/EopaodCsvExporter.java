@@ -84,7 +84,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string containing the opinion polls in the CSV file format for EOPAOD.
      */
     public static String export(final OpinionPolls opinionPolls, final String area, final String includeAreaAsNational,
-            final OrderedCollection<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
         StringBuffer sb = new StringBuffer();
         sb.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         sb.append(",Sample Size Qualification,Participation,Precision");
@@ -92,9 +92,13 @@ public final class EopaodCsvExporter extends Exporter {
             sb.append(",");
             sb.append(electoralListIdsToAbbreviations(electoralListIdSet));
         }
+        for (String candidateId : candidateIds) {
+            sb.append(",");
+            sb.append(candidateIdToAbbreviation(candidateId));
+        }
         sb.append(",Other\n");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
-            String lines = export(opinionPoll, area, includeAreaAsNational, electoralListIdSets);
+            String lines = export(opinionPoll, area, includeAreaAsNational, electoralListIdSets, candidateIds);
             if (lines != null) {
                 sb.append(lines);
                 sb.append("\n");
@@ -113,7 +117,7 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string containing the opinion poll in the CSV file format for EOPAOD.
      */
     static String export(final OpinionPoll opinionPoll, final String area, final String includeAreaAsNational,
-            final OrderedCollection<Set<String>> electoralListIdSets) {
+            final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
         ModifiableOrderedCollection<String> lines = ModifiableOrderedCollection.empty();
         if (areaMatches(area, includeAreaAsNational, opinionPoll.getArea())) {
             ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
@@ -124,7 +128,7 @@ public final class EopaodCsvExporter extends Exporter {
             elements.add(notAvailableIfNull(opinionPoll.getSampleSizeValue()));
             elements.add(opinionPoll.getSampleSizeValue() == null ? "Not Available" : "Provided");
             elements.add(notAvailableIfNull(exportParticipationRatePercentage(opinionPoll)));
-            Precision precision = calculatePrecision(opinionPoll, electoralListIdSets);
+            Precision precision = calculatePrecision(opinionPoll, electoralListIdSets, candidateIds);
             Double scale = opinionPoll.getScale();
             if (Unit.SEATS == opinionPoll.getUnit()) {
                 precision = Precision.TENTH;
@@ -137,12 +141,15 @@ public final class EopaodCsvExporter extends Exporter {
             for (Set<String> electoralListIdSet : electoralListIdSets) {
                 elements.add(percentageOrNotAvailable(opinionPoll.getResult(electoralListIdSet), precision, scale));
             }
+            for (String candidateId : candidateIds) {
+                elements.add(percentageOrNotAvailable(opinionPoll.getResult(candidateId), precision, scale));
+            }
             elements.add(percentageOrNotAvailable(opinionPoll.getOther(), precision, scale));
             lines.add(String.join(",", elements));
         }
         for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            String responseScenarioLine =
-                    export(responseScenario, opinionPoll, area, includeAreaAsNational, electoralListIdSets);
+            String responseScenarioLine = export(responseScenario, opinionPoll, area, includeAreaAsNational,
+                    electoralListIdSets, candidateIds);
             if (responseScenarioLine != null) {
                 lines.add(responseScenarioLine);
             }
@@ -165,7 +172,8 @@ public final class EopaodCsvExporter extends Exporter {
      * @return A string containing the response scenario in the CSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
-            final String includeAreaAsNational, final OrderedCollection<Set<String>> electoralListIdSets) {
+            final String includeAreaAsNational, final OrderedCollection<Set<String>> electoralListIdSets,
+            final OrderedCollection<String> candidateIds) {
         if (!areaMatches(area, includeAreaAsNational,
                 secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
             return null;
@@ -180,7 +188,7 @@ public final class EopaodCsvExporter extends Exporter {
         elements.add(sampleSize == null ? "Not Available" : Integer.toString(sampleSize.getMinimalValue()));
         elements.add(sampleSize == null ? "Not Available" : "Provided");
         elements.add(notAvailableIfNull(exportParticipationRatePercentage(responseScenario, opinionPoll)));
-        Precision precision = calculatePrecision(responseScenario, electoralListIdSets);
+        Precision precision = calculatePrecision(responseScenario, electoralListIdSets, candidateIds);
         Double scale = responseScenario.getScale();
         if (Unit.SEATS == responseScenario.getUnit()) {
             precision = Precision.TENTH;
@@ -192,6 +200,9 @@ public final class EopaodCsvExporter extends Exporter {
         }
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListIdSet), precision, scale));
+        }
+        for (String candidateId : candidateIds) {
+            elements.add(percentageOrNotAvailable(opinionPoll.getResult(candidateId), precision, scale));
         }
         elements.add(percentageOrNotAvailable(responseScenario.getOther(), precision, scale));
         return String.join(",", elements);
