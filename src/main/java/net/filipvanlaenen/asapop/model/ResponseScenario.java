@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +23,10 @@ public final class ResponseScenario {
      */
     private String area;
     /**
+     * The candidate results.
+     */
+    private final Map<Candidate, ResultValue> candidateResults;
+    /**
      * The effective sample size.
      */
     private Integer effectiveSampleSize;
@@ -42,9 +47,9 @@ public final class ResponseScenario {
      */
     private ResultValue otherAndNoResponses;
     /**
-     * The electoralListResults.
+     * The electoral list results.
      */
-    private final Map<Set<ElectoralList>, ResultValue> results;
+    private final Map<Set<ElectoralList>, ResultValue> electoralListResults;
     /**
      * The sample size.
      */
@@ -89,7 +94,8 @@ public final class ResponseScenario {
         noResponses = builder.noResponses;
         other = builder.other;
         otherAndNoResponses = builder.otherAndNoResponses;
-        results = Collections.unmodifiableMap(builder.electoralListResults);
+        electoralListResults = Collections.unmodifiableMap(builder.electoralListResults);
+        candidateResults = Collections.unmodifiableMap(builder.candidateResults);
         sampleSize = builder.sampleSize;
         sampleSizeValue = sampleSize == null ? null : sampleSize.getMinimalValue();
         if (sampleSize != null) {
@@ -140,11 +146,11 @@ public final class ResponseScenario {
          */
         private ResultValue otherAndNoResponses;
         /**
-         * The candidate results.
+         * The candidate electoralListResults.
          */
         private final Map<Candidate, ResultValue> candidateResults = new HashMap<Candidate, ResultValue>();
         /**
-         * The electoral list results.
+         * The electoral list electoralListResults.
          */
         private final Map<Set<ElectoralList>, ResultValue> electoralListResults =
                 new HashMap<Set<ElectoralList>, ResultValue>();
@@ -243,7 +249,10 @@ public final class ResponseScenario {
          */
         private double calculateSumOfResultsAndOther() {
             double sum = 0D;
-            for (ResultValue resultValue : electoralListResults.values()) {
+            Collection<ResultValue> allValues = new ArrayList<ResultValue>();
+            allValues.addAll(electoralListResults.values());
+            allValues.addAll(candidateResults.values());
+            for (ResultValue resultValue : allValues) {
                 Double value = resultValue.getNominalValue();
                 if (value != null) {
                     sum += value;
@@ -369,7 +378,10 @@ public final class ResponseScenario {
          */
         private boolean resultsAddUp(final boolean strictly) {
             double sum = getSum();
-            Precision precision = Precision.getHighestPrecision(electoralListResults.values());
+            Collection<ResultValue> allValues = new ArrayList<ResultValue>();
+            allValues.addAll(electoralListResults.values());
+            allValues.addAll(candidateResults.values());
+            Precision precision = Precision.getHighestPrecision(allValues);
             if (hasOther()) {
                 precision = Precision.highest(precision, other.getPrecision());
             }
@@ -383,8 +395,8 @@ public final class ResponseScenario {
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 return Math.abs(sum - verifiedSum.value()) < DELTA;
             } else {
-                int n = electoralListResults.size() + (hasOther() ? 1 : 0) + (hasNoResponses() ? 1 : 0)
-                        + (hasOtherAndNoResponses() ? 1 : 0);
+                int n = electoralListResults.size() + candidateResults.size() + (hasOther() ? 1 : 0)
+                        + (hasNoResponses() ? 1 : 0) + (hasOtherAndNoResponses() ? 1 : 0);
                 double delta = n * precision.getValue() / 2;
                 // EQMU: Changing the conditional boundary below produces an equivalent mutant.
                 boolean isNotAbove = sum < ONE_HUNDRED + delta + DELTA;
@@ -514,7 +526,8 @@ public final class ResponseScenario {
                     && equalsOrBothNull(noResponses, otherResponseScenario.noResponses)
                     && equalsOrBothNull(other, otherResponseScenario.other)
                     && equalsOrBothNull(otherAndNoResponses, otherResponseScenario.otherAndNoResponses)
-                    && otherResponseScenario.results.equals(results)
+                    && otherResponseScenario.electoralListResults.equals(electoralListResults)
+                    && otherResponseScenario.candidateResults.equals(candidateResults)
                     && equalsOrBothNull(sampleSize, otherResponseScenario.sampleSize)
                     && equalsOrBothNull(scope, otherResponseScenario.scope)
                     && equalsOrBothNull(unit, otherResponseScenario.unit)
@@ -559,7 +572,7 @@ public final class ResponseScenario {
      * @return The sets of electoral lists.
      */
     public Set<Set<ElectoralList>> getElectoralListSets() {
-        return results.keySet();
+        return electoralListResults.keySet();
     }
 
     /**
@@ -605,16 +618,19 @@ public final class ResponseScenario {
      * @return The result for the set of electoral lists.
      */
     public ResultValue getResult(final Set<String> electoralListIds) {
-        return results.get(ElectoralList.get(electoralListIds));
+        return electoralListResults.get(ElectoralList.get(electoralListIds));
     }
 
     /**
-     * Returns all the electoralListResults.
+     * Returns all the results.
      *
-     * @return All the electoralListResults.
+     * @return All the results.
      */
     public Collection<ResultValue> getResults() {
-        return results.values();
+        Collection<ResultValue> allValues = new ArrayList<ResultValue>();
+        allValues.addAll(electoralListResults.values());
+        allValues.addAll(candidateResults.values());
+        return allValues;
     }
 
     /**
@@ -682,8 +698,8 @@ public final class ResponseScenario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(area, excluded, noResponses, other, otherAndNoResponses, results, sampleSize, scope, unit,
-                verifiedSum);
+        return Objects.hash(area, excluded, noResponses, other, otherAndNoResponses, electoralListResults,
+                candidateResults, sampleSize, scope, unit, verifiedSum);
     }
 
     /**
