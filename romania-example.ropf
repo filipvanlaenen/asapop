@@ -1,0 +1,13 @@
+‡ Example Romania Opinion Polls
+‡ Format: •PF: Polling Firm •FS: Fieldwork Start •FE: Fieldwork End •PD: Publication Date •SC: Scope •SS: Sample Size Results
+
+•PF: CURS •FS: 2024-01-10 •FE: 2024-01-15 •PD: 2024-01-20 •SC: N •SS: 1000 PSD:30 PNL:22 AUR:18 USR:15 UDMR:5 •O:10
+•PF: INSCOP •FS: 2024-01-12 •FE: 2024-01-18 •PD: 2024-01-22 •SC: N •SS: 1200 PSD:32 PNL:20 AUR:17 USR:16 UDMR:6 •O:9
+•PF: Avangarde •FS: 2024-01-15 •FE: 2024-01-20 •PD: 2024-01-25 •SC: N •SS: 900 PSD:31 PNL:21 AUR:19 USR:14 UDMR:5 •O:10
+
+‡ Electoral Lists
+PSD: RO001 •A: PSD •EN: Social Democratic Party •RO: Partidul Social Democrat
+PNL: RO002 •A: PNL •EN: National Liberal Party •RO: Partidul Național Liberal
+AUR: RO003 •A: AUR •EN: Alliance for the Union of Romanians •RO: Alianta pentru Unirea Românilor
+USR: RO004 •A: USR •EN: Save Romania Union •RO: Uniunea Salvați România
+UDMR: RO005 •A: UDMR •EN: Democratic Alliance of Hungarians in Romania •RO: Uniunea Democrată Maghiară din România
