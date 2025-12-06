@@ -18,7 +18,7 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
 /**
  * Exporter to the EOPAOD CSV file format.
  */
-public final class EopaodCsvExporter extends Exporter {
+public final class EopaodCsvExporter extends CsvExporter {
     /**
      * The magic number one hundred.
      */
@@ -48,30 +48,6 @@ public final class EopaodCsvExporter extends Exporter {
         map.add(Scope.PRESIDENTIAL_FIRST_ROUND, "Presidential");
         map.add(Scope.REGIONAL, "Regional");
         return map;
-    }
-
-    /**
-     * Returns the string if it isn't null, and the empty string otherwise.
-     *
-     * @param s The string.
-     * @return The empty string if the string is null, and otherwise the string as provided.
-     */
-    private static String emptyIfNull(final String s) {
-        return s == null ? "" : s;
-    }
-
-    /**
-     * Escapes commas and quotes in a text block.
-     *
-     * @param text The text to process.
-     * @return The original text properly escaped for commas and quotes according to the CSV standard.
-     */
-    private static String escapeCommasAndQuotes(final String text) {
-        if (text.contains(",") || text.contains("\"")) {
-            return "\"" + text.replaceAll("\"", "\"\"") + "\"";
-        } else {
-            return text;
-        }
     }
 
     /**

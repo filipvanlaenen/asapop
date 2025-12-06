@@ -9,35 +9,11 @@ import net.filipvanlaenen.kolektoj.SortedCollection;
 /**
  * CSV exporter of the electoral lists.
  */
-public final class ElectoralListsCsvExporter extends Exporter {
+public final class ElectoralListsCsvExporter extends CsvExporter {
     /**
      * The integer number eight.
      */
     private static final int EIGHT = 8;
-
-    /**
-     * Returns the string if it isn't null, and the empty string otherwise.
-     *
-     * @param s The string.
-     * @return The empty string if the string is null, and otherwise the string as provided.
-     */
-    private static String emptyIfNull(final String s) {
-        return s == null ? "" : s;
-    }
-
-    /**
-     * Escapes commas and quotes in a text block.
-     *
-     * @param text The text to process.
-     * @return The original text properly escaped for commas and quotes according to the CSV standard.
-     */
-    private static String escapeCommasAndQuotes(final String text) {
-        if (text.contains(",") || text.contains("\"")) {
-            return "\"" + text.replaceAll("\"", "\"\"") + "\"";
-        } else {
-            return text;
-        }
-    }
 
     /**
      * Exports the electoral lists.
