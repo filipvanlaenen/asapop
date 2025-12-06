@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.filipvanlaenen.asapop.exporter.ElectoralListsCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.ElectoralList;
@@ -63,7 +64,17 @@ public class CsvFilesBuilder {
         ModifiableMap<Path, String> result = ModifiableMap.<Path, String>empty();
         buildAndAddParliamentaryCsvFiles(result);
         buildAndAddPresidentialCsvFiles(result);
+        buildAndAddElectoralListCsvFiles(result);
         return result;
+    }
+
+    /**
+     * Build the CSV file with the electoral lists and adds it to the map.
+     *
+     * @param csvFilesMap The map with the CSV files.
+     */
+    private void buildAndAddElectoralListCsvFiles(final ModifiableMap<Path, String> csvFilesMap) {
+        csvFilesMap.put(Paths.get("_csv", "electorallists.csv"), ElectoralListsCsvExporter.export());
     }
 
     /**

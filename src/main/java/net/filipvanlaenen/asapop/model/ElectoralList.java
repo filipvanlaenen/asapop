@@ -69,6 +69,10 @@ public final class ElectoralList {
         return ids.stream().map(id -> get(id)).collect(Collectors.toSet());
     }
 
+    public static Collection<ElectoralList> getAll() {
+        return instances.getValues();
+    }
+
     /**
      * Returns the IDs for a set of electoral lists.
      *
