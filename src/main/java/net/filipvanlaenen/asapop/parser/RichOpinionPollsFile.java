@@ -98,7 +98,7 @@ public final class RichOpinionPollsFile {
             } else if (ResponseScenarioLine.isResponseScenarioLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as a response scenario line.", token);
                 ResponseScenarioLine responseScenarioLine =
-                        ResponseScenarioLine.parse(line, electoralListKeyMap, token);
+                        ResponseScenarioLine.parse(line, electoralListKeyMap, candidateKeyMap, token);
                 // Adding a response scenario to a poll changes its hash code, therefore it has to be removed from the
                 // set before the change is made, and added again afterwards.
                 opinionPolls.remove(lastOpinionPoll);
