@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.website;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -61,18 +62,21 @@ public class CsvFilesBuilderTest {
      */
     @Test
     public void websiteShouldBeBuiltCorrectly() {
-        ModifiableMap<Path, String> map = ModifiableMap.<Path, String>empty();
-        map.put(Paths.get("_csv", "be-vlg.csv"),
+        ElectoralList.clear();
+        ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
+        expected.put(Paths.get("_csv", "be-vlg.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                         + "Participation,Precision,P,Q,Other\n");
-        map.put(Paths.get("_csv", "fr_p13.csv"),
+        expected.put(Paths.get("_csv", "fr_p13.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                         + "Participation,Precision,F,G,Other\n"
                         + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
                         + "40%,Not Available\n");
-        map.put(Paths.get("_csv", "mk.csv"),
+        expected.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                         + "Participation,Precision,A,B,Other\n");
+        expected.put(Paths.get("_csv", "electorallists.csv"),
+                "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n" + ",F,\n" + ",G,\n" + ",P,\n" + ",Q,\n");
         Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
                 Map.of("be", new OpinionPolls(Collections.EMPTY_SET), "mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
@@ -85,6 +89,6 @@ public class CsvFilesBuilderTest {
         Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
                 presidentialOpinionPollsMap);
-        assertTrue(map.containsSame(builder.build()));
+        assertTrue(expected.containsSame(builder.build()));
     }
 }

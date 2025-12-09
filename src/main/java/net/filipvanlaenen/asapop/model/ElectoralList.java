@@ -32,6 +32,10 @@ public final class ElectoralList {
      */
     private String romanizedAbbreviation;
 
+    public static void clear() {
+        instances.clear();
+    }
+
     /**
      * Returns the electoral list with the given ID if it already exists, or creates a new one otherwise.
      *

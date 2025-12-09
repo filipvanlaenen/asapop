@@ -111,42 +111,46 @@ public class WebsiteBuilderTest {
      */
     @Test
     public void websiteShouldBeBuiltCorrectly() {
-        ModifiableMap<Path, String> map = ModifiableMap.<Path, String>empty();
+        ElectoralList.clear();
+        ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         Internationalization internationalization = createInternationalization();
         Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        map.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
-        map.put(Paths.get("calendar.html"),
+        expected.put(Paths.get("index.html"),
+                new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+        expected.put(Paths.get("calendar.html"),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
-        map.put(Paths.get("calendar.ical"),
+        expected.put(Paths.get("calendar.ical"),
                 new ICalendarFileBuilder(websiteConfiguration, elections, NOW, internationalization).build(TOKEN));
-        map.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
-        map.put(Paths.get("statistics.html"), new StatisticsPageBuilder(websiteConfiguration, internationalization,
+        expected.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
+        expected.put(Paths.get("statistics.html"), new StatisticsPageBuilder(websiteConfiguration, internationalization,
                 opinionPollsMap, NOW, START_OF_YEAR).build().asString());
-        map.put(Paths.get("lv", "index.html"),
+        expected.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(latvia));
-        map.put(Paths.get("mk", "index.html"),
+        expected.put(Paths.get("mk", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(northMacedonia));
-        map.put(Paths.get("se", "index.html"),
+        expected.put(Paths.get("se", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(sweden));
-        map.put(Paths.get("_js", "internationalization.js"),
+        expected.put(Paths.get("_js", "internationalization.js"),
                 new InternationalizationScriptBuilder(createInternationalization()).build());
         String navigationScriptContent = "function moveToArea(level) {}";
-        map.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
+        expected.put(Paths.get("_js", "navigation.js"), navigationScriptContent);
         String sortingScriptContent = "function sortTable(table) {}";
-        map.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
+        expected.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         String tooltipScriptContent = "function tooltip(text) {}";
-        map.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
-        map.put(Paths.get("_csv", "mk.csv"),
+        expected.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
+        expected.put(Paths.get("_csv", "mk.csv"),
                 "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                         + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
-        map.put(Paths.get("_widgets", "tables", "mk.html"),
+        expected.put(Paths.get("_csv", "electorallists.csv"),
+                "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n");
+        expected.put(Paths.get("_widgets", "tables", "mk.html"),
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" + "  <head>\n"
                         + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
                         + "    <style>body {\n" + "  background-color: #F9F9F9;\n" + "}\n\n" + "table {\n"
@@ -157,12 +161,12 @@ public class WebsiteBuilderTest {
                         + "          <th>Other</th>\n" + "        </tr>\n" + "      </thead>\n" + "      <tbody/>\n"
                         + "    </table>\n" + "  </body>\n" + "</html>");
         String baseStyleSheetContent = "header { display: block; width: 100%; }";
-        map.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
+        expected.put(Paths.get("_css", "base.css"), baseStyleSheetContent);
         String customStyleSheetContent = "body { font-family: serif; background: #FFFFFF; color: #0E3651; }";
-        map.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
+        expected.put(Paths.get("_css", "skin.css"), customStyleSheetContent);
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), internationalization, opinionPollsMap,
                 Map.empty(), elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent,
                 sortingScriptContent, tooltipScriptContent, NOW);
-        assertTrue(map.containsSame(builder.build().asMap()));
+        assertTrue(expected.containsSame(builder.build().asMap()));
     }
 }
