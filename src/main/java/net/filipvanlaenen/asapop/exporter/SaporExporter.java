@@ -678,7 +678,7 @@ public class SaporExporter extends Exporter {
                 actualValue = actualElectoralListCombinationsValues.get(electoralLists);
             }
         }
-        if (actualValue == 1D) {
+        if (actualValue == -1D) {
             return remainder;
         } else {
             int sample = calculateSampleValue(actualValue, calculationSampleSize, scale);
@@ -767,7 +767,7 @@ public class SaporExporter extends Exporter {
                 actualValue = actualElectoralListCombinationsValues.get(electoralLists);
             }
         }
-        if (actualValue == 1D) {
+        if (actualValue == -1D) {
             return remainder;
         } else {
             double totalSample = actualValue * calculationSampleSize * scale / ONE_HUNDRED;
