@@ -174,7 +174,8 @@ public class ExporterTest {
     public void shouldExportOpinionPollWithAResultWithHalfAPercentOther() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55.0").addResult("B", "43").setOther("0.5")
                 .setPollingFirm("ACME").setPublicationDate(DATE1).build();
-        assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(poll, A_AND_B));
+        assertEquals(ResultValue.Precision.HALF,
+                Exporter.calculatePrecision(poll, A_AND_B, OrderedCollection.<String>empty()));
     }
 
     /**
@@ -184,7 +185,8 @@ public class ExporterTest {
     public void shouldExportOpinionPollWithAResultWithTenthOfAPercent() {
         OpinionPoll poll = new OpinionPollTestBuilder().addResult("A", "55.4").addResult("B", "43")
                 .setPollingFirm("ACME").setPublicationDate(DATE1).build();
-        assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(poll, A_AND_B));
+        assertEquals(ResultValue.Precision.TENTH,
+                Exporter.calculatePrecision(poll, A_AND_B, OrderedCollection.<String>empty()));
     }
 
     /**
@@ -194,7 +196,8 @@ public class ExporterTest {
     public void shouldCalculatePrecisionOfHalfAPercentForSelectedResultsInAResponseScenario() {
         ResponseScenario responseScenario =
                 new ResponseScenarioTestBuilder().addResult("A", "55.0").addResult("B", "45").setOther("0.5").build();
-        assertEquals(ResultValue.Precision.HALF, Exporter.calculatePrecision(responseScenario, A_AND_B));
+        assertEquals(ResultValue.Precision.HALF,
+                Exporter.calculatePrecision(responseScenario, A_AND_B, OrderedCollection.<String>empty()));
     }
 
     /**
@@ -214,7 +217,8 @@ public class ExporterTest {
     public void shouldExportResponseScenarioWithAResultWithTenthOfAPercent() {
         ResponseScenario responseScenario =
                 new ResponseScenarioTestBuilder().addResult("A", "55.4").addResult("B", "43").build();
-        assertEquals(ResultValue.Precision.TENTH, Exporter.calculatePrecision(responseScenario, A_AND_B));
+        assertEquals(ResultValue.Precision.TENTH,
+                Exporter.calculatePrecision(responseScenario, A_AND_B, OrderedCollection.<String>empty()));
     }
 
     /**
