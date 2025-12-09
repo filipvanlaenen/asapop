@@ -37,6 +37,10 @@ public final class Candidate {
         this.id = id;
     }
 
+    public static boolean contains(final String id) {
+        return instances.containsKey(id);
+    }
+
     /**
      * Returns the candidate with the given ID if it already exists, or creates a new one otherwise.
      *

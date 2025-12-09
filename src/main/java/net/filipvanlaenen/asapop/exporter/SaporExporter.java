@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
@@ -65,6 +66,10 @@ public class SaporExporter extends Exporter {
      */
     private final Set<SaporMapping> mapping;
     /**
+     * A collection with the mapped candidates.
+     */
+    private final Collection<Candidate> mappedCandidates;
+    /**
      * A set with the mapped electoral list combinations.
      */
     private final Set<Set<ElectoralList>> mappedElectoralListCombinations;
@@ -87,6 +92,7 @@ public class SaporExporter extends Exporter {
         this.averageResponseScenarios = "AVERAGED".equalsIgnoreCase(saporConfiguration.getResponseScenarioSelection());
         this.lastElectionDate = LocalDate.parse(saporConfiguration.getLastElectionDate());
         this.mapping = saporConfiguration.getMapping();
+        this.mappedCandidates = calculateMappedCandidates();
         this.mappedElectoralListCombinations = calculateMappedElectoralListCombinations();
         this.region = saporConfiguration.getRegion();
         this.scope = saporConfiguration.getScope() == null ? null : Scope.parse(saporConfiguration.getScope());
@@ -173,6 +179,48 @@ public class SaporExporter extends Exporter {
     }
 
     /**
+     * Calculate which candidates are covered by the SAPOR mapping.
+     *
+     * @return A collection with the candidates covered by the SAPOR mapping.
+     */
+    private Collection<Candidate> calculateMappedCandidates() {
+        ModifiableCollection<Candidate> result = ModifiableCollection.<Candidate>empty();
+        for (SaporMapping saporMapping : mapping) {
+            DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
+            if (directSaporMapping != null) {
+                String source = directSaporMapping.getSource();
+                if (Candidate.contains(source)) {
+                    result.add(Candidate.get(source));
+                }
+            }
+            AdditiveSaporMapping additiveSaporMapping = saporMapping.getAdditiveMapping();
+            if (additiveSaporMapping != null) {
+                for (String source : additiveSaporMapping.getSources()) {
+                    if (Candidate.contains(source)) {
+                        result.add(Candidate.get(source));
+                    }
+                }
+            }
+            AdditiveSplittingSaporMapping additiveSplittingSaporMapping = saporMapping.getAdditiveSplittingMapping();
+            if (additiveSplittingSaporMapping != null) {
+                for (String source : additiveSplittingSaporMapping.getSources()) {
+                    if (Candidate.contains(source)) {
+                        result.add(Candidate.get(source));
+                    }
+                }
+            }
+            SplittingSaporMapping splittingSaporMapping = saporMapping.getSplittingMapping();
+            if (splittingSaporMapping != null) {
+                String source = splittingSaporMapping.getSource();
+                if (Candidate.contains(source)) {
+                    result.add(Candidate.get(source));
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Calculate the set of electoral list combinations covered by the SAPOR mapping.
      *
      * @return A set with the electoral list combinations covered by the SAPOR mapping.
@@ -236,14 +284,23 @@ public class SaporExporter extends Exporter {
         boolean hasOther = responseScenario.getOther() != null;
         boolean strictlyWithinRoundingError = responseScenario.isStrictlyWithinRoundingError();
         double sumOfActualValues = 0D;
-        Map<Set<ElectoralList>, Double> actualValues = new HashMap<Set<ElectoralList>, Double>();
         double zeroValue = calculatePrecision(responseScenario).getValue() / FOUR;
+        Map<Candidate, Double> actualCandidateValues = new HashMap<Candidate, Double>();
+        for (Candidate candidate : responseScenario.getCandidates()) {
+            String candidateId = candidate.getId();
+            double value = responseScenario.getResult(candidateId).getNominalValue();
+            double actualValue = value == 0D ? zeroValue : value;
+            sumOfActualValues += actualValue;
+            actualCandidateValues.put(candidate, actualValue);
+        }
+        Map<Set<ElectoralList>, Double> actualElectoralListCombinationValues =
+                new HashMap<Set<ElectoralList>, Double>();
         for (Set<ElectoralList> electoralLists : responseScenario.getElectoralListSets()) {
             Set<String> electoralListIds = ElectoralList.getIds(electoralLists);
             double value = responseScenario.getResult(electoralListIds).getNominalValue();
             double actualValue = value == 0D ? zeroValue : value;
             sumOfActualValues += actualValue;
-            actualValues.put(electoralLists, actualValue);
+            actualElectoralListCombinationValues.put(electoralLists, actualValue);
         }
         double actualOtherValue = 0D;
         if (hasOther) {
@@ -297,14 +354,15 @@ public class SaporExporter extends Exporter {
         }
         for (SaporMapping map : mapping) {
             if (dateIsInMappingValidityPeriod(map, opinionPoll.getEndDate())) {
-                remainder = processMapping(saporBody, map.getDirectMapping(), actualValues, calculationSampleSize,
-                        scale, remainder);
-                remainder = processMapping(saporBody, map.getAdditiveMapping(), actualValues, calculationSampleSize,
-                        scale, remainder);
-                remainder = processMapping(saporBody, map.getAdditiveSplittingMapping(), actualValues,
-                        calculationSampleSize, scale, remainder);
-                remainder = processMapping(saporBody, map.getSplittingMapping(), actualValues, calculationSampleSize,
-                        scale, remainder);
+                remainder = processMapping(saporBody, map.getDirectMapping(), actualElectoralListCombinationValues,
+                        actualCandidateValues, calculationSampleSize, scale, remainder);
+                remainder = processMapping(saporBody, map.getAdditiveMapping(), actualElectoralListCombinationValues,
+                        actualCandidateValues, calculationSampleSize, scale, remainder);
+                remainder = processMapping(saporBody, map.getAdditiveSplittingMapping(),
+                        actualElectoralListCombinationValues, actualCandidateValues, calculationSampleSize, scale,
+                        remainder);
+                remainder = processMapping(saporBody, map.getSplittingMapping(), actualElectoralListCombinationValues,
+                        actualCandidateValues, calculationSampleSize, scale, remainder);
             }
         }
         for (SaporMapping map : mapping) {
@@ -327,6 +385,13 @@ public class SaporExporter extends Exporter {
      */
     void checkSaporMappings(final OpinionPoll opinionPoll, final Token configurationFileToken,
             final Token inputFileToken) {
+        Set<Candidate> candidates = opinionPoll.getCandidates();
+        for (Candidate candidate : candidates) {
+            if (!mappedCandidates.contains(candidate)) {
+                Laconic.LOGGER.logError("SAPOR mapping missing for %s.", candidate.getId(), configurationFileToken,
+                        inputFileToken);
+            }
+        }
         Set<Set<ElectoralList>> electoralLists = opinionPoll.getElectoralListSets();
         for (Set<ElectoralList> electoralList : electoralLists) {
             if (!mappedElectoralListCombinations.contains(electoralList)) {
@@ -486,17 +551,18 @@ public class SaporExporter extends Exporter {
     /**
      * Processes an additive mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param saporBody             A map with the values for the Sapor body.
-     * @param additiveSaporMapping  The additive SAPOR mapping.
-     * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
-     *                              for zero values.
-     * @param calculationSampleSize The sample size to be used for the calculations.
-     * @param scale                 The scale.
-     * @param remainder             The remainder so far.
+     * @param saporBody                            A map with the values for the Sapor body.
+     * @param additiveSaporMapping                 The additive SAPOR mapping.
+     * @param actualElectoralListCombinationValues A map with the actual values, i.e. either the nominal values or half
+     *                                             the precision for zero values.
+     * @param calculationSampleSize                The sample size to be used for the calculations.
+     * @param scale                                The scale.
+     * @param remainder                            The remainder so far.
      * @return The updated remainder.
      */
     private int processMapping(final Map<String, Integer> saporBody, final AdditiveSaporMapping additiveSaporMapping,
-            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final Map<Set<ElectoralList>, Double> actualElectoralListCombinationValues,
+            final Map<Candidate, Double> actualCandidateValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (additiveSaporMapping == null) {
             return remainder;
@@ -504,10 +570,18 @@ public class SaporExporter extends Exporter {
         double actualValue = 0D;
         boolean termPresent = false;
         for (String source : additiveSaporMapping.getSources()) {
-            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
-            if (actualValues.containsKey(electoralLists)) {
-                termPresent = true;
-                actualValue += actualValues.get(electoralLists);
+            if (Candidate.contains(source)) {
+                Candidate candidate = Candidate.get(source);
+                if (actualCandidateValues.containsKey(candidate)) {
+                    termPresent = true;
+                    actualValue += actualCandidateValues.get(candidate);
+                }
+            } else {
+                Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+                if (actualElectoralListCombinationValues.containsKey(electoralLists)) {
+                    termPresent = true;
+                    actualValue += actualElectoralListCombinationValues.get(electoralLists);
+                }
             }
         }
         if (termPresent) {
@@ -522,18 +596,19 @@ public class SaporExporter extends Exporter {
     /**
      * Processes an additive splitting mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param saporBody                     A map with the values for the Sapor body.
-     * @param additiveSplittingSaporMapping The additive splitting SAPOR mapping.
-     * @param actualValues                  A map with the actual values, i.e. either the nominal values or half the
-     *                                      precision for zero values.
-     * @param calculationSampleSize         The sample size to be used for the calculations.
-     * @param scale                         The scale.
-     * @param remainder                     The remainder so far.
+     * @param saporBody                             A map with the values for the Sapor body.
+     * @param additiveSplittingSaporMapping         The additive splitting SAPOR mapping.
+     * @param actualElectoralListCombinationsValues A map with the actual values, i.e. either the nominal values or half
+     *                                              the precision for zero values.
+     * @param calculationSampleSize                 The sample size to be used for the calculations.
+     * @param scale                                 The scale.
+     * @param remainder                             The remainder so far.
      * @return The updated remainder.
      */
     private int processMapping(final Map<String, Integer> saporBody,
             final AdditiveSplittingSaporMapping additiveSplittingSaporMapping,
-            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final Map<Set<ElectoralList>, Double> actualElectoralListCombinationsValues,
+            final Map<Candidate, Double> actualCandidateValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (additiveSplittingSaporMapping == null) {
             return remainder;
@@ -541,10 +616,18 @@ public class SaporExporter extends Exporter {
         double actualValue = 0D;
         boolean termPresent = false;
         for (String source : additiveSplittingSaporMapping.getSources()) {
-            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
-            if (actualValues.containsKey(electoralLists)) {
-                termPresent = true;
-                actualValue += actualValues.get(electoralLists);
+            if (Candidate.contains(source)) {
+                Candidate candidate = Candidate.get(source);
+                if (actualCandidateValues.containsKey(candidate)) {
+                    termPresent = true;
+                    actualValue += actualCandidateValues.get(candidate);
+                }
+            } else {
+                Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+                if (actualElectoralListCombinationsValues.containsKey(electoralLists)) {
+                    termPresent = true;
+                    actualValue += actualElectoralListCombinationsValues.get(electoralLists);
+                }
             }
         }
         if (termPresent) {
@@ -566,24 +649,39 @@ public class SaporExporter extends Exporter {
     /**
      * Processes a direct mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param saporBody             A map with the values for the Sapor body.
-     * @param directSaporMapping    The direct SAPOR mapping.
-     * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
-     *                              for zero values.
-     * @param calculationSampleSize The sample size to be used for the calculations.
-     * @param scale                 The scale.
-     * @param remainder             The remainder so far.
+     * @param saporBody                             A map with the values for the Sapor body.
+     * @param directSaporMapping                    The direct SAPOR mapping.
+     * @param actualElectoralListCombinationsValues A map with the actual values, i.e. either the nominal values or half
+     *                                              the precision for zero values.
+     * @param calculationSampleSize                 The sample size to be used for the calculations.
+     * @param scale                                 The scale.
+     * @param remainder                             The remainder so far.
      * @return The updated remainder.
      */
     private int processMapping(final Map<String, Integer> saporBody, final DirectSaporMapping directSaporMapping,
-            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final Map<Set<ElectoralList>, Double> actualElectoralListCombinationsValues,
+            final Map<Candidate, Double> actualCandidateValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (directSaporMapping == null) {
             return remainder;
         }
-        Set<ElectoralList> electoralLists = asElectoralListCombination(directSaporMapping.getSource());
-        if (actualValues.containsKey(electoralLists)) {
-            int sample = calculateSampleValue(actualValues.get(electoralLists), calculationSampleSize, scale);
+        Double actualValue = -1D;
+        String source = directSaporMapping.getSource();
+        if (Candidate.contains(source)) {
+            Candidate candidate = Candidate.get(source);
+            if (actualCandidateValues.containsKey(candidate)) {
+                actualValue = actualCandidateValues.get(candidate);
+            }
+        } else {
+            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+            if (actualElectoralListCombinationsValues.containsKey(electoralLists)) {
+                actualValue = actualElectoralListCombinationsValues.get(electoralLists);
+            }
+        }
+        if (actualValue == 1D) {
+            return remainder;
+        } else {
+            int sample = calculateSampleValue(actualValue, calculationSampleSize, scale);
             if (directSaporMapping.getCompensationFactor() == null) {
                 saporBody.put(directSaporMapping.getTarget(), sample);
             } else {
@@ -591,8 +689,6 @@ public class SaporExporter extends Exporter {
                         (int) Math.round(sample * directSaporMapping.getCompensationFactor()));
             }
             return remainder - sample;
-        } else {
-            return remainder;
         }
     }
 
@@ -642,24 +738,39 @@ public class SaporExporter extends Exporter {
     /**
      * Processes a splitting mapping, writing the result to the content and returning an updated remainder.
      *
-     * @param saporBody             A map with the values for the Sapor body.
-     * @param splittingSaporMapping The splitting SAPOR mapping.
-     * @param actualValues          A map with the actual values, i.e. either the nominal values or half the precision
-     *                              for zero values.
-     * @param calculationSampleSize The sample size to be used for the calculations.
-     * @param scale                 The scale.
-     * @param remainder             The remainder so far.
+     * @param saporBody                             A map with the values for the Sapor body.
+     * @param splittingSaporMapping                 The splitting SAPOR mapping.
+     * @param actualElectoralListCombinationsValues A map with the actual values, i.e. either the nominal values or half
+     *                                              the precision for zero values.
+     * @param calculationSampleSize                 The sample size to be used for the calculations.
+     * @param scale                                 The scale.
+     * @param remainder                             The remainder so far.
      * @return The updated remainder.
      */
     private int processMapping(final Map<String, Integer> saporBody, final SplittingSaporMapping splittingSaporMapping,
-            final Map<Set<ElectoralList>, Double> actualValues, final Integer calculationSampleSize, final double scale,
+            final Map<Set<ElectoralList>, Double> actualElectoralListCombinationsValues,
+            final Map<Candidate, Double> actualCandidateValues, final Integer calculationSampleSize, final double scale,
             final int remainder) {
         if (splittingSaporMapping == null) {
             return remainder;
         }
-        Set<ElectoralList> electoralLists = asElectoralListCombination(splittingSaporMapping.getSource());
-        if (actualValues.containsKey(electoralLists)) {
-            double totalSample = actualValues.get(electoralLists) * calculationSampleSize * scale / ONE_HUNDRED;
+        Double actualValue = -1D;
+        String source = splittingSaporMapping.getSource();
+        if (Candidate.contains(source)) {
+            Candidate candidate = Candidate.get(source);
+            if (actualCandidateValues.containsKey(candidate)) {
+                actualValue = actualCandidateValues.get(candidate);
+            }
+        } else {
+            Set<ElectoralList> electoralLists = asElectoralListCombination(source);
+            if (actualElectoralListCombinationsValues.containsKey(electoralLists)) {
+                actualValue = actualElectoralListCombinationsValues.get(electoralLists);
+            }
+        }
+        if (actualValue == 1D) {
+            return remainder;
+        } else {
+            double totalSample = actualValue * calculationSampleSize * scale / ONE_HUNDRED;
             int sumOfSamples = 0;
             Map<String, Integer> targets = splittingSaporMapping.getTargets();
             int sumOfWeights = targets.values().stream().reduce(0, Integer::sum);
@@ -669,8 +780,6 @@ public class SaporExporter extends Exporter {
                 sumOfSamples += sample;
             }
             return remainder - sumOfSamples;
-        } else {
-            return remainder;
         }
     }
 }
