@@ -66,11 +66,11 @@ public final class EopaodCsvExporter extends CsvExporter {
         sb.append(",Sample Size Qualification,Participation,Precision");
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             sb.append(",");
-            sb.append(electoralListIdsToAbbreviations(electoralListIdSet));
+            sb.append(escapeCommasAndQuotes(electoralListIdsToAbbreviations(electoralListIdSet)));
         }
         for (String candidateId : candidateIds) {
             sb.append(",");
-            sb.append(candidateIdToAbbreviation(candidateId));
+            sb.append(escapeCommasAndQuotes(candidateIdToAbbreviation(candidateId)));
         }
         sb.append(",Other\n");
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls.getOpinionPolls())) {
