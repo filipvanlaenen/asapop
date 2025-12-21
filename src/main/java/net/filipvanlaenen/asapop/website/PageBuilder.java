@@ -218,8 +218,8 @@ abstract class PageBuilder {
         right.addElement(createAreaSelector(level));
         right.addContent(" · ");
         right.addElement(HeaderLink.ELECTORAL_CALENDAR.createHeaderElement(currentPage, relativePath));
-        right.addContent(" · ");
-        right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage, relativePath));
+        // right.addContent(" · ");
+        // right.addElement(HeaderLink.CSV_FILES.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
         right.addElement(HeaderLink.STATISTICS.createHeaderElement(currentPage, relativePath));
         right.addContent(" · ");
