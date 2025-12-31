@@ -294,11 +294,11 @@ final class StatisticsPageBuilder extends PageBuilder {
             tr.addElement(
                     new TH(" ").clazz("year").onclick("sortTable('statistics-by-year-table', 2, 'year', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-opinion-polls")
-                    .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
+                    .onclick("sortTable('statistics-by-year-table', 2, 'number-of-opinion-polls', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-response-scenarios")
-                    .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios', 'numeric')"));
+                    .onclick("sortTable('statistics-by-year-table', 2, 'number-of-response-scenarios', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-result-values")
-                    .onclick("sortTable('statistics-table', 2, 'number-of-result-values', 'numeric')"));
+                    .onclick("sortTable('statistics-by-year-table', 2, 'number-of-result-values', 'numeric')"));
             tHead.addElement(tr);
             TBody tBody = new TBody();
             table.addElement(tBody);
@@ -306,14 +306,24 @@ final class StatisticsPageBuilder extends PageBuilder {
             int lastYear = numberOfOpinionPolls.getGreatestKey();
             for (int year = firstYear; year <= lastYear; year++) {
                 TR yearTr = new TR();
+                yearTr.data("year", Integer.toString(year));
                 yearTr.addElement(new TD(Integer.toString(year)));
                 if (numberOfOpinionPolls.containsKey(year)) {
-                    yearTr.addElement(createNumberTd(numberOfOpinionPolls.get(year)).clazz("statistics-value-td"));
-                    yearTr.addElement(createNumberTd(numberOfResponseScenarios.get(year)).clazz("statistics-value-td"));
-                    yearTr.addElement(createNumberTd(numberOfResultValues.get(year)).clazz("statistics-value-td"));
+                    int op = numberOfOpinionPolls.get(year);
+                    yearTr.data("number-of-opinion-polls", Integer.toString(op));
+                    yearTr.addElement(createNumberTd(op).clazz("statistics-value-td"));
+                    int rs = numberOfResponseScenarios.get(year);
+                    yearTr.data("number-of-response-scenarios", Integer.toString(rs));
+                    yearTr.addElement(createNumberTd(rs).clazz("statistics-value-td"));
+                    int rv = numberOfResultValues.get(year);
+                    yearTr.data("number-of-result-values", Integer.toString(rv));
+                    yearTr.addElement(createNumberTd(rv).clazz("statistics-value-td"));
                 } else {
+                    yearTr.data("number-of-opinion-polls", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.data("number-of-response-scenarios", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.data("number-of-result-values", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                 }
                 tBody.addElement(yearTr);
@@ -336,8 +346,6 @@ final class StatisticsPageBuilder extends PageBuilder {
             totalTr.addElement(
                     createNumberTd(OpinionPollsStore.getNumberOfResultValues()).clazz("statistics-total-td"));
             tHead.addElement(totalTr);
-            // TODO: Add data elements
-            // TODO: Add scripts for sorting
         }
     }
 
@@ -349,8 +357,9 @@ final class StatisticsPageBuilder extends PageBuilder {
     Html build() {
         Html html = new Html();
         html.addElement(createHead());
-        Body body = new Body().onload("initializeLanguage(); sortTable('statistics-by-area-table', 2, 'area-name',"
-                + " 'alphanumeric-internationalized')");
+        Body body = new Body().onload("initializeLanguage();"
+                + " sortTable('statistics-by-area-table', 2, 'area-name', 'alphanumeric-internationalized');"
+                + " sortTable('statistics-by-year-table', 2, 'year', 'numeric')");
         html.addElement(body);
         body.addElement(createHeader(PageBuilder.HeaderLink.STATISTICS));
         Section section = new Section();
