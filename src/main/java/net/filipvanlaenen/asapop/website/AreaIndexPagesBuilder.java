@@ -247,37 +247,48 @@ class AreaIndexPagesBuilder extends PageBuilder {
     private void addStatistics(final Section section, final AreaConfiguration areaConfiguration) {
         String areaCode = areaConfiguration.getAreaCode();
         if (OpinionPollsStore.hasOpinionPolls(areaCode)) {
-            Table table = new Table().clazz("statistics-table").id("statistics-table");
+            Table table = new Table().clazz("statistics-table").id("statistics-by-year-table");
             section.addElement(table);
             THead tHead = new THead();
             table.addElement(tHead);
             TR tr = new TR();
-            tr.addElement(new TH(" ").clazz("year").onclick("sortTable('statistics-table', 2, 'year', 'numeric')"));
+            tr.addElement(
+                    new TH(" ").clazz("year").onclick("sortTable('statistics-by-year-table', 2, 'year', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-opinion-polls")
-                    .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
+                    .onclick("sortTable('statistics-by-year-table', 2, 'number-of-opinion-polls', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-response-scenarios")
-                    .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios', 'numeric')"));
+                    .onclick("sortTable('statistics-by-year-table', 2, 'number-of-response-scenarios', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-result-values")
-                    .onclick("sortTable('statistics-table', 2, 'number-of-result-values', 'numeric')"));
+                    .onclick("sortTable('statistics-by-year-table', 2, 'number-of-result-values', 'numeric')"));
             tHead.addElement(tr);
             TBody tBody = new TBody();
             table.addElement(tBody);
-            SortedIntegerMap<Integer> opinionPolls = OpinionPollsStore.getNumberOfOpinionPollsByYear(areaCode);
-            SortedIntegerMap<Integer> responseScenarios =
+            SortedIntegerMap<Integer> numberOfOpinionPolls = OpinionPollsStore.getNumberOfOpinionPollsByYear(areaCode);
+            SortedIntegerMap<Integer> numberOfResponseScenarios =
                     OpinionPollsStore.getNumberOfResponseScenariosByYear(areaCode);
-            SortedIntegerMap<Integer> resultValues = OpinionPollsStore.getNumberOfResultValuesByYear(areaCode);
-            int firstYear = opinionPolls.getLeastKey();
-            int lastYear = opinionPolls.getGreatestKey();
+            SortedIntegerMap<Integer> numberOfResultValues = OpinionPollsStore.getNumberOfResultValuesByYear(areaCode);
+            int firstYear = numberOfOpinionPolls.getLeastKey();
+            int lastYear = numberOfOpinionPolls.getGreatestKey();
             for (int year = firstYear; year <= lastYear; year++) {
                 TR yearTr = new TR();
+                yearTr.data("year", Integer.toString(year));
                 yearTr.addElement(new TD(Integer.toString(year)));
-                if (opinionPolls.containsKey(year)) {
-                    yearTr.addElement(createNumberTd(opinionPolls.get(year)).clazz("statistics-value-td"));
-                    yearTr.addElement(createNumberTd(responseScenarios.get(year)).clazz("statistics-value-td"));
-                    yearTr.addElement(createNumberTd(resultValues.get(year)).clazz("statistics-value-td"));
+                if (numberOfOpinionPolls.containsKey(year)) {
+                    int op = numberOfOpinionPolls.get(year);
+                    yearTr.data("number-of-opinion-polls", Integer.toString(op));
+                    yearTr.addElement(createNumberTd(op).clazz("statistics-value-td"));
+                    int rs = numberOfResponseScenarios.get(year);
+                    yearTr.data("number-of-response-scenarios", Integer.toString(rs));
+                    yearTr.addElement(createNumberTd(rs).clazz("statistics-value-td"));
+                    int rv = numberOfResultValues.get(year);
+                    yearTr.data("number-of-result-values", Integer.toString(rv));
+                    yearTr.addElement(createNumberTd(rv).clazz("statistics-value-td"));
                 } else {
+                    yearTr.data("number-of-opinion-polls", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.data("number-of-response-scenarios", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.data("number-of-result-values", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                 }
                 tBody.addElement(yearTr);
@@ -300,8 +311,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
             totalTr.addElement(
                     createNumberTd(OpinionPollsStore.getNumberOfResultValues(areaCode)).clazz("statistics-total-td"));
             tHead.addElement(totalTr);
-            // TODO: Add data elements
-            // TODO: Add scripts for sorting
         } else {
             addNoneParagraph(section);
         }
@@ -442,7 +451,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
     String createAreaIndexPage(final AreaConfiguration areaConfiguration) {
         Html html = new Html();
         html.addElement(createHead(1));
-        Body body = new Body().onload("initializeLanguage();");
+        Body body = new Body()
+                .onload("initializeLanguage();" + " sortTable('statistics-by-year-table', 2, 'year', 'numeric')");
         html.addElement(body);
         body.addElement(createHeader(1));
         Section section = new Section();
