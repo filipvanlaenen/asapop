@@ -286,12 +286,13 @@ final class StatisticsPageBuilder extends PageBuilder {
             SortedIntegerMap<Integer> numberOfResponseScenarios =
                     OpinionPollsStore.getNumberOfResponseScenariosByYear();
             SortedIntegerMap<Integer> numberOfResultValues = OpinionPollsStore.getNumberOfResultValuesByYear();
-            Table table = new Table().clazz("statistics-table").id("statistics-table");
+            Table table = new Table().clazz("statistics-table").id("statistics-by-year-table");
             section.addElement(table);
             THead tHead = new THead();
             table.addElement(tHead);
             TR tr = new TR();
-            tr.addElement(new TH(" ").clazz("year").onclick("sortTable('statistics-table', 2, 'year', 'numeric')"));
+            tr.addElement(
+                    new TH(" ").clazz("year").onclick("sortTable('statistics-by-year-table', 2, 'year', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-opinion-polls")
                     .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
             tr.addElement(new TH(" ").clazz("number-of-response-scenarios")
@@ -348,14 +349,14 @@ final class StatisticsPageBuilder extends PageBuilder {
     Html build() {
         Html html = new Html();
         html.addElement(createHead());
-        Body body = new Body().onload("initializeLanguage(); sortTable('statistics-table', 2, 'area-name',"
+        Body body = new Body().onload("initializeLanguage(); sortTable('statistics-by-area-table', 2, 'area-name',"
                 + " 'alphanumeric-internationalized')");
         html.addElement(body);
         body.addElement(createHeader(PageBuilder.HeaderLink.STATISTICS));
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("statistics"));
-        Table table = new Table().clazz("statistics-table").id("statistics-table");
+        Table table = new Table().clazz("statistics-table").id("statistics-by-area-table");
         section.addElement(table);
         THead tHead = new THead();
         table.addElement(tHead);
@@ -597,34 +598,34 @@ final class StatisticsPageBuilder extends PageBuilder {
     private TR createTableHeaderRow() {
         TR tr = new TR();
         tr.addElement(new TH(" ").clazz("country")
-                .onclick("sortTable('statistics-table', 2, 'area-name', 'alphanumeric-internationalized')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'area-name', 'alphanumeric-internationalized')"));
         TH thOpinionPolls = new TH().clazz("number-of-opinion-polls-th");
         thOpinionPolls.addElement(new Span(" ").clazz("number-of-opinion-polls")
-                .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'number-of-opinion-polls', 'numeric')"));
         thOpinionPolls.addContent(" (");
         thOpinionPolls.addElement(new Span(" ").clazz("year-to-date")
-                .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls-ytd', 'numeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'number-of-opinion-polls-ytd', 'numeric')"));
         thOpinionPolls.addContent(")");
         tr.addElement(thOpinionPolls);
         TH thResponseScenarios = new TH().clazz("number-of-response-scenarios-th");
         thResponseScenarios.addElement(new Span(" ").clazz("number-of-response-scenarios")
-                .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios', 'numeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'number-of-response-scenarios', 'numeric')"));
         thResponseScenarios.addContent(" (");
         thResponseScenarios.addElement(new Span(" ").clazz("year-to-date")
-                .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios-ytd', 'numeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'number-of-response-scenarios-ytd', 'numeric')"));
         thResponseScenarios.addContent(")");
         tr.addElement(thResponseScenarios);
         TH thResultValue = new TH().clazz("number-of-result-values-th");
         thResultValue.addElement(new Span(" ").clazz("number-of-result-values")
-                .onclick("sortTable('statistics-table', 2, 'number-of-result-values', 'numeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'number-of-result-values', 'numeric')"));
         thResultValue.addContent(" (");
         thResultValue.addElement(new Span(" ").clazz("year-to-date")
-                .onclick("sortTable('statistics-table', 2, 'number-of-result-values-ytd', 'numeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'number-of-result-values-ytd', 'numeric')"));
         thResultValue.addContent(")");
         tr.addElement(thResultValue);
         TH thMostRecentDate = new TH().clazz("most-recent-date-th");
         thMostRecentDate.addElement(new Span(" ").clazz("most-recent-date")
-                .onclick("sortTable('statistics-table', 2, 'most-recent-date', 'alphanumeric')"));
+                .onclick("sortTable('statistics-by-area-table', 2, 'most-recent-date', 'alphanumeric')"));
         Sup footnoteLink = new Sup();
         footnoteLink.addElement(new A("1").href("#footnote-1"));
         thMostRecentDate.addElement(footnoteLink);
