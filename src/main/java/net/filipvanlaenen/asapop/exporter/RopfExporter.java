@@ -368,7 +368,7 @@ public final class RopfExporter extends Exporter {
             final OrderedCollection<Collection<String>> idCombinations) {
         StringBuffer sb = new StringBuffer();
         Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
-        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPolls().getOpinionPolls()) {
+        for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPollsDeprecated().getOpinionPolls()) {
             electoralLists.addAll(getElectoralLists(opinionPoll));
         }
         Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
@@ -381,7 +381,7 @@ public final class RopfExporter extends Exporter {
             }
             preorderedElectoralListCombinations.add(combination);
         }
-        Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPolls().getOpinionPolls();
+        Set<OpinionPoll> opinionPolls = richOpinionPollsFile.getOpinionPollsDeprecated().getOpinionPolls();
         Map<String, Integer> metadataFieldWidths = calculateMetadataFieldWidths(opinionPolls);
         Integer resultsWidth = calculateResultsWidth(opinionPolls, idsToKeysMap);
         for (OpinionPoll opinionPoll : sortOpinionPolls(opinionPolls)) {

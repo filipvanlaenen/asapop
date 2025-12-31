@@ -99,7 +99,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
-                .getOpinionPolls();
+                .getOpinionPollsDeprecated();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -120,7 +120,7 @@ public class AreaIndexPagesBuilderTest {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN,
                 "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 •U: S A:55 B:40 C: 10 D: 9 E: 8 F: 7 G: 6 H: 5 I: 4",
                 "A: MK001 •A:AP", "B: MK002 •A:BL", "C: MK003 •A:C", "D: MK004 •A:D", "E: MK005 •A:E", "F: MK006 •A:F",
-                "G: MK007 •A:G", "H: MK008 •A:H", "I: MK009 •A:I").getOpinionPolls();
+                "G: MK007 •A:G", "H: MK008 •A:H", "I: MK009 •A:I").getOpinionPollsDeprecated();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -140,7 +140,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
-                .getOpinionPolls();
+                .getOpinionPollsDeprecated();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -161,7 +161,7 @@ public class AreaIndexPagesBuilderTest {
         websiteConfiguration.setName("Test");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 A:55 B:40", "A: MK001 •A:AP", "B: MK002 •A:BL")
-                .getOpinionPolls();
+                .getOpinionPollsDeprecated();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
@@ -195,7 +195,7 @@ public class AreaIndexPagesBuilderTest {
                 "•PF: ACME •C: The Times •C: The Post •C: The Independent •FS: 2022-11-12 •FE: 2022-11-16 A:55 B:40.1",
                 "•PF: ACME •FE: 2023-02-04 A:55 B:20 D:3 •N:13", "A: MK001 •A:AP", "B: MK002 •A:BL", "C: MK003 •A:C",
                 "D: MK004 •A:D", "E: MK005 •A:E", "F: MK006 •A:F", "G: MK007 •A:G", "H: MK008 •A:H", "I: MK009 •A:I",
-                "J: MK010 •A:J", "K: MK011 •A:K").getOpinionPolls();
+                "J: MK010 •A:J", "K: MK011 •A:K").getOpinionPollsDeprecated();
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", opinionPolls);
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");

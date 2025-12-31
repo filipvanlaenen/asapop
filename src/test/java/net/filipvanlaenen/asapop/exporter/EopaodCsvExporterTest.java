@@ -69,7 +69,7 @@ public class EopaodCsvExporterTest {
     public void shouldExportMinimalOpinionPoll() {
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45", "A: AA001 •A:AP", "B: AA002 •A:BL")
-                .getOpinionPolls();
+                .getOpinionPollsDeprecated();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
@@ -85,7 +85,7 @@ public class EopaodCsvExporterTest {
     @Test
     public void shouldExportWithCombinedElectoralListsAbbreviation() {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A+C:55 B+D:45",
-                "A: AA001 •A:AP", "B: AA002 •A:BL", "C: AA003 •A:CC", "D: AA004 •A:DE").getOpinionPolls();
+                "A: AA001 •A:AP", "B: AA002 •A:BL", "C: AA003 •A:CC", "D: AA004 •A:DE").getOpinionPollsDeprecated();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP+CC,BL+DE,Other\n");
@@ -104,7 +104,7 @@ public class EopaodCsvExporterTest {
     public void shouldExportWithRomanizedAbbreviation() {
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45", "A: AA001 •A:ΑΠ •R:AP", "B: AA002 •A:BL")
-                .getOpinionPolls();
+                .getOpinionPollsDeprecated();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
@@ -123,7 +123,7 @@ public class EopaodCsvExporterTest {
                 RichOpinionPollsFile
                         .parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45", "•PF: ACME •PD: 2021-08-15 A:55 B:45",
                                 "•PF: ACME •PD: 2021-07-28 A:55 B:45", "A: AA001 •A:AP", "B: AA002 •A:BL")
-                        .getOpinionPolls();
+                        .getOpinionPollsDeprecated();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,Other\n");
@@ -143,7 +143,7 @@ public class EopaodCsvExporterTest {
     @Test
     public void shouldExportOpinionPollWithAlternativeResponseScenario() {
         OpinionPolls opinionPolls = RichOpinionPollsFile.parse(TOKEN, "•PF: ACME •PD: 2021-07-27 A:55 B:45",
-                "& A:50 B:40 C:10", "A: AA001 •A:AP", "B: AA002 •A:BL", "C: AA003 •A:C").getOpinionPolls();
+                "& A:50 B:40 C:10", "A: AA001 •A:AP", "B: AA002 •A:BL", "C: AA003 •A:C").getOpinionPollsDeprecated();
         StringBuffer expected = new StringBuffer();
         expected.append("Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         expected.append(",Sample Size Qualification,Participation,Precision,AP,BL,C,Other\n");

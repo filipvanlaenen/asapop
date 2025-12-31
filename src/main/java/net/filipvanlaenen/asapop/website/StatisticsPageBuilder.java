@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
@@ -18,6 +19,7 @@ import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.array.ModifiableArrayCollection;
 import net.filipvanlaenen.kolektoj.array.ModifiableOrderedArrayCollection;
+import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
 import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
@@ -183,10 +185,6 @@ final class StatisticsPageBuilder extends PageBuilder {
      * A map with the opinion polls.
      */
     private final Map<String, OpinionPolls> opinionPollsMap;
-    /**
-     * The start of the year.
-     */
-    private final LocalDate startOfYear;
 
     /**
      * Constructor taking the website configuration and the map with the opinion polls as its parameter.
@@ -199,12 +197,11 @@ final class StatisticsPageBuilder extends PageBuilder {
      */
     StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
             final Internationalization internationalization, final Map<String, OpinionPolls> opinionPollsMap,
-            final LocalDate now, final LocalDate startOfYear) {
+            final LocalDate now) {
         super(websiteConfiguration);
         this.opinionPollsMap = opinionPollsMap;
         this.internationalization = internationalization;
         this.now = now;
-        this.startOfYear = startOfYear;
     }
 
     /**
@@ -224,6 +221,18 @@ final class StatisticsPageBuilder extends PageBuilder {
         areaTr.addElement(new TD("—").clazz("statistics-value-td"));
         areaTr.addElement(new TD("—").clazz("statistics-value-td"));
         areaTr.addElement(new TD("—").clazz("statistics-value-td"));
+    }
+
+    /**
+     * Adds a paragraph with None to the section.
+     *
+     * @param section The section to add None to.
+     */
+    private void addNoneParagraph(final Section section) {
+        P p = new P();
+        section.addElement(p);
+        p.addElement(new Span(" ").clazz("none"));
+        p.addContent(".");
     }
 
     /**
@@ -265,6 +274,73 @@ final class StatisticsPageBuilder extends PageBuilder {
     }
 
     /**
+     * Adds statistics to a section.
+     *
+     * @param section The section to add the upcoming election to.
+     */
+    private void addYearStatistics(final Section section) {
+        SortedIntegerMap<Integer> numberOfOpinionPolls = OpinionPollsStore.getNumberOfOpinionPollsByYear();
+        if (numberOfOpinionPolls.isEmpty()) {
+            addNoneParagraph(section);
+        } else {
+            SortedIntegerMap<Integer> numberOfResponseScenarios =
+                    OpinionPollsStore.getNumberOfResponseScenariosByYear();
+            SortedIntegerMap<Integer> numberOfResultValues = OpinionPollsStore.getNumberOfResultValuesByYear();
+            Table table = new Table().clazz("statistics-table").id("statistics-table");
+            section.addElement(table);
+            THead tHead = new THead();
+            table.addElement(tHead);
+            TR tr = new TR();
+            tr.addElement(new TH(" ").clazz("year").onclick("sortTable('statistics-table', 2, 'year', 'numeric')"));
+            tr.addElement(new TH(" ").clazz("number-of-opinion-polls")
+                    .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
+            tr.addElement(new TH(" ").clazz("number-of-response-scenarios")
+                    .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios', 'numeric')"));
+            tr.addElement(new TH(" ").clazz("number-of-result-values")
+                    .onclick("sortTable('statistics-table', 2, 'number-of-result-values', 'numeric')"));
+            tHead.addElement(tr);
+            TBody tBody = new TBody();
+            table.addElement(tBody);
+            int firstYear = numberOfOpinionPolls.getLeastKey();
+            int lastYear = numberOfOpinionPolls.getGreatestKey();
+            for (int year = firstYear; year <= lastYear; year++) {
+                TR yearTr = new TR();
+                yearTr.addElement(new TD(Integer.toString(year)));
+                if (numberOfOpinionPolls.containsKey(year)) {
+                    yearTr.addElement(createNumberTd(numberOfOpinionPolls.get(year)).clazz("statistics-value-td"));
+                    yearTr.addElement(createNumberTd(numberOfResponseScenarios.get(year)).clazz("statistics-value-td"));
+                    yearTr.addElement(createNumberTd(numberOfResultValues.get(year)).clazz("statistics-value-td"));
+                } else {
+                    yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                }
+                tBody.addElement(yearTr);
+            }
+            int thisYear = now.getYear();
+            if (lastYear == thisYear - 1) {
+                TR yearTr = new TR();
+                yearTr.addElement(new TD(Integer.toString(thisYear)));
+                yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                tBody.addElement(yearTr);
+            }
+            TR totalTr = new TR();
+            totalTr.addElement(new TD(" ").clazz("total"));
+            totalTr.addElement(
+                    createNumberTd(OpinionPollsStore.getNumberOfOpinionPolls()).clazz("statistics-total-td"));
+            totalTr.addElement(
+                    createNumberTd(OpinionPollsStore.getNumberOfResponseScenarios()).clazz("statistics-total-td"));
+            totalTr.addElement(
+                    createNumberTd(OpinionPollsStore.getNumberOfResultValues()).clazz("statistics-total-td"));
+            tHead.addElement(totalTr);
+            // TODO: Add data elements
+            // TODO: Add scripts for sorting
+        }
+    }
+
+    /**
      * Builds the content of the statistics page.
      *
      * @return The content of the statistics page
@@ -296,11 +372,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                 return ac0.getAreaCode().compareTo(ac1.getAreaCode());
             }
         });
-        int totalNumberOfOpinionPolls = 0;
         int totalNumberOfOpinionPollsYtd = 0;
-        int totalNumberOfResponseScenarios = 0;
         int totalNumberOfResponseScenariosYtd = 0;
-        int totalNumberOfResultValues = 0;
         int totalNumberOfResultValuesYtd = 0;
         LocalDate totalMostRecentDate = LocalDate.EPOCH;
         List<CurrencyQualification> currencyQualifications = new ArrayList<CurrencyQualification>();
@@ -317,6 +390,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 new ModifiableArrayCollection<PieChart.Entry>();
         ModifiableCollection<PieChart.Entry> numberOfResultValuesYtdEntries =
                 new ModifiableArrayCollection<PieChart.Entry>();
+        int thisYear = now.getYear();
         for (AreaConfiguration areaConfiguration : sortedAreaConfigurations) {
             String areaCode = areaConfiguration.getAreaCode();
             TR areaTr = new TR();
@@ -333,14 +407,14 @@ final class StatisticsPageBuilder extends PageBuilder {
             String areaClass = "_area_" + areaCode;
             String areaSymbol = areaCode.toUpperCase();
             tdAreaName.addElement(new A(" ").clazz(areaClass).href(areaCode + "/index.html"));
-            if (opinionPollsMap.containsKey(areaCode)) {
+            if (OpinionPollsStore.hasOpinionPolls(areaCode)) {
                 OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
-                int numberOfOpinionPolls = opinionPolls.getNumberOfOpinionPolls();
-                int numberOfOpinionPollsYtd = opinionPolls.getNumberOfOpinionPolls(startOfYear);
-                int numberOfResponseScenarios = opinionPolls.getNumberOfResponseScenarios();
-                int numberOfResponseScenariosYtd = opinionPolls.getNumberOfResponseScenarios(startOfYear);
-                int numberOfResultValues = opinionPolls.getNumberOfResultValues();
-                int numberOfResultValuesYtd = opinionPolls.getNumberOfResultValues(startOfYear);
+                int numberOfOpinionPolls = OpinionPollsStore.getNumberOfOpinionPolls(areaCode);
+                int numberOfOpinionPollsYtd = OpinionPollsStore.getNumberOfOpinionPolls(areaCode, thisYear);
+                int numberOfResponseScenarios = OpinionPollsStore.getNumberOfResponseScenarios(areaCode);
+                int numberOfResponseScenariosYtd = OpinionPollsStore.getNumberOfResponseScenarios(areaCode, thisYear);
+                int numberOfResultValues = OpinionPollsStore.getNumberOfResultValues(areaCode);
+                int numberOfResultValuesYtd = OpinionPollsStore.getNumberOfResultValues(areaCode, thisYear);
                 LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
@@ -362,11 +436,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                 numberOfResultValuesEntries.add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValues, null));
                 numberOfResultValuesYtdEntries
                         .add(new PieChart.Entry(areaClass, areaSymbol, numberOfResultValuesYtd, null));
-                totalNumberOfOpinionPolls += numberOfOpinionPolls;
                 totalNumberOfOpinionPollsYtd += numberOfOpinionPollsYtd;
-                totalNumberOfResponseScenarios += numberOfResponseScenarios;
                 totalNumberOfResponseScenariosYtd += numberOfResponseScenariosYtd;
-                totalNumberOfResultValues += numberOfResultValues;
                 totalNumberOfResultValuesYtd += numberOfResultValuesYtd;
                 totalMostRecentDate =
                         mostRecentDate.isAfter(totalMostRecentDate) ? mostRecentDate : totalMostRecentDate;
@@ -377,15 +448,17 @@ final class StatisticsPageBuilder extends PageBuilder {
             }
         }
         totalTr.addElement(new TD(" ").clazz("total"));
-        totalTr.addElement(createNumberAndYearToDateTd(totalNumberOfOpinionPolls, totalNumberOfOpinionPollsYtd)
-                .clazz("statistics-total-td"));
         totalTr.addElement(
-                createNumberAndYearToDateTd(totalNumberOfResponseScenarios, totalNumberOfResponseScenariosYtd)
+                createNumberAndYearToDateTd(OpinionPollsStore.getNumberOfOpinionPolls(), totalNumberOfOpinionPollsYtd)
                         .clazz("statistics-total-td"));
-        totalTr.addElement(createNumberAndYearToDateTd(totalNumberOfResultValues, totalNumberOfResultValuesYtd)
-                .clazz("statistics-total-td"));
+        totalTr.addElement(createNumberAndYearToDateTd(OpinionPollsStore.getNumberOfResponseScenarios(),
+                totalNumberOfResponseScenariosYtd).clazz("statistics-total-td"));
+        totalTr.addElement(
+                createNumberAndYearToDateTd(OpinionPollsStore.getNumberOfResultValues(), totalNumberOfResultValuesYtd)
+                        .clazz("statistics-total-td"));
         totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
         section.addElement(createCurrencyFootnote());
+        addYearStatistics(section);
         section.addElement(createCurrencyCharts(currencyQualifications, numberOfAreasWithoutOpinionPolls));
         Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
         numberOfOpinionPollsCharts.addElement(
@@ -401,14 +474,14 @@ final class StatisticsPageBuilder extends PageBuilder {
         numberOfResponseScenariosCharts.addElement(new PieChart("svg-chart-container-right",
                 "number-of-response-scenarios-ytd", numberOfResponseScenariosYtdEntries).getDiv());
         section.addElement(numberOfResponseScenariosCharts);
-        Div numberOfResultValusCharts = new Div().clazz("two-svg-charts-container");
-        numberOfResultValusCharts.addElement(
+        Div numberOfResultValuesCharts = new Div().clazz("two-svg-charts-container");
+        numberOfResultValuesCharts.addElement(
                 new PieChart("svg-chart-container-left", "number-of-result-values", numberOfResultValuesEntries)
                         .getDiv());
-        numberOfResultValusCharts.addElement(
+        numberOfResultValuesCharts.addElement(
                 new PieChart("svg-chart-container-right", "number-of-result-values-ytd", numberOfResultValuesYtdEntries)
                         .getDiv());
-        section.addElement(numberOfResultValusCharts);
+        section.addElement(numberOfResultValuesCharts);
         body.addElement(createFooter());
         body.addElement(PieChart.createTooltipDiv());
         return html;
@@ -485,6 +558,26 @@ final class StatisticsPageBuilder extends PageBuilder {
     static TD createNumberAndYearToDateTd(final int number, final int ytd) {
         TD td = new TD();
         String text = INTEGER_FORMAT.format(number) + " (" + INTEGER_FORMAT.format(ytd) + ")";
+        int thousandsSeparatorIndex = text.indexOf(",");
+        while (thousandsSeparatorIndex != -1) {
+            td.addContent(text.substring(0, thousandsSeparatorIndex));
+            td.addElement(new Span(" ").clazz("thousands-separator"));
+            text = text.substring(thousandsSeparatorIndex + 1);
+            thousandsSeparatorIndex = text.indexOf(",");
+        }
+        td.addContent(text);
+        return td;
+    }
+
+    /**
+     * Creates a TD element with a number.
+     *
+     * @param number The number to be included in a TD elemement.
+     * @return A TD element with a number.
+     */
+    static TD createNumberTd(final int number) {
+        TD td = new TD();
+        String text = INTEGER_FORMAT.format(number);
         int thousandsSeparatorIndex = text.indexOf(",");
         while (thousandsSeparatorIndex != -1) {
             td.addContent(text.substring(0, thousandsSeparatorIndex));

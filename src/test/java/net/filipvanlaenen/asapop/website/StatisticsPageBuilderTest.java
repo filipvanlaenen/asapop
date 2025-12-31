@@ -67,10 +67,6 @@ public class StatisticsPageBuilderTest {
      */
     private static final LocalDate NOW = LocalDate.of(2022, Month.DECEMBER, 7);
     /**
-     * The start of the year 2022.
-     */
-    private static final LocalDate START_OF_YEAR = NOW.withDayOfYear(1);
-    /**
      * A date to run the unit tests on.
      */
     private static final LocalDate DATE1 = LocalDate.parse("2021-12-28");
@@ -488,7 +484,7 @@ public class StatisticsPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(),
-                createInternationalization(), createOpinionPollsMap(), NOW, START_OF_YEAR).build().asString());
+                createInternationalization(), createOpinionPollsMap(), NOW).build().asString());
     }
 
     /**

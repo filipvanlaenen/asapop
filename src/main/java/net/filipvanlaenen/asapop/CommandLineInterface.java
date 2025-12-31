@@ -27,6 +27,7 @@ import net.filipvanlaenen.asapop.exporter.SaporExporter;
 import net.filipvanlaenen.asapop.filecache.SampledHypergeometricDistributionsFileCache;
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.website.Internationalization;
 import net.filipvanlaenen.asapop.website.Website;
@@ -123,7 +124,7 @@ public final class CommandLineInterface {
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
-                AnalysisEngine engine = new AnalysisEngine(richOpinionPollsFile.getOpinionPolls(), electionData);
+                AnalysisEngine engine = new AnalysisEngine(richOpinionPollsFile.getOpinionPollsDeprecated(), electionData);
                 engine.run();
                 Analysis analysis = new AnalysisBuilder(engine).build();
                 objectMapper.writeValue(new File(outputFileName), analysis);
@@ -191,7 +192,7 @@ public final class CommandLineInterface {
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
+                OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPollsDeprecated();
                 String outputContent = "";
                 if (outputFileName.endsWith(".csv")) {
                     outputContent = EopaodCsvExporter.export(opinionPolls, area, null, electoralListKeySets,
@@ -250,7 +251,7 @@ public final class CommandLineInterface {
                 Token inputFileToken = Laconic.LOGGER.logMessage("Parsing file %s.", inputFileName);
                 String[] ropfContent = readFile(inputFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(inputFileToken, ropfContent);
-                OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPolls();
+                OpinionPolls opinionPolls = richOpinionPollsFile.getOpinionPollsDeprecated();
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 Token configurationFileToken =
@@ -319,7 +320,8 @@ public final class CommandLineInterface {
                             Laconic.LOGGER.logMessage(token, "Parsing file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
-                    opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPolls());
+                    opinionPollsMap.put(areaCode, richOpinionPollsFile.getOpinionPollsDeprecated());
+                    OpinionPollsStore.addAll(areaCode, richOpinionPollsFile.getOpinionPolls());
                 }
             }
             return opinionPollsMap;
@@ -357,7 +359,7 @@ public final class CommandLineInterface {
                             Laconic.LOGGER.logMessage(token, "Parsing file %s.", ropfPath.getFileName().toString());
                     String[] ropfContent = readFile(ropfPath);
                     RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(fileToken, ropfContent);
-                    opinionPollsMap.put(presidentialOpinionPollCode, richOpinionPollsFile.getOpinionPolls());
+                    opinionPollsMap.put(presidentialOpinionPollCode, richOpinionPollsFile.getOpinionPollsDeprecated());
                 }
             }
             return opinionPollsMap;

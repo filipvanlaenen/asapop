@@ -11,6 +11,7 @@ import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -19,9 +20,14 @@ import net.filipvanlaenen.laconic.Token;
  */
 public final class RichOpinionPollsFile {
     /**
+     * The opinion polls in the file.
+     */
+    private final Collection<OpinionPoll> opinionPolls;
+    /**
      * The opinion polls extracted from the file.
      */
-    private final OpinionPolls opinionPolls;
+    @Deprecated
+    private final OpinionPolls opinionPollsDeprecated;
     /**
      * A list with the comment lines.
      */
@@ -34,7 +40,8 @@ public final class RichOpinionPollsFile {
      * @param commentLines    A list with the comment lines.
      */
     private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines) {
-        this.opinionPolls = new OpinionPolls(opinionPollsSet);
+        this.opinionPollsDeprecated = new OpinionPolls(opinionPollsSet);
+        this.opinionPolls = Collection.of(opinionPollsSet.toArray(new OpinionPoll[] {}));
         this.commentLines = commentLines;
     }
 
@@ -48,12 +55,22 @@ public final class RichOpinionPollsFile {
     }
 
     /**
+     * Returns a collection with all the opinion polls.
+     *
+     * @return A collection with all the opinion polls.
+     */
+    public Collection<OpinionPoll> getOpinionPolls() {
+        return Collection.of(opinionPolls);
+    }
+
+    /**
      * Returns the opinion polls.
      *
      * @return The opinion polls.
      */
-    public OpinionPolls getOpinionPolls() {
-        return opinionPolls;
+    @Deprecated
+    public OpinionPolls getOpinionPollsDeprecated() {
+        return opinionPollsDeprecated;
     }
 
     /**

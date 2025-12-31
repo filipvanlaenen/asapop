@@ -50,10 +50,6 @@ public class WebsiteBuilder {
      */
     private final String sortingScriptContent;
     /**
-     * The start of the year.
-     */
-    private final LocalDate startOfYear;
-    /**
      * The tooptip script content.
      */
     private final String tooltipScriptContent;
@@ -96,7 +92,6 @@ public class WebsiteBuilder {
         this.sortingScriptContent = sortingScriptContent;
         this.tooltipScriptContent = tooltipScriptContent;
         this.now = now;
-        this.startOfYear = now.withDayOfYear(1);
     }
 
     /**
@@ -116,8 +111,9 @@ public class WebsiteBuilder {
         website.put("calendar.ical",
                 new ICalendarFileBuilder(websiteConfiguration, elections, now, internationalization).build(token));
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
-        website.put("statistics.html", new StatisticsPageBuilder(websiteConfiguration, internationalization,
-                parliamentaryOpinionPollsMap, now, startOfYear).build());
+        website.put("statistics.html",
+                new StatisticsPageBuilder(websiteConfiguration, internationalization, parliamentaryOpinionPollsMap, now)
+                        .build());
         website.putAll(
                 new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
                         .build());

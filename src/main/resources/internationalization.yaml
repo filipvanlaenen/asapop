@@ -428,6 +428,14 @@ terms:
       fr: "À jour"
       nl: "Up-to-date"
       no: "Oppdatert"
+  - key: "year"
+    translations:
+      de: "Jahr"
+      en: "Year"
+      eo: "Jaro"
+      fr: "Année"
+      nl: "Jaar"
+      no: "År"
   - key: "year-to-date"
     translations:
       de: "year-to-date"

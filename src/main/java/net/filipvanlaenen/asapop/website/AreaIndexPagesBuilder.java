@@ -2,12 +2,15 @@ package net.filipvanlaenen.asapop.website;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,7 @@ import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.model.ResultValue;
 import net.filipvanlaenen.asapop.model.ResultValue.Precision;
 import net.filipvanlaenen.asapop.model.Scope;
@@ -31,6 +35,7 @@ import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.SortedCollection;
+import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
 import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.H1;
@@ -66,6 +71,14 @@ class AreaIndexPagesBuilder extends PageBuilder {
      * The magic number 100.0.
      */
     private static final double ONE_HUNDRED = 100D;
+    /**
+     * The decimal format symbols for the US.
+     */
+    private static final DecimalFormatSymbols US_FORMAT_SYMBOLS = new DecimalFormatSymbols(Locale.US);
+    /**
+     * The decimal format for integers, i.e. no decimals.
+     */
+    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#,###", US_FORMAT_SYMBOLS);
     /**
      * A map converting scopes to election types.
      */
@@ -226,6 +239,75 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
+     * Adds statistics to a section.
+     *
+     * @param section           The section to add the upcoming election to.
+     * @param areaConfiguration The configuration for the area.
+     */
+    private void addStatistics(final Section section, final AreaConfiguration areaConfiguration) {
+        String areaCode = areaConfiguration.getAreaCode();
+        if (OpinionPollsStore.hasOpinionPolls(areaCode)) {
+            Table table = new Table().clazz("statistics-table").id("statistics-table");
+            section.addElement(table);
+            THead tHead = new THead();
+            table.addElement(tHead);
+            TR tr = new TR();
+            tr.addElement(new TH(" ").clazz("year").onclick("sortTable('statistics-table', 2, 'year', 'numeric')"));
+            tr.addElement(new TH(" ").clazz("number-of-opinion-polls")
+                    .onclick("sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')"));
+            tr.addElement(new TH(" ").clazz("number-of-response-scenarios")
+                    .onclick("sortTable('statistics-table', 2, 'number-of-response-scenarios', 'numeric')"));
+            tr.addElement(new TH(" ").clazz("number-of-result-values")
+                    .onclick("sortTable('statistics-table', 2, 'number-of-result-values', 'numeric')"));
+            tHead.addElement(tr);
+            TBody tBody = new TBody();
+            table.addElement(tBody);
+            SortedIntegerMap<Integer> opinionPolls = OpinionPollsStore.getNumberOfOpinionPollsByYear(areaCode);
+            SortedIntegerMap<Integer> responseScenarios =
+                    OpinionPollsStore.getNumberOfResponseScenariosByYear(areaCode);
+            SortedIntegerMap<Integer> resultValues = OpinionPollsStore.getNumberOfResultValuesByYear(areaCode);
+            int firstYear = opinionPolls.getLeastKey();
+            int lastYear = opinionPolls.getGreatestKey();
+            for (int year = firstYear; year <= lastYear; year++) {
+                TR yearTr = new TR();
+                yearTr.addElement(new TD(Integer.toString(year)));
+                if (opinionPolls.containsKey(year)) {
+                    yearTr.addElement(createNumberTd(opinionPolls.get(year)).clazz("statistics-value-td"));
+                    yearTr.addElement(createNumberTd(responseScenarios.get(year)).clazz("statistics-value-td"));
+                    yearTr.addElement(createNumberTd(resultValues.get(year)).clazz("statistics-value-td"));
+                } else {
+                    yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                }
+                tBody.addElement(yearTr);
+            }
+            int thisYear = now.getYear();
+            if (lastYear == thisYear - 1) {
+                TR yearTr = new TR();
+                yearTr.addElement(new TD(Integer.toString(thisYear)));
+                yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                tBody.addElement(yearTr);
+            }
+            TR totalTr = new TR();
+            totalTr.addElement(new TD(" ").clazz("total"));
+            totalTr.addElement(
+                    createNumberTd(OpinionPollsStore.getNumberOfOpinionPolls(areaCode)).clazz("statistics-total-td"));
+            totalTr.addElement(createNumberTd(OpinionPollsStore.getNumberOfResponseScenarios(areaCode))
+                    .clazz("statistics-total-td"));
+            totalTr.addElement(
+                    createNumberTd(OpinionPollsStore.getNumberOfResultValues(areaCode)).clazz("statistics-total-td"));
+            tHead.addElement(totalTr);
+            // TODO: Add data elements
+            // TODO: Add scripts for sorting
+        } else {
+            addNoneParagraph(section);
+        }
+    }
+
+    /**
      * Adds the upcoming elections of a given type for an area as LI elements to the provided list.
      *
      * @param upcomingElectionLIs The list to add the upcoming elections to as LI elements.
@@ -371,6 +453,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
         addOpinionPolls(section, areaConfiguration);
         addPollingFirmsNotIncluded(section, areaConfiguration);
+        section.addElement(new H2(" ").clazz("statistics"));
+        addStatistics(section, areaConfiguration);
         body.addElement(createFooter());
         return html.asString();
     }
@@ -389,6 +473,26 @@ class AreaIndexPagesBuilder extends PageBuilder {
         sup.addElement(new I(letter));
         p.addElement(new Span(" ").clazz(spanClass));
         return p;
+    }
+
+    /**
+     * Creates a TD element with a number.
+     *
+     * @param number The number to be included in a TD elemement.
+     * @return A TD element with a number.
+     */
+    static TD createNumberTd(final int number) {
+        TD td = new TD();
+        String text = INTEGER_FORMAT.format(number);
+        int thousandsSeparatorIndex = text.indexOf(",");
+        while (thousandsSeparatorIndex != -1) {
+            td.addContent(text.substring(0, thousandsSeparatorIndex));
+            td.addElement(new Span(" ").clazz("thousands-separator"));
+            text = text.substring(thousandsSeparatorIndex + 1);
+            thousandsSeparatorIndex = text.indexOf(",");
+        }
+        td.addContent(text);
+        return td;
     }
 
     /**

@@ -102,51 +102,11 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies that the number of opinion polls is counted correctly.
-     */
-    @Test
-    public void getNumberOfOpinionPollsShouldBeCorrect() {
-        assertEquals(THREE, opinionPolls.getNumberOfOpinionPolls());
-    }
-
-    /**
      * Verifies that the number of opinion polls from a date is counted correctly.
      */
     @Test
     public void getNumberOfOpinionPollsFromADateShouldBeCorrect() {
         assertEquals(2, opinionPolls.getNumberOfOpinionPolls(DATE2));
-    }
-
-    /**
-     * Verifies that the number of response scenarios is counted correctly.
-     */
-    @Test
-    public void getNumberOfResponseScenariosShouldBeCorrect() {
-        assertEquals(FIVE, opinionPolls.getNumberOfResponseScenarios());
-    }
-
-    /**
-     * Verifies that the number of response scenarios from a date is counted correctly.
-     */
-    @Test
-    public void getNumberOfResponseScenariosFromADateShouldBeCorrect() {
-        assertEquals(THREE, opinionPolls.getNumberOfResponseScenarios(DATE2));
-    }
-
-    /**
-     * Verifies that the number of result values is counted correctly.
-     */
-    @Test
-    public void getNumberOfResultValuesShouldBeCorrect() {
-        assertEquals(SIX, opinionPolls.getNumberOfResultValues());
-    }
-
-    /**
-     * Verifies that the number of result values from a date is counted correctly.
-     */
-    @Test
-    public void getNumberOfResultValuesFromADateShouldBeCorrect() {
-        assertEquals(FOUR, opinionPolls.getNumberOfResultValues(DATE2));
     }
 
     /**

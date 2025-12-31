@@ -85,7 +85,7 @@ public class CsvFilesBuilderTest {
         ElectoralList.get("Q").setAbbreviation("Q");
         OpinionPolls opinionPolls = RichOpinionPollsFile
                 .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 F:55 G:40", "F: FR001 •A:F", "G: FR002 •A:G")
-                .getOpinionPolls();
+                .getOpinionPollsDeprecated();
         Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
                 presidentialOpinionPollsMap);

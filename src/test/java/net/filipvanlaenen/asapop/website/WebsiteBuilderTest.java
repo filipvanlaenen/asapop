@@ -35,10 +35,6 @@ public class WebsiteBuilderTest {
      */
     private static final LocalDate NOW = LocalDate.of(2022, Month.SEPTEMBER, 7);
     /**
-     * The start of the year 2022.
-     */
-    private static final LocalDate START_OF_YEAR = NOW.withDayOfYear(1);
-    /**
      * A Laconic logging token for unit testing.
      */
     private static final Token TOKEN = Laconic.LOGGER.logMessage("Unit test WebsiteBuilderTest.");
@@ -126,8 +122,9 @@ public class WebsiteBuilderTest {
         expected.put(Paths.get("calendar.ical"),
                 new ICalendarFileBuilder(websiteConfiguration, elections, NOW, internationalization).build(TOKEN));
         expected.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
-        expected.put(Paths.get("statistics.html"), new StatisticsPageBuilder(websiteConfiguration, internationalization,
-                opinionPollsMap, NOW, START_OF_YEAR).build().asString());
+        expected.put(Paths.get("statistics.html"),
+                new StatisticsPageBuilder(websiteConfiguration, internationalization, opinionPollsMap, NOW).build()
+                        .asString());
         expected.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(latvia));

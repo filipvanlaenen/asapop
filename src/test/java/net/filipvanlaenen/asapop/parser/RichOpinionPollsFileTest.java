@@ -98,7 +98,7 @@ public final class RichOpinionPollsFileTest {
         polls.add(SAMPLE_POLL);
         assertEquals(polls,
                 RichOpinionPollsFile.parse(TOKEN, SAMPLE_POLL_LINE, ELECTORAL_LIST_A_LINE, ELECTORAL_LIST_B_LINE)
-                        .getOpinionPolls().getOpinionPolls());
+                        .getOpinionPollsDeprecated().getOpinionPolls());
     }
 
     /**
@@ -110,7 +110,7 @@ public final class RichOpinionPollsFileTest {
         polls.add(SAMPLE_CANDIDATE_POLL);
         assertEquals(polls,
                 RichOpinionPollsFile.parse(TOKEN, SAMPLE_CANDIDATE_POLL_LINE, CANDIDATE_P_LINE, CANDIDATE_Q_LINE)
-                        .getOpinionPolls().getOpinionPolls());
+                        .getOpinionPollsDeprecated().getOpinionPolls());
     }
 
     /**
@@ -123,7 +123,7 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPollsDeprecated().getOpinionPolls());
     }
 
     /**
@@ -136,7 +136,7 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPollsDeprecated().getOpinionPolls());
     }
 
     /**
@@ -149,7 +149,7 @@ public final class RichOpinionPollsFileTest {
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(SAMPLE_POLL);
         polls.add(OTHER_SAMPLE_POLL);
-        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPollsDeprecated().getOpinionPolls());
     }
 
     /**
@@ -166,7 +166,7 @@ public final class RichOpinionPollsFileTest {
         poll.addAlternativeResponseScenario(scenario);
         Set<OpinionPoll> polls = new HashSet<OpinionPoll>();
         polls.add(poll);
-        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPolls().getOpinionPolls());
+        assertEquals(polls, RichOpinionPollsFile.parse(TOKEN, content).getOpinionPollsDeprecated().getOpinionPolls());
     }
 
     /**
