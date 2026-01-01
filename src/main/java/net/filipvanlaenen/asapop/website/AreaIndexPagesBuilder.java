@@ -296,9 +296,13 @@ class AreaIndexPagesBuilder extends PageBuilder {
             int thisYear = now.getYear();
             if (lastYear == thisYear - 1) {
                 TR yearTr = new TR();
+                yearTr.data("year", Integer.toString(thisYear));
                 yearTr.addElement(new TD(Integer.toString(thisYear)));
+                yearTr.data("number-of-opinion-polls", "0");
                 yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                yearTr.data("number-of-response-scenarios", "0");
                 yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                yearTr.data("number-of-result-values", "0");
                 yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                 tBody.addElement(yearTr);
             }
