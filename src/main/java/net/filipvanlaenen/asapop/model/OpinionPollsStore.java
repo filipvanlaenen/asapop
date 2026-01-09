@@ -13,28 +13,21 @@ import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
  */
 public class OpinionPollsStore {
     private static int numberOfOpinionPolls = 0;
-    // TODO: Replace with the empty factory method
-    private static ModifiableIntegerMap<String> numberOfOpinionPollsByArea = new ModifiableIntegerMap.HashMap<String>();
-    // TODO: Replace with the empty factory method
+    private static ModifiableIntegerMap<String> numberOfOpinionPollsByArea = ModifiableIntegerMap.<String>empty();
     private static ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByYear =
-            new ModifiableSortedIntegerMap.SortedTreeMap<Integer>(Comparator.naturalOrder());
+            ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfOpinionPollsByYearByArea =
             ModifiableMap.empty();
     private static int numberOfResponseScenarios = 0;
-    // TODO: Replace with the empty factory method
-    private static ModifiableIntegerMap<String> numberOfResponseScenariosByArea =
-            new ModifiableIntegerMap.HashMap<String>();
-    // TODO: Replace with the empty factory method
+    private static ModifiableIntegerMap<String> numberOfResponseScenariosByArea = ModifiableIntegerMap.<String>empty();
     private static ModifiableSortedIntegerMap<Integer> numberOfResponseScenariosByYear =
-            new ModifiableSortedIntegerMap.SortedTreeMap<Integer>(Comparator.naturalOrder());
+            ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResponseScenariosByYearByArea =
             ModifiableMap.empty();
     private static int numberOfResultsValues = 0;
-    // TODO: Replace with the empty factory method
-    private static ModifiableIntegerMap<String> numberOfResultValuesByArea = new ModifiableIntegerMap.HashMap<String>();
-    // TODO: Replace with the empty factory method
+    private static ModifiableIntegerMap<String> numberOfResultValuesByArea = ModifiableIntegerMap.<String>empty();
     private static ModifiableSortedIntegerMap<Integer> numberOfResultValuesByYear =
-            new ModifiableSortedIntegerMap.SortedTreeMap<Integer>(Comparator.naturalOrder());
+            ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResultValuesByYearByArea =
             ModifiableMap.empty();
 
@@ -43,15 +36,12 @@ public class OpinionPollsStore {
             numberOfOpinionPollsByArea.add(areaCode, 0);
             numberOfResponseScenariosByArea.add(areaCode, 0);
             numberOfResultValuesByArea.add(areaCode, 0);
-            // TODO: Replace with the empty factory method
             numberOfOpinionPollsByYearByArea.add(areaCode,
-                    new ModifiableSortedIntegerMap.SortedTreeMap<Integer>(Comparator.naturalOrder()));
-            // TODO: Replace with the empty factory method
+                    ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder()));
             numberOfResponseScenariosByYearByArea.add(areaCode,
-                    new ModifiableSortedIntegerMap.SortedTreeMap<Integer>(Comparator.naturalOrder()));
-            // TODO: Replace with the empty factory method
+                    ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder()));
             numberOfResultValuesByYearByArea.add(areaCode,
-                    new ModifiableSortedIntegerMap.SortedTreeMap<Integer>(Comparator.naturalOrder()));
+                    ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder()));
         }
         ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByYearForThisArea =
                 numberOfOpinionPollsByYearByArea.get(areaCode);
