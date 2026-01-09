@@ -75,6 +75,7 @@ public class CsvFilesBuilder {
      */
     private void buildAndAddElectoralListCsvFiles(final ModifiableMap<Path, String> csvFilesMap) {
         csvFilesMap.put(Paths.get("_csv", "electorallists.csv"), ElectoralListsCsvExporter.export());
+        csvFilesMap.put(Paths.get("_csv", "electorallists.v1.csv"), ElectoralListsCsvExporter.export());
     }
 
     /**
@@ -94,6 +95,7 @@ public class CsvFilesBuilder {
                 String outputContent = EopaodCsvExporter.export(opinionPolls, "--",
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets, OrderedCollection.empty());
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
+                csvFilesMap.put(Paths.get("_csv", areaCode + ".v1.csv"), outputContent);
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
             if (subdivisions != null) {
@@ -108,6 +110,8 @@ public class CsvFilesBuilder {
                         String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
                                 null, electoralListKeySets, OrderedCollection.empty());
                         csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"),
+                                outputContent);
+                        csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".v1.csv"),
                                 outputContent);
                     }
                 }
@@ -154,6 +158,7 @@ public class CsvFilesBuilder {
             }
             String outputContent = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
             csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent);
+            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".v1.csv"), outputContent);
         }
     }
 }

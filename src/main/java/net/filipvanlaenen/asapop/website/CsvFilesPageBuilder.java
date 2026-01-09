@@ -76,6 +76,9 @@ final class CsvFilesPageBuilder extends PageBuilder {
                 TD tdCsvLink = new TD();
                 areaTr.addElement(tdCsvLink);
                 tdCsvLink.addElement(new A(areaCode + ".csv").href("_csv/" + areaCode + ".csv"));
+                tdCsvLink.addContent(" (");
+                tdCsvLink.addElement(new A("v1").href("_csv/" + areaCode + ".v1.csv"));
+                tdCsvLink.addContent(")");
                 TD tdAreaName = new TD();
                 areaTr.addElement(tdAreaName);
                 tdAreaName.addElement(new A(" ").clazz("_area_" + areaCode).href(areaCode + "/index.html"));
@@ -100,6 +103,9 @@ final class CsvFilesPageBuilder extends PageBuilder {
                         subdivisionTr.addElement(tdSubdivisionCsvLink);
                         tdSubdivisionCsvLink
                                 .addElement(new A(subdivisionCode + ".csv").href("_csv/" + subdivisionCode + ".csv"));
+                        tdSubdivisionCsvLink.addContent(" (");
+                        tdSubdivisionCsvLink.addElement(new A("v1").href("_csv/" + subdivisionCode + ".v1.csv"));
+                        tdSubdivisionCsvLink.addContent(")");
                         TD tdSubdivisionName = new TD();
                         tdSubdivisionName
                                 .addElement(new A(" ").clazz("_area_" + areaCode).href(areaCode + "/index.html"));
