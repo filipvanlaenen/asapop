@@ -24,6 +24,7 @@ import net.filipvanlaenen.txhtmlj.A;
 import net.filipvanlaenen.txhtmlj.Body;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.H1;
+import net.filipvanlaenen.txhtmlj.H2;
 import net.filipvanlaenen.txhtmlj.Html;
 import net.filipvanlaenen.txhtmlj.P;
 import net.filipvanlaenen.txhtmlj.Section;
@@ -369,6 +370,7 @@ final class StatisticsPageBuilder extends PageBuilder {
         Section section = new Section();
         body.addElement(section);
         section.addElement(new H1(" ").clazz("statistics"));
+        section.addElement(new H2(" ").clazz("by-country"));
         Table table = new Table().clazz("statistics-table").id("statistics-by-area-table");
         section.addElement(table);
         THead tHead = new THead();
@@ -472,7 +474,6 @@ final class StatisticsPageBuilder extends PageBuilder {
                         .clazz("statistics-total-td"));
         totalTr.addElement(new TD(totalMostRecentDate.toString()).clazz("statistics-total-td"));
         section.addElement(createCurrencyFootnote());
-        addYearStatistics(section);
         section.addElement(createCurrencyCharts(currencyQualifications, numberOfAreasWithoutOpinionPolls));
         Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
         numberOfOpinionPollsCharts.addElement(
@@ -496,6 +497,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                 new PieChart("svg-chart-container-right", "number-of-result-values-ytd", numberOfResultValuesYtdEntries)
                         .getDiv());
         section.addElement(numberOfResultValuesCharts);
+        section.addElement(new H2(" ").clazz("by-year"));
+        addYearStatistics(section);
         body.addElement(createFooter());
         body.addElement(PieChart.createTooltipDiv());
         return html;

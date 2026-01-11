@@ -8,6 +8,22 @@ terms:
       fr: "Environ"
       nl: "Omtrent"
       no: "Omtrent"
+  - key: "by-country"
+    translations:
+      de: "Nach Land"
+      en: "By Country"
+      eo: "Laŭ lando"
+      fr: "Par pays"
+      nl: "Per land"
+      no: "Etter land"
+  - key: "by-year"
+    translations:
+      de: "Nach Jahr"
+      en: "By Year"
+      eo: "Laŭ jaro"
+      fr: "Par année"
+      nl: "Per jaar"
+      no: "Etter år"
   - key: "country"
     translations:
       de: "Land"
