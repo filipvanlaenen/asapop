@@ -99,7 +99,7 @@ class BarChart extends Chart {
             String onMouseOutEvent = "hideTooltip('" + TOOLTIP_ID + "');";
             rect.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
             svg.addElement(rect);
-            if (entry.showLabel) {
+            if (entry.showLabel()) {
                 double labelX = LEFT_X + slotWidth * 0.55D + i * slotWidth;
                 double labelFontSize = barWidth > TITLE_HEIGHT ? TITLE_HEIGHT : barWidth * 0.9D;
                 double labelY = BOTTOM_Y - labelFontSize * 0.2D;
