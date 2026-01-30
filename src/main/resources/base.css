@@ -47,15 +47,15 @@ header {
   display: block;
 }
 
-circle.pie-chart-1, path.pie-chart-1, rect.bar-chart-1 {
+circle.pie-chart-1, path.pie-chart-1, rect.bar-chart-1, rect.bar-chart-year {
   fill: #F3B23A;
 }
 
-circle.pie-chart-2, path.pie-chart-2, rect.bar-chart-2 {
+circle.pie-chart-2, path.pie-chart-2, rect.bar-chart-2, rect.bar-chart-year5 {
   fill: #A75C97;
 }
 
-circle.pie-chart-3, path.pie-chart-3, rect.bar-chart-3 {
+circle.pie-chart-3, path.pie-chart-3, rect.bar-chart-3, rect.bar-chart-thisyear {
   fill: #57EABD;
 }
 

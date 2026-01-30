@@ -316,7 +316,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                 String yearString = Integer.toString(year);
                 yearTr.data("year", yearString);
                 yearTr.addElement(new TD(Integer.toString(year)));
-                String sliceClass = year == thisYear ? "bar-chart-2" : "bar-chart-1";
+                String sliceClass =
+                        year == thisYear ? "bar-chart-thisyear" : year % 5 == 0 ? "bar-chart-year5" : "bar-chart-year";
                 if (numberOfOpinionPolls.containsKey(year)) {
                     int op = numberOfOpinionPolls.get(year);
                     yearTr.data("number-of-opinion-polls", Integer.toString(op));
