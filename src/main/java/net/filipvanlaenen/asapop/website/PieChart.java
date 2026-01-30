@@ -1,7 +1,5 @@
 package net.filipvanlaenen.asapop.website;
 
-import java.util.Comparator;
-
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.sortedtree.SortedTreeCollection;
@@ -10,20 +8,18 @@ import net.filipvanlaenen.tsvgj.DominantBaselineValue;
 import net.filipvanlaenen.tsvgj.Path;
 import net.filipvanlaenen.tsvgj.Path.LargeArcFlagValues;
 import net.filipvanlaenen.tsvgj.Path.SweepFlagValues;
-import net.filipvanlaenen.tsvgj.PreserveAspectRatioAlignValue;
-import net.filipvanlaenen.tsvgj.PreserveAspectRatioMeetOrSliceValue;
+import net.filipvanlaenen.tsvgj.Svg;
 import net.filipvanlaenen.tsvgj.Text;
 import net.filipvanlaenen.tsvgj.TextAnchorValue;
 import net.filipvanlaenen.txhtmlj.BR;
 import net.filipvanlaenen.txhtmlj.Div;
 import net.filipvanlaenen.txhtmlj.FlowContent;
 import net.filipvanlaenen.txhtmlj.Span;
-import net.filipvanlaenen.txhtmlj.Svg;
 
 /**
  * Class building pie charts in SVG.
  */
-class PieChart {
+class PieChart extends Chart {
     /**
      * Record type to contain entries for a pie chart.
      *
@@ -32,53 +28,17 @@ class PieChart {
      * @param value      The value for this entry.
      * @param sliceClass The class for this entry's slice in the pie chart.
      */
-    record Entry(String labelClass, String symbol, long value, String sliceClass) {
+    record Entry(String labelClass, String symbol, long value, String sliceClass) implements Chart.Entry {
     }
 
-    /**
-     * Comparator to compare entries.
-     */
-    static class EntryComparator implements Comparator<Entry> {
-        @Override
-        public int compare(final Entry e1, final Entry e2) {
-            if (e1.value() < e2.value()) {
-                return 1;
-            } else if (e1.value() > e2.value()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    /**
-     * The height of the SVG container.
-     */
-    private static final int SVG_CONTAINER_HEIGHT = 250;
-    /**
-     * The width of the SVG container.
-     */
-    private static final int SVG_CONTAINER_WIDTH = 500;
-    /**
-     * The X coordinate for the center of the pie chart.
-     */
-    private static final double CENTER_X = ((double) SVG_CONTAINER_WIDTH) / 2;
-    /**
-     * The Y coordinate for the center of the pie chart.
-     */
-    private static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) / 2;
     /**
      * The radius of the pie chart.
      */
-    private static final double RADIUS = ((double) SVG_CONTAINER_HEIGHT) * 0.4D;
+    private static final double RADIUS = ((double) CHART_CANVAS_HEIGHT) * 0.5D;
     /**
      * The radius for the placement of the symbols.
      */
     private static final double SYMBOL_RADIUS = RADIUS * 0.8D;
-    /**
-     * The height for the title of the pie chart.
-     */
-    private static final double TITLE_HEIGHT = (CENTER_Y - RADIUS) * 0.8D;
     /**
      * The height for the entry symbols on the pie chart.
      */
@@ -116,17 +76,9 @@ class PieChart {
      */
     private static final double ONE_HUNDRED = 100D;
     /**
-     * The HTML class for the pie chart's div element.
-     */
-    private final String divClass;
-    /**
      * An ordered collection with the entries for the pie chart.
      */
     private final OrderedCollection<Entry> entries;
-    /**
-     * The HTML class for the title.
-     */
-    private final String titleClass;
 
     /**
      * Constructor taking the HTML class for the pie chart's div element, the HTML class for the title and a collection
@@ -149,8 +101,7 @@ class PieChart {
      * @param entries    The entries for the pie chart in the order in which they should be presented in the pie chart.
      */
     PieChart(final String divClass, final String titleClass, final OrderedCollection<Entry> entries) {
-        this.divClass = divClass;
-        this.titleClass = titleClass;
+        super(divClass, titleClass);
         this.entries = entries;
     }
 
@@ -172,24 +123,10 @@ class PieChart {
         return div;
     }
 
-    /**
-     * Creates a div element with the pie chart.
-     *
-     * @return A div element with the pie chart.
-     */
-    Div getDiv() {
+    protected void addChartElements(Svg svg) {
         long sum = entries.stream().map(e -> e.value()).reduce(0L, Long::sum);
-        Div div = new Div().clazz(divClass);
-        Svg htmlSvg = new Svg();
-        net.filipvanlaenen.tsvgj.Svg svg = htmlSvg.getSvg();
-        svg.viewBox(0, 0, SVG_CONTAINER_WIDTH, SVG_CONTAINER_HEIGHT).preserveAspectRatio(
-                PreserveAspectRatioAlignValue.X_MIN_Y_MIN, PreserveAspectRatioMeetOrSliceValue.MEET);
-        Text title = new Text(" ").x(CENTER_X).y(TITLE_HEIGHT / 2).fontSize(TITLE_HEIGHT)
-                .textAnchor(TextAnchorValue.MIDDLE).dominantBaseline(DominantBaselineValue.MIDDLE).clazz(titleClass);
-        svg.addElement(title);
-        div.addElement(htmlSvg);
         if (sum == 0L) {
-            return div;
+            return;
         }
         long counter = 0L;
         double halfwayCounter = 0D;
@@ -240,6 +177,5 @@ class PieChart {
             }
             i++;
         }
-        return div;
     }
 }
