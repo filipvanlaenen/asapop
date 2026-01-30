@@ -20,7 +20,7 @@ class BarChart extends Chart {
     /**
      * The ID for the HTML element containing an entry's label.
      */
-    private static final String LABEL_CLASS = "barChartLabel";
+    private static final String LABEL_CLASS = "bar-chart-label";
     /**
      * The ID for the HTML element containing the bar chart tooltip.
      */
@@ -45,7 +45,7 @@ class BarChart extends Chart {
      * @param value      The value for this entry.
      * @param sliceClass The class for this entry's slice in the pie chart.
      */
-    record Entry(String label, long value, String sliceClass) implements Chart.Entry {
+    record Entry(String label, long value, String sliceClass, boolean showLabel) implements Chart.Entry {
     }
 
     /**
@@ -99,14 +99,16 @@ class BarChart extends Chart {
             String onMouseOutEvent = "hideTooltip('" + TOOLTIP_ID + "');";
             rect.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
             svg.addElement(rect);
-            double labelX = LEFT_X + slotWidth * 0.5D + i * slotWidth;
-            double labelFontSize = barWidth > TITLE_HEIGHT ? TITLE_HEIGHT : barWidth * 0.9D;
-            double labelY = BOTTOM_Y - labelFontSize * 0.2D;
-            Text symbol = new Text(label).x(labelX).y(labelY).fontSize(labelFontSize).textAnchor(TextAnchorValue.START)
-                    .dominantBaseline(DominantBaselineValue.MIDDLE).transform(Transform.rotate(-90, labelX, labelY))
-                    .clazz(LABEL_CLASS).onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
-            svg.addElement(symbol);
-
+            if (entry.showLabel) {
+                double labelX = LEFT_X + slotWidth * 0.55D + i * slotWidth;
+                double labelFontSize = barWidth > TITLE_HEIGHT ? TITLE_HEIGHT : barWidth * 0.9D;
+                double labelY = BOTTOM_Y - labelFontSize * 0.2D;
+                Text labelText = new Text(label).x(labelX).y(labelY).fontSize(labelFontSize)
+                        .textAnchor(TextAnchorValue.START).dominantBaseline(DominantBaselineValue.MIDDLE)
+                        .transform(Transform.rotate(-90, labelX, labelY)).clazz(LABEL_CLASS)
+                        .onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
+                svg.addElement(labelText);
+            }
             i++;
         }
     }

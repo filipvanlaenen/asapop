@@ -66,7 +66,7 @@ class PieChart extends Chart {
     /**
      * The ID for the HTML element containing an entry's symbol.
      */
-    private static final String SYMBOL_CLASS = "pieChartSymbol";
+    private static final String SYMBOL_CLASS = "pie-chart-symbol";
     /**
      * The magic number twelve.
      */

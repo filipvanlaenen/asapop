@@ -280,8 +280,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 String yearString = Integer.toString(year);
                 yearTr.data("year", yearString);
                 yearTr.addElement(new TD(Integer.toString(year)));
+                boolean fifthYear = year % 5 == 0;
                 String sliceClass =
-                        year == thisYear ? "bar-chart-thisyear" : year % 5 == 0 ? "bar-chart-year5" : "bar-chart-year";
+                        year == thisYear ? "bar-chart-thisyear" : fifthYear ? "bar-chart-year5" : "bar-chart-year";
                 if (numberOfOpinionPolls.containsKey(year)) {
                     int op = numberOfOpinionPolls.get(year);
                     yearTr.data("number-of-opinion-polls", Integer.toString(op));
@@ -292,8 +293,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     int rv = numberOfResultValues.get(year);
                     yearTr.data("number-of-result-values", Integer.toString(rv));
                     yearTr.addElement(createNumberTd(rv).clazz("statistics-value-td"));
-                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, op, sliceClass));
-                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, rs, sliceClass));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, op, sliceClass, fifthYear));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, rs, sliceClass, fifthYear));
                 } else {
                     yearTr.data("number-of-opinion-polls", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -301,8 +302,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                     yearTr.data("number-of-result-values", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
-                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, 0L, sliceClass));
-                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, 0L, sliceClass));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, 0L, sliceClass, fifthYear));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, 0L, sliceClass, fifthYear));
                 }
                 tBody.addElement(yearTr);
             }
