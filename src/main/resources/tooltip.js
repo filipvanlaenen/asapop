@@ -1,3 +1,14 @@
+function showBarChartTooltip(evt, label, number) {
+  let tooltip = document.getElementById("barChartTooltip");
+  tooltip.style.display = "block";
+  tooltip.style.left = evt.pageX + 10 + 'px';
+  tooltip.style.top = evt.pageY + 10 + 'px';
+  let tooltipLabel = document.getElementById("barChartTooltipLabel");
+  tooltipLabel.innerHTML = label;
+  let tooltipNumber = document.getElementById("barChartTooltipNumber");
+  tooltipNumber.innerHTML = number;
+  loadLanguage();
+}
 function showPieChartTooltip(evt, label, numerator, denominator, percentage) {
   let tooltip = document.getElementById("pieChartTooltip");
   tooltip.style.display = "block";

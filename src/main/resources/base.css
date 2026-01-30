@@ -47,51 +47,51 @@ header {
   display: block;
 }
 
-circle.pie-chart-1, path.pie-chart-1 {
+circle.pie-chart-1, path.pie-chart-1, rect.bar-chart-1 {
   fill: #F3B23A;
 }
 
-circle.pie-chart-2, path.pie-chart-2 {
+circle.pie-chart-2, path.pie-chart-2, rect.bar-chart-2 {
   fill: #A75C97;
 }
 
-circle.pie-chart-3, path.pie-chart-3 {
+circle.pie-chart-3, path.pie-chart-3, rect.bar-chart-3 {
   fill: #57EABD;
 }
 
-circle.pie-chart-4, path.pie-chart-4 {
+circle.pie-chart-4, path.pie-chart-4, rect.bar-chart-4 {
   fill: #4B7492;
 }
 
-circle.pie-chart-5, path.pie-chart-5 {
+circle.pie-chart-5, path.pie-chart-5, rect.bar-chart-5 {
   fill: #BC7F46;
 }
 
-circle.pie-chart-6, path.pie-chart-6 {
+circle.pie-chart-6, path.pie-chart-6, rect.bar-chart-6 {
   fill: #EA2E68;
 }
 
-circle.pie-chart-7, path.pie-chart-7 {
+circle.pie-chart-7, path.pie-chart-7, rect.bar-chart-7 {
   fill: #611474;
 }
 
-circle.pie-chart-8, path.pie-chart-8 {
+circle.pie-chart-8, path.pie-chart-8, rect.bar-chart-8 {
   fill: #368417;
 }
 
-circle.pie-chart-9, path.pie-chart-9 {
+circle.pie-chart-9, path.pie-chart-9, rect.bar-chart-9 {
   fill: #81CBD8;
 }
 
-circle.pie-chart-10, path.pie-chart-10 {
+circle.pie-chart-10, path.pie-chart-10, rect.bar-chart-10 {
   fill: #366D74;
 }
 
-circle.pie-chart-10, path.pie-chart-11 {
+circle.pie-chart-10, path.pie-chart-11, rect.bar-chart-11 {
   fill: #1D8F74;
 }
 
-circle.pie-chart-10, path.pie-chart-12 {
+circle.pie-chart-10, path.pie-chart-12, rect.bar-chart-12 {
   fill: #7D4E0A;
 }
 

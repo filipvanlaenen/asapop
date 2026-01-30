@@ -22,15 +22,20 @@ abstract class Chart {
     /**
      * The X coordinate for the center of the chart.
      */
-    protected static final double CENTER_X = ((double) SVG_CONTAINER_WIDTH) / 2;
+    protected static final double CENTER_X = ((double) SVG_CONTAINER_WIDTH) * 0.5D;
     /**
      * The Y coordinate for the center of the chart.
      */
-    protected static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) / 2;
+    protected static final double CENTER_Y = ((double) SVG_CONTAINER_HEIGHT) * 0.5D;
     /**
      * The height of the canvas for the chart.
      */
     protected static final double CHART_CANVAS_HEIGHT = ((double) SVG_CONTAINER_HEIGHT) * 0.8D;
+    protected static final double CHART_CANVAS_WIDTH = ((double) SVG_CONTAINER_WIDTH) * 0.8D;
+    protected static final double LEFT_X = ((double) SVG_CONTAINER_WIDTH) * 0.1D;
+    protected static final double RIGHT_X = ((double) SVG_CONTAINER_WIDTH) * 0.9D;
+    protected static final double TOP_Y = ((double) SVG_CONTAINER_HEIGHT) * 0.1D;
+    protected static final double BOTTOM_Y = ((double) SVG_CONTAINER_HEIGHT) * 0.9D;
     /**
      * The height for the title of the chart.
      */

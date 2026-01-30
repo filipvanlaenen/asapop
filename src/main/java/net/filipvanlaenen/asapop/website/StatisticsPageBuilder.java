@@ -17,6 +17,7 @@ import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.array.ModifiableArrayCollection;
 import net.filipvanlaenen.kolektoj.array.ModifiableOrderedArrayCollection;
 import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
@@ -305,10 +306,17 @@ final class StatisticsPageBuilder extends PageBuilder {
             table.addElement(tBody);
             int firstYear = numberOfOpinionPolls.getLeastKey();
             int lastYear = numberOfOpinionPolls.getGreatestKey();
+            ModifiableOrderedCollection<BarChart.Entry> numberOfOpinionPollsEntries =
+                    ModifiableOrderedCollection.empty();
+            ModifiableOrderedCollection<BarChart.Entry> numberOfResponseScenariosEntries =
+                    ModifiableOrderedCollection.empty();
+            int thisYear = now.getYear();
             for (int year = firstYear; year <= lastYear; year++) {
                 TR yearTr = new TR();
-                yearTr.data("year", Integer.toString(year));
+                String yearString = Integer.toString(year);
+                yearTr.data("year", yearString);
                 yearTr.addElement(new TD(Integer.toString(year)));
+                String sliceClass = year == thisYear ? "bar-chart-2" : "bar-chart-1";
                 if (numberOfOpinionPolls.containsKey(year)) {
                     int op = numberOfOpinionPolls.get(year);
                     yearTr.data("number-of-opinion-polls", Integer.toString(op));
@@ -319,6 +327,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                     int rv = numberOfResultValues.get(year);
                     yearTr.data("number-of-result-values", Integer.toString(rv));
                     yearTr.addElement(createNumberTd(rv).clazz("statistics-value-td"));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, op, sliceClass));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, rs, sliceClass));
                 } else {
                     yearTr.data("number-of-opinion-polls", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -326,10 +336,11 @@ final class StatisticsPageBuilder extends PageBuilder {
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                     yearTr.data("number-of-result-values", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, 0L, sliceClass));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, 0L, sliceClass));
                 }
                 tBody.addElement(yearTr);
             }
-            int thisYear = now.getYear();
             if (lastYear == thisYear - 1) {
                 TR yearTr = new TR();
                 yearTr.data("year", Integer.toString(thisYear));
@@ -351,6 +362,13 @@ final class StatisticsPageBuilder extends PageBuilder {
             totalTr.addElement(
                     createNumberTd(OpinionPollsStore.getNumberOfResultValues()).clazz("statistics-total-td"));
             tHead.addElement(totalTr);
+            Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
+            numberOfOpinionPollsCharts.addElement(
+                    new BarChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
+                            .getDiv());
+            numberOfOpinionPollsCharts.addElement(new BarChart("svg-chart-container-right",
+                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+            section.addElement(numberOfOpinionPollsCharts);
         }
     }
 
@@ -501,6 +519,7 @@ final class StatisticsPageBuilder extends PageBuilder {
         addYearStatistics(section);
         body.addElement(createFooter());
         body.addElement(PieChart.createTooltipDiv());
+        body.addElement(BarChart.createTooltipDiv());
         return html;
     }
 
