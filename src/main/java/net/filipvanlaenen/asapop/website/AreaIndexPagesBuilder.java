@@ -34,6 +34,7 @@ import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.SortedCollection;
 import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
 import net.filipvanlaenen.txhtmlj.BR;
@@ -333,27 +334,40 @@ class AreaIndexPagesBuilder extends PageBuilder {
             totalTr.addElement(
                     createNumberTd(OpinionPollsStore.getNumberOfResultValues(areaCode)).clazz("statistics-total-td"));
             tHead.addElement(totalTr);
+            OrderedCollection<BarChart.Entry> numberOfOpinionPollsByMonthEntries =
+                    OpinionPollsStore.getNumberOfOpinionPollsByMonth(areaCode).stream()
+                            .map(entry -> new BarChart.Entry(Integer.toString(entry.key()),
+                                    String.format("%02d", entry.key()), entry.value(), "bar-chart-month"))
+                            .collect(net.filipvanlaenen.kolektoj.collectors.Collectors.toOrderedCollection());
             Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
             numberOfOpinionPollsCharts.addElement(
                     new BarChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
                             .getDiv());
-            numberOfOpinionPollsCharts.addElement(
-                    new BarChart("svg-chart-container-right", "number-of-opinion-polls", numberOfOpinionPollsEntries)
-                            .getDiv());
+            numberOfOpinionPollsCharts.addElement(new BarChart("svg-chart-container-right", "number-of-opinion-polls",
+                    numberOfOpinionPollsByMonthEntries).getDiv());
             section.addElement(numberOfOpinionPollsCharts);
+            OrderedCollection<BarChart.Entry> numberOfResponseScenariosByMonthEntries =
+                    OpinionPollsStore.getNumberOfResponseScenariosByMonth(areaCode).stream()
+                            .map(entry -> new BarChart.Entry(Integer.toString(entry.key()),
+                                    String.format("%02d", entry.key()), entry.value(), "bar-chart-month"))
+                            .collect(net.filipvanlaenen.kolektoj.collectors.Collectors.toOrderedCollection());
             Div numberOfResponseScenariosCharts = new Div().clazz("two-svg-charts-container");
             numberOfResponseScenariosCharts.addElement(new BarChart("svg-chart-container-left",
                     "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
             numberOfResponseScenariosCharts.addElement(new BarChart("svg-chart-container-right",
-                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+                    "number-of-response-scenarios", numberOfResponseScenariosByMonthEntries).getDiv());
             section.addElement(numberOfResponseScenariosCharts);
+            OrderedCollection<BarChart.Entry> numberOfResultValuesByMonthEntries =
+                    OpinionPollsStore.getNumberOfResultValuesByMonth(areaCode).stream()
+                            .map(entry -> new BarChart.Entry(Integer.toString(entry.key()),
+                                    String.format("%02d", entry.key()), entry.value(), "bar-chart-month"))
+                            .collect(net.filipvanlaenen.kolektoj.collectors.Collectors.toOrderedCollection());
             Div numberOfResultValuesCharts = new Div().clazz("two-svg-charts-container");
             numberOfResultValuesCharts.addElement(
                     new BarChart("svg-chart-container-left", "number-of-result-values", numberOfResultValuesEntries)
                             .getDiv());
-            numberOfResultValuesCharts.addElement(
-                    new BarChart("svg-chart-container-right", "number-of-result-values", numberOfResultValuesEntries)
-                            .getDiv());
+            numberOfResultValuesCharts.addElement(new BarChart("svg-chart-container-right", "number-of-result-values",
+                    numberOfResultValuesByMonthEntries).getDiv());
             section.addElement(numberOfResultValuesCharts);
         } else {
             addNoneParagraph(section);

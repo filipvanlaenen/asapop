@@ -13,35 +13,40 @@ import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
  * A class holding all opinion polls, with indexes.
  */
 public class OpinionPollsStore {
+    // TODO: Remove the call to toArray
+    private static final Integer[] ALL_MONTHS = OrderedIntegerCollection.createSequence(i -> i + 1, 12).toArray();
     private static int numberOfOpinionPolls = 0;
     private static ModifiableIntegerMap<String> numberOfOpinionPollsByArea = ModifiableIntegerMap.<String>empty();
-    // TODO: Remove the call to toArray
     // TODO: Switch to UpdatableSortedIntegerMap
     private static ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByMonth =
-            ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0,
-                    OrderedIntegerCollection.createSequence(i -> i + 1, 12).toArray());
+            ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS);
+    // TODO: Switch to UpdatableSortedIntegerMap
+    private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfOpinionPollsByMonthByArea =
+            ModifiableMap.empty();
     private static ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByYear =
             ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfOpinionPollsByYearByArea =
             ModifiableMap.empty();
     private static int numberOfResponseScenarios = 0;
     private static ModifiableIntegerMap<String> numberOfResponseScenariosByArea = ModifiableIntegerMap.<String>empty();
-    // TODO: Remove the call to toArray
     // TODO: Switch to UpdatableSortedIntegerMap
     private static ModifiableSortedIntegerMap<Integer> numberOfResponseScenariosByMonth =
-            ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0,
-                    OrderedIntegerCollection.createSequence(i -> i + 1, 12).toArray());
+            ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS);
+    // TODO: Switch to UpdatableSortedIntegerMap
+    private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResponseScenariosByMonthByArea =
+            ModifiableMap.empty();
     private static ModifiableSortedIntegerMap<Integer> numberOfResponseScenariosByYear =
             ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResponseScenariosByYearByArea =
             ModifiableMap.empty();
     private static int numberOfResultsValues = 0;
     private static ModifiableIntegerMap<String> numberOfResultValuesByArea = ModifiableIntegerMap.<String>empty();
-    // TODO: Remove the call to toArray
     // TODO: Switch to UpdatableSortedIntegerMap
     private static ModifiableSortedIntegerMap<Integer> numberOfResultValuesByMonth =
-            ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0,
-                    OrderedIntegerCollection.createSequence(i -> i + 1, 12).toArray());
+            ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS);
+    // TODO: Switch to UpdatableSortedIntegerMap
+    private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResultValuesByMonthByArea =
+            ModifiableMap.empty();
     private static ModifiableSortedIntegerMap<Integer> numberOfResultValuesByYear =
             ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResultValuesByYearByArea =
@@ -52,17 +57,29 @@ public class OpinionPollsStore {
             numberOfOpinionPollsByArea.add(areaCode, 0);
             numberOfResponseScenariosByArea.add(areaCode, 0);
             numberOfResultValuesByArea.add(areaCode, 0);
+            numberOfOpinionPollsByMonthByArea.add(areaCode,
+                    ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS));
             numberOfOpinionPollsByYearByArea.add(areaCode,
                     ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder()));
+            numberOfResponseScenariosByMonthByArea.add(areaCode,
+                    ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS));
             numberOfResponseScenariosByYearByArea.add(areaCode,
                     ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder()));
+            numberOfResultValuesByMonthByArea.add(areaCode,
+                    ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS));
             numberOfResultValuesByYearByArea.add(areaCode,
                     ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder()));
         }
+        ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByMonthForThisArea =
+                numberOfOpinionPollsByMonthByArea.get(areaCode);
         ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByYearForThisArea =
                 numberOfOpinionPollsByYearByArea.get(areaCode);
+        ModifiableSortedIntegerMap<Integer> numberOfResponseScenariosByMonthForThisArea =
+                numberOfResponseScenariosByMonthByArea.get(areaCode);
         ModifiableSortedIntegerMap<Integer> numberOfResponseScenariosByYearForThisArea =
                 numberOfResponseScenariosByYearByArea.get(areaCode);
+        ModifiableSortedIntegerMap<Integer> numberOfResultValuesByMonthForThisArea =
+                numberOfResultValuesByMonthByArea.get(areaCode);
         ModifiableSortedIntegerMap<Integer> numberOfResultValuesByYearForThisArea =
                 numberOfResultValuesByYearByArea.get(areaCode);
         for (OpinionPoll opinionPoll : opinionPolls) {
@@ -86,8 +103,11 @@ public class OpinionPollsStore {
             }
             int month = opinionPoll.getEndDate().getMonthValue();
             numberOfOpinionPollsByMonth.augment(month, 1);
+            numberOfOpinionPollsByMonthForThisArea.augment(month, 1);
             numberOfResponseScenariosByMonth.augment(month, thisNumberOfResponseScenarios);
+            numberOfResponseScenariosByMonthForThisArea.augment(month, thisNumberOfResponseScenarios);
             numberOfResultValuesByMonth.augment(month, thisNumberOfResultValues);
+            numberOfResultValuesByMonthForThisArea.augment(month, thisNumberOfResultValues);
             if (numberOfOpinionPollsByYearForThisArea.containsKey(year)) {
                 numberOfOpinionPollsByYearForThisArea.augment(year, 1);
                 numberOfResponseScenariosByYearForThisArea.augment(year, thisNumberOfResponseScenarios);
@@ -115,6 +135,12 @@ public class OpinionPollsStore {
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth() {
         // TODO: Replace with the of factory method
         return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfOpinionPollsByMonth);
+    }
+
+    public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth(String areaCode) {
+        // TODO: Replace with the of factory method
+        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
+                numberOfOpinionPollsByMonthByArea.get(areaCode));
     }
 
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByYear() {
@@ -145,6 +171,12 @@ public class OpinionPollsStore {
         return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResponseScenariosByMonth);
     }
 
+    public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByMonth(String areaCode) {
+        // TODO: Replace with the of factory method
+        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
+                numberOfResponseScenariosByMonthByArea.get(areaCode));
+    }
+
     public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByYear() {
         // TODO: Replace with the of factory method
         return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResponseScenariosByYear);
@@ -171,6 +203,12 @@ public class OpinionPollsStore {
     public static SortedIntegerMap<Integer> getNumberOfResultValuesByMonth() {
         // TODO: Replace with the of factory method
         return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResultValuesByMonth);
+    }
+
+    public static SortedIntegerMap<Integer> getNumberOfResultValuesByMonth(String areaCode) {
+        // TODO: Replace with the of factory method
+        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
+                numberOfResultValuesByMonthByArea.get(areaCode));
     }
 
     public static SortedIntegerMap<Integer> getNumberOfResultValuesByYear() {
