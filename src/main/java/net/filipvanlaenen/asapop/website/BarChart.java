@@ -41,11 +41,11 @@ class BarChart extends Chart {
     /**
      * Record type to contain entries for a pie chart.
      *
-     * @param label      The class for this entry's label.
-     * @param value      The value for this entry.
-     * @param sliceClass The class for this entry's slice in the pie chart.
+     * @param label    The class for this entry's label.
+     * @param value    The value for this entry.
+     * @param barClass The class for this entry's bar.
      */
-    record Entry(String label, long value, String sliceClass, boolean showLabel) implements Chart.Entry {
+    record Entry(String label, String symbol, long value, String barClass) implements Chart.Entry {
     }
 
     /**
@@ -90,20 +90,21 @@ class BarChart extends Chart {
             String label = entry.label();
             double x = LEFT_X + slotWidth * 0.05D + i * slotWidth;
             double height = CHART_CANVAS_HEIGHT * value / maximumValue;
-            String sliceClass = entry.sliceClass();
-            if (sliceClass == null) {
-                sliceClass = "bar-chart-" + (i % TWELVE + 1);
+            String barClass = entry.barClass();
+            if (barClass == null) {
+                barClass = "bar-chart-" + (i % TWELVE + 1);
             }
-            Rect rect = new Rect().x(x).y(BOTTOM_Y - height).height(height).width(barWidth).clazz(sliceClass);
+            Rect rect = new Rect().x(x).y(BOTTOM_Y - height).height(height).width(barWidth).clazz(barClass);
             String onMouseMoveEvent = "showBarChartTooltip(evt, '" + label + "', '" + value + "');";
             String onMouseOutEvent = "hideTooltip('" + TOOLTIP_ID + "');";
             rect.onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);
             svg.addElement(rect);
-            if (entry.showLabel()) {
+            String symbol = entry.symbol();
+            if (symbol != null) {
                 double labelX = LEFT_X + slotWidth * 0.55D + i * slotWidth;
                 double labelFontSize = barWidth > TITLE_HEIGHT ? TITLE_HEIGHT : barWidth * 0.9D;
                 double labelY = BOTTOM_Y - labelFontSize * 0.2D;
-                Text labelText = new Text(label).x(labelX).y(labelY).fontSize(labelFontSize)
+                Text labelText = new Text(symbol).x(labelX).y(labelY).fontSize(labelFontSize)
                         .textAnchor(TextAnchorValue.START).dominantBaseline(DominantBaselineValue.MIDDLE)
                         .transform(Transform.rotate(-90, labelX, labelY)).clazz(LABEL_CLASS)
                         .onmousemove(onMouseMoveEvent).onmouseout(onMouseOutEvent);

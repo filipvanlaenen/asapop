@@ -274,6 +274,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     ModifiableOrderedCollection.empty();
             ModifiableOrderedCollection<BarChart.Entry> numberOfResponseScenariosEntries =
                     ModifiableOrderedCollection.empty();
+            ModifiableOrderedCollection<BarChart.Entry> numberOfResultValuesEntries =
+                    ModifiableOrderedCollection.empty();
             int thisYear = now.getYear();
             for (int year = firstYear; year <= lastYear; year++) {
                 TR yearTr = new TR();
@@ -281,7 +283,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
                 yearTr.data("year", yearString);
                 yearTr.addElement(new TD(Integer.toString(year)));
                 boolean fifthYear = year % 5 == 0;
-                String sliceClass =
+                String symbol = fifthYear ? yearString : null;
+                String barClass =
                         year == thisYear ? "bar-chart-thisyear" : fifthYear ? "bar-chart-year5" : "bar-chart-year";
                 if (numberOfOpinionPolls.containsKey(year)) {
                     int op = numberOfOpinionPolls.get(year);
@@ -293,8 +296,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     int rv = numberOfResultValues.get(year);
                     yearTr.data("number-of-result-values", Integer.toString(rv));
                     yearTr.addElement(createNumberTd(rv).clazz("statistics-value-td"));
-                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, op, sliceClass, fifthYear));
-                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, rs, sliceClass, fifthYear));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, symbol, op, barClass));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, symbol, rs, barClass));
+                    numberOfResultValuesEntries.add(new BarChart.Entry(yearString, symbol, rv, barClass));
                 } else {
                     yearTr.data("number-of-opinion-polls", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -302,8 +306,9 @@ class AreaIndexPagesBuilder extends PageBuilder {
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                     yearTr.data("number-of-result-values", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
-                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, 0L, sliceClass, fifthYear));
-                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, 0L, sliceClass, fifthYear));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, symbol, 0L, barClass));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, symbol, 0L, barClass));
+                    numberOfResultValuesEntries.add(new BarChart.Entry(yearString, symbol, 0L, barClass));
                 }
                 tBody.addElement(yearTr);
             }
@@ -332,9 +337,24 @@ class AreaIndexPagesBuilder extends PageBuilder {
             numberOfOpinionPollsCharts.addElement(
                     new BarChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
                             .getDiv());
-            numberOfOpinionPollsCharts.addElement(new BarChart("svg-chart-container-right",
-                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+            numberOfOpinionPollsCharts.addElement(
+                    new BarChart("svg-chart-container-right", "number-of-opinion-polls", numberOfOpinionPollsEntries)
+                            .getDiv());
             section.addElement(numberOfOpinionPollsCharts);
+            Div numberOfResponseScenariosCharts = new Div().clazz("two-svg-charts-container");
+            numberOfResponseScenariosCharts.addElement(new BarChart("svg-chart-container-left",
+                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+            numberOfResponseScenariosCharts.addElement(new BarChart("svg-chart-container-right",
+                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+            section.addElement(numberOfResponseScenariosCharts);
+            Div numberOfResultValuesCharts = new Div().clazz("two-svg-charts-container");
+            numberOfResultValuesCharts.addElement(
+                    new BarChart("svg-chart-container-left", "number-of-result-values", numberOfResultValuesEntries)
+                            .getDiv());
+            numberOfResultValuesCharts.addElement(
+                    new BarChart("svg-chart-container-right", "number-of-result-values", numberOfResultValuesEntries)
+                            .getDiv());
+            section.addElement(numberOfResultValuesCharts);
         } else {
             addNoneParagraph(section);
         }

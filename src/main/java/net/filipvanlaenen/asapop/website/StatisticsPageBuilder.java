@@ -15,6 +15,7 @@ import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.Map.Entry;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
@@ -310,6 +311,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                     ModifiableOrderedCollection.empty();
             ModifiableOrderedCollection<BarChart.Entry> numberOfResponseScenariosEntries =
                     ModifiableOrderedCollection.empty();
+            ModifiableOrderedCollection<BarChart.Entry> numberOfResultValuesEntries =
+                    ModifiableOrderedCollection.empty();
             int thisYear = now.getYear();
             for (int year = firstYear; year <= lastYear; year++) {
                 TR yearTr = new TR();
@@ -317,7 +320,8 @@ final class StatisticsPageBuilder extends PageBuilder {
                 yearTr.data("year", yearString);
                 yearTr.addElement(new TD(Integer.toString(year)));
                 boolean fifthYear = year % 5 == 0;
-                String sliceClass =
+                String symbol = fifthYear ? yearString : null;
+                String barClass =
                         year == thisYear ? "bar-chart-thisyear" : fifthYear ? "bar-chart-year5" : "bar-chart-year";
                 if (numberOfOpinionPolls.containsKey(year)) {
                     int op = numberOfOpinionPolls.get(year);
@@ -329,8 +333,9 @@ final class StatisticsPageBuilder extends PageBuilder {
                     int rv = numberOfResultValues.get(year);
                     yearTr.data("number-of-result-values", Integer.toString(rv));
                     yearTr.addElement(createNumberTd(rv).clazz("statistics-value-td"));
-                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, op, sliceClass, fifthYear));
-                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, rs, sliceClass, fifthYear));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, symbol, op, barClass));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, symbol, rs, barClass));
+                    numberOfResultValuesEntries.add(new BarChart.Entry(yearString, symbol, rv, barClass));
                 } else {
                     yearTr.data("number-of-opinion-polls", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
@@ -338,8 +343,9 @@ final class StatisticsPageBuilder extends PageBuilder {
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
                     yearTr.data("number-of-result-values", "0");
                     yearTr.addElement(new TD("—").clazz("statistics-value-td"));
-                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, 0L, sliceClass, fifthYear));
-                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, 0L, sliceClass, fifthYear));
+                    numberOfOpinionPollsEntries.add(new BarChart.Entry(yearString, symbol, 0L, barClass));
+                    numberOfResponseScenariosEntries.add(new BarChart.Entry(yearString, symbol, 0L, barClass));
+                    numberOfResultValuesEntries.add(new BarChart.Entry(yearString, symbol, 0L, barClass));
                 }
                 tBody.addElement(yearTr);
             }
@@ -364,13 +370,41 @@ final class StatisticsPageBuilder extends PageBuilder {
             totalTr.addElement(
                     createNumberTd(OpinionPollsStore.getNumberOfResultValues()).clazz("statistics-total-td"));
             tHead.addElement(totalTr);
+            OrderedCollection<BarChart.Entry> numberOfOpinionPollsByMonthEntries =
+                    OpinionPollsStore.getNumberOfOpinionPollsByMonth().stream()
+                            .map(entry -> new BarChart.Entry(Integer.toString(entry.key()),
+                                    String.format("%02d", entry.key()), entry.value(), "bar-chart-month"))
+                            .collect(net.filipvanlaenen.kolektoj.collectors.Collectors.toOrderedCollection());
             Div numberOfOpinionPollsCharts = new Div().clazz("two-svg-charts-container");
             numberOfOpinionPollsCharts.addElement(
                     new BarChart("svg-chart-container-left", "number-of-opinion-polls", numberOfOpinionPollsEntries)
                             .getDiv());
-            numberOfOpinionPollsCharts.addElement(new BarChart("svg-chart-container-right",
-                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+            numberOfOpinionPollsCharts.addElement(new BarChart("svg-chart-container-right", "number-of-opinion-polls",
+                    numberOfOpinionPollsByMonthEntries).getDiv());
             section.addElement(numberOfOpinionPollsCharts);
+            OrderedCollection<BarChart.Entry> numberOfResponseScenatiosByMonthEntries =
+                    OpinionPollsStore.getNumberOfResponseScenariosByMonth().stream()
+                            .map(entry -> new BarChart.Entry(Integer.toString(entry.key()),
+                                    String.format("%02d", entry.key()), entry.value(), "bar-chart-month"))
+                            .collect(net.filipvanlaenen.kolektoj.collectors.Collectors.toOrderedCollection());
+            Div numberOfResponseScenariosCharts = new Div().clazz("two-svg-charts-container");
+            numberOfResponseScenariosCharts.addElement(new BarChart("svg-chart-container-left",
+                    "number-of-response-scenarios", numberOfResponseScenariosEntries).getDiv());
+            numberOfResponseScenariosCharts.addElement(new BarChart("svg-chart-container-right",
+                    "number-of-response-scenarios", numberOfResponseScenatiosByMonthEntries).getDiv());
+            section.addElement(numberOfResponseScenariosCharts);
+            OrderedCollection<BarChart.Entry> numberOfResultValuesByMonthEntries =
+                    OpinionPollsStore.getNumberOfResultValuesByMonth().stream()
+                            .map(entry -> new BarChart.Entry(Integer.toString(entry.key()),
+                                    String.format("%02d", entry.key()), entry.value(), "bar-chart-month"))
+                            .collect(net.filipvanlaenen.kolektoj.collectors.Collectors.toOrderedCollection());
+            Div numberOfResultValuesCharts = new Div().clazz("two-svg-charts-container");
+            numberOfResultValuesCharts.addElement(
+                    new BarChart("svg-chart-container-left", "number-of-result-values", numberOfResultValuesEntries)
+                            .getDiv());
+            numberOfResultValuesCharts.addElement(new BarChart("svg-chart-container-right", "number-of-result-values",
+                    numberOfResultValuesByMonthEntries).getDiv());
+            section.addElement(numberOfResultValuesCharts);
         }
     }
 

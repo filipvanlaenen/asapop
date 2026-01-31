@@ -47,7 +47,7 @@ header {
   display: block;
 }
 
-circle.pie-chart-1, path.pie-chart-1, rect.bar-chart-1, rect.bar-chart-year {
+circle.pie-chart-1, path.pie-chart-1, rect.bar-chart-1, rect.bar-chart-year, rect.bar-chart-month {
   fill: #F3B23A;
 }
 
