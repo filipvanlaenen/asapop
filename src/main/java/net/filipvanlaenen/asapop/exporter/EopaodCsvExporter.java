@@ -44,6 +44,7 @@ public final class EopaodCsvExporter extends CsvExporter {
         map.add(null, null);
         map.add(Scope.EUROPEAN, "European");
         map.add(Scope.NATIONAL, "National");
+        map.add(Scope.NATIONAL_DISTRICT, "National (District Vote)");
         map.add(Scope.NATIONAL_TWO_PARTY_PREFERRED, "National Two-party-preferred");
         map.add(Scope.PRESIDENTIAL_FIRST_ROUND, "Presidential");
         map.add(Scope.REGIONAL, "Regional");

@@ -16,6 +16,11 @@ public enum Scope {
      */
     NATIONAL("N"),
     /**
+     * Opinion polls for the election of the national parliament (district vote in a mixed proportional/district vote
+     * system).
+     */
+    NATIONAL_DISTRICT("ND"),
+    /**
      * Two-party-preferred results in opinion polls for the election of the national parliament.
      */
     NATIONAL_TWO_PARTY_PREFERRED("N2"),
