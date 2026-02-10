@@ -37,7 +37,13 @@ public final class Candidate {
         this.id = id;
     }
 
-    public static boolean contains(final String id) {
+    /**
+     * Checks whether a candidate with that ID has already been registered.
+     *
+     * @param id The ID to check.
+     * @return True if the ID has already been registered, and false otherwise.
+     */
+    public static boolean idRegistered(final String id) {
         return instances.containsKey(id);
     }
 

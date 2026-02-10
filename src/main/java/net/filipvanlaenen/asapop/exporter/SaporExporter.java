@@ -189,14 +189,14 @@ public class SaporExporter extends Exporter {
             DirectSaporMapping directSaporMapping = saporMapping.getDirectMapping();
             if (directSaporMapping != null) {
                 String source = directSaporMapping.getSource();
-                if (Candidate.contains(source)) {
+                if (Candidate.idRegistered(source)) {
                     result.add(Candidate.get(source));
                 }
             }
             AdditiveSaporMapping additiveSaporMapping = saporMapping.getAdditiveMapping();
             if (additiveSaporMapping != null) {
                 for (String source : additiveSaporMapping.getSources()) {
-                    if (Candidate.contains(source)) {
+                    if (Candidate.idRegistered(source)) {
                         result.add(Candidate.get(source));
                     }
                 }
@@ -204,7 +204,7 @@ public class SaporExporter extends Exporter {
             AdditiveSplittingSaporMapping additiveSplittingSaporMapping = saporMapping.getAdditiveSplittingMapping();
             if (additiveSplittingSaporMapping != null) {
                 for (String source : additiveSplittingSaporMapping.getSources()) {
-                    if (Candidate.contains(source)) {
+                    if (Candidate.idRegistered(source)) {
                         result.add(Candidate.get(source));
                     }
                 }
@@ -212,7 +212,7 @@ public class SaporExporter extends Exporter {
             SplittingSaporMapping splittingSaporMapping = saporMapping.getSplittingMapping();
             if (splittingSaporMapping != null) {
                 String source = splittingSaporMapping.getSource();
-                if (Candidate.contains(source)) {
+                if (Candidate.idRegistered(source)) {
                     result.add(Candidate.get(source));
                 }
             }
@@ -570,7 +570,7 @@ public class SaporExporter extends Exporter {
         double actualValue = 0D;
         boolean termPresent = false;
         for (String source : additiveSaporMapping.getSources()) {
-            if (Candidate.contains(source)) {
+            if (Candidate.idRegistered(source)) {
                 Candidate candidate = Candidate.get(source);
                 if (actualCandidateValues.containsKey(candidate)) {
                     termPresent = true;
@@ -616,7 +616,7 @@ public class SaporExporter extends Exporter {
         double actualValue = 0D;
         boolean termPresent = false;
         for (String source : additiveSplittingSaporMapping.getSources()) {
-            if (Candidate.contains(source)) {
+            if (Candidate.idRegistered(source)) {
                 Candidate candidate = Candidate.get(source);
                 if (actualCandidateValues.containsKey(candidate)) {
                     termPresent = true;
@@ -667,7 +667,7 @@ public class SaporExporter extends Exporter {
         }
         Double actualValue = -1D;
         String source = directSaporMapping.getSource();
-        if (Candidate.contains(source)) {
+        if (Candidate.idRegistered(source)) {
             Candidate candidate = Candidate.get(source);
             if (actualCandidateValues.containsKey(candidate)) {
                 actualValue = actualCandidateValues.get(candidate);
@@ -756,7 +756,7 @@ public class SaporExporter extends Exporter {
         }
         Double actualValue = -1D;
         String source = splittingSaporMapping.getSource();
-        if (Candidate.contains(source)) {
+        if (Candidate.idRegistered(source)) {
             Candidate candidate = Candidate.get(source);
             if (actualCandidateValues.containsKey(candidate)) {
                 actualValue = actualCandidateValues.get(candidate);

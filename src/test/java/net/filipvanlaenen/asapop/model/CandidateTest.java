@@ -1,7 +1,9 @@
 package net.filipvanlaenen.asapop.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 
@@ -61,5 +63,22 @@ public class CandidateTest {
         Candidate candidate = Candidate.get("ElectoralListTestGetRomanizedName");
         candidate.setRomanizedName("Vasya Pupkin");
         assertEquals("Vasya Pupkin", candidate.getRomanizedName());
+    }
+
+    /**
+     * Verifies that <code>idRegistered</code> returns false when an ID hasn't been registered yet.
+     */
+    @Test
+    public void idRegisteredShouldReturnFalseForAnIdNotYetRegistered() {
+        assertFalse(Candidate.idRegistered("NOT_YET_REGISTERED"));
+    }
+
+    /**
+     * Verifies that <code>idRegistered</code> returns true when an ID has been registered.
+     */
+    @Test
+    public void idRegisteredShouldReturnTrueForAnIdAlreadyRegistered() {
+        Candidate.get("ALREADY_REGISTERED");
+        assertTrue(Candidate.idRegistered("ALREADY_REGISTERED"));
     }
 }
