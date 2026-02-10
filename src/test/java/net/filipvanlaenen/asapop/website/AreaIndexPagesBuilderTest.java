@@ -245,6 +245,8 @@ public class AreaIndexPagesBuilderTest {
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addMiddlePart(expected);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        expected.append("      <h2 class=\"statistics\"> </h2>\n");
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addBottomPart(expected);
         return expected.toString();
     }
@@ -297,6 +299,8 @@ public class AreaIndexPagesBuilderTest {
             }
             expected.append("      </ul>\n");
         }
+        expected.append("      <h2 class=\"statistics\"> </h2>\n");
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addBottomPart(expected);
         return expected.toString();
     }
@@ -397,6 +401,8 @@ public class AreaIndexPagesBuilderTest {
         expected.append("        </sup>\n");
         expected.append("        <span class=\"publication-date\"> </span>\n");
         expected.append("      </p>\n");
+        expected.append("      <h2 class=\"statistics\"> </h2>\n");
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addBottomPart(expected);
         return expected.toString();
     }
@@ -418,6 +424,8 @@ public class AreaIndexPagesBuilderTest {
                         + " </span></li>\n");
         expected.append("      </ul>\n");
         addMiddlePart(expected);
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
+        expected.append("      <h2 class=\"statistics\"> </h2>\n");
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addBottomPart(expected);
         return expected.toString();
@@ -442,6 +450,8 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
+        expected.append(
+                "    <div class=\"tooltip\" id=\"barChartTooltip\" style=\"position: absolute; display: none;\"> <span id=\"barChartTooltipLabel\"> </span>: <span id=\"barChartTooltipNumber\"> </span></div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
     }
@@ -467,7 +477,8 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <script src=\"../_js/sorting.js\" type=\"application/javascript\"> </script>\n");
         expected.append("    <script src=\"../_js/tooltip.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
-        expected.append("  <body onload=\"initializeLanguage();\">\n");
+        expected.append(
+                "  <body onload=\"initializeLanguage(); sortTable('statistics-by-year-table', 2, 'year', 'numeric')\">\n");
         expected.append("    <header>\n");
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <a class=\"main-page\" href=\"../index.html\"> </a>\n");
@@ -479,7 +490,7 @@ public class AreaIndexPagesBuilderTest {
             expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
         }
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"../calendar.html\"> </a> ·"
-                + " <a class=\"csv-files\" href=\"../csv.html\"> </a> · <a class=\"statistics-page\""
+                + " <a class=\"statistics-page\""
                 + " href=\"../statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
                 + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
@@ -535,6 +546,8 @@ public class AreaIndexPagesBuilderTest {
         expected.append("          </tr>\n");
         expected.append("        </tbody>\n");
         expected.append("      </table>\n");
+        expected.append("      <h2 class=\"statistics\"> </h2>\n");
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addBottomPart(expected);
         return expected.toString();
     }
