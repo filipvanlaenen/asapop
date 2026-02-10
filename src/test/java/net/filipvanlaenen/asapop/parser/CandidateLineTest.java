@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.time.Instant;
 
 import org.junit.jupiter.api.Test;
 
@@ -84,9 +85,10 @@ public final class CandidateLineTest {
      */
     @Test
     public void shouldUpdateTheNameOfACandidate() {
-        CandidateLine candidateLine = CandidateLine.parse(TOKEN, "DOE: AA2020N •A: DOE •N: John Doe");
+        String name = "John Doe " + Instant.now().toEpochMilli();
+        CandidateLine candidateLine = CandidateLine.parse(TOKEN, "DOE: AA2020N •A: DOE •N: " + name);
         candidateLine.updateCandidate();
-        assertEquals("John Doe", Candidate.get("AA2020N").getName());
+        assertEquals(name, Candidate.get("AA2020N").getName());
     }
 
     /**

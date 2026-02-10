@@ -119,6 +119,7 @@ final class CandidateLine extends Line {
     /**
      * Processes a key and value from a part of a candidate line.
      *
+     * @param token     The Laconic logging token.
      * @param remainder The remainder of a line to parse a key and value from.
      * @return The unprocessed part of the line.
      */
@@ -133,6 +134,7 @@ final class CandidateLine extends Line {
     /**
      * Processes a data block with information for a candidate.
      *
+     * @param token          The Laconic logging token.
      * @param keyValueString The data block to process.
      */
     private void processKeyValue(final Token token, final String keyValueString) {
