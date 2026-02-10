@@ -27,6 +27,19 @@ import net.filipvanlaenen.laconic.Token;
  * Unit tests on the <code>CsvFilesBuilder</code> class.
  */
 public class CsvFilesBuilderTest {
+    private static final String POLLS_NORTH_MACEDONIA_CSV =
+            "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
+                    + "Participation,Precision,A,B,Other\n";
+    private static final String POLLS_FRANCE_CSV =
+            "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
+                    + "Participation,Precision,F,G,Other\n"
+                    + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
+                    + "40%,Not Available\n";
+    private static final String POLLS_FLANDERS_CSV =
+            "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
+                    + "Participation,Precision,P,Q,Other\n";
+    private static final String ELECTORAL_LISTS_CSV =
+            "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n" + ",F,\n" + ",G,\n" + ",P,\n" + ",Q,\n";
     /**
      * A Laconic logging token for unit testing.
      */
@@ -64,19 +77,14 @@ public class CsvFilesBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         ElectoralList.clear();
         ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
-        expected.put(Paths.get("_csv", "be-vlg.csv"),
-                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
-                        + "Participation,Precision,P,Q,Other\n");
-        expected.put(Paths.get("_csv", "fr_p13.csv"),
-                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
-                        + "Participation,Precision,F,G,Other\n"
-                        + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
-                        + "40%,Not Available\n");
-        expected.put(Paths.get("_csv", "mk.csv"),
-                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
-                        + "Participation,Precision,A,B,Other\n");
-        expected.put(Paths.get("_csv", "electorallists.csv"),
-                "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n" + ",F,\n" + ",G,\n" + ",P,\n" + ",Q,\n");
+        expected.put(Paths.get("_csv", "be-vlg.csv"), POLLS_FLANDERS_CSV);
+        expected.put(Paths.get("_csv", "be-vlg.v1.csv"), POLLS_FLANDERS_CSV);
+        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_CSV);
+        expected.put(Paths.get("_csv", "fr_p13.v1.csv"), POLLS_FRANCE_CSV);
+        expected.put(Paths.get("_csv", "mk.csv"), POLLS_NORTH_MACEDONIA_CSV);
+        expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_NORTH_MACEDONIA_CSV);
+        expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
+        expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV);
         Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
                 Map.of("be", new OpinionPolls(Collections.EMPTY_SET), "mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
@@ -89,6 +97,10 @@ public class CsvFilesBuilderTest {
         Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
                 presidentialOpinionPollsMap);
-        assertTrue(expected.containsSame(builder.build()));
+        Map<Path, String> actual = builder.build();
+        ModifiableMap<Path, String> unexpected = ModifiableMap.of(actual);
+        unexpected.removeIf(e -> expected.containsKey(e.key()));
+        assertTrue(unexpected.isEmpty());
+        assertTrue(expected.containsSame(actual));
     }
 }

@@ -95,7 +95,7 @@ public class PageBuilderTest {
         expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
         expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
-                + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <a class=\"statistics-page\""
+                + " <a class=\"statistics-page\""
                 + " href=\"statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
                 + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
@@ -127,7 +127,7 @@ public class PageBuilderTest {
         expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
         expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
-                + " <a class=\"csv-files\" href=\"csv.html\"> </a> · <a class=\"statistics-page\""
+                + " <a class=\"statistics-page\""
                 + " href=\"statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
                 + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
@@ -158,7 +158,7 @@ public class PageBuilderTest {
         expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
         expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
         expected.append("</select> · <a class=\"electoral-calendar\" href=\"../calendar.html\"> </a> ·"
-                + " <a class=\"csv-files\" href=\"../csv.html\"> </a> · <a class=\"statistics-page\""
+                + " <a class=\"statistics-page\""
                 + " href=\"../statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
                 + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
