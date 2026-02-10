@@ -11,7 +11,7 @@ public class ElectionList {
     /**
      * A map holding the election dates.
      */
-    @JsonDeserialize(using = IntegerStringMapDeserializer.class)
+    @JsonDeserialize(using = IntegerToStringMapDeserializer.class)
     private Map<Integer, String> dates;
     /**
      * The URL for the GitHub website.

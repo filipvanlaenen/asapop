@@ -19,7 +19,7 @@ public class AreaSubdivisionConfiguration {
     /**
      * A map with the translation of the term in a number of languages.
      */
-    @JsonDeserialize(using = StringStringMapDeserializer.class)
+    @JsonDeserialize(using = StringToStringMapDeserializer.class)
     private Map<String, String> translations;
 
     /**
