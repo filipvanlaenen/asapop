@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.website.Chart.EntryComparator;
 import net.filipvanlaenen.asapop.website.PieChart.Entry;
-import net.filipvanlaenen.asapop.website.PieChart.EntryComparator;
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 
