@@ -15,4 +15,12 @@ public class LanguageTest {
     public void getIdShouldBeWiredCorrectlyToConstructor() {
         assertEquals("en", Language.ENGLISH.getId());
     }
+
+    /**
+     * Verifies that <code>parse</code> can parse an ID into a language.
+     */
+    @Test
+    public void parseShouldParseAnIdIntoALanguage() {
+        assertEquals(Language.ENGLISH, Language.parse("en"));
+    }
 }

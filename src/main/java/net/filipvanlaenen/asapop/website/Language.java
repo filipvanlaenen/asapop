@@ -1,7 +1,7 @@
 package net.filipvanlaenen.asapop.website;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
  * Enumeration containing the languages supported by the website builder.
@@ -37,14 +37,21 @@ public enum Language {
      */
     private final String id;
     /**
-     * A map mapping string values to their language.
+     * A map mapping IDs to the language.
      */
-    private static final Map<String, Language> VALUE_MAP = new HashMap<String, Language>();
+    private static final Map<String, Language> VALUE_MAP = createValueMap();
 
-    static {
+    /**
+     * Creates the value map, mapping IDs to languages.
+     *
+     * @return A map mapping the IDs to the languages.
+     */
+    private static Map<String, Language> createValueMap() {
+        ModifiableMap<String, Language> map = ModifiableMap.empty();
         for (Language language : values()) {
-            VALUE_MAP.put(language.id, language);
+            map.put(language.id, language);
         }
+        return Map.of(map);
     }
 
     /**
@@ -66,9 +73,9 @@ public enum Language {
     }
 
     /**
-     * Parses a string into a language.
+     * Parses an ID into a language.
      *
-     * @param id The string to parse.
+     * @param id The string with the ID to parse.
      * @return The language represented by the string.
      */
     public static Language parse(final String id) {
