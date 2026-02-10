@@ -22,6 +22,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.Map.Entry;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
@@ -30,6 +31,10 @@ import net.filipvanlaenen.laconic.Token;
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    private static final String POLLS_CSV =
+            "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
+                    + "Sample Size Qualification,Participation,Precision,A,B,Other\n";
+    private static final String ELECTORAL_LISTS_CSV = "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n";
     /**
      * Today's date.
      */
@@ -142,11 +147,10 @@ public class WebsiteBuilderTest {
         expected.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         String tooltipScriptContent = "function tooltip(text) {}";
         expected.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
-        expected.put(Paths.get("_csv", "mk.csv"),
-                "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
-                        + "Sample Size Qualification,Participation,Precision,A,B,Other\n");
-        expected.put(Paths.get("_csv", "electorallists.csv"),
-                "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n");
+        expected.put(Paths.get("_csv", "mk.csv"), POLLS_CSV);
+        expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_CSV);
+        expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
+        expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV);
         expected.put(Paths.get("_widgets", "tables", "mk.html"),
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" + "  <head>\n"
                         + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
@@ -164,6 +168,10 @@ public class WebsiteBuilderTest {
         WebsiteBuilder builder = new WebsiteBuilder(createWebsiteConfiguration(), internationalization, opinionPollsMap,
                 Map.empty(), elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent,
                 sortingScriptContent, tooltipScriptContent, NOW);
-        assertTrue(expected.containsSame(builder.build().asMap()));
+        Map<Path, String> actual = builder.build().asMap();
+        ModifiableMap<Path, String> unexpected = ModifiableMap.of(actual);
+        unexpected.removeIf(e -> expected.containsKey(e.key()));
+        assertTrue(unexpected.isEmpty());
+        assertTrue(expected.containsSame(actual));
     }
 }
