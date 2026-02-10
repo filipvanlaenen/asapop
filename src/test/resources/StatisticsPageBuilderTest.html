@@ -1,0 +1,328 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+    <title>ASAPOP Website Test</title>
+    <link href="_css/base.css" rel="stylesheet" type="text/css"/>
+    <link href="_css/skin.css" rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="application/javascript"> </script>
+    <script src="_js/internationalization.js" type="application/javascript"> </script>
+    <script src="_js/navigation.js" type="application/javascript"> </script>
+    <script src="_js/sorting.js" type="application/javascript"> </script>
+    <script src="_js/tooltip.js" type="application/javascript"> </script>
+  </head>
+  <body onload="initializeLanguage(); sortTable('statistics-by-area-table', 2, 'area-name', 'alphanumeric-internationalized'); sortTable('statistics-by-year-table', 2, 'year', 'numeric')">
+    <header>
+      <div class="header-left">
+        <a class="main-page" href="index.html"> </a>
+      </div>
+      <div class="header-right"><span class="go-to"> </span>: <select id="area-selector" onchange="moveToArea(0);">
+  <option> </option>
+  <option class="_area_dk" value="dk"> </option>
+  <option class="_area_ee" value="ee"> </option>
+  <option class="_area_no" value="no"> </option>
+  <option class="_area_se" value="se"> </option>
+</select> · <a class="electoral-calendar" href="calendar.html"> </a> · <span class="statistics-page"> </span> · <span class="language"> </span>: <select id="language-selector" onchange="loadLanguage();">
+  <option value="de">Deutsch</option>
+  <option value="en">English</option>
+  <option value="eo">Esperanto</option>
+  <option value="fr">français</option>
+  <option value="nl">Nederlands</option>
+  <option value="no">norsk</option>
+</select></div>
+    </header>
+    <section>
+      <h1 class="statistics"> </h1>
+      <h2 class="by-country"> </h2>
+      <table class="statistics-table" id="statistics-by-area-table">
+        <thead>
+          <tr>
+            <th class="country" onclick="sortTable('statistics-by-area-table', 2, 'area-name', 'alphanumeric-internationalized')"> </th>
+            <th class="number-of-opinion-polls-th"><span class="number-of-opinion-polls" onclick="sortTable('statistics-by-area-table', 2, 'number-of-opinion-polls', 'numeric')"> </span> (<span class="year-to-date" onclick="sortTable('statistics-by-area-table', 2, 'number-of-opinion-polls-ytd', 'numeric')"> </span>)</th>
+            <th class="number-of-response-scenarios-th"><span class="number-of-response-scenarios" onclick="sortTable('statistics-by-area-table', 2, 'number-of-response-scenarios', 'numeric')"> </span> (<span class="year-to-date" onclick="sortTable('statistics-by-area-table', 2, 'number-of-response-scenarios-ytd', 'numeric')"> </span>)</th>
+            <th class="number-of-result-values-th"><span class="number-of-result-values" onclick="sortTable('statistics-by-area-table', 2, 'number-of-result-values', 'numeric')"> </span> (<span class="year-to-date" onclick="sortTable('statistics-by-area-table', 2, 'number-of-result-values-ytd', 'numeric')"> </span>)</th>
+            <th class="most-recent-date-th">
+              <span class="most-recent-date" onclick="sortTable('statistics-by-area-table', 2, 'most-recent-date', 'alphanumeric')"> </span>
+              <sup>
+                <a href="#footnote-1">1</a>
+              </sup>
+            </th>
+          </tr>
+          <tr>
+            <td class="total"> </td>
+            <td class="statistics-total-td">5 (3)</td>
+            <td class="statistics-total-td">8 (4)</td>
+            <td class="statistics-total-td">9 (5)</td>
+            <td class="statistics-total-td">2022-06-29</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-area-name-de="dk-de" data-area-name-en="dk-en" data-area-name-eo="dk-eo" data-area-name-fr="dk-fr" data-area-name-nl="dk-nl" data-area-name-no="dk-no" data-most-recent-date="4-2022-06-29" data-number-of-opinion-polls="3" data-number-of-opinion-polls-ytd="2" data-number-of-response-scenarios="5" data-number-of-response-scenarios-ytd="3" data-number-of-result-values="6" data-number-of-result-values-ytd="4">
+            <td>
+              <a class="_area_dk" href="dk/index.html"> </a>
+            </td>
+            <td class="statistics-value-td">3 (2)</td>
+            <td class="statistics-value-td">5 (3)</td>
+            <td class="statistics-value-td">6 (4)</td>
+            <td class="statistics-value-td"><span class="probably-up-to-date-color">●</span> 2022-06-29</td>
+          </tr>
+          <tr data-area-name-de="ee-de" data-area-name-en="ee-en" data-area-name-eo="ee-eo" data-area-name-fr="ee-fr" data-area-name-nl="ee-nl" data-area-name-no="ee-no" data-most-recent-date="4-2022-06-29" data-number-of-opinion-polls="2" data-number-of-opinion-polls-ytd="1" data-number-of-response-scenarios="3" data-number-of-response-scenarios-ytd="1" data-number-of-result-values="3" data-number-of-result-values-ytd="1">
+            <td>
+              <a class="_area_ee" href="ee/index.html"> </a>
+            </td>
+            <td class="statistics-value-td">2 (1)</td>
+            <td class="statistics-value-td">3 (1)</td>
+            <td class="statistics-value-td">3 (1)</td>
+            <td class="statistics-value-td"><span class="probably-up-to-date-color">●</span> 2022-06-29</td>
+          </tr>
+          <tr data-area-name-de="no-de" data-area-name-en="no-en" data-area-name-eo="no-eo" data-area-name-fr="no-fr" data-area-name-nl="no-nl" data-area-name-no="no-no" data-most-recent-date="-1" data-number-of-opinion-polls="-1" data-number-of-opinion-polls-ytd="-1" data-number-of-response-scenarios="-1" data-number-of-response-scenarios-ytd="-1" data-number-of-result-values="-1" data-number-of-result-values-ytd="-1">
+            <td>
+              <a class="_area_no" href="no/index.html"> </a>
+            </td>
+            <td class="statistics-value-td">—</td>
+            <td class="statistics-value-td">—</td>
+            <td class="statistics-value-td">—</td>
+            <td class="statistics-value-td">—</td>
+          </tr>
+          <tr data-area-name-de="se-de" data-area-name-en="se-en" data-area-name-eo="se-eo" data-area-name-fr="se-fr" data-area-name-nl="se-nl" data-area-name-no="se-no" data-most-recent-date="-1" data-number-of-opinion-polls="-1" data-number-of-opinion-polls-ytd="-1" data-number-of-response-scenarios="-1" data-number-of-response-scenarios-ytd="-1" data-number-of-result-values="-1" data-number-of-result-values-ytd="-1">
+            <td>
+              <a class="_area_se" href="se/index.html"> </a>
+            </td>
+            <td class="statistics-value-td">—</td>
+            <td class="statistics-value-td">—</td>
+            <td class="statistics-value-td">—</td>
+            <td class="statistics-value-td">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <p id="footnote-1"><sup>1</sup> <span class="qualification-of-currency"> </span>: <span class="up-to-date-color">■</span> <span class="up-to-date"> </span> (P ≥ 80 %), <span class="probably-up-to-date-color">●</span> <span class="probably-up-to-date"> </span> (80 % &gt; P ≥ 50 %), <span class="possibly-out-of-date-color">●</span> <span class="possibly-out-of-date"> </span> (50 % &gt; P ≥ 20 %), <span class="probably-out-of-date-color">▲</span> <span class="probably-out-of-date"> </span> (20 % &gt; P ≥ 5 %), <span class="out-of-date-color">▲</span> <span class="out-of-date"> </span> (5 % &gt; P).</p>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="currency" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <circle class="probably-up-to-date-color" cx="250" cy="125" onmousemove="showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');" onmouseout="hideTooltip('pieChartTooltip');" r="100"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="250" y="125">●</text>
+          </svg>
+        </div>
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="currency" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="probably-up-to-date-color" d="M 250 125 L 250 225 A 100 100 0 0 0 250 25 Z" onmousemove="showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="330" y="125">●</text>
+            <path class="no-opinion-polls" d="M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z" onmousemove="showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="170" y="125">–</text>
+          </svg>
+        </div>
+      </div>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-opinion-polls" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="pie-chart-1" d="M 250 125 L 191.221475 205.901699 A 100 100 0 1 0 250 25 Z" onmousemove="showPieChartTooltip(evt, '_area_dk', '3', '5', '60');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_dk', '3', '5', '60');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="326.084521" y="149.72136">DK</text>
+            <path class="pie-chart-2" d="M 250 125 L 250 25 A 100 100 0 0 0 191.221475 205.901699 Z" onmousemove="showPieChartTooltip(evt, '_area_ee', '2', '5', '40');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_ee', '2', '5', '40');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="173.915479" y="100.27864">EE</text>
+          </svg>
+        </div>
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-opinion-polls-ytd" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="pie-chart-1" d="M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z" onmousemove="showPieChartTooltip(evt, '_area_dk', '2', '3', '67');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_dk', '2', '3', '67');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="319.282032" y="165">DK</text>
+            <path class="pie-chart-2" d="M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z" onmousemove="showPieChartTooltip(evt, '_area_ee', '1', '3', '33');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_ee', '1', '3', '33');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="180.717968" y="85">EE</text>
+          </svg>
+        </div>
+      </div>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-response-scenarios" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="pie-chart-1" d="M 250 125 L 179.289322 195.710678 A 100 100 0 1 0 250 25 Z" onmousemove="showPieChartTooltip(evt, '_area_dk', '5', '8', '63');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_dk', '5', '8', '63');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="323.910363" y="155.614675">DK</text>
+            <path class="pie-chart-2" d="M 250 125 L 250 25 A 100 100 0 0 0 179.289322 195.710678 Z" onmousemove="showPieChartTooltip(evt, '_area_ee', '3', '8', '38');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_ee', '3', '8', '38');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="176.089637" y="94.385325">EE</text>
+          </svg>
+        </div>
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-response-scenarios-ytd" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="pie-chart-1" d="M 250 125 L 150 125 A 100 100 0 1 0 250 25 Z" onmousemove="showPieChartTooltip(evt, '_area_dk', '3', '4', '75');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_dk', '3', '4', '75');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="306.568542" y="181.568542">DK</text>
+            <path class="pie-chart-2" d="M 250 125 L 250 25 A 100 100 0 0 0 150 125 Z" onmousemove="showPieChartTooltip(evt, '_area_ee', '1', '4', '25');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_ee', '1', '4', '25');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="193.431458" y="68.431458">EE</text>
+          </svg>
+        </div>
+      </div>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-result-values" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="pie-chart-1" d="M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z" onmousemove="showPieChartTooltip(evt, '_area_dk', '6', '9', '67');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_dk', '6', '9', '67');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="319.282032" y="165">DK</text>
+            <path class="pie-chart-2" d="M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z" onmousemove="showPieChartTooltip(evt, '_area_ee', '3', '9', '33');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_ee', '3', '9', '33');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="180.717968" y="85">EE</text>
+          </svg>
+        </div>
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-result-values-ytd" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <path class="pie-chart-1" d="M 250 125 L 154.894348 94.098301 A 100 100 0 1 0 250 25 Z" onmousemove="showPieChartTooltip(evt, '_area_dk', '4', '5', '80');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_dk', '4', '5', '80');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="297.02282" y="189.72136">DK</text>
+            <path class="pie-chart-2" d="M 250 125 L 250 25 A 100 100 0 0 0 154.894348 94.098301 Z" onmousemove="showPieChartTooltip(evt, '_area_ee', '1', '5', '20');" onmouseout="hideTooltip('pieChartTooltip');"/>
+            <text class="pie-chart-symbol" dominant-baseline="middle" font-size="12" onmousemove="showPieChartTooltip(evt, '_area_ee', '1', '5', '20');" onmouseout="hideTooltip('pieChartTooltip');" text-anchor="middle" x="202.97718" y="60.27864">EE</text>
+          </svg>
+        </div>
+      </div>
+      <h2 class="by-year"> </h2>
+      <table class="statistics-table" id="statistics-by-year-table">
+        <thead>
+          <tr>
+            <th class="year" onclick="sortTable('statistics-by-year-table', 2, 'year', 'numeric')"> </th>
+            <th class="number-of-opinion-polls" onclick="sortTable('statistics-by-year-table', 2, 'number-of-opinion-polls', 'numeric')"> </th>
+            <th class="number-of-response-scenarios" onclick="sortTable('statistics-by-year-table', 2, 'number-of-response-scenarios', 'numeric')"> </th>
+            <th class="number-of-result-values" onclick="sortTable('statistics-by-year-table', 2, 'number-of-result-values', 'numeric')"> </th>
+          </tr>
+          <tr>
+            <td class="total"> </td>
+            <td class="statistics-total-td">5</td>
+            <td class="statistics-total-td">8</td>
+            <td class="statistics-total-td">9</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-number-of-opinion-polls="2" data-number-of-response-scenarios="4" data-number-of-result-values="4" data-year="2021">
+            <td>2021</td>
+            <td class="statistics-value-td">2</td>
+            <td class="statistics-value-td">4</td>
+            <td class="statistics-value-td">4</td>
+          </tr>
+          <tr data-number-of-opinion-polls="3" data-number-of-response-scenarios="4" data-number-of-result-values="5" data-year="2022">
+            <td>2022</td>
+            <td class="statistics-value-td">3</td>
+            <td class="statistics-value-td">4</td>
+            <td class="statistics-value-td">5</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-opinion-polls" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <rect class="bar-chart-year" height="133.333333" onmousemove="showBarChartTooltip(evt, '2021', '2');" onmouseout="hideTooltip('barChartTooltip');" width="180" x="60" y="91.666667"/>
+            <rect class="bar-chart-thisyear" height="200" onmousemove="showBarChartTooltip(evt, '2022', '3');" onmouseout="hideTooltip('barChartTooltip');" width="180" x="260" y="25"/>
+          </svg>
+        </div>
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-opinion-polls" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '1', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="51.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '1', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 68.333333,221)" x="68.333333" y="221">01</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '2', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="85" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '2', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 101.666667,221)" x="101.666667" y="221">02</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '3', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="118.333333" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '3', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 135,221)" x="135" y="221">03</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '4', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="151.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '4', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 168.333333,221)" x="168.333333" y="221">04</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '5', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="185" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '5', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 201.666667,221)" x="201.666667" y="221">05</text>
+            <rect class="bar-chart-month" height="200" onmousemove="showBarChartTooltip(evt, '6', '3');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="218.333333" y="25"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '6', '3');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 235,221)" x="235" y="221">06</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '7', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="251.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '7', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 268.333333,221)" x="268.333333" y="221">07</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '8', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="285" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '8', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 301.666667,221)" x="301.666667" y="221">08</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '9', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="318.333333" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '9', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 335,221)" x="335" y="221">09</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '10', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="351.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '10', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 368.333333,221)" x="368.333333" y="221">10</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '11', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="385" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '11', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 401.666667,221)" x="401.666667" y="221">11</text>
+            <rect class="bar-chart-month" height="133.333333" onmousemove="showBarChartTooltip(evt, '12', '2');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="418.333333" y="91.666667"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '12', '2');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 435,221)" x="435" y="221">12</text>
+          </svg>
+        </div>
+      </div>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-response-scenarios" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <rect class="bar-chart-year" height="200" onmousemove="showBarChartTooltip(evt, '2021', '4');" onmouseout="hideTooltip('barChartTooltip');" width="180" x="60" y="25"/>
+            <rect class="bar-chart-thisyear" height="200" onmousemove="showBarChartTooltip(evt, '2022', '4');" onmouseout="hideTooltip('barChartTooltip');" width="180" x="260" y="25"/>
+          </svg>
+        </div>
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-response-scenarios" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '1', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="51.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '1', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 68.333333,221)" x="68.333333" y="221">01</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '2', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="85" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '2', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 101.666667,221)" x="101.666667" y="221">02</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '3', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="118.333333" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '3', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 135,221)" x="135" y="221">03</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '4', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="151.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '4', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 168.333333,221)" x="168.333333" y="221">04</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '5', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="185" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '5', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 201.666667,221)" x="201.666667" y="221">05</text>
+            <rect class="bar-chart-month" height="200" onmousemove="showBarChartTooltip(evt, '6', '4');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="218.333333" y="25"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '6', '4');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 235,221)" x="235" y="221">06</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '7', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="251.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '7', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 268.333333,221)" x="268.333333" y="221">07</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '8', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="285" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '8', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 301.666667,221)" x="301.666667" y="221">08</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '9', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="318.333333" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '9', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 335,221)" x="335" y="221">09</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '10', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="351.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '10', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 368.333333,221)" x="368.333333" y="221">10</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '11', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="385" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '11', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 401.666667,221)" x="401.666667" y="221">11</text>
+            <rect class="bar-chart-month" height="200" onmousemove="showBarChartTooltip(evt, '12', '4');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="418.333333" y="25"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '12', '4');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 435,221)" x="435" y="221">12</text>
+          </svg>
+        </div>
+      </div>
+      <div class="two-svg-charts-container">
+        <div class="svg-chart-container-left">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-result-values" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <rect class="bar-chart-year" height="160" onmousemove="showBarChartTooltip(evt, '2021', '4');" onmouseout="hideTooltip('barChartTooltip');" width="180" x="60" y="65"/>
+            <rect class="bar-chart-thisyear" height="200" onmousemove="showBarChartTooltip(evt, '2022', '5');" onmouseout="hideTooltip('barChartTooltip');" width="180" x="260" y="25"/>
+          </svg>
+        </div>
+        <div class="svg-chart-container-right">
+          <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 250">
+            <text class="number-of-result-values" dominant-baseline="middle" font-size="20" text-anchor="middle" x="250" y="10"> </text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '1', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="51.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '1', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 68.333333,221)" x="68.333333" y="221">01</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '2', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="85" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '2', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 101.666667,221)" x="101.666667" y="221">02</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '3', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="118.333333" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '3', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 135,221)" x="135" y="221">03</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '4', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="151.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '4', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 168.333333,221)" x="168.333333" y="221">04</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '5', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="185" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '5', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 201.666667,221)" x="201.666667" y="221">05</text>
+            <rect class="bar-chart-month" height="200" onmousemove="showBarChartTooltip(evt, '6', '5');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="218.333333" y="25"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '6', '5');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 235,221)" x="235" y="221">06</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '7', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="251.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '7', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 268.333333,221)" x="268.333333" y="221">07</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '8', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="285" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '8', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 301.666667,221)" x="301.666667" y="221">08</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '9', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="318.333333" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '9', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 335,221)" x="335" y="221">09</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '10', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="351.666667" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '10', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 368.333333,221)" x="368.333333" y="221">10</text>
+            <rect class="bar-chart-month" height="0" onmousemove="showBarChartTooltip(evt, '11', '0');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="385" y="225"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '11', '0');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 401.666667,221)" x="401.666667" y="221">11</text>
+            <rect class="bar-chart-month" height="160" onmousemove="showBarChartTooltip(evt, '12', '4');" onmouseout="hideTooltip('barChartTooltip');" width="30" x="418.333333" y="65"/>
+            <text class="bar-chart-label" dominant-baseline="middle" font-size="20" onmousemove="showBarChartTooltip(evt, '12', '4');" onmouseout="hideTooltip('barChartTooltip');" text-anchor="start" transform="rotate(-90 435,221)" x="435" y="221">12</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="privacy-statement"> </div>
+    </footer>
+    <div class="tooltip" id="pieChartTooltip" style="position: absolute; display: none;"> <span id="pieChartTooltipLabel"> </span><br/><span id="pieChartTooltipNumerator"> </span>/<span id="pieChartTooltipDenominator"> </span> (<span id="pieChartTooltipPercentage"> </span>%)</div>
+    <div class="tooltip" id="barChartTooltip" style="position: absolute; display: none;"> <span id="barChartTooltipLabel"> </span>: <span id="barChartTooltipNumber"> </span></div>
+  </body>
+</html>

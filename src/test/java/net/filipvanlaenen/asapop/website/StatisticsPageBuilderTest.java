@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.website;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Set;
@@ -11,11 +12,14 @@ import org.junit.jupiter.api.Test;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPollTestBuilder;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.model.ResponseScenarioTestBuilder;
 import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.Map.Entry;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 
 /**
@@ -134,357 +138,20 @@ public class StatisticsPageBuilderTest {
     }
 
     /**
-     * Adds the top part of a statistics page to a StringBuilder instance.
-     *
-     * @param expected The StringBuilder instance to add the top part to.
-     */
-    private void addTopPart(final StringBuilder expected) {
-        expected.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
-        expected.append("  <head>\n");
-        expected.append("    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n");
-        expected.append("    <title>ASAPOP Website Test</title>\n");
-        expected.append("    <link href=\"_css/base.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
-        expected.append("    <link href=\"_css/skin.css\" rel=\"stylesheet\" type=\"text/css\"/>\n");
-        expected.append("    <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\""
-                + " type=\"application/javascript\"> </script>\n");
-        expected.append(
-                "    <script src=\"_js/internationalization.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("    <script src=\"_js/navigation.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("    <script src=\"_js/sorting.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("    <script src=\"_js/tooltip.js\" type=\"application/javascript\">" + " </script>\n");
-        expected.append("  </head>\n");
-        expected.append("  <body onload=\"initializeLanguage(); sortTable('statistics-table', 2, 'area-name',"
-                + " 'alphanumeric-internationalized')\">\n");
-        expected.append("    <header>\n");
-        expected.append("      <div class=\"header-left\">\n");
-        expected.append("        <a class=\"main-page\" href=\"index.html\"> </a>\n");
-        expected.append("      </div>\n");
-        expected.append("      <div class=\"header-right\"><span class=\"go-to\"> </span>: <select"
-                + " id=\"area-selector\" onchange=\"moveToArea(0);\">\n");
-        expected.append("  <option> </option>\n");
-        expected.append("  <option class=\"_area_dk\" value=\"dk\"> </option>\n");
-        expected.append("  <option class=\"_area_ee\" value=\"ee\"> </option>\n");
-        expected.append("  <option class=\"_area_no\" value=\"no\"> </option>\n");
-        expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
-        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
-                + " class=\"csv-files\" href=\"csv.html\"> </a> · <span class=\"statistics-page\"> </span> · <span"
-                + " class=\"language\"> </span>: <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
-        expected.append("  <option value=\"de\">Deutsch</option>\n");
-        expected.append("  <option value=\"en\">English</option>\n");
-        expected.append("  <option value=\"eo\">Esperanto</option>\n");
-        expected.append("  <option value=\"fr\">français</option>\n");
-        expected.append("  <option value=\"nl\">Nederlands</option>\n");
-        expected.append("  <option value=\"no\">norsk</option>\n");
-        expected.append("</select></div>\n");
-        expected.append("    </header>\n");
-        expected.append("    <section>\n");
-        expected.append("      <h1 class=\"statistics\"> </h1>\n");
-    }
-
-    /**
      * Verifies that the statistics page is built correctly.
      */
     @Test
-    public void statisticsPageIsBuiltCorrectly() {
-        StringBuilder expected = new StringBuilder();
-        addTopPart(expected);
-        expected.append("      <table class=\"statistics-table\" id=\"statistics-table\">\n");
-        expected.append("        <thead>\n");
-        expected.append("          <tr>\n");
-        expected.append("            <th class=\"country\" onclick=\"sortTable('statistics-table', 2, 'area-name',"
-                + " 'alphanumeric-internationalized')\"> </th>\n");
-        expected.append("            <th class=\"number-of-opinion-polls-th\"><span class=\"number-of-opinion-polls\""
-                + " onclick=\"sortTable('statistics-table', 2, 'number-of-opinion-polls', 'numeric')\"> </span>"
-                + " (<span class=\"year-to-date\" onclick=\"sortTable('statistics-table', 2,"
-                + " 'number-of-opinion-polls-ytd', 'numeric')\"> </span>)</th>\n");
-        expected.append("            <th class=\"number-of-response-scenarios-th\"><span"
-                + " class=\"number-of-response-scenarios\" onclick=\"sortTable('statistics-table', 2,"
-                + " 'number-of-response-scenarios', 'numeric')\"> </span> (<span class=\"year-to-date\""
-                + " onclick=\"sortTable('statistics-table', 2, 'number-of-response-scenarios-ytd', 'numeric')\">"
-                + " </span>)</th>\n");
-        expected.append("            <th class=\"number-of-result-values-th\"><span"
-                + " class=\"number-of-result-values\" onclick=\"sortTable('statistics-table', 2,"
-                + " 'number-of-result-values', 'numeric')\"> </span> (<span class=\"year-to-date\""
-                + " onclick=\"sortTable('statistics-table', 2, 'number-of-result-values-ytd', 'numeric')\">"
-                + " </span>)</th>\n");
-        expected.append("            <th class=\"most-recent-date-th\">\n");
-        expected.append("              <span class=\"most-recent-date\" onclick=\"sortTable('statistics-table', 2,"
-                + " 'most-recent-date', 'alphanumeric')\"> </span>\n");
-        expected.append("              <sup>\n");
-        expected.append("                <a href=\"#footnote-1\">1</a>\n");
-        expected.append("              </sup>\n");
-        expected.append("            </th>\n");
-        expected.append("          </tr>\n");
-        expected.append("          <tr>\n");
-        expected.append("            <td class=\"total\"> </td>\n");
-        expected.append("            <td class=\"statistics-total-td\">5 (3)</td>\n");
-        expected.append("            <td class=\"statistics-total-td\">8 (4)</td>\n");
-        expected.append("            <td class=\"statistics-total-td\">9 (5)</td>\n");
-        expected.append("            <td class=\"statistics-total-td\">2022-06-29</td>\n");
-        expected.append("          </tr>\n");
-        expected.append("        </thead>\n");
-        expected.append("        <tbody>\n");
-        expected.append(
-                "          <tr data-area-name-de=\"dk-de\" data-area-name-en=\"dk-en\" data-area-name-eo=\"dk-eo\""
-                        + " data-area-name-fr=\"dk-fr\" data-area-name-nl=\"dk-nl\" data-area-name-no=\"dk-no\""
-                        + " data-most-recent-date=\"4-2022-06-29\" data-number-of-opinion-polls=\"3\""
-                        + " data-number-of-opinion-polls-ytd=\"2\" data-number-of-response-scenarios=\"5\""
-                        + " data-number-of-response-scenarios-ytd=\"3\" data-number-of-result-values=\"6\""
-                        + " data-number-of-result-values-ytd=\"4\">\n");
-        expected.append("            <td>\n");
-        expected.append("              <a class=\"_area_dk\" href=\"dk/index.html\"> </a>\n");
-        expected.append("            </td>\n");
-        expected.append("            <td class=\"statistics-value-td\">3 (2)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">5 (3)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">6 (4)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\"><span"
-                + " class=\"probably-up-to-date-color\">●</span> 2022-06-29</td>\n");
-        expected.append("          </tr>\n");
-        expected.append(
-                "          <tr data-area-name-de=\"ee-de\" data-area-name-en=\"ee-en\" data-area-name-eo=\"ee-eo\""
-                        + " data-area-name-fr=\"ee-fr\" data-area-name-nl=\"ee-nl\" data-area-name-no=\"ee-no\""
-                        + " data-most-recent-date=\"4-2022-06-29\" data-number-of-opinion-polls=\"2\""
-                        + " data-number-of-opinion-polls-ytd=\"1\" data-number-of-response-scenarios=\"3\""
-                        + " data-number-of-response-scenarios-ytd=\"1\" data-number-of-result-values=\"3\""
-                        + " data-number-of-result-values-ytd=\"1\">\n");
-        expected.append("            <td>\n");
-        expected.append("              <a class=\"_area_ee\" href=\"ee/index.html\"> </a>\n");
-        expected.append("            </td>\n");
-        expected.append("            <td class=\"statistics-value-td\">2 (1)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">3 (1)</td>\n");
-        expected.append("            <td class=\"statistics-value-td\"><span"
-                + " class=\"probably-up-to-date-color\">●</span> 2022-06-29</td>\n");
-        expected.append("          </tr>\n");
-        expected.append(
-                "          <tr data-area-name-de=\"no-de\" data-area-name-en=\"no-en\" data-area-name-eo=\"no-eo\""
-                        + " data-area-name-fr=\"no-fr\" data-area-name-nl=\"no-nl\" data-area-name-no=\"no-no\""
-                        + " data-most-recent-date=\"-1\" data-number-of-opinion-polls=\"-1\""
-                        + " data-number-of-opinion-polls-ytd=\"-1\" data-number-of-response-scenarios=\"-1\""
-                        + " data-number-of-response-scenarios-ytd=\"-1\" data-number-of-result-values=\"-1\""
-                        + " data-number-of-result-values-ytd=\"-1\">\n");
-        expected.append("            <td>\n");
-        expected.append("              <a class=\"_area_no\" href=\"no/index.html\"> </a>\n");
-        expected.append("            </td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("          </tr>\n");
-        expected.append(
-                "          <tr data-area-name-de=\"se-de\" data-area-name-en=\"se-en\" data-area-name-eo=\"se-eo\""
-                        + " data-area-name-fr=\"se-fr\" data-area-name-nl=\"se-nl\" data-area-name-no=\"se-no\""
-                        + " data-most-recent-date=\"-1\" data-number-of-opinion-polls=\"-1\""
-                        + " data-number-of-opinion-polls-ytd=\"-1\" data-number-of-response-scenarios=\"-1\""
-                        + " data-number-of-response-scenarios-ytd=\"-1\" data-number-of-result-values=\"-1\""
-                        + " data-number-of-result-values-ytd=\"-1\">\n");
-        expected.append("            <td>\n");
-        expected.append("              <a class=\"_area_se\" href=\"se/index.html\"> </a>\n");
-        expected.append("            </td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("            <td class=\"statistics-value-td\">—</td>\n");
-        expected.append("          </tr>\n");
-        expected.append("        </tbody>\n");
-        expected.append("      </table>\n");
-        expected.append("      <p id=\"footnote-1\"><sup>1</sup> <span class=\"qualification-of-currency\"> </span>:"
-                + " <span class=\"up-to-date-color\">■</span> <span class=\"up-to-date\"> </span> (P ≥ 80 %), <span"
-                + " class=\"probably-up-to-date-color\">●</span> <span class=\"probably-up-to-date\"> </span> (80 %"
-                + " &gt; P ≥ 50 %), <span class=\"possibly-out-of-date-color\">●</span> <span"
-                + " class=\"possibly-out-of-date\"> </span> (50 % &gt; P ≥ 20 %), <span"
-                + " class=\"probably-out-of-date-color\">▲</span> <span class=\"probably-out-of-date\"> </span> (20 %"
-                + " &gt; P ≥ 5 %), <span class=\"out-of-date-color\">▲</span> <span class=\"out-of-date\"> </span> (5"
-                + " % &gt; P).</p>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\""
-                + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append("            <circle class=\"probably-up-to-date-color\" cx=\"250\" cy=\"125\""
-                + " onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" r=\"100\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '2', '100');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"250\""
-                + " y=\"125\">●</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <text class=\"currency\" dominant-baseline=\"middle\" font-size=\"20\""
-                + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"probably-up-to-date-color\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 250 25"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, 'probably-up-to-date', '2', '4', '50');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"330\""
-                + " y=\"125\">●</text>\n");
-        expected.append(
-                "            <path class=\"no-opinion-polls\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\""
-                        + " onmousemove=\"showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, 'no-opinion-polls', '2', '4', '50');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"170\""
-                + " y=\"125\">–</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"number-of-opinion-polls\" dominant-baseline=\"middle\" font-size=\"20\""
-                        + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 191.221475 205.901699 A 100 100 0 1 0 250 25"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '5', '60');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '5', '60');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"326.084521\""
-                + " y=\"149.72136\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 191.221475 205.901699"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '2', '5', '40');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '2', '5', '40');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"173.915479\""
-                + " y=\"100.27864\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"number-of-opinion-polls-ytd\" dominant-baseline=\"middle\" font-size=\"20\""
-                        + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\""
-                        + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '2', '3', '67');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '2', '3', '67');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\""
-                + " y=\"165\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\""
-                        + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '3', '33');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '3', '33');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\""
-                + " y=\"85\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <text class=\"number-of-response-scenarios\" dominant-baseline=\"middle\""
-                + " font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 179.289322 195.710678 A 100 100 0 1 0 250 25"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '5', '8', '63');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '5', '8', '63');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"323.910363\""
-                + " y=\"155.614675\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 179.289322 195.710678"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '8', '38');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '8', '38');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"176.089637\""
-                + " y=\"94.385325\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <text class=\"number-of-response-scenarios-ytd\" dominant-baseline=\"middle\""
-                + " font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append("            <path class=\"pie-chart-1\" d=\"M 250 125 L 150 125 A 100 100 0 1 0 250 25 Z\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '4', '75');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '3', '4', '75');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"306.568542\""
-                + " y=\"181.568542\">DK</text>\n");
-        expected.append("            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 150 125 Z\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '4', '25');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '4', '25');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"193.431458\""
-                + " y=\"68.431458\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
-        expected.append("      <div class=\"two-svg-charts-container\">\n");
-        expected.append("        <div class=\"svg-chart-container-left\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append(
-                "            <text class=\"number-of-result-values\" dominant-baseline=\"middle\" font-size=\"20\""
-                        + " text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\""
-                        + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '6', '9', '67');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '6', '9', '67');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\""
-                + " y=\"165\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\""
-                        + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '9', '33');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '3', '9', '33');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\""
-                + " y=\"85\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("        <div class=\"svg-chart-container-right\">\n");
-        expected.append("          <svg preserveAspectRatio=\"xMinYMin meet\" viewBox=\"0 0 500 250\">\n");
-        expected.append("            <text class=\"number-of-result-values-ytd\" dominant-baseline=\"middle\""
-                + " font-size=\"20\" text-anchor=\"middle\" x=\"250\" y=\"10\"> </text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-1\" d=\"M 250 125 L 154.894348 94.098301 A 100 100 0 1 0 250 25"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_dk', '4', '5', '80');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_dk', '4', '5', '80');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"297.02282\""
-                + " y=\"189.72136\">DK</text>\n");
-        expected.append(
-                "            <path class=\"pie-chart-2\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 154.894348 94.098301"
-                        + " Z\" onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '5', '20');\""
-                        + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("            <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
-                + " onmousemove=\"showPieChartTooltip(evt, '_area_ee', '1', '5', '20');\""
-                + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"202.97718\""
-                + " y=\"60.27864\">EE</text>\n");
-        expected.append("          </svg>\n");
-        expected.append("        </div>\n");
-        expected.append("      </div>\n");
-        expected.append("    </section>\n");
-        expected.append("    <footer>\n");
-        expected.append("      <div class=\"privacy-statement\"> </div>\n");
-        expected.append("    </footer>\n");
-        expected.append(
-                "    <div class=\"tooltip\" id=\"pieChartTooltip\" style=\"position: absolute; display: none;\">"
-                        + " <span id=\"pieChartTooltipLabel\"> </span><br/><span id=\"pieChartTooltipNumerator\">"
-                        + " </span>/<span id=\"pieChartTooltipDenominator\"> </span> (<span"
-                        + " id=\"pieChartTooltipPercentage\"> </span>%)</div>\n");
-        expected.append("  </body>\n");
-        expected.append("</html>");
-        assertEquals(expected.toString(), new StatisticsPageBuilder(createWebsiteConfiguration(),
-                createInternationalization(), createOpinionPollsMap(), NOW).build().asString());
+    public void statisticsPageIsBuiltCorrectly() throws IOException {
+        Map<String, OpinionPolls> opinionPollsMap = createOpinionPollsMap();
+        for (Entry<String, OpinionPolls> ops : opinionPollsMap) {
+            for (OpinionPoll op : ops.value().getOpinionPolls()) {
+                OpinionPollsStore.addAll(ops.key(), Collection.of(op));
+            }
+        }
+        String expected = new String(
+                getClass().getClassLoader().getResourceAsStream("StatisticsPageBuilderTest.html").readAllBytes());
+        assertEquals(expected, new StatisticsPageBuilder(createWebsiteConfiguration(), createInternationalization(),
+                opinionPollsMap, NOW).build().asString());
     }
 
     /**
