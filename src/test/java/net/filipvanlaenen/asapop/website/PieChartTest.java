@@ -75,7 +75,7 @@ public class PieChartTest {
         expected.append(
                 "    <circle class=\"slice1\" cx=\"250\" cy=\"125\" onmousemove=\"showPieChartTooltip(evt, 'label1',"
                         + " '1', '1', '100');\" onmouseout=\"hideTooltip('pieChartTooltip');\" r=\"100\"/>\n");
-        expected.append("    <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+        expected.append("    <text class=\"pie-chart-symbol\" dominant-baseline=\"middle\" font-size=\"12\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label1', '1', '1', '100');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"250\""
                 + " y=\"125\">*</text>\n");
@@ -118,14 +118,14 @@ public class PieChartTest {
         expected.append("    <path class=\"slice2\" d=\"M 250 125 L 163.39746 175 A 100 100 0 1 0 250 25 Z\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label2', '2', '3', '67');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("    <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+        expected.append("    <text class=\"pie-chart-symbol\" dominant-baseline=\"middle\" font-size=\"12\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label2', '2', '3', '67');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\""
                 + " y=\"165\">+</text>\n");
         expected.append("    <path class=\"slice1\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 163.39746 175 Z\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label1', '1', '3', '33');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("    <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+        expected.append("    <text class=\"pie-chart-symbol\" dominant-baseline=\"middle\" font-size=\"12\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label1', '1', '3', '33');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"180.717968\""
                 + " y=\"85\">*</text>\n");
@@ -149,21 +149,21 @@ public class PieChartTest {
         expected.append("    <path class=\"slice1\" d=\"M 250 125 L 336.60254 75 A 100 100 0 0 0 250 25 Z\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label1', '1', '6', '17');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("    <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+        expected.append("    <text class=\"pie-chart-symbol\" dominant-baseline=\"middle\" font-size=\"12\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label1', '1', '6', '17');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"290\""
                 + " y=\"55.717968\">*</text>\n");
         expected.append("    <path class=\"slice2\" d=\"M 250 125 L 250 225 A 100 100 0 0 0 336.60254 75 Z\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label2', '2', '6', '33');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("    <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+        expected.append("    <text class=\"pie-chart-symbol\" dominant-baseline=\"middle\" font-size=\"12\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label2', '2', '6', '33');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"319.282032\""
                 + " y=\"165\">+</text>\n");
         expected.append("    <path class=\"pie-chart-3\" d=\"M 250 125 L 250 25 A 100 100 0 0 0 250 225 Z\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label3', '3', '6', '50');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\"/>\n");
-        expected.append("    <text class=\"pieChartSymbol\" dominant-baseline=\"middle\" font-size=\"12\""
+        expected.append("    <text class=\"pie-chart-symbol\" dominant-baseline=\"middle\" font-size=\"12\""
                 + " onmousemove=\"showPieChartTooltip(evt, 'label3', '3', '6', '50');\""
                 + " onmouseout=\"hideTooltip('pieChartTooltip');\" text-anchor=\"middle\" x=\"170\""
                 + " y=\"125\">o</text>\n");
