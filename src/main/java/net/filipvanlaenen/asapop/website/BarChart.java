@@ -5,7 +5,6 @@ import java.util.Comparator;
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.sortedtree.SortedTreeCollection;
-import net.filipvanlaenen.nombrajkolektoj.longs.ModifiableLongCollection;
 import net.filipvanlaenen.nombrajkolektoj.longs.OrderedLongCollection;
 import net.filipvanlaenen.nombrajkolektoj.longs.SortedLongCollection;
 import net.filipvanlaenen.tsvgj.DominantBaselineValue;
@@ -25,8 +24,10 @@ import net.filipvanlaenen.txhtmlj.Span;
 class BarChart extends Chart {
     private static final OrderedLongCollection POWERS_OF_TEN =
             OrderedLongCollection.createSequence(1L, n -> n * 10L, 15);
-    private static final SortedLongCollection MAJOR_GRID_STRIDES = createMajorGridStrides();
-    private static final SortedLongCollection MINOR_GRID_STRIDES = createMinorGridStrides();
+    private static final SortedLongCollection MAJOR_GRID_STRIDES = SortedLongCollection.of(Comparator.naturalOrder(),
+            OrderedLongCollection.ofMatrixDirectProduct(POWERS_OF_TEN, OrderedLongCollection.of(1L, 2L, 5L)));
+    private static final SortedLongCollection MINOR_GRID_STRIDES = SortedLongCollection.of(Comparator.naturalOrder(),
+            OrderedLongCollection.ofMatrixDirectProduct(POWERS_OF_TEN, OrderedLongCollection.of(1L, 5L)));
     /**
      * The ID for the HTML element containing an entry's label.
      */
@@ -76,24 +77,6 @@ class BarChart extends Chart {
      */
     BarChart(final String divClass, final String titleClass, final Collection<Entry> entries) {
         this(divClass, titleClass, new SortedTreeCollection<Entry>(new EntryComparator(), entries));
-    }
-
-    private static SortedLongCollection createMajorGridStrides() {
-        // TODO: Simply when Kronecker product has been implemented
-        ModifiableLongCollection strides = ModifiableLongCollection.of(createMinorGridStrides());
-        ModifiableLongCollection strides2 = ModifiableLongCollection.of(POWERS_OF_TEN);
-        strides2.multiply(2L);
-        strides.addAll(strides2);
-        return SortedLongCollection.of(Comparator.naturalOrder(), strides);
-    }
-
-    private static SortedLongCollection createMinorGridStrides() {
-        // TODO: Simply when Kronecker product has been implemented
-        ModifiableLongCollection strides = ModifiableLongCollection.of(POWERS_OF_TEN);
-        ModifiableLongCollection strides5 = ModifiableLongCollection.of(POWERS_OF_TEN);
-        strides5.multiply(5L);
-        strides.addAll(strides5);
-        return SortedLongCollection.of(Comparator.naturalOrder(), strides);
     }
 
     /**
@@ -185,8 +168,9 @@ class BarChart extends Chart {
         while (gridValue <= maximumValue) {
             if (gridValue % majorGridStride != 0) {
                 double y = BOTTOM_Y - CHART_CANVAS_HEIGHT * gridValue / maximumValue;
-                Line line = new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(0.2D);
-                line.clazz(MINOR_GRID_LINE_CLASS);
+                Line line =
+                        new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(0.2D).clazz(MINOR_GRID_LINE_CLASS);
+                // TODO: Add stroke-dasharray
                 svg.addElement(line);
             }
             gridValue += minorGridStride;
