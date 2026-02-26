@@ -19,7 +19,7 @@
       <dependency>
          <groupId>net.filipvanlaenen</groupId>
          <artifactId>kolektoj</artifactId>
-         <version>1.0.0</version>
+         <version>1.1.0</version>
       </dependency>
       <dependency>
          <groupId>net.filipvanlaenen</groupId>
@@ -34,7 +34,7 @@
       <dependency>
          <groupId>net.filipvanlaenen</groupId>
          <artifactId>tsvgj</artifactId>
-         <version>1.0.0</version>
+         <version>1.1.0</version>
       </dependency>
       <dependency>
          <groupId>net.filipvanlaenen</groupId>
