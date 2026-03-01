@@ -445,7 +445,7 @@ final class StatisticsPageBuilder extends PageBuilder {
         int totalNumberOfOpinionPollsYtd = 0;
         int totalNumberOfResponseScenariosYtd = 0;
         int totalNumberOfResultValuesYtd = 0;
-        LocalDate totalMostRecentDate = LocalDate.EPOCH;
+        LocalDate totalMostRecentDate = LocalDate.MIN;
         List<CurrencyQualification> currencyQualifications = new ArrayList<CurrencyQualification>();
         long numberOfAreasWithoutOpinionPolls = 0L;
         ModifiableCollection<PieChart.Entry> numberOfOpinionPollsEntries =

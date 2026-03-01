@@ -132,7 +132,7 @@ public final class OpinionPolls {
      * @return The most recent date.
      */
     public LocalDate getMostRecentDate() {
-        LocalDate result = LocalDate.EPOCH;
+        LocalDate result = LocalDate.MIN;
         for (OpinionPoll opinionPoll : opinionPolls) {
             LocalDate endDate = opinionPoll.getEndDate();
             if (endDate.isAfter(result)) {
