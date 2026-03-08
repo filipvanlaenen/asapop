@@ -615,13 +615,18 @@ public final class OpinionPoll {
     /**
      * Returns the end date for sorting.
      *
-     * @return The end date of the opinion poll, either the fieldwork end date or the publication date.
+     * @return The end date of the opinion poll, either the fieldwork end date or the publication date, whichever is
+     *         earliest.
      */
     public LocalDate getEndDate() {
         if (fieldworkEnd == null) {
             return publicationDate;
-        } else {
+        } else if (publicationDate == null) {
             return fieldworkEnd.getEnd();
+        } else if (fieldworkEnd.getEnd().isBefore(publicationDate)) {
+            return fieldworkEnd.getEnd();
+        } else {
+            return publicationDate;
         }
     }
 

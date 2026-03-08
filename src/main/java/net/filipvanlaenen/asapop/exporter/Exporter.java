@@ -205,7 +205,11 @@ public abstract class Exporter {
                 elements.add(publicationDate.toString());
             } else {
                 elements.add(fieldworkEnd.getStart().toString());
-                elements.add(fieldworkEnd.getEnd().toString());
+                if (publicationDate == null || fieldworkEnd.getEnd().isBefore(publicationDate)) {
+                    elements.add(fieldworkEnd.getEnd().toString());
+                } else {
+                    elements.add(publicationDate.toString());
+                }
             }
         } else {
             if (fieldworkEnd == null) {
@@ -213,7 +217,11 @@ public abstract class Exporter {
                 elements.add(publicationDate.toString());
             } else {
                 elements.add(fieldworkStart.getStart().toString());
-                elements.add(fieldworkEnd.getEnd().toString());
+                if (publicationDate == null || fieldworkEnd.getEnd().isBefore(publicationDate)) {
+                    elements.add(fieldworkEnd.getEnd().toString());
+                } else {
+                    elements.add(publicationDate.toString());
+                }
             }
         }
         return elements;
