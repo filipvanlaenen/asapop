@@ -168,9 +168,8 @@ class BarChart extends Chart {
         while (gridValue <= maximumValue) {
             if (gridValue % majorGridStride != 0) {
                 double y = BOTTOM_Y - CHART_CANVAS_HEIGHT * gridValue / maximumValue;
-                Line line =
-                        new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(0.2D).clazz(MINOR_GRID_LINE_CLASS);
-                // TODO: Add stroke-dasharray
+                Line line = new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(0.2D).strokeDashArray(1, 4)
+                        .clazz(MINOR_GRID_LINE_CLASS);
                 svg.addElement(line);
             }
             gridValue += minorGridStride;
