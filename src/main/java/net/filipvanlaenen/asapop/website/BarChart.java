@@ -22,16 +22,75 @@ import net.filipvanlaenen.txhtmlj.Span;
  * Class building bar charts in SVG.
  */
 class BarChart extends Chart {
+    /**
+     * Record type to contain entries for a pie chart.
+     *
+     * @param label    The class for this entry's label.
+     * @param symbol   The symbol for this entry.
+     * @param value    The value for this entry.
+     * @param barClass The class for this entry's bar.
+     */
+    record Entry(String label, String symbol, long value, String barClass) implements Chart.Entry {
+    }
+
+    /**
+     * The magic number four.
+     */
+    private static final int FOUR = 4;
+    /**
+     * The magic number ten.
+     */
+    private static final long TEN = 10L;
+    /**
+     * The magic number twelve.
+     */
+    private static final int TWELVE = 12;
+    /**
+     * The magic number one thousand.
+     */
+    private static final long ONE_THOUSAND = 1000L;
+    /**
+     * The magic number one million.
+     */
+    private static final long ONE_MILLION = 1_000_000L;
+    /**
+     * The magic number one billion.
+     */
+    private static final long ONE_BILLION = 1_000_000_000L;
+    /**
+     * The magic number one trillion.
+     */
+    private static final long ONE_TRILLION = 1_000_000_000_000L;
+    /**
+     * The magic number one quadrillion.
+     */
+    private static final long ONE_QUADRILLION = 1_000_000_000_000L;
+    /**
+     * The powers of ten covered by the grid lines.
+     */
     private static final OrderedLongCollection POWERS_OF_TEN =
-            OrderedLongCollection.createSequence(1L, n -> n * 10L, 15);
+            OrderedLongCollection.createSequence(1L, n -> n * TEN, 15);
+    /**
+     * The strides for the major grid lines.
+     */
     private static final SortedLongCollection MAJOR_GRID_STRIDES = SortedLongCollection.of(Comparator.naturalOrder(),
             OrderedLongCollection.ofMatrixDirectProduct(POWERS_OF_TEN, OrderedLongCollection.of(1L, 2L, 5L)));
+    /**
+     * The strides for the minor grid lines.
+     */
     private static final SortedLongCollection MINOR_GRID_STRIDES = SortedLongCollection.of(Comparator.naturalOrder(),
             OrderedLongCollection.ofMatrixDirectProduct(POWERS_OF_TEN, OrderedLongCollection.of(1L, 5L)));
+    /**
+     * The maximum number of major grid lines (in addition to the grid line at zero).
+     */
+    private static final long MAXIMUM_NUMBER_OF_MAJOR_GRID_LINES = 5L;
     /**
      * The ID for the HTML element containing an entry's label.
      */
     private static final String LABEL_CLASS = "bar-chart-label";
+    /**
+     * Style class for the grid line labels.
+     */
     private static final String GRID_LINE_LABEL_CLASS = "bar-chart-grid-line-label";
     /**
      * The ID for the HTML element containing the bar chart tooltip.
@@ -46,20 +105,33 @@ class BarChart extends Chart {
      */
     private static final String TOOLTIP_NUMBER_ID = "barChartTooltipNumber";
     /**
-     * The magic number twelve.
+     * Style class for the major grid lines.
      */
-    private static final int TWELVE = 12;
     private static final String MAJOR_GRID_LINE_CLASS = "major-grid-line";
+    /**
+     * Style class for the minor grid lines.
+     */
     private static final String MINOR_GRID_LINE_CLASS = "minor-grid-line";
+    /**
+     * Stroke width for the grid lines.
+     */
+    private static final double GRID_LINE_STROKE_WIDTH = 0.2D;
+    /**
+     * The ratio of the bar width relative to the slot width.
+     */
+    private static final double BAR_TO_SLOT_WIDTH_RATIO = 0.9D;
 
     /**
-     * Record type to contain entries for a pie chart.
+     * Creates the div element for the tooltip.
      *
-     * @param label    The class for this entry's label.
-     * @param value    The value for this entry.
-     * @param barClass The class for this entry's bar.
+     * @return A div element with the tooltip.
      */
-    record Entry(String label, String symbol, long value, String barClass) implements Chart.Entry {
+    static FlowContent createTooltipDiv() {
+        Div div = new Div(" ").id(TOOLTIP_ID).clazz("tooltip").style("position: absolute; display: none;");
+        div.addElement(new Span(" ").id(TOOLTIP_LABEL_ID));
+        div.addContent(": ");
+        div.addElement(new Span(" ").id(TOOLTIP_NUMBER_ID));
+        return div;
     }
 
     /**
@@ -93,10 +165,10 @@ class BarChart extends Chart {
     }
 
     @Override
-    protected void addChartElements(Svg svg) {
+    protected void addChartElements(final Svg svg) {
         int n = entries.size();
         double slotWidth = CHART_CANVAS_WIDTH / n;
-        double barWidth = slotWidth * 0.9D;
+        double barWidth = slotWidth * BAR_TO_SLOT_WIDTH_RATIO;
         long maximumValue = entries.stream().mapToLong(Entry::value).max().getAsLong();
         addMinorGridLines(svg, maximumValue);
         addMajorGridLinesAndLabels(svg, maximumValue);
@@ -104,7 +176,7 @@ class BarChart extends Chart {
         for (Entry entry : entries) {
             long value = entry.value();
             String label = entry.label();
-            double x = LEFT_X + slotWidth * 0.05D + i * slotWidth;
+            double x = LEFT_X + slotWidth * (1D - BAR_TO_SLOT_WIDTH_RATIO) / 2D + i * slotWidth;
             double height = CHART_CANVAS_HEIGHT * value / maximumValue;
             String barClass = entry.barClass();
             if (barClass == null) {
@@ -130,28 +202,35 @@ class BarChart extends Chart {
         }
     }
 
-    private void addMajorGridLinesAndLabels(Svg svg, long maximumValue) {
-        long majorGridStride = MAJOR_GRID_STRIDES.getGreaterThanOrEqualTo(maximumValue / 5L);
+    /**
+     * Adds the major grid lines and their labels.
+     *
+     * @param svg          The SVG object to add the major grid lines and their labels to.
+     * @param maximumValue The maximum value of the entries.
+     */
+    private void addMajorGridLinesAndLabels(final Svg svg, final long maximumValue) {
+        long majorGridStride = calculateMajorGridStride(maximumValue);
         long gridValue = 0L;
         while (gridValue <= maximumValue) {
             double y = BOTTOM_Y - CHART_CANVAS_HEIGHT * gridValue / maximumValue;
-            Line line = new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(0.2D).clazz(MAJOR_GRID_LINE_CLASS);
+            Line line = new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(GRID_LINE_STROKE_WIDTH)
+                    .clazz(MAJOR_GRID_LINE_CLASS);
             svg.addElement(line);
             String label = Long.toString(gridValue);
-            if (majorGridStride % 1000L == 0) {
-                label = Long.toString(gridValue / 1000L) + "K";
+            if (majorGridStride % ONE_THOUSAND == 0) {
+                label = Long.toString(gridValue / ONE_THOUSAND) + "K";
             }
-            if (majorGridStride % 1000000L == 0) {
-                label = Long.toString(gridValue / 1000L) + "M";
+            if (majorGridStride % ONE_MILLION == 0) {
+                label = Long.toString(gridValue / ONE_THOUSAND) + "M";
             }
-            if (majorGridStride % 1000000000L == 0) {
-                label = Long.toString(gridValue / 1000L) + "G";
+            if (majorGridStride % ONE_BILLION == 0) {
+                label = Long.toString(gridValue / ONE_THOUSAND) + "G";
             }
-            if (majorGridStride % 1000000000000L == 0) {
-                label = Long.toString(gridValue / 1000L) + "T";
+            if (majorGridStride % ONE_TRILLION == 0) {
+                label = Long.toString(gridValue / ONE_THOUSAND) + "T";
             }
-            if (majorGridStride % 1000000000000000L == 0) {
-                label = Long.toString(gridValue / 1000L) + "P";
+            if (majorGridStride % ONE_QUADRILLION == 0) {
+                label = Long.toString(gridValue / ONE_THOUSAND) + "P";
             }
             Text labelText = new Text(label).x(LEFT_X - TITLE_HEIGHT / 5D).y(y).fontSize(TITLE_HEIGHT / 3D)
                     .textAnchor(TextAnchorValue.END).dominantBaseline(DominantBaselineValue.MIDDLE)
@@ -161,15 +240,21 @@ class BarChart extends Chart {
         }
     }
 
-    private void addMinorGridLines(Svg svg, long maximumValue) {
-        long majorGridStride = MAJOR_GRID_STRIDES.getGreaterThanOrEqualTo(maximumValue / 5L);
+    /**
+     * Adds the minor grid lines.
+     *
+     * @param svg          The SVG object to add the minor grid lines.
+     * @param maximumValue The maximum value of the entries.
+     */
+    private void addMinorGridLines(final Svg svg, final long maximumValue) {
+        long majorGridStride = calculateMajorGridStride(maximumValue);
         long minorGridStride = majorGridStride > 1L ? MINOR_GRID_STRIDES.getLessThan(majorGridStride) : 1L;
         long gridValue = 0L;
         while (gridValue <= maximumValue) {
             if (gridValue % majorGridStride != 0) {
                 double y = BOTTOM_Y - CHART_CANVAS_HEIGHT * gridValue / maximumValue;
-                Line line = new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(0.2D).strokeDashArray(1, 4)
-                        .clazz(MINOR_GRID_LINE_CLASS);
+                Line line = new Line().x1(LEFT_X).x2(RIGHT_X).y1(y).y2(y).strokeWidth(GRID_LINE_STROKE_WIDTH)
+                        .strokeDashArray(1, FOUR).clazz(MINOR_GRID_LINE_CLASS);
                 svg.addElement(line);
             }
             gridValue += minorGridStride;
@@ -177,15 +262,12 @@ class BarChart extends Chart {
     }
 
     /**
-     * Creates the div element for the tooltip.
+     * Calculate the stride for the major grid lines based on the maximum value.
      *
-     * @return A div element with the tooltip.
+     * @param maximumValue The maximum value for an entry in the bar chart.
+     * @return The stride for the major grid lines.
      */
-    static FlowContent createTooltipDiv() {
-        Div div = new Div(" ").id(TOOLTIP_ID).clazz("tooltip").style("position: absolute; display: none;");
-        div.addElement(new Span(" ").id(TOOLTIP_LABEL_ID));
-        div.addContent(": ");
-        div.addElement(new Span(" ").id(TOOLTIP_NUMBER_ID));
-        return div;
+    private long calculateMajorGridStride(final long maximumValue) {
+        return MAJOR_GRID_STRIDES.getGreaterThanOrEqualTo(maximumValue / MAXIMUM_NUMBER_OF_MAJOR_GRID_LINES);
     }
 }
