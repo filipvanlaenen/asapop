@@ -169,7 +169,7 @@ class BarChart extends Chart {
         int n = entries.size();
         double slotWidth = CHART_CANVAS_WIDTH / n;
         double barWidth = slotWidth * BAR_TO_SLOT_WIDTH_RATIO;
-        long maximumValue = entries.stream().mapToLong(Entry::value).max().getAsLong();
+        long maximumValue = entries.stream().mapToLong(Entry::value).max().orElse(1L);
         addMinorGridLines(svg, maximumValue);
         addMajorGridLinesAndLabels(svg, maximumValue);
         int i = 0;
