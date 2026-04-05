@@ -13,7 +13,8 @@ final class ResultValueText {
     /**
      * The pattern to match a wellformed result value.
      */
-    private static final Pattern WELLFORMED_RESULT_VALUE_PATTERN = Pattern.compile("^<?\\d+(\\.\\d+)?$");
+    private static final Pattern WELLFORMED_RESULT_VALUE_PATTERN =
+            Pattern.compile("^(<?\\d+(\\.\\d+)?|\\d+(\\.\\d+)?–\\d+(\\.\\d+)?)$");
     /**
      * The result value.
      */

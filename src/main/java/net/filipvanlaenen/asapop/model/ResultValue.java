@@ -11,6 +11,10 @@ import java.util.Objects;
  */
 public final class ResultValue {
     /**
+     * The separator for the ranges.
+     */
+    private static final String RANGE_SEPARATOR = "–";
+    /**
      * The decimal format symbols for the US.
      */
     private static final DecimalFormatSymbols US_FORMAT_SYMBOLS = new DecimalFormatSymbols(Locale.US);
@@ -125,9 +129,17 @@ public final class ResultValue {
      */
     private final Double nominalValue;
     /**
-     * The precision of th result value.
+     * The second nominal value of the result value.
+     */
+    private final Double secondNominalValue;
+    /**
+     * The precision of the result value.
      */
     private final Precision precision;
+    /**
+     * Flag indicating whether this is a range value.
+     */
+    private final boolean range;
     /**
      * The text representing the result value.
      */
@@ -141,7 +153,9 @@ public final class ResultValue {
     public ResultValue(final String text) {
         this.text = text;
         this.lessThan = text.startsWith("<");
+        this.range = text.contains(RANGE_SEPARATOR);
         this.nominalValue = calculateNominalValue();
+        this.secondNominalValue = calculateSecondNominalValue();
         this.precision = calculatePrecision();
     }
 
@@ -164,21 +178,51 @@ public final class ResultValue {
      * @return The precision of the result value.
      */
     private Precision calculatePrecision() {
-        String number = getPrimitiveText();
-        if (number.contains(".")) {
-            if (number.endsWith(".5")) {
+        if (!text.contains(".")) {
+            return Precision.ONE;
+        }
+        if (range) {
+            String[] parts = text.split(RANGE_SEPARATOR);
+            if ((!parts[0].contains(".") || parts[0].endsWith(".0"))
+                    && (!parts[1].contains(".") || parts[1].endsWith(".0"))) {
+                return Precision.ONE;
+            } else if ((!parts[0].contains(".") || parts[0].endsWith(".0") || parts[0].endsWith(".5"))
+                    && (!parts[1].contains(".") || parts[1].endsWith(".0") || parts[1].endsWith(".5"))) {
                 return Precision.HALF;
-            } else if (!number.endsWith(".0")) {
+            } else {
+                return Precision.TENTH;
+            }
+        } else {
+            if (text.endsWith(".0")) {
+                return Precision.ONE;
+            } else if (text.endsWith(".5")) {
+                return Precision.HALF;
+            } else {
                 return Precision.TENTH;
             }
         }
-        return Precision.ONE;
+    }
+
+    /**
+     * Calculates the second nominal value of the result value.
+     *
+     * @return The second nominal value of the result value.
+     */
+    private Double calculateSecondNominalValue() {
+        if (range) {
+            try {
+                return Double.parseDouble(text.split(RANGE_SEPARATOR)[1]);
+            } catch (NumberFormatException nfe) {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof ResultValue) {
-            ResultValue otherResultValue = (ResultValue) obj;
+        if (obj instanceof ResultValue otherResultValue) {
             return otherResultValue.text.equals(text);
         } else {
             return false;
@@ -191,7 +235,11 @@ public final class ResultValue {
      * @return The nominal value of the result value.
      */
     public Double getNominalValue() {
-        return nominalValue;
+        if (range) {
+            return (nominalValue + secondNominalValue) / 2D;
+        } else {
+            return nominalValue;
+        }
     }
 
     /**
@@ -209,7 +257,7 @@ public final class ResultValue {
      * @return A primitive text representing the result value.
      */
     public String getPrimitiveText() {
-        return lessThan ? "0" : text;
+        return lessThan ? "0" : range ? text.split(RANGE_SEPARATOR)[0] : text;
     }
 
     /**
