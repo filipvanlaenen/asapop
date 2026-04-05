@@ -11,7 +11,7 @@ import net.filipvanlaenen.laconic.Token;
  */
 final class ResultValueText {
     /**
-     * The pattern to match an opinion poll line.
+     * The pattern to match a wellformed result value.
      */
     private static final Pattern WELLFORMED_RESULT_VALUE_PATTERN = Pattern.compile("^<?\\d+(\\.\\d+)?$");
     /**

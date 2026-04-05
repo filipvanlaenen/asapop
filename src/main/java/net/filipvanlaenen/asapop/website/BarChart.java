@@ -74,12 +74,12 @@ class BarChart extends Chart {
      * The strides for the major grid lines.
      */
     private static final SortedLongCollection MAJOR_GRID_STRIDES = SortedLongCollection.of(Comparator.naturalOrder(),
-            OrderedLongCollection.ofMatrixDirectProduct(POWERS_OF_TEN, OrderedLongCollection.of(1L, 2L, 5L)));
+            OrderedLongCollection.matrixDirectProductOf(POWERS_OF_TEN, OrderedLongCollection.of(1L, 2L, 5L)));
     /**
      * The strides for the minor grid lines.
      */
     private static final SortedLongCollection MINOR_GRID_STRIDES = SortedLongCollection.of(Comparator.naturalOrder(),
-            OrderedLongCollection.ofMatrixDirectProduct(POWERS_OF_TEN, OrderedLongCollection.of(1L, 5L)));
+            OrderedLongCollection.matrixDirectProductOf(POWERS_OF_TEN, OrderedLongCollection.of(1L, 5L)));
     /**
      * The maximum number of major grid lines (in addition to the grid line at zero).
      */
