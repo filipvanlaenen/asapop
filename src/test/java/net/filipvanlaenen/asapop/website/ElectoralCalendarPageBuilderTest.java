@@ -16,11 +16,11 @@ import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.website.ElectoralCalendarPageBuilder.ElectionComparator;
-import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.ElectionList;
-import net.filipvanlaenen.asapop.yaml.ElectionLists;
-import net.filipvanlaenen.asapop.yaml.ElectionsBuilder;
-import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 
 /**

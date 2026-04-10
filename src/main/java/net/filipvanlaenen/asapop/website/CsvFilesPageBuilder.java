@@ -4,9 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
-import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.sortedtree.SortedTreeCollection;

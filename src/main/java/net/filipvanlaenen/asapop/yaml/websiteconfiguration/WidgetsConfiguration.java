@@ -1,4 +1,4 @@
-package net.filipvanlaenen.asapop.yaml;
+package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 /**
  * Class representing the configuration for the widgets.

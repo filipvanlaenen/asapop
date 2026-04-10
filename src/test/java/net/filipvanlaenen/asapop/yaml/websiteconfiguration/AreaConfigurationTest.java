@@ -1,9 +1,13 @@
-package net.filipvanlaenen.asapop.yaml;
+package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
 import net.filipvanlaenen.kolektoj.Map;
 
 /**

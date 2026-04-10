@@ -1,10 +1,12 @@
-package net.filipvanlaenen.asapop.yaml;
+package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
 
 /**
  * Unit tests on the <code>CsvConfiguration</code> class.

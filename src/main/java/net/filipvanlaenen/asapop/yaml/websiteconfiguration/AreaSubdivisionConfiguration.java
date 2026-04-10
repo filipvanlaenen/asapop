@@ -1,7 +1,8 @@
-package net.filipvanlaenen.asapop.yaml;
+package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import net.filipvanlaenen.asapop.yaml.StringToStringMapDeserializer;
 import net.filipvanlaenen.kolektoj.Map;
 
 /**

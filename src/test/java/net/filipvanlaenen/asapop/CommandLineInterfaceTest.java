@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.website.Internationalization;
 import net.filipvanlaenen.asapop.website.Language;
-import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.Term;
 import net.filipvanlaenen.asapop.yaml.Terms;
-import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 
 /**

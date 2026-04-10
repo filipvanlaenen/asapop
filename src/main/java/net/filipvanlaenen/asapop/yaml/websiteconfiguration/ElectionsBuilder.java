@@ -1,10 +1,11 @@
-package net.filipvanlaenen.asapop.yaml;
+package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.asapop.yaml.ElectionData;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;

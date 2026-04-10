@@ -1,10 +1,13 @@
-package net.filipvanlaenen.asapop.yaml;
+package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 
 /**
  * Unit tests on the <code>WebsiteConfiguration</code> class.

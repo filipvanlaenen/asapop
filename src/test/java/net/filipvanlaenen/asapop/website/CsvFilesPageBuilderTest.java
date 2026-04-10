@@ -7,9 +7,9 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.yaml.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.CsvConfiguration;
-import net.filipvanlaenen.asapop.yaml.WebsiteConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 
 /**
  * Unit tests on the <code>CsvFilesPageBuilder</code> class.
