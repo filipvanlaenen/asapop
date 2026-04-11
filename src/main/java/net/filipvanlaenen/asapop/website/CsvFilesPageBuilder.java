@@ -83,7 +83,7 @@ final class CsvFilesPageBuilder extends PageBuilder {
                 areaTr.addElement(tdAreaName);
                 tdAreaName.addElement(new A(" ").clazz("_area_" + areaCode).href(areaCode + "/index.html"));
             }
-            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
+            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivisions();
             if (subdivisions != null) {
                 OrderedCollection<AreaSubdivisionConfiguration> sortedSubdivisions =
                         new SortedTreeCollection<AreaSubdivisionConfiguration>(
@@ -135,7 +135,7 @@ final class CsvFilesPageBuilder extends PageBuilder {
         if (areaConfiguration.getCsvConfiguration() != null) {
             return true;
         }
-        AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
+        AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivisions();
         if (subdivisions != null) {
             for (AreaSubdivisionConfiguration subdivision : subdivisions) {
                 if (subdivision.getAreaCode() != null && subdivision.getCsvConfiguration() != null) {

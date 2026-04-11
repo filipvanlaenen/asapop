@@ -3,14 +3,21 @@ package net.filipvanlaenen.asapop.website;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import net.filipvanlaenen.asapop.model.Area;
+import net.filipvanlaenen.asapop.model.ElectedBody;
 import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.ElectionDate.ExpectedDay;
 import net.filipvanlaenen.asapop.model.ElectionDate.Qualifier;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
+import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.kolektoj.ModifiableCollection;
+import net.filipvanlaenen.kolektoj.SortedCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -22,6 +29,7 @@ public class ICalendarFileBuilder {
      * The character base for the Unicode flag emojis.
      */
     private static final int UNICODE_FLAG_BASE = 127365;
+    private static final Collection<Language> ENGLISH_ONLY = Collection.of(Language.ENGLISH);
     /**
      * The elections.
      */
@@ -70,13 +78,52 @@ public class ICalendarFileBuilder {
         sb.append("//");
         sb.append(websiteConfiguration.getName());
         sb.append("//EN\n");
-        List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now));
         int numberOfItems = 0;
+        ModifiableCollection<String> areasDone = ModifiableCollection.empty();
+        for (Area area : Area.getAll()) {
+            String areaCode = area.getId();
+            for (ElectedBody electedBody : area.getElectedBodies()) {
+                ElectionDate nextElectionDate = electedBody.getNextElectionDate(now);
+                if (nextElectionDate != null && nextElectionDate.qualifier().equals(Qualifier.EXACT_DATE)
+                        && nextElectionDate instanceof ExpectedDay) {
+                    String areaName = internationalization.getTranslation("_area_" + areaCode, Language.ENGLISH);
+                    if (areaName != null) {
+                        String isoDate = nextElectionDate.getEndDate().format(DateTimeFormatter.BASIC_ISO_DATE);
+                        sb.append("BEGIN:VEVENT\n");
+                        sb.append("SUMMARY:🗳️");
+                        sb.append(Character.toChars(UNICODE_FLAG_BASE + areaCode.charAt(0)));
+                        sb.append(Character.toChars(UNICODE_FLAG_BASE + areaCode.charAt(1)));
+                        sb.append(" Election in ");
+                        sb.append(areaName);
+                        sb.append(": ");
+                        sb.append(electedBody.getName(Language.ENGLISH));
+                        if (!electedBody.getLanguagesOfProperNames().containsSame(ENGLISH_ONLY)) {
+                            sb.append(" (");
+                            sb.append(String.join(" · ",
+                                    SortedCollection.of(Comparator.naturalOrder(), electedBody.getAllProperNames())));
+                            sb.append(")");
+                        }
+                        sb.append("\n");
+                        sb.append("DTSTART:");
+                        sb.append(isoDate);
+                        sb.append("\n");
+                        sb.append("DTEND:");
+                        sb.append(isoDate);
+                        sb.append("\n");
+                        sb.append("END:VEVENT\n");
+                        numberOfItems++;
+                    }
+                    areasDone.add(areaCode);
+                }
+            }
+        }
+        List<Election> nextElections = new ArrayList<Election>(elections.getNextElections(now));
         for (Election nextElection : nextElections) {
             ElectionDate nextElectionDate = nextElection.getNextElectionDate(now);
             String areaCode = nextElection.areaCode();
             if (areaCode != null && nextElectionDate.qualifier().equals(Qualifier.EXACT_DATE)
-                    && nextElectionDate instanceof ExpectedDay) {
+                    && nextElectionDate instanceof ExpectedDay
+                    && !(nextElection.electionType() == ElectionType.NATIONAL && areasDone.contains(areaCode))) {
                 String areaName = internationalization.getTranslation("_area_" + areaCode, Language.ENGLISH);
                 if (areaName != null) {
                     String isoDate = nextElectionDate.getEndDate().format(DateTimeFormatter.BASIC_ISO_DATE);

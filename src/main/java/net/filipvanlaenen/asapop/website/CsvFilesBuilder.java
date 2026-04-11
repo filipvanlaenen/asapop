@@ -97,7 +97,7 @@ public class CsvFilesBuilder {
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".v1.csv"), outputContent);
             }
-            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
+            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivisions();
             if (subdivisions != null) {
                 for (AreaSubdivisionConfiguration subdivision : subdivisions) {
                     csvConfiguration = subdivision.getCsvConfiguration();

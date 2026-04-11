@@ -71,7 +71,7 @@ public class AreaConfigurationTest {
         AreaSubdivisionConfiguration[] subdivisions =
                 new AreaSubdivisionConfiguration[] {new AreaSubdivisionConfiguration()};
         areaConfiguration.setSubdivisions(subdivisions);
-        assertEquals(subdivisions, areaConfiguration.getSubdivsions());
+        assertEquals(subdivisions, areaConfiguration.getSubdivisions());
     }
 
     /**

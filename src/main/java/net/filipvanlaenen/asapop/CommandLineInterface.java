@@ -37,6 +37,7 @@ import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Terms;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
@@ -145,6 +146,7 @@ public final class CommandLineInterface {
                 File siteConfigurationFile = new File(siteConfigurationFileName);
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(siteConfigurationFile, WebsiteConfiguration.class);
+                AreaBuilder.build(websiteConfiguration);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
                 Internationalization internationalization = new Internationalization(terms);
                 addAreaTranslations(internationalization, websiteConfiguration);
@@ -278,8 +280,8 @@ public final class CommandLineInterface {
                 if (areaConfiguration.getTranslations() != null) {
                     internationalization.addTranslations("_area_" + areaCode, areaConfiguration.getTranslations());
                 }
-                if (areaConfiguration.getSubdivsions() != null) {
-                    for (AreaSubdivisionConfiguration subdivision : areaConfiguration.getSubdivsions()) {
+                if (areaConfiguration.getSubdivisions() != null) {
+                    for (AreaSubdivisionConfiguration subdivision : areaConfiguration.getSubdivisions()) {
                         if (subdivision.getTranslations() != null) {
                             internationalization.addTranslations("_area_" + areaCode + "-" + subdivision.getAreaCode(),
                                     subdivision.getTranslations());

@@ -17,6 +17,7 @@ public class AreaConfiguration {
      * The configuration for the CSV file.
      */
     private CsvConfiguration csvConfiguration;
+    private ElectedBody[] electedBodies;
     /**
      * The election configurations.
      */
@@ -54,6 +55,10 @@ public class AreaConfiguration {
         return csvConfiguration;
     }
 
+    public ElectedBody[] getElectedBodies() {
+        return electedBodies;
+    }
+
     /**
      * Returns the elections.
      *
@@ -77,7 +82,7 @@ public class AreaConfiguration {
      *
      * @return An array with the area's subdivision configurations.
      */
-    public AreaSubdivisionConfiguration[] getSubdivsions() {
+    public AreaSubdivisionConfiguration[] getSubdivisions() {
         return subdivisions;
     }
 
@@ -106,6 +111,10 @@ public class AreaConfiguration {
      */
     public void setCsvConfiguration(final CsvConfiguration csvConfiguration) {
         this.csvConfiguration = csvConfiguration;
+    }
+
+    public void setElectedBodies(final ElectedBody[] electedBodies) {
+        this.electedBodies = electedBodies;
     }
 
     /**

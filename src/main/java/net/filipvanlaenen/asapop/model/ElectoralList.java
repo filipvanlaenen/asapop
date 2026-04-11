@@ -14,7 +14,7 @@ public final class ElectoralList {
     /**
      * A map with all the instances.
      */
-    private static ModifiableMap<String, ElectoralList> instances = ModifiableMap.<String, ElectoralList>empty();
+    private static final ModifiableMap<String, ElectoralList> instances = ModifiableMap.<String, ElectoralList>empty();
     /**
      * The abbreviation for the electoral list.
      */

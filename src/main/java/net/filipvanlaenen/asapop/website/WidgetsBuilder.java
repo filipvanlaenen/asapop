@@ -91,7 +91,7 @@ public class WidgetsBuilder {
                 result.put(Paths.get("_widgets", "tables", areaCode + ".html"),
                         createTableWidget(latestOpinionPolls, fontFamily, tableStylesheets));
             }
-            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivsions();
+            AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivisions();
             if (subdivisions != null) {
                 for (AreaSubdivisionConfiguration subdivision : subdivisions) {
                     if (subdivision.getCsvConfiguration() != null) {
