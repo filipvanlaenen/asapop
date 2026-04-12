@@ -45,10 +45,12 @@ public class AreaBuilder {
         for (String singleDate : singleDates) {
             boolean annulled = singleDate.startsWith("(");
             if (!annulled) {
+                // TODO: Log a warning if the parsing fails
                 ElectionDate ed = ElectionDate.parse(singleDate);
                 dates.addLast(ed);
             }
         }
+        // TODO: Log a warning if there's no future date
         return OrderedValueCollection.of(dates);
     }
 }

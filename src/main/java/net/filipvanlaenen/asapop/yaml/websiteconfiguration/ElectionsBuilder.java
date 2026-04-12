@@ -13,6 +13,7 @@ import net.filipvanlaenen.laconic.Token;
 /**
  * Utility class to extract elections from a website configuration.
  */
+@Deprecated
 public final class ElectionsBuilder {
     /**
      * Private constructor to prevent instantiation.
