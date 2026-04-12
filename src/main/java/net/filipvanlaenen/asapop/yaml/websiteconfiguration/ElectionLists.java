@@ -4,6 +4,7 @@ package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
  * Class representing a list with European, national and presidential elections for the YAML file containing the website
  * configuration.
  */
+@Deprecated
 public class ElectionLists {
     /**
      * The list with the European elections.

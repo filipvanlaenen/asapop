@@ -8,6 +8,7 @@ import net.filipvanlaenen.kolektoj.Map;
 /**
  * Class representing a list with elections for the YAML file containing the website configuration.
  */
+@Deprecated
 public class ElectionList {
     /**
      * A map holding the election dates.
