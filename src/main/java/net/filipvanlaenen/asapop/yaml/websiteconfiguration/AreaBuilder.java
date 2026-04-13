@@ -5,7 +5,6 @@ import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.website.Language;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
-import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedValueCollection;
 import net.filipvanlaenen.kolektoj.collectors.Collectors;
@@ -31,9 +30,10 @@ public class AreaBuilder {
         Map<Language, String> translatedNames = electedBody.getTranslatedNames().stream()
                 .map(e -> new Map.Entry<Language, String>(Language.parse(e.key()), e.value()))
                 .collect(Collectors.toMap(e -> e.key(), e -> e.value()));
-        ModifiableMap<Integer, OrderedValueCollection<ElectionDate>> elections = ModifiableMap.empty();
-        for (Map.Entry<Integer, String> electionDate : electedBody.getElectionDates()) {
-            elections.add(electionDate.key(), buildElectionDateCollection(electionDate.value()));
+        ModifiableOrderedCollection<OrderedValueCollection<ElectionDate>> elections =
+                ModifiableOrderedCollection.empty();
+        for (String electionDate : electedBody.getElectionDates()) {
+            elections.add(buildElectionDateCollection(electionDate));
         }
         return new net.filipvanlaenen.asapop.model.ElectedBody(electedBody.getProperNames(), translatedNames,
                 elections);
