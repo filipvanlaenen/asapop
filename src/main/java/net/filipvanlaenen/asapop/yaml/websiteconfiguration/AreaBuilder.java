@@ -23,7 +23,14 @@ public class AreaBuilder {
                 electedBodies.add(buildElectedBody(electedBody));
             }
         }
-        Area.add(new Area(areaConfiguration.getAreaCode(), electedBodies));
+        ModifiableCollection<net.filipvanlaenen.asapop.model.ElectedOffice> electedOffices =
+                ModifiableCollection.empty();
+        if (areaConfiguration.getElectedOffices() != null) {
+            for (ElectedOffice electedOffice : areaConfiguration.getElectedOffices()) {
+                electedOffices.add(buildElectedOffice(electedOffice));
+            }
+        }
+        Area.add(new Area(areaConfiguration.getAreaCode(), electedBodies, electedOffices));
     }
 
     private static net.filipvanlaenen.asapop.model.ElectedBody buildElectedBody(final ElectedBody electedBody) {
@@ -36,6 +43,19 @@ public class AreaBuilder {
             elections.add(buildElectionDateCollection(electionDate));
         }
         return new net.filipvanlaenen.asapop.model.ElectedBody(electedBody.getProperNames(), translatedNames,
+                elections);
+    }
+
+    private static net.filipvanlaenen.asapop.model.ElectedOffice buildElectedOffice(final ElectedOffice electedOffice) {
+        Map<Language, String> translatedNames = electedOffice.getTranslatedNames().stream()
+                .map(e -> new Map.Entry<Language, String>(Language.parse(e.key()), e.value()))
+                .collect(Collectors.toMap(e -> e.key(), e -> e.value()));
+        ModifiableOrderedCollection<OrderedValueCollection<ElectionDate>> elections =
+                ModifiableOrderedCollection.empty();
+        for (String electionDate : electedOffice.getElectionDates()) {
+            elections.add(buildElectionDateCollection(electionDate));
+        }
+        return new net.filipvanlaenen.asapop.model.ElectedOffice(electedOffice.getProperNames(), translatedNames,
                 elections);
     }
 

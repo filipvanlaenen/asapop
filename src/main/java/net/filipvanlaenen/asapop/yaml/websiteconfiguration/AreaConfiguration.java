@@ -18,9 +18,11 @@ public class AreaConfiguration {
      */
     private CsvConfiguration csvConfiguration;
     private ElectedBody[] electedBodies;
+    private ElectedOffice[] electedOffices;
     /**
      * The election configurations.
      */
+    @Deprecated
     private ElectionLists electionLists;
     /**
      * A map with the names of the polling firms not included and the keys for the reason why.
@@ -59,11 +61,16 @@ public class AreaConfiguration {
         return electedBodies;
     }
 
+    public ElectedOffice[] getElectedOffices() {
+        return electedOffices;
+    }
+
     /**
      * Returns the elections.
      *
      * @return The elections.
      */
+    @Deprecated
     public ElectionLists getElections() {
         return electionLists;
     }
@@ -117,11 +124,16 @@ public class AreaConfiguration {
         this.electedBodies = electedBodies;
     }
 
+    public void setElectedOffices(final ElectedOffice[] electedOffices) {
+        this.electedOffices = electedOffices;
+    }
+
     /**
      * Sets the elections.
      *
      * @param elections The elections.
      */
+    @Deprecated
     public void setElections(final ElectionLists elections) {
         this.electionLists = elections;
     }

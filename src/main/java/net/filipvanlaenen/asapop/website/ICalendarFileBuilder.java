@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.filipvanlaenen.asapop.model.Area;
 import net.filipvanlaenen.asapop.model.ElectedBody;
+import net.filipvanlaenen.asapop.model.ElectedOffice;
 import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.ElectionDate.ExpectedDay;
@@ -101,6 +102,40 @@ public class ICalendarFileBuilder {
                             sb.append(" (");
                             sb.append(String.join(" · ",
                                     SortedCollection.of(Comparator.naturalOrder(), electedBody.getAllProperNames())));
+                            sb.append(")");
+                        }
+                        sb.append("\n");
+                        sb.append("DTSTART:");
+                        sb.append(isoDate);
+                        sb.append("\n");
+                        sb.append("DTEND:");
+                        sb.append(isoDate);
+                        sb.append("\n");
+                        sb.append("END:VEVENT\n");
+                        numberOfItems++;
+                    }
+                    areasDone.add(areaCode);
+                }
+            }
+            for (ElectedOffice electedOffice : area.getElectedOffices()) {
+                ElectionDate nextElectionDate = electedOffice.getNextElectionDate(now);
+                if (nextElectionDate != null && nextElectionDate.qualifier().equals(Qualifier.EXACT_DATE)
+                        && nextElectionDate instanceof ExpectedDay) {
+                    String areaName = internationalization.getTranslation("_area_" + areaCode, Language.ENGLISH);
+                    if (areaName != null) {
+                        String isoDate = nextElectionDate.getEndDate().format(DateTimeFormatter.BASIC_ISO_DATE);
+                        sb.append("BEGIN:VEVENT\n");
+                        sb.append("SUMMARY:🗳️");
+                        sb.append(Character.toChars(UNICODE_FLAG_BASE + areaCode.charAt(0)));
+                        sb.append(Character.toChars(UNICODE_FLAG_BASE + areaCode.charAt(1)));
+                        sb.append(" Election in ");
+                        sb.append(areaName);
+                        sb.append(": ");
+                        sb.append(electedOffice.getName(Language.ENGLISH));
+                        if (!electedOffice.getLanguagesOfProperNames().containsSame(ENGLISH_ONLY)) {
+                            sb.append(" (");
+                            sb.append(String.join(" · ",
+                                    SortedCollection.of(Comparator.naturalOrder(), electedOffice.getAllProperNames())));
                             sb.append(")");
                         }
                         sb.append("\n");
