@@ -125,7 +125,8 @@ public final class CommandLineInterface {
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 ElectionData electionData = objectMapper.readValue(new File(electionDataFileName), ElectionData.class);
-                AnalysisEngine engine = new AnalysisEngine(richOpinionPollsFile.getOpinionPollsDeprecated(), electionData);
+                AnalysisEngine engine =
+                        new AnalysisEngine(richOpinionPollsFile.getOpinionPollsDeprecated(), electionData);
                 engine.run();
                 Analysis analysis = new AnalysisBuilder(engine).build();
                 objectMapper.writeValue(new File(outputFileName), analysis);
@@ -146,13 +147,13 @@ public final class CommandLineInterface {
                 File siteConfigurationFile = new File(siteConfigurationFileName);
                 WebsiteConfiguration websiteConfiguration =
                         objectMapper.readValue(siteConfigurationFile, WebsiteConfiguration.class);
-                AreaBuilder.build(websiteConfiguration);
+                LocalDate now = LocalDate.now();
+                AreaBuilder.build(websiteConfiguration, now);
                 Terms terms = objectMapper.readValue(readResource("/internationalization.yaml"), Terms.class);
                 Internationalization internationalization = new Internationalization(terms);
                 addAreaTranslations(internationalization, websiteConfiguration);
                 Map<String, ElectionData> electionDataFiles =
                         readElectionDataFiles(websiteConfiguration, siteConfigurationFile.getParent());
-                LocalDate now = LocalDate.now();
                 Elections elections =
                         ElectionsBuilder.extractAndValidateElections(websiteConfiguration, electionDataFiles, now);
                 Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
