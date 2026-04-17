@@ -22,6 +22,16 @@ public class Area {
     }
 
     /**
+     * Returns the area with the provided ID.
+     *
+     * @param id The ID.
+     * @return The area with the provided ID.
+     */
+    public static Area get(final String id) {
+        return INSTANCES.get(id);
+    }
+
+    /**
      * Returns all instances.
      *
      * @return A collection with all the instances.

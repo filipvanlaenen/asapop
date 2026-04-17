@@ -11,6 +11,7 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
  * Class representing an elected body in the YAML file containing the website configuration.
  */
 public class ElectedBody {
+    private Boolean defunct;
     /**
      * The election dates for the elected body.
      */
@@ -30,6 +31,10 @@ public class ElectedBody {
      */
     @JsonDeserialize(using = StringToStringMapDeserializer.class)
     private Map<String, String> translatedNames;
+
+    public Boolean getDefunct() {
+        return defunct;
+    }
 
     /**
      * Returns the election dates.
@@ -65,6 +70,10 @@ public class ElectedBody {
      */
     public Map<String, String> getTranslatedNames() {
         return translatedNames;
+    }
+
+    public void setDefunct(final Boolean defunct) {
+        this.defunct = defunct;
     }
 
     /**

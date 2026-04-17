@@ -44,6 +44,7 @@ public class AreaBuilder {
 
     private static net.filipvanlaenen.asapop.model.ElectedBody buildElectedBody(final ElectedBody electedBody,
             final LocalDate now, final Token areaToken) {
+        boolean defunct = electedBody.getDefunct() == Boolean.TRUE;
         Token electedBodyToken = Laconic.LOGGER.logMessage(areaToken, "Extracting and validating the elected body %s.",
                 electedBody.getId());
         Map<Language, String> translatedNames = electedBody.getTranslatedNames().stream()
@@ -56,11 +57,11 @@ public class AreaBuilder {
         }
         Laconic.LOGGER.logMessage("Validating for future election dates against the date %s.", now.toString(),
                 electedBodyToken);
-        if (!hasFutureDate(elections, now)) {
+        if (!defunct && !hasFutureDate(elections, now)) {
             Laconic.LOGGER.logError("No election dates set in the future.", electedBodyToken);
         }
-        return new net.filipvanlaenen.asapop.model.ElectedBody(electedBody.getProperNames(), translatedNames,
-                elections);
+        return new net.filipvanlaenen.asapop.model.ElectedBody(electedBody.getProperNames(), translatedNames, elections,
+                defunct);
     }
 
     private static net.filipvanlaenen.asapop.model.ElectedOffice buildElectedOffice(final ElectedOffice electedOffice,

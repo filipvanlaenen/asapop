@@ -9,19 +9,25 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedValueCollection;
 
 public class ElectedBody {
+    private final boolean defunct;
     private final OrderedCollection<OrderedValueCollection<ElectionDate>> elections;
     private final Map<String, String> properNames;
     private final Map<Language, String> translatedNames;
 
     public ElectedBody(final Map<String, String> properNames, final Map<Language, String> translatedNames,
-            final OrderedCollection<OrderedValueCollection<ElectionDate>> elections) {
+            final OrderedCollection<OrderedValueCollection<ElectionDate>> elections, final boolean defunct) {
         this.properNames = Map.of(properNames);
         this.translatedNames = Map.of(translatedNames);
         this.elections = OrderedCollection.of(elections);
+        this.defunct = defunct;
     }
 
     public Collection<String> getAllProperNames() {
         return properNames.getValues();
+    }
+
+    public boolean getDefunct() {
+        return defunct;
     }
 
     public Collection<String> getLanguagesOfProperNames() {

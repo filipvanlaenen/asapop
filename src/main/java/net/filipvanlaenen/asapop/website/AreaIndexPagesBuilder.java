@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.analysis.HighestAveragesAllocation;
+import net.filipvanlaenen.asapop.model.Area;
+import net.filipvanlaenen.asapop.model.ElectedBody;
+import net.filipvanlaenen.asapop.model.ElectedOffice;
 import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionDate;
 import net.filipvanlaenen.asapop.model.ElectionType;
@@ -30,6 +33,7 @@ import net.filipvanlaenen.asapop.model.Unit;
 import net.filipvanlaenen.asapop.yaml.ElectoralSystem;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
@@ -217,27 +221,62 @@ class AreaIndexPagesBuilder extends PageBuilder {
         section.addElement(ul);
     }
 
-    /**
-     * Adds the upcoming elections as an unordered list to a section, or none if there are none.
-     *
-     * @param section           The section to add the upcoming election to.
-     * @param areaConfiguration The configuration for the area.
-     */
-    private void addUpcomingElections(final Section section, final AreaConfiguration areaConfiguration) {
-        String areaCode = areaConfiguration.getAreaCode();
-        ModifiableOrderedCollection<LI> upcomingElectionLIs = ModifiableOrderedCollection.<LI>empty();
-        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.PRESIDENTIAL);
-        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.NATIONAL);
-        addUpcomingElectionLI(upcomingElectionLIs, areaCode, ElectionType.EUROPEAN);
-        if (upcomingElectionLIs.isEmpty()) {
-            addNoneParagraph(section);
+    private void addUpcomingElection(final UL ul, final ElectedBody electedBody) {
+        LI li = new LI();
+        li.addContent(
+                String.join(" · ", SortedCollection.of(Comparator.naturalOrder(), electedBody.getAllProperNames())));
+        li.addContent(": ");
+        ElectionDate nextElectionDate = electedBody.getNextElectionDate(now);
+        if (nextElectionDate == null) {
+            li.addElement(new Span(" ").clazz("none"));
         } else {
-            UL ul = new UL();
-            section.addElement(ul);
-            for (LI li : upcomingElectionLIs) {
-                ul.addElement(li);
+            String qualifierClass = nextElectionDate.getQualifierTermKey();
+            if (qualifierClass != null) {
+                li.addElement(new Span(" ").clazz(qualifierClass));
+                li.addContent(" ");
+            }
+            li.addContent(nextElectionDate.getDateString());
+        }
+        ul.addElement(li);
+    }
+
+    private void addUpcomingElection(final UL ul, final ElectedOffice electedOffice) {
+        LI li = new LI();
+        li.addContent(
+                String.join(" · ", SortedCollection.of(Comparator.naturalOrder(), electedOffice.getAllProperNames())));
+        li.addContent(": ");
+        ElectionDate nextElectionDate = electedOffice.getNextElectionDate(now);
+        if (nextElectionDate == null) {
+            li.addElement(new Span(" ").clazz("none"));
+        } else {
+            String qualifierClass = nextElectionDate.getQualifierTermKey();
+            if (qualifierClass != null) {
+                li.addElement(new Span(" ").clazz(qualifierClass));
+                li.addContent(" ");
+            }
+            li.addContent(nextElectionDate.getDateString());
+        }
+        ul.addElement(li);
+    }
+
+    private int addUpcomingElectionsForElectedBodies(final UL ul, final Collection<ElectedBody> electedBodies) {
+        int number = 0;
+        for (ElectedBody electedBody : electedBodies) {
+            if (!electedBody.getDefunct()) {
+                addUpcomingElection(ul, electedBody);
+                number++;
             }
         }
+        return number;
+    }
+
+    private int addUpcomingElectionsForElectedOffices(final UL ul, final Collection<ElectedOffice> electedOffices) {
+        int number = 0;
+        for (ElectedOffice electedOffice : electedOffices) {
+            addUpcomingElection(ul, electedOffice);
+            number++;
+        }
+        return number;
     }
 
     /**
@@ -375,31 +414,6 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     /**
-     * Adds the upcoming elections of a given type for an area as LI elements to the provided list.
-     *
-     * @param upcomingElectionLIs The list to add the upcoming elections to as LI elements.
-     * @param areaCode            The area code.
-     * @param electionType        The election type.
-     */
-    private void addUpcomingElectionLI(final ModifiableOrderedCollection<LI> upcomingElectionLIs, final String areaCode,
-            final ElectionType electionType) {
-        Election nextElection = elections.getNextElection(areaCode, electionType, now);
-        if (nextElection != null) {
-            LI li = new LI();
-            ElectionDate nextElectionDate = nextElection.getNextElectionDate(now);
-            String qualifierClass = nextElectionDate.getQualifierTermKey();
-            if (qualifierClass != null) {
-                li.addElement(new Span(" ").clazz(qualifierClass));
-                li.addContent(" ");
-            }
-            li.addContent(nextElectionDate.getDateString());
-            li.addContent(": ");
-            li.addElement(new Span(" ").clazz(electionType.getTermKey()));
-            upcomingElectionLIs.add(li);
-        }
-    }
-
-    /**
      * Builds the index pages for all areas.
      *
      * @return A map with the index pages for all areas.
@@ -517,7 +531,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
         body.addElement(section);
         section.addElement(new H1(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
         section.addElement(new H2(" ").clazz("upcoming-elections"));
-        addUpcomingElections(section, areaConfiguration);
+        Area area = Area.get(areaConfiguration.getAreaCode());
+        addUpcomingElections(section, area);
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
         addOpinionPolls(section, areaConfiguration);
         addPollingFirmsNotIncluded(section, areaConfiguration);
@@ -526,6 +541,17 @@ class AreaIndexPagesBuilder extends PageBuilder {
         body.addElement(createFooter());
         body.addElement(BarChart.createTooltipDiv());
         return html.asString();
+    }
+
+    private void addUpcomingElections(final Section section, final Area area) {
+        UL ul = new UL();
+        int number = addUpcomingElectionsForElectedBodies(ul, area.getElectedBodies());
+        number += addUpcomingElectionsForElectedOffices(ul, area.getElectedOffices());
+        if (number == 0) {
+            addNoneParagraph(section);
+        } else {
+            section.addElement(ul);
+        }
     }
 
     /**
