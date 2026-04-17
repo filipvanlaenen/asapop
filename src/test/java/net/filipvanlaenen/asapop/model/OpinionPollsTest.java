@@ -15,22 +15,6 @@ import org.junit.jupiter.api.Test;
  */
 public class OpinionPollsTest {
     /**
-     * The magic number three.
-     */
-    private static final int THREE = 3;
-    /**
-     * The magic number four.
-     */
-    private static final int FOUR = 4;
-    /**
-     * The magic number five.
-     */
-    private static final int FIVE = 5;
-    /**
-     * The magic number six.
-     */
-    private static final int SIX = 6;
-    /**
      * The magic number eight hundred.
      */
     private static final int EIGHT_HUNDRED = 800;

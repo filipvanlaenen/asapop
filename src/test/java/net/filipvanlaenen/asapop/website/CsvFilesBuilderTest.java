@@ -1,6 +1,5 @@
 package net.filipvanlaenen.asapop.website;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;

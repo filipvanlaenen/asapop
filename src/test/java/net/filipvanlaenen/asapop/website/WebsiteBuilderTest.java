@@ -22,7 +22,6 @@ import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
-import net.filipvanlaenen.kolektoj.Map.Entry;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
