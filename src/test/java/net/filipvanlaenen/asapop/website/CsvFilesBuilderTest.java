@@ -26,17 +26,29 @@ import net.filipvanlaenen.laconic.Token;
  * Unit tests on the <code>CsvFilesBuilder</code> class.
  */
 public class CsvFilesBuilderTest {
+    /**
+     * The content for the opinion polls CSV file for North Macedonia.
+     */
     private static final String POLLS_NORTH_MACEDONIA_CSV =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                     + "Participation,Precision,A,B,Other\n";
+    /**
+     * The content for the opinion polls CSV file for France.
+     */
     private static final String POLLS_FRANCE_CSV =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                     + "Participation,Precision,F,G,Other\n"
                     + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
                     + "40%,Not Available\n";
+    /**
+     * The content for the opinion polls CSV file for Flanders.
+     */
     private static final String POLLS_FLANDERS_CSV =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                     + "Participation,Precision,P,Q,Other\n";
+    /**
+     * The content for the electoral lists CSV file.
+     */
     private static final String ELECTORAL_LISTS_CSV =
             "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n" + ",F,\n" + ",G,\n" + ",P,\n" + ",Q,\n";
     /**

@@ -77,9 +77,9 @@ public class CsvFilesPageBuilderTest {
         expected.append("  <option class=\"_area_mk\" value=\"mk\"> </option>\n");
         expected.append("  <option class=\"_area_rs\" value=\"rs\"> </option>\n");
         expected.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
-        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a class=\"statistics-page\" href=\"statistics.html\"> </a> ·"
-                + " <span class=\"language\"> </span>: <select id=\"language-selector\""
-                + " onchange=\"loadLanguage();\">\n");
+        expected.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a"
+                + " class=\"statistics-page\" href=\"statistics.html\"> </a> · <span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         expected.append("  <option value=\"de\">Deutsch</option>\n");
         expected.append("  <option value=\"en\">English</option>\n");
         expected.append("  <option value=\"eo\">Esperanto</option>\n");
@@ -99,19 +99,22 @@ public class CsvFilesPageBuilderTest {
         expected.append("        </thead>\n");
         expected.append("        <tbody>\n");
         expected.append("          <tr>\n");
-        expected.append("            <td><a href=\"_csv/gl.csv\">gl.csv</a> (<a href=\"_csv/gl.v1.csv\">v1</a>)</td>\n");
+        expected.append(
+                "            <td><a href=\"_csv/gl.csv\">gl.csv</a> (<a href=\"_csv/gl.v1.csv\">v1</a>)</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_gl\" href=\"gl/index.html\"> </a>\n");
         expected.append("            </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
-        expected.append("            <td><a href=\"_csv/mk.csv\">mk.csv</a> (<a href=\"_csv/mk.v1.csv\">v1</a>)</td>\n");
+        expected.append(
+                "            <td><a href=\"_csv/mk.csv\">mk.csv</a> (<a href=\"_csv/mk.v1.csv\">v1</a>)</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_mk\" href=\"mk/index.html\"> </a>\n");
         expected.append("            </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
-        expected.append("            <td><a href=\"_csv/rs.csv\">rs.csv</a> (<a href=\"_csv/rs.v1.csv\">v1</a>)</td>\n");
+        expected.append(
+                "            <td><a href=\"_csv/rs.csv\">rs.csv</a> (<a href=\"_csv/rs.v1.csv\">v1</a>)</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_rs\" href=\"rs/index.html\"> </a>\n");
         expected.append("            </td>\n");

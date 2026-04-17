@@ -208,9 +208,9 @@ public class IndexPageBuilderTest {
         stringBuilder.append("  <option class=\"_area_pl\" value=\"pl\"> </option>\n");
         stringBuilder.append("  <option class=\"_area_pt\" value=\"pt\"> </option>\n");
         stringBuilder.append("  <option class=\"_area_se\" value=\"se\"> </option>\n");
-        stringBuilder.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> · <a class=\"statistics-page\""
-                + " href=\"statistics.html\"> </a> · <span class=\"language\"> </span>: <select"
-                + " id=\"language-selector\" onchange=\"loadLanguage();\">\n");
+        stringBuilder.append("</select> · <a class=\"electoral-calendar\" href=\"calendar.html\"> </a> ·"
+                + " <a class=\"statistics-page\" href=\"statistics.html\"> </a> · <span class=\"language\"> </span>:"
+                + " <select id=\"language-selector\" onchange=\"loadLanguage();\">\n");
         stringBuilder.append("  <option value=\"de\">Deutsch</option>\n");
         stringBuilder.append("  <option value=\"en\">English</option>\n");
         stringBuilder.append("  <option value=\"eo\">Esperanto</option>\n");

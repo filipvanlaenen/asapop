@@ -30,9 +30,15 @@ import net.filipvanlaenen.laconic.Token;
  * Unit tests on the <code>WebsiteBuilder</code> class.
  */
 public class WebsiteBuilderTest {
+    /**
+     * The content of a sample opinion polls CSV file.
+     */
     private static final String POLLS_CSV =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                     + "Sample Size Qualification,Participation,Precision,A,B,Other\n";
+    /**
+     * The content of a sample electoral lists CSV file.
+     */
     private static final String ELECTORAL_LISTS_CSV = "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n";
     /**
      * Today's date.

@@ -450,8 +450,9 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <footer>\n");
         expected.append("      <div class=\"privacy-statement\"> </div>\n");
         expected.append("    </footer>\n");
-        expected.append(
-                "    <div class=\"tooltip\" id=\"barChartTooltip\" style=\"position: absolute; display: none;\"> <span id=\"barChartTooltipLabel\"> </span>: <span id=\"barChartTooltipNumber\"> </span></div>\n");
+        expected.append("    <div class=\"tooltip\" id=\"barChartTooltip\" style=\"position: absolute; display:"
+                + " none;\"> <span id=\"barChartTooltipLabel\"> </span>: <span id=\"barChartTooltipNumber\">"
+                + " </span></div>\n");
         expected.append("  </body>\n");
         expected.append("</html>");
     }
@@ -477,8 +478,8 @@ public class AreaIndexPagesBuilderTest {
         expected.append("    <script src=\"../_js/sorting.js\" type=\"application/javascript\"> </script>\n");
         expected.append("    <script src=\"../_js/tooltip.js\" type=\"application/javascript\">" + " </script>\n");
         expected.append("  </head>\n");
-        expected.append(
-                "  <body onload=\"initializeLanguage(); sortTable('statistics-by-year-table', 2, 'year', 'numeric')\">\n");
+        expected.append("  <body onload=\"initializeLanguage(); sortTable('statistics-by-year-table', 2, 'year',"
+                + " 'numeric')\">\n");
         expected.append("    <header>\n");
         expected.append("      <div class=\"header-left\">\n");
         expected.append("        <a class=\"main-page\" href=\"../index.html\"> </a>\n");
