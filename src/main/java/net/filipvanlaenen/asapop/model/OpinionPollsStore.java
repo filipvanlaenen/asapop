@@ -13,8 +13,7 @@ import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
  * A class holding all opinion polls, with indexes.
  */
 public class OpinionPollsStore {
-    // TODO: Remove the call to toArray
-    private static final Integer[] ALL_MONTHS = OrderedIntegerCollection.createSequence(i -> i + 1, 12).toArray();
+    private static final OrderedIntegerCollection ALL_MONTHS = OrderedIntegerCollection.createSequence(i -> i + 1, 12);
     private static int numberOfOpinionPolls = 0;
     private static ModifiableIntegerMap<String> numberOfOpinionPollsByArea = ModifiableIntegerMap.<String>empty();
     // TODO: Switch to UpdatableSortedIntegerMap
@@ -124,105 +123,87 @@ public class OpinionPollsStore {
         return numberOfOpinionPolls;
     }
 
-    public static int getNumberOfOpinionPolls(String areaCode) {
+    public static int getNumberOfOpinionPolls(final String areaCode) {
         return numberOfOpinionPollsByArea.get(areaCode);
     }
 
-    public static int getNumberOfOpinionPolls(String areaCode, int thisYear) {
+    public static int getNumberOfOpinionPolls(final String areaCode, final int thisYear) {
         return numberOfOpinionPollsByYearByArea.get(areaCode).get(thisYear, 0);
     }
 
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth() {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfOpinionPollsByMonth);
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByMonth);
     }
 
-    public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth(String areaCode) {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
-                numberOfOpinionPollsByMonthByArea.get(areaCode));
+    public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth(final String areaCode) {
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByMonthByArea.get(areaCode));
     }
 
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByYear() {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfOpinionPollsByYear);
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByYear);
     }
 
-    public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByYear(String areaCode) {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
-                numberOfOpinionPollsByYearByArea.get(areaCode));
+    public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByYear(final String areaCode) {
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByYearByArea.get(areaCode));
     }
 
     public static int getNumberOfResponseScenarios() {
         return numberOfResponseScenarios;
     }
 
-    public static int getNumberOfResponseScenarios(String areaCode) {
+    public static int getNumberOfResponseScenarios(final String areaCode) {
         return numberOfResponseScenariosByArea.get(areaCode);
     }
 
-    public static int getNumberOfResponseScenarios(String areaCode, int thisYear) {
+    public static int getNumberOfResponseScenarios(final String areaCode, final int thisYear) {
         return numberOfResponseScenariosByYearByArea.get(areaCode).get(thisYear, 0);
     }
 
     public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByMonth() {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResponseScenariosByMonth);
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResponseScenariosByMonth);
     }
 
-    public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByMonth(String areaCode) {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
-                numberOfResponseScenariosByMonthByArea.get(areaCode));
+    public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByMonth(final String areaCode) {
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResponseScenariosByMonthByArea.get(areaCode));
     }
 
     public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByYear() {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResponseScenariosByYear);
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResponseScenariosByYear);
     }
 
-    public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByYear(String areaCode) {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
-                numberOfResponseScenariosByYearByArea.get(areaCode));
+    public static SortedIntegerMap<Integer> getNumberOfResponseScenariosByYear(final String areaCode) {
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResponseScenariosByYearByArea.get(areaCode));
     }
 
     public static int getNumberOfResultValues() {
         return numberOfResultsValues;
     }
 
-    public static int getNumberOfResultValues(String areaCode) {
+    public static int getNumberOfResultValues(final String areaCode) {
         return numberOfResultValuesByArea.get(areaCode);
     }
 
-    public static int getNumberOfResultValues(String areaCode, int thisYear) {
+    public static int getNumberOfResultValues(final String areaCode, final int thisYear) {
         return numberOfResultValuesByYearByArea.get(areaCode).get(thisYear, 0);
     }
 
     public static SortedIntegerMap<Integer> getNumberOfResultValuesByMonth() {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResultValuesByMonth);
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResultValuesByMonth);
     }
 
-    public static SortedIntegerMap<Integer> getNumberOfResultValuesByMonth(String areaCode) {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
-                numberOfResultValuesByMonthByArea.get(areaCode));
+    public static SortedIntegerMap<Integer> getNumberOfResultValuesByMonth(final String areaCode) {
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResultValuesByMonthByArea.get(areaCode));
     }
 
     public static SortedIntegerMap<Integer> getNumberOfResultValuesByYear() {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(), numberOfResultValuesByYear);
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResultValuesByYear);
     }
 
-    public static SortedIntegerMap<Integer> getNumberOfResultValuesByYear(String areaCode) {
-        // TODO: Replace with the of factory method
-        return new SortedIntegerMap.SortedTreeMap<>(Comparator.naturalOrder(),
-                numberOfResultValuesByYearByArea.get(areaCode));
+    public static SortedIntegerMap<Integer> getNumberOfResultValuesByYear(final String areaCode) {
+        return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfResultValuesByYearByArea.get(areaCode));
     }
 
-    public static boolean hasOpinionPolls(String areaCode) {
+    public static boolean hasOpinionPolls(final String areaCode) {
         // TODO: A better test to check whether an area has opinion polls
         return numberOfOpinionPollsByArea.containsKey(areaCode);
     }
