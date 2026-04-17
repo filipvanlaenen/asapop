@@ -544,6 +544,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
     }
 
     private void addUpcomingElections(final Section section, final Area area) {
+        // TODO: Sort chronologically
         UL ul = new UL();
         int number = addUpcomingElectionsForElectedBodies(ul, area.getElectedBodies());
         number += addUpcomingElectionsForElectedOffices(ul, area.getElectedOffices());
