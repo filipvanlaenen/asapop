@@ -17,6 +17,7 @@ import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
+import net.filipvanlaenen.kolektoj.Collection.ElementCardinality;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableSortedCollection;
@@ -128,14 +129,14 @@ public class CsvFilesBuilder {
         for (String presidentialElectionCode : presidentialOpinionPollsMap.getKeys()) {
             OpinionPolls opinionPolls = presidentialOpinionPollsMap.get(presidentialElectionCode);
             ModifiableSortedCollection<Set<String>> candidateKeys =
-                    ModifiableSortedCollection.<Set<String>>empty(new Comparator<Set<String>>() {
+                    ModifiableSortedCollection.of(ElementCardinality.DISTINCT_ELEMENTS, new Comparator<Set<String>>() {
                         @Override
                         public int compare(final Set<String> k1, final Set<String> k2) {
                             return k1.iterator().next().compareTo(k2.iterator().next());
                         }
                     });
             ModifiableSortedCollection<String> candidateKeys2 =
-                    ModifiableSortedCollection.<String>empty(new Comparator<String>() {
+                    ModifiableSortedCollection.of(ElementCardinality.DISTINCT_ELEMENTS, new Comparator<String>() {
                         @Override
                         public int compare(final String k1, final String k2) {
                             return k1.compareTo(k2);
@@ -145,15 +146,11 @@ public class CsvFilesBuilder {
                 for (Set<ElectoralList> candidateKeySet : opinionPoll.getElectoralListSets()) {
                     Set<String> candidateKey = new HashSet<String>();
                     candidateKey.add(candidateKeySet.iterator().next().getId());
-                    if (!candidateKeys.contains(candidateKey)) {
-                        candidateKeys.add(candidateKey);
-                    }
+                    candidateKeys.add(candidateKey);
                 }
                 for (Candidate candidate : opinionPoll.getCandidates()) {
                     String candidateId = candidate.getId();
-                    if (!candidateKeys2.contains(candidateId)) {
-                        candidateKeys2.add(candidateId);
-                    }
+                    candidateKeys2.add(candidateId);
                 }
             }
             String outputContent = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
