@@ -17,7 +17,13 @@ public class AreaConfiguration {
      * The configuration for the CSV file.
      */
     private CsvConfiguration csvConfiguration;
+    /**
+     * The elected bodies of the area.
+     */
     private ElectedBody[] electedBodies;
+    /**
+     * The elected offices of the area.
+     */
     private ElectedOffice[] electedOffices;
     /**
      * The election configurations.
@@ -57,10 +63,20 @@ public class AreaConfiguration {
         return csvConfiguration;
     }
 
+    /**
+     * Returns the elected bodies of the area.
+     *
+     * @return The elected bodies of the area.
+     */
     public ElectedBody[] getElectedBodies() {
         return electedBodies;
     }
 
+    /**
+     * Returns the elected offices of the area.
+     *
+     * @return The elected offices of the area.
+     */
     public ElectedOffice[] getElectedOffices() {
         return electedOffices;
     }
@@ -120,10 +136,20 @@ public class AreaConfiguration {
         this.csvConfiguration = csvConfiguration;
     }
 
+    /**
+     * Sets the elected bodies of the area.
+     *
+     * @param electedBodies The elected bodies of the area.
+     */
     public void setElectedBodies(final ElectedBody[] electedBodies) {
         this.electedBodies = electedBodies;
     }
 
+    /**
+     * Sets the elected offices of the area.
+     *
+     * @param electedOffices The elected offices of the area.
+     */
     public void setElectedOffices(final ElectedOffice[] electedOffices) {
         this.electedOffices = electedOffices;
     }

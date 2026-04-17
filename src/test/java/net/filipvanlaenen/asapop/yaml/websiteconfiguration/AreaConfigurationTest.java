@@ -34,6 +34,30 @@ public class AreaConfigurationTest {
     }
 
     /**
+     * Verifies that the getter method <code>getElectedBodies</code> is wired correctly to the setter method
+     * <code>setElectedBodies</code>.
+     */
+    @Test
+    public void getElectedBodiesShouldBeWiredCorrectlyToSetElectedBodies() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        ElectedBody[] electedBodies = new ElectedBody[] {new ElectedBody()};
+        areaConfiguration.setElectedBodies(electedBodies);
+        assertEquals(electedBodies, areaConfiguration.getElectedBodies());
+    }
+
+    /**
+     * Verifies that the getter method <code>getElectedOffices</code> is wired correctly to the setter method
+     * <code>setElectedOffices</code>.
+     */
+    @Test
+    public void getElectedOfficesShouldBeWiredCorrectlyToSetElectedOffices() {
+        AreaConfiguration areaConfiguration = new AreaConfiguration();
+        ElectedOffice[] electedOffices = new ElectedOffice[] {new ElectedOffice()};
+        areaConfiguration.setElectedOffices(electedOffices);
+        assertEquals(electedOffices, areaConfiguration.getElectedOffices());
+    }
+
+    /**
      * Verifies that the getter method <code>getElections</code> is wired correctly to the setter method
      * <code>setElections</code>.
      */
