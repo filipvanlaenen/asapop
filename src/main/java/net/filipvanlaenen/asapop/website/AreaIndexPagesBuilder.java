@@ -224,7 +224,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
     private void addUpcomingElection(final UL ul, final ElectedBody electedBody, final String areaId) {
         LI li = new LI();
         li.addElement(new Span(" ").clazz("_electedBody_" + areaId + "_" + electedBody.getId()));
-        li.addContent(" ( ");
+        li.addContent(" (");
         li.addContent(electedBody.getAllProperNamesConcatenated());
         li.addContent("): ");
         ElectionDate nextElectionDate = electedBody.getNextElectionDate(now);
@@ -244,7 +244,7 @@ class AreaIndexPagesBuilder extends PageBuilder {
     private void addUpcomingElection(final UL ul, final ElectedOffice electedOffice, final String areaId) {
         LI li = new LI();
         li.addElement(new Span(" ").clazz("_electedOffice_" + areaId + "_" + electedOffice.getId()));
-        li.addContent(" ( ");
+        li.addContent(" (");
         li.addContent(electedOffice.getAllProperNamesConcatenated());
         li.addContent("): ");
         li.addContent(": ");
