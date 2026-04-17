@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 
 /**
  * Unit tests on the <code>ElectedOffice</code> class.
@@ -27,7 +28,7 @@ public class ElectedOfficeTest {
     @Test
     public void getElectionDatesShouldBeWiredCorrectlyToSetElectionDates() {
         ElectedOffice electedOffice = new ElectedOffice();
-        String[] electionDates = new String[] {"2016-04-17"};
+        OrderedCollection<String> electionDates = OrderedCollection.of("2016-04-17");
         electedOffice.setElectionDates(electionDates);
         assertEquals(electionDates, electedOffice.getElectionDates());
     }

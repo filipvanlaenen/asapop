@@ -2,8 +2,10 @@ package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import net.filipvanlaenen.asapop.yaml.OrderedStringCollectionDeserializer;
 import net.filipvanlaenen.asapop.yaml.StringToStringMapDeserializer;
 import net.filipvanlaenen.kolektoj.Map;
+import net.filipvanlaenen.kolektoj.OrderedCollection;
 
 /**
  * Class representing an elected office in the YAML file containing the website configuration.
@@ -12,7 +14,8 @@ public class ElectedOffice {
     /**
      * The election dates for the elected office.
      */
-    private String[] electionDates; // TODO: Consider to make this an OrderedCollection
+    @JsonDeserialize(using = OrderedStringCollectionDeserializer.class)
+    private OrderedCollection<String> electionDates;
     /**
      * The ID.
      */
@@ -33,7 +36,7 @@ public class ElectedOffice {
      *
      * @return The election dates.
      */
-    public String[] getElectionDates() {
+    public OrderedCollection<String> getElectionDates() {
         return electionDates;
     }
 
@@ -69,7 +72,7 @@ public class ElectedOffice {
      *
      * @param electionDates The election dates.
      */
-    public void setElectionDates(final String[] electionDates) {
+    public void setElectionDates(final OrderedCollection<String> electionDates) {
         this.electionDates = electionDates;
     }
 
