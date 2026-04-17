@@ -11,26 +11,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import net.filipvanlaenen.kolektoj.OrderedCollection;
+import net.filipvanlaenen.kolektoj.Map;
 
 /**
- * Unit tests on the <code>OrderedStringCollectionDeserializer</code> class.
+ * Unit tests on the <code>StringToStringMapDeserializer</code> class.
  */
-public class OrderedStringCollectionDeserializerTest {
+public class StringToStringMapDeserializerTest {
     /**
-     * Verifies that a JSON object with a string array is deserialized correctly to an ordered string collection.
+     * Verifies that a JSON object with a string to string map is deserialized correctly.
      *
      * @throws JsonProcessingException Thrown if there's a JSON processing exception.
      * @throws JsonMappingException    Thrown if there's a JSON mapping exception.
      */
     @Test
-    void shouldDeserializeStringArray() throws JsonMappingException, JsonProcessingException {
+    void shouldDeserializeIntegerToStringMap() throws JsonMappingException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         mapper.setSerializationInclusion(Include.NON_NULL);
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(OrderedCollection.class, new OrderedStringCollectionDeserializer());
+        module.addDeserializer(Map.class, new StringToStringMapDeserializer());
         mapper.registerModule(module);
-        OrderedCollection<String> result = mapper.readValue("- \"Foo\"\n- \"Bar\"", OrderedCollection.class);
-        assertTrue(OrderedCollection.of("Foo", "Bar").containsSame(result));
+        Map<String, String> result = mapper.readValue("F: \"Foo\"\nB: \"Bar\"", Map.class);
+        assertTrue(Map.<String, String>of("F", "Foo", "B", "Bar").containsSame(result));
     }
 }
