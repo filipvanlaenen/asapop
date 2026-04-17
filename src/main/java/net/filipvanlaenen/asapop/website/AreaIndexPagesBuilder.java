@@ -221,11 +221,12 @@ class AreaIndexPagesBuilder extends PageBuilder {
         section.addElement(ul);
     }
 
-    private void addUpcomingElection(final UL ul, final ElectedBody electedBody) {
+    private void addUpcomingElection(final UL ul, final ElectedBody electedBody, final String areaId) {
         LI li = new LI();
-        li.addContent(
-                String.join(" · ", SortedCollection.of(Comparator.naturalOrder(), electedBody.getAllProperNames())));
-        li.addContent(": ");
+        li.addElement(new Span(" ").clazz("_electedBody_" + areaId + "_" + electedBody.getId()));
+        li.addContent(" ( ");
+        li.addContent(electedBody.getAllProperNamesConcatenated());
+        li.addContent("): ");
         ElectionDate nextElectionDate = electedBody.getNextElectionDate(now);
         if (nextElectionDate == null) {
             li.addElement(new Span(" ").clazz("none"));
@@ -240,10 +241,12 @@ class AreaIndexPagesBuilder extends PageBuilder {
         ul.addElement(li);
     }
 
-    private void addUpcomingElection(final UL ul, final ElectedOffice electedOffice) {
+    private void addUpcomingElection(final UL ul, final ElectedOffice electedOffice, final String areaId) {
         LI li = new LI();
-        li.addContent(
-                String.join(" · ", SortedCollection.of(Comparator.naturalOrder(), electedOffice.getAllProperNames())));
+        li.addElement(new Span(" ").clazz("_electedOffice_" + areaId + "_" + electedOffice.getId()));
+        li.addContent(" ( ");
+        li.addContent(electedOffice.getAllProperNamesConcatenated());
+        li.addContent("): ");
         li.addContent(": ");
         ElectionDate nextElectionDate = electedOffice.getNextElectionDate(now);
         if (nextElectionDate == null) {
@@ -259,21 +262,23 @@ class AreaIndexPagesBuilder extends PageBuilder {
         ul.addElement(li);
     }
 
-    private int addUpcomingElectionsForElectedBodies(final UL ul, final Collection<ElectedBody> electedBodies) {
+    private int addUpcomingElectionsForElectedBodies(final UL ul, final Collection<ElectedBody> electedBodies,
+            final String areaId) {
         int number = 0;
         for (ElectedBody electedBody : electedBodies) {
             if (!electedBody.getDefunct()) {
-                addUpcomingElection(ul, electedBody);
+                addUpcomingElection(ul, electedBody, areaId);
                 number++;
             }
         }
         return number;
     }
 
-    private int addUpcomingElectionsForElectedOffices(final UL ul, final Collection<ElectedOffice> electedOffices) {
+    private int addUpcomingElectionsForElectedOffices(final UL ul, final Collection<ElectedOffice> electedOffices,
+            final String areaId) {
         int number = 0;
         for (ElectedOffice electedOffice : electedOffices) {
-            addUpcomingElection(ul, electedOffice);
+            addUpcomingElection(ul, electedOffice, areaId);
             number++;
         }
         return number;
@@ -529,9 +534,10 @@ class AreaIndexPagesBuilder extends PageBuilder {
         body.addElement(createHeader(1));
         Section section = new Section();
         body.addElement(section);
-        section.addElement(new H1(" ").clazz("_area_" + areaConfiguration.getAreaCode()));
+        String areaCode = areaConfiguration.getAreaCode();
+        section.addElement(new H1(" ").clazz("_area_" + areaCode));
         section.addElement(new H2(" ").clazz("upcoming-elections"));
-        Area area = Area.get(areaConfiguration.getAreaCode());
+        Area area = Area.get(areaCode);
         addUpcomingElections(section, area);
         section.addElement(new H2(" ").clazz("latest-opinion-polls"));
         addOpinionPolls(section, areaConfiguration);
@@ -546,8 +552,8 @@ class AreaIndexPagesBuilder extends PageBuilder {
     private void addUpcomingElections(final Section section, final Area area) {
         // TODO: Sort chronologically
         UL ul = new UL();
-        int number = addUpcomingElectionsForElectedBodies(ul, area.getElectedBodies());
-        number += addUpcomingElectionsForElectedOffices(ul, area.getElectedOffices());
+        int number = addUpcomingElectionsForElectedBodies(ul, area.getElectedBodies(), area.getId());
+        number += addUpcomingElectionsForElectedOffices(ul, area.getElectedOffices(), area.getId());
         if (number == 0) {
             addNoneParagraph(section);
         } else {

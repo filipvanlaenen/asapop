@@ -1,21 +1,26 @@
 package net.filipvanlaenen.asapop.model;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 
 import net.filipvanlaenen.asapop.website.Language;
 import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedValueCollection;
+import net.filipvanlaenen.kolektoj.SortedCollection;
 
 public class ElectedBody {
     private final boolean defunct;
     private final OrderedCollection<OrderedValueCollection<ElectionDate>> elections;
+    private final String id;
     private final Map<String, String> properNames;
     private final Map<Language, String> translatedNames;
 
-    public ElectedBody(final Map<String, String> properNames, final Map<Language, String> translatedNames,
+    public ElectedBody(final String id, final Map<String, String> properNames,
+            final Map<Language, String> translatedNames,
             final OrderedCollection<OrderedValueCollection<ElectionDate>> elections, final boolean defunct) {
+        this.id = id;
         this.properNames = Map.of(properNames);
         this.translatedNames = Map.of(translatedNames);
         this.elections = OrderedCollection.of(elections);
@@ -28,6 +33,10 @@ public class ElectedBody {
 
     public boolean getDefunct() {
         return defunct;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public Collection<String> getLanguagesOfProperNames() {
@@ -54,5 +63,9 @@ public class ElectedBody {
             }
         }
         return null;
+    }
+
+    public String getAllProperNamesConcatenated() {
+        return String.join(" · ", SortedCollection.of(Comparator.naturalOrder(), getAllProperNames()));
     }
 }

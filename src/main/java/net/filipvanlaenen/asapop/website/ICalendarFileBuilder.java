@@ -100,8 +100,7 @@ public class ICalendarFileBuilder {
                         sb.append(electedBody.getName(Language.ENGLISH));
                         if (!electedBody.getLanguagesOfProperNames().containsSame(ENGLISH_ONLY)) {
                             sb.append(" (");
-                            sb.append(String.join(" · ",
-                                    SortedCollection.of(Comparator.naturalOrder(), electedBody.getAllProperNames())));
+                            sb.append(electedBody.getAllProperNamesConcatenated());
                             sb.append(")");
                         }
                         sb.append("\n");
@@ -134,8 +133,7 @@ public class ICalendarFileBuilder {
                         sb.append(electedOffice.getName(Language.ENGLISH));
                         if (!electedOffice.getLanguagesOfProperNames().containsSame(ENGLISH_ONLY)) {
                             sb.append(" (");
-                            sb.append(String.join(" · ",
-                                    SortedCollection.of(Comparator.naturalOrder(), electedOffice.getAllProperNames())));
+                            sb.append(electedOffice.getAllProperNamesConcatenated());
                             sb.append(")");
                         }
                         sb.append("\n");

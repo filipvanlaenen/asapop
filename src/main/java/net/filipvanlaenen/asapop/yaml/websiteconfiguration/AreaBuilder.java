@@ -60,8 +60,8 @@ public class AreaBuilder {
         if (!defunct && !hasFutureDate(elections, now)) {
             Laconic.LOGGER.logError("No election dates set in the future.", electedBodyToken);
         }
-        return new net.filipvanlaenen.asapop.model.ElectedBody(electedBody.getProperNames(), translatedNames, elections,
-                defunct);
+        return new net.filipvanlaenen.asapop.model.ElectedBody(electedBody.getId(), electedBody.getProperNames(),
+                translatedNames, elections, defunct);
     }
 
     private static net.filipvanlaenen.asapop.model.ElectedOffice buildElectedOffice(final ElectedOffice electedOffice,
@@ -81,8 +81,8 @@ public class AreaBuilder {
         if (!hasFutureDate(elections, now)) {
             Laconic.LOGGER.logError("No election dates set in the future.", electedOfficeToken);
         }
-        return new net.filipvanlaenen.asapop.model.ElectedOffice(electedOffice.getProperNames(), translatedNames,
-                elections);
+        return new net.filipvanlaenen.asapop.model.ElectedOffice(electedOffice.getId(), electedOffice.getProperNames(),
+                translatedNames, elections);
     }
 
     private static OrderedValueCollection<ElectionDate> buildElectionDateCollection(final String date) {

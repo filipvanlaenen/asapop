@@ -40,6 +40,8 @@ import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectedBody;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectedOffice;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
@@ -269,10 +271,10 @@ public final class CommandLineInterface {
         };
 
         /**
-         * Adds the translations of all the areas to the internationalization dictionary.
+         * Adds the translations from all the areas to the internationalization dictionary.
          *
          * @param internationalization The internationalization dictionary to add the translations to.
-         * @param websiteConfiguration The website configuration to extract the translations of the areas from.
+         * @param websiteConfiguration The website configuration to extract the translations from the areas to.
          */
         static void addAreaTranslations(final Internationalization internationalization,
                 final WebsiteConfiguration websiteConfiguration) {
@@ -286,6 +288,23 @@ public final class CommandLineInterface {
                         if (subdivision.getTranslations() != null) {
                             internationalization.addTranslations("_area_" + areaCode + "-" + subdivision.getAreaCode(),
                                     subdivision.getTranslations());
+                        }
+                    }
+                }
+                if (areaConfiguration.getElectedBodies() != null) {
+                    for (ElectedBody electedBody : areaConfiguration.getElectedBodies()) {
+                        if (electedBody.getTranslatedNames() != null) {
+                            internationalization.addTranslations("_electedBody_" + areaCode + "_" + electedBody.getId(),
+                                    electedBody.getTranslatedNames());
+                        }
+                    }
+                }
+                if (areaConfiguration.getElectedOffices() != null) {
+                    for (ElectedOffice electedOffice : areaConfiguration.getElectedOffices()) {
+                        if (electedOffice.getTranslatedNames() != null) {
+                            internationalization.addTranslations(
+                                    "_electedOffice_" + areaCode + "_" + electedOffice.getId(),
+                                    electedOffice.getTranslatedNames());
                         }
                     }
                 }
