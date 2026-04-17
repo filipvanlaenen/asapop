@@ -6,9 +6,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
-
 /**
  * Unit tests on the <code>WebsiteConfiguration</code> class.
  */

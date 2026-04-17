@@ -10,11 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 
 /**

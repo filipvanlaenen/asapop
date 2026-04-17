@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.kolektoj.Map;
 
 /**

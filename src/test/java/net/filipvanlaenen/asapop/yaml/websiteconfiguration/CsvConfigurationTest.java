@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
-
 /**
  * Unit tests on the <code>CsvConfiguration</code> class.
  */
