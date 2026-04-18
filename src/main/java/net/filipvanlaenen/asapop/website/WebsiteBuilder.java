@@ -107,7 +107,7 @@ public class WebsiteBuilder {
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
         website.put("index.html", new IndexPageBuilder(websiteConfiguration, elections, now).build());
-        website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, elections, now).build());
+        website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, now).build());
         website.put("calendar.ical",
                 new ICalendarFileBuilder(websiteConfiguration, elections, now, internationalization).build(token));
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());

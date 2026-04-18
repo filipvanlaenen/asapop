@@ -2,13 +2,13 @@ package net.filipvanlaenen.asapop.website;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import net.filipvanlaenen.asapop.model.Election;
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
-import net.filipvanlaenen.asapop.website.ElectoralCalendarPageBuilder.ElectionComparator;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
@@ -28,6 +28,39 @@ import net.filipvanlaenen.txhtmlj.Svg;
  * Class building the index page.
  */
 final class IndexPageBuilder extends PageBuilder {
+    /**
+     * Comparator class to sort the elections.
+     */
+    static final class ElectionComparator implements Comparator<Election> {
+        /**
+         * Today's day.
+         */
+        private final LocalDate now;
+
+        /**
+         * Constructor with the current day as its parameter.
+         *
+         * @param now Today's date.
+         */
+        ElectionComparator(final LocalDate now) {
+            this.now = now;
+        }
+
+        @Override
+        public int compare(final Election e1, final Election e2) {
+            int dateResult = e1.getNextElectionDate(now).compareTo(e2.getNextElectionDate(now));
+            if (dateResult != 0) {
+                return dateResult;
+            }
+            int areaResult = e1.areaCode().compareTo(e2.areaCode());
+            if (areaResult != 0) {
+                return areaResult;
+            } else {
+                return e1.electionType().compareTo(e2.electionType());
+            }
+        }
+    }
+
     /**
      * The height of the SVG container.
      */

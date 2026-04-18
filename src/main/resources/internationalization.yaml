@@ -72,6 +72,14 @@ terms:
       fr: ","
       nl: ","
       no: ","
+  - key: "election"
+    translations:
+      de: "Wahl"
+      en: "Election"
+      eo: "Baloto"
+      fr: "Élection"
+      nl: "Verkiezing"
+      no: "Valg"
   - key: "election-type"
     translations:
       de: "Wahltyp"
