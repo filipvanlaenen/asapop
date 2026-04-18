@@ -30,6 +30,7 @@ import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.website.Internationalization;
+import net.filipvanlaenen.asapop.website.Language;
 import net.filipvanlaenen.asapop.website.Website;
 import net.filipvanlaenen.asapop.website.WebsiteBuilder;
 import net.filipvanlaenen.asapop.yaml.Analysis;
@@ -295,7 +296,8 @@ public final class CommandLineInterface {
                     for (ElectedBody electedBody : areaConfiguration.getElectedBodies()) {
                         if (electedBody.getTranslatedNames() != null) {
                             internationalization.addTranslations("_electedBody_" + areaCode + "_" + electedBody.getId(),
-                                    electedBody.getTranslatedNames());
+                                    mergeProperAndTranslatedNames(electedBody.getProperNames(),
+                                            electedBody.getTranslatedNames()));
                         }
                     }
                 }
@@ -304,11 +306,24 @@ public final class CommandLineInterface {
                         if (electedOffice.getTranslatedNames() != null) {
                             internationalization.addTranslations(
                                     "_electedOffice_" + areaCode + "_" + electedOffice.getId(),
-                                    electedOffice.getTranslatedNames());
+                                    mergeProperAndTranslatedNames(electedOffice.getProperNames(),
+                                            electedOffice.getTranslatedNames()));
                         }
                     }
                 }
             }
+        }
+
+        private static Map<String, String> mergeProperAndTranslatedNames(final Map<String, String> properNames,
+                final Map<String, String> translatedNames) {
+            ModifiableMap<String, String> result = ModifiableMap.of(translatedNames);
+            for (Language language : Language.values()) {
+                String id = language.getId();
+                if (!result.containsKey(id) && properNames.containsKey(id)) {
+                    result.add(id, properNames.get(id));
+                }
+            }
+            return result;
         }
 
         /**
