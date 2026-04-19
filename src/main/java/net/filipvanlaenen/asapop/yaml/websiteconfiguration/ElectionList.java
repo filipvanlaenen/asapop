@@ -15,10 +15,6 @@ public class ElectionList {
      */
     @JsonDeserialize(using = IntegerToStringMapDeserializer.class)
     private Map<Integer, String> dates;
-    /**
-     * The URL for the GitHub website.
-     */
-    private String gitHubWebsiteUrl;
 
     /**
      * Returns the map with the election dates.
@@ -30,29 +26,11 @@ public class ElectionList {
     }
 
     /**
-     * Returns the URL for the GitHub website.
-     *
-     * @return The URL for the GitHub website.
-     */
-    public String getGitHubWebsiteUrl() {
-        return gitHubWebsiteUrl;
-    }
-
-    /**
      * Sets the map with the election dates.
      *
      * @param dates The map with the election dates.
      */
     public void setDates(final Map<Integer, String> dates) {
         this.dates = dates;
-    }
-
-    /**
-     * Sets the URL for the GitHub website.
-     *
-     * @param gitHubWebsiteUrl The URL for the GitHub website.
-     */
-    public void setGitHubWebsiteUrl(final String gitHubWebsiteUrl) {
-        this.gitHubWebsiteUrl = gitHubWebsiteUrl;
     }
 }

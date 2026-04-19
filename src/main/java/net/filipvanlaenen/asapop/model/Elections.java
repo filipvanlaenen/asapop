@@ -2,13 +2,10 @@ package net.filipvanlaenen.asapop.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 
@@ -116,42 +113,6 @@ public final class Elections {
         } else {
             return null;
         }
-    }
-
-    /**
-     * Returns the first elections for all areas and all types after a given date.
-     *
-     * @param now The date to calculate the next elections from.
-     * @return A set with all first elections after the provided date.
-     */
-    public Set<Election> getNextElections(final LocalDate now) {
-        Set<Election> result = new HashSet<Election>();
-        for (String areaCode : map.keySet()) {
-            result.addAll(getNextElections(areaCode, now));
-        }
-        return result;
-    }
-
-    /**
-     * Returns the first elections of all types for an area after a given date.
-     *
-     * @param areaCode The area code.
-     * @param now      The date to calculate the next elections from.
-     * @return A set with all the first elections after the provided date for the area.
-     */
-    private Set<Election> getNextElections(final String areaCode, final LocalDate now) {
-        Map<ElectionType, List<Election>> electionsAtArea = map.get(areaCode);
-        if (electionsAtArea == null) {
-            return Collections.emptySet();
-        }
-        Set<Election> result = new HashSet<Election>();
-        for (ElectionType electionType : electionsAtArea.keySet()) {
-            Election nextElection = calculateNextElection(electionsAtArea, electionType, now);
-            if (nextElection != null) {
-                result.add(nextElection);
-            }
-        }
-        return result;
     }
 
     @Override
