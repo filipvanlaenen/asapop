@@ -106,7 +106,7 @@ public class WebsiteBuilder {
                 tooltipScriptContent, internationalization);
         website.putAll(javaScriptsBuilder.build());
         website.putAll(new StyleSheetsBuilder(baseStyleSheetContent, customStyleSheetContent).build());
-        website.put("index.html", new IndexPageBuilder(websiteConfiguration).build());
+        website.put("index.html", new IndexPageBuilder(websiteConfiguration, now).build());
         website.put("calendar.html", new ElectoralCalendarPageBuilder(websiteConfiguration, now).build());
         website.put("calendar.ical",
                 new ICalendarFileBuilder(websiteConfiguration, now, internationalization).build(token));
