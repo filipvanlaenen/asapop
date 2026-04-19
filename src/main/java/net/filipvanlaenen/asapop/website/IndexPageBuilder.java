@@ -93,7 +93,8 @@ final class IndexPageBuilder extends PageBuilder {
                 }
             }
         }
-        for (LI li : OrderedCollection.of(rowMap.getValues(), 0, 5)) {
+        int numberOfElectionsToInclude = Integer.min(5, rowMap.size());
+        for (LI li : OrderedCollection.of(rowMap.getValues(), 0, numberOfElectionsToInclude)) {
             ul.addElement(li);
         }
         body.addElement(createFooter());
