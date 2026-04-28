@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
@@ -85,7 +86,6 @@ public class WebsiteBuilderTest {
         ElectionLists electionListsForSweden = new ElectionLists();
         ElectionList nationalElectionsInSweden = new ElectionList();
         nationalElectionsInSweden.setDates(Map.of(1, "2022-09-11"));
-        nationalElectionsInSweden.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/swedish_polls");
         electionListsForSweden.setNational(nationalElectionsInSweden);
         sweden.setElections(electionListsForSweden);
         latvia = new AreaConfiguration();
@@ -93,14 +93,12 @@ public class WebsiteBuilderTest {
         ElectionLists electionListsForLatvia = new ElectionLists();
         ElectionList nationalElectionsInLatvia = new ElectionList();
         nationalElectionsInLatvia.setDates(Map.of(1, "2022-10-01"));
-        nationalElectionsInLatvia.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/latvian_polls");
         electionListsForLatvia.setNational(nationalElectionsInLatvia);
         latvia.setElections(electionListsForLatvia);
         AreaConfiguration bulgaria = new AreaConfiguration();
         ElectionLists electionListsForBulgaria = new ElectionLists();
         ElectionList nationalElectionsInBulgaria = new ElectionList();
         nationalElectionsInBulgaria.setDates(Map.of(1, "2022-10-02"));
-        nationalElectionsInBulgaria.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/bulgarian_polls");
         electionListsForBulgaria.setNational(nationalElectionsInBulgaria);
         bulgaria.setElections(electionListsForBulgaria);
         northMacedonia = new AreaConfiguration();
@@ -125,12 +123,12 @@ public class WebsiteBuilderTest {
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");
-        expected.put(Paths.get("index.html"),
-                new IndexPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+        AreaBuilder.build(websiteConfiguration, NOW);
+        expected.put(Paths.get("index.html"), new IndexPageBuilder(websiteConfiguration, NOW).build().asString());
         expected.put(Paths.get("calendar.html"),
-                new ElectoralCalendarPageBuilder(websiteConfiguration, elections, NOW).build().asString());
+                new ElectoralCalendarPageBuilder(websiteConfiguration, NOW).build().asString());
         expected.put(Paths.get("calendar.ical"),
-                new ICalendarFileBuilder(websiteConfiguration, elections, NOW, internationalization).build(TOKEN));
+                new ICalendarFileBuilder(websiteConfiguration, NOW, internationalization).build(TOKEN));
         expected.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         expected.put(Paths.get("statistics.html"),
                 new StatisticsPageBuilder(websiteConfiguration, internationalization, opinionPollsMap, NOW).build()

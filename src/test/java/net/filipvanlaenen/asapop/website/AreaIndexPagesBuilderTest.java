@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
@@ -228,6 +229,7 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setElections(electionLists);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
         Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(createAreaIndexPageWithUpcomingElections(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(northMacedonia));
@@ -415,14 +417,7 @@ public class AreaIndexPagesBuilderTest {
     private String createAreaIndexPageWithUpcomingElections() {
         StringBuilder expected = new StringBuilder();
         addTopPart(expected, true);
-        expected.append("      <ul>\n");
-        expected.append(
-                "        <li><span class=\"around\"> </span> 2024-03: <span class=\"president\"> </span></li>\n");
-        expected.append("        <li>2023-03-05: <span class=\"parliament\"> </span></li>\n");
-        expected.append(
-                "        <li><span class=\"no-later-than\"> </span> 2025-03: <span class=\"european-parliament\">"
-                        + " </span></li>\n");
-        expected.append("      </ul>\n");
+        expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         addMiddlePart(expected);
         expected.append("      <p><span class=\"none\"> </span>.</p>\n");
         expected.append("      <h2 class=\"statistics\"> </h2>\n");

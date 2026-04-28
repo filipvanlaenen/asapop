@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,14 +38,6 @@ public class ElectionsTest {
     @Test
     public void anEmptyInstanceShouldReturnNullForTheNextElection() {
         assertNull(EMPTY_ELECTIONS.getNextElection("aa", ElectionType.NATIONAL, EARLY_NOW));
-    }
-
-    /**
-     * Verifies that an empty instance returns an empty set as the next elections.
-     */
-    @Test
-    public void anEmptyInstanceShouldReturnEmptySetForTheNextElections() {
-        assertTrue(EMPTY_ELECTIONS.getNextElections(EARLY_NOW).isEmpty());
     }
 
     /**
@@ -90,27 +81,6 @@ public class ElectionsTest {
     public void shouldReturnNullWhenElectionWithDateInThePastIsAdded() {
         Elections elections = createElectionsInstanceWithOneElection();
         assertNull(elections.getNextElection("aa", ElectionType.NATIONAL, LATE_NOW));
-    }
-
-    /**
-     * Verifies that when one election with a date in the future is added, it is returned in the set.
-     */
-    @Test
-    public void shouldReturnElectionWithDateInTheFuture() {
-        Elections elections = createElectionsInstanceWithOneElection();
-        Election expected = new Election("aa", ElectionType.NATIONAL, 1, List.of(ElectionDate.parse("2023-04-15")),
-                List.of(List.of()), null);
-        assertEquals(Set.of(expected), elections.getNextElections(EARLY_NOW));
-    }
-
-    /**
-     * Verifies that when one election with a date in the past is added, getting the next elections returns an empty
-     * set.
-     */
-    @Test
-    public void shouldReturnEmptySetWhenElectionWithDateInThePastIsAdded() {
-        Elections elections = createElectionsInstanceWithOneElection();
-        assertTrue(elections.getNextElections(LATE_NOW).isEmpty());
     }
 
     /**

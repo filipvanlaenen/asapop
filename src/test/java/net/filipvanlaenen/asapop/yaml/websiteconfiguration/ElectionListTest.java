@@ -21,15 +21,4 @@ public class ElectionListTest {
         electionList.setDates(dates);
         assertEquals(dates, electionList.getDates());
     }
-
-    /**
-     * Verifies that the getter method <code>getGitHubWebsiteUrl</code> is wired correctly to the setter method
-     * <code>setGitHubWebsiteUrl</code>.
-     */
-    @Test
-    public void getGitHubWebsiteUrlShouldBeWiredCorrectlyToSetGitHubWebsiteUrl() {
-        ElectionList electionList = new ElectionList();
-        electionList.setGitHubWebsiteUrl("https://filipvanlaenen.github.io/austrian_polls");
-        assertEquals("https://filipvanlaenen.github.io/austrian_polls", electionList.getGitHubWebsiteUrl());
-    }
 }
