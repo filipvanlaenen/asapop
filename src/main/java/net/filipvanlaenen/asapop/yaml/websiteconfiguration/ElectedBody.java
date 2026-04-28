@@ -11,6 +11,9 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
  * Class representing an elected body in the YAML file containing the website configuration.
  */
 public class ElectedBody {
+    /**
+     * Flag indicating that the elected body won't have new elections.
+     */
     private Boolean defunct;
     /**
      * The election dates for the elected body.
@@ -32,6 +35,11 @@ public class ElectedBody {
     @JsonDeserialize(using = StringToStringMapDeserializer.class)
     private Map<String, String> translatedNames;
 
+    /**
+     * Returns whether the elected body is defunct or not.
+     *
+     * @return The flag indicating whether the elected body is defunct.
+     */
     public Boolean getDefunct() {
         return defunct;
     }
@@ -72,6 +80,11 @@ public class ElectedBody {
         return translatedNames;
     }
 
+    /**
+     * Sets whether the elected body is defunct or not.
+     *
+     * @param defunct The flag whether the elected body is defunct.
+     */
     public void setDefunct(final Boolean defunct) {
         this.defunct = defunct;
     }
