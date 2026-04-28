@@ -10,7 +10,7 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
 /**
  * Class representing an elected body in the YAML file containing the website configuration.
  */
-public class ElectedBody {
+public class ElectedBodyConfiguration {
     /**
      * Flag indicating that the elected body won't have new elections.
      */

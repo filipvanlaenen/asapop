@@ -20,11 +20,11 @@ public class AreaConfiguration {
     /**
      * The elected bodies of the area.
      */
-    private ElectedBody[] electedBodies;
+    private ElectedBodyConfiguration[] electedBodies;
     /**
      * The elected offices of the area.
      */
-    private ElectedOffice[] electedOffices;
+    private ElectedOfficeConfiguration[] electedOffices;
     /**
      * The election configurations.
      */
@@ -68,7 +68,7 @@ public class AreaConfiguration {
      *
      * @return The elected bodies of the area.
      */
-    public ElectedBody[] getElectedBodies() {
+    public ElectedBodyConfiguration[] getElectedBodies() {
         return electedBodies;
     }
 
@@ -77,7 +77,7 @@ public class AreaConfiguration {
      *
      * @return The elected offices of the area.
      */
-    public ElectedOffice[] getElectedOffices() {
+    public ElectedOfficeConfiguration[] getElectedOffices() {
         return electedOffices;
     }
 
@@ -141,7 +141,7 @@ public class AreaConfiguration {
      *
      * @param electedBodies The elected bodies of the area.
      */
-    public void setElectedBodies(final ElectedBody[] electedBodies) {
+    public void setElectedBodies(final ElectedBodyConfiguration[] electedBodies) {
         this.electedBodies = electedBodies;
     }
 
@@ -150,7 +150,7 @@ public class AreaConfiguration {
      *
      * @param electedOffices The elected offices of the area.
      */
-    public void setElectedOffices(final ElectedOffice[] electedOffices) {
+    public void setElectedOffices(final ElectedOfficeConfiguration[] electedOffices) {
         this.electedOffices = electedOffices;
     }
 

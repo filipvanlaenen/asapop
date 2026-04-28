@@ -41,8 +41,8 @@ import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectedBody;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectedOffice;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectedBodyConfiguration;
+import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectedOfficeConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
@@ -293,7 +293,7 @@ public final class CommandLineInterface {
                     }
                 }
                 if (areaConfiguration.getElectedBodies() != null) {
-                    for (ElectedBody electedBody : areaConfiguration.getElectedBodies()) {
+                    for (ElectedBodyConfiguration electedBody : areaConfiguration.getElectedBodies()) {
                         if (electedBody.getTranslatedNames() != null) {
                             internationalization.addTranslations("_electedBody_" + areaCode + "_" + electedBody.getId(),
                                     mergeProperAndTranslatedNames(electedBody.getProperNames(),
@@ -302,7 +302,7 @@ public final class CommandLineInterface {
                     }
                 }
                 if (areaConfiguration.getElectedOffices() != null) {
-                    for (ElectedOffice electedOffice : areaConfiguration.getElectedOffices()) {
+                    for (ElectedOfficeConfiguration electedOffice : areaConfiguration.getElectedOffices()) {
                         if (electedOffice.getTranslatedNames() != null) {
                             internationalization.addTranslations(
                                     "_electedOffice_" + areaCode + "_" + electedOffice.getId(),

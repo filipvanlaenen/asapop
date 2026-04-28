@@ -10,7 +10,7 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
 /**
  * Class representing an elected office in the YAML file containing the website configuration.
  */
-public class ElectedOffice {
+public class ElectedOfficeConfiguration {
     /**
      * The election dates for the elected office.
      */

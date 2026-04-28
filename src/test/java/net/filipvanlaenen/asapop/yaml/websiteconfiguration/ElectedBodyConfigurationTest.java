@@ -10,13 +10,13 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
 /**
  * Unit tests on the <code>ElectedBody</code> class.
  */
-public class ElectedBodyTest {
+public class ElectedBodyConfigurationTest {
     /**
      * Verifies that the getter method <code>getId</code> is wired correctly to the setter method <code>setId</code>.
      */
     @Test
     public void getIdShouldBeWiredCorrectlyToSetId() {
-        ElectedBody electedBody = new ElectedBody();
+        ElectedBodyConfiguration electedBody = new ElectedBodyConfiguration();
         electedBody.setId("ab");
         assertEquals("ab", electedBody.getId());
     }
@@ -27,7 +27,7 @@ public class ElectedBodyTest {
      */
     @Test
     public void getElectionDatesShouldBeWiredCorrectlyToSetElectionDates() {
-        ElectedBody electedBody = new ElectedBody();
+        ElectedBodyConfiguration electedBody = new ElectedBodyConfiguration();
         OrderedCollection<String> electionDates = OrderedCollection.of("2016-04-17");
         electedBody.setElectionDates(electionDates);
         assertEquals(electionDates, electedBody.getElectionDates());
@@ -39,7 +39,7 @@ public class ElectedBodyTest {
      */
     @Test
     public void getProperNamesShouldBeWiredCorrectlyToSetProperNames() {
-        ElectedBody electedBody = new ElectedBody();
+        ElectedBodyConfiguration electedBody = new ElectedBodyConfiguration();
         Map<String, String> properNames = Map.of("ab", "Foo");
         electedBody.setProperNames(properNames);
         assertEquals(properNames, electedBody.getProperNames());
@@ -51,7 +51,7 @@ public class ElectedBodyTest {
      */
     @Test
     public void getTranslatedNamesShouldBeWiredCorrectlyToSetTranslatedNames() {
-        ElectedBody electedBody = new ElectedBody();
+        ElectedBodyConfiguration electedBody = new ElectedBodyConfiguration();
         Map<String, String> translatedNames = Map.of("ab", "Foo");
         electedBody.setTranslatedNames(translatedNames);
         assertEquals(translatedNames, electedBody.getTranslatedNames());

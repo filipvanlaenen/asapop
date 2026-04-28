@@ -10,13 +10,13 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
 /**
  * Unit tests on the <code>ElectedOffice</code> class.
  */
-public class ElectedOfficeTest {
+public class ElectedOfficeConfigurationTest {
     /**
      * Verifies that the getter method <code>getId</code> is wired correctly to the setter method <code>setId</code>.
      */
     @Test
     public void getIdShouldBeWiredCorrectlyToSetId() {
-        ElectedOffice electedOffice = new ElectedOffice();
+        ElectedOfficeConfiguration electedOffice = new ElectedOfficeConfiguration();
         electedOffice.setId("ab");
         assertEquals("ab", electedOffice.getId());
     }
@@ -27,7 +27,7 @@ public class ElectedOfficeTest {
      */
     @Test
     public void getElectionDatesShouldBeWiredCorrectlyToSetElectionDates() {
-        ElectedOffice electedOffice = new ElectedOffice();
+        ElectedOfficeConfiguration electedOffice = new ElectedOfficeConfiguration();
         OrderedCollection<String> electionDates = OrderedCollection.of("2016-04-17");
         electedOffice.setElectionDates(electionDates);
         assertEquals(electionDates, electedOffice.getElectionDates());
@@ -39,7 +39,7 @@ public class ElectedOfficeTest {
      */
     @Test
     public void getProperNamesShouldBeWiredCorrectlyToSetProperNames() {
-        ElectedOffice electedOffice = new ElectedOffice();
+        ElectedOfficeConfiguration electedOffice = new ElectedOfficeConfiguration();
         Map<String, String> properNames = Map.of("ab", "Foo");
         electedOffice.setProperNames(properNames);
         assertEquals(properNames, electedOffice.getProperNames());
@@ -51,7 +51,7 @@ public class ElectedOfficeTest {
      */
     @Test
     public void getTranslatedNamesShouldBeWiredCorrectlyToSetTranslatedNames() {
-        ElectedOffice electedOffice = new ElectedOffice();
+        ElectedOfficeConfiguration electedOffice = new ElectedOfficeConfiguration();
         Map<String, String> translatedNames = Map.of("ab", "Foo");
         electedOffice.setTranslatedNames(translatedNames);
         assertEquals(translatedNames, electedOffice.getTranslatedNames());

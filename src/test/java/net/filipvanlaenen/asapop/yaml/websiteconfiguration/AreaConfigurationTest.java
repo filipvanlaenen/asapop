@@ -40,7 +40,7 @@ public class AreaConfigurationTest {
     @Test
     public void getElectedBodiesShouldBeWiredCorrectlyToSetElectedBodies() {
         AreaConfiguration areaConfiguration = new AreaConfiguration();
-        ElectedBody[] electedBodies = new ElectedBody[] {new ElectedBody()};
+        ElectedBodyConfiguration[] electedBodies = new ElectedBodyConfiguration[] {new ElectedBodyConfiguration()};
         areaConfiguration.setElectedBodies(electedBodies);
         assertEquals(electedBodies, areaConfiguration.getElectedBodies());
     }
@@ -52,7 +52,7 @@ public class AreaConfigurationTest {
     @Test
     public void getElectedOfficesShouldBeWiredCorrectlyToSetElectedOffices() {
         AreaConfiguration areaConfiguration = new AreaConfiguration();
-        ElectedOffice[] electedOffices = new ElectedOffice[] {new ElectedOffice()};
+        ElectedOfficeConfiguration[] electedOffices = new ElectedOfficeConfiguration[] {new ElectedOfficeConfiguration()};
         areaConfiguration.setElectedOffices(electedOffices);
         assertEquals(electedOffices, areaConfiguration.getElectedOffices());
     }
