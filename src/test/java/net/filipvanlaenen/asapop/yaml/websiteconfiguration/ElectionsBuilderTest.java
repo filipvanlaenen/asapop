@@ -34,8 +34,7 @@ public class ElectionsBuilderTest {
      */
     @Test
     public void shouldExtractEmptyElectionsFromEmptyWebsiteConfiguration() {
-        Elections elections =
-                ElectionsBuilder.extractAndValidateElections(new WebsiteConfiguration(), Map.empty(), NOW);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(new WebsiteConfiguration(), Map.empty());
         assertEquals(new Elections(), elections);
     }
 
@@ -50,7 +49,7 @@ public class ElectionsBuilderTest {
         elections.setEuropean(createElectionList());
         Elections expected = new Elections();
         expected.addElection(AREA_CODE, ElectionType.EUROPEAN, 1, ELECTION_DATE, null);
-        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW));
+        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty()));
     }
 
     /**
@@ -64,7 +63,7 @@ public class ElectionsBuilderTest {
         elections.setNational(createElectionList());
         Elections expected = new Elections();
         expected.addElection(AREA_CODE, ElectionType.NATIONAL, 1, ELECTION_DATE, null);
-        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW));
+        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty()));
     }
 
     /**
@@ -78,7 +77,7 @@ public class ElectionsBuilderTest {
         elections.setPresidential(createElectionList());
         Elections expected = new Elections();
         expected.addElection(AREA_CODE, ElectionType.PRESIDENTIAL, 1, ELECTION_DATE, null);
-        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW));
+        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty()));
     }
 
     /**

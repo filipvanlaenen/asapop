@@ -1,6 +1,5 @@
 package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.model.ElectionType;
@@ -49,7 +48,7 @@ public final class ElectionsBuilder {
      * @return The extracted elections.
      */
     public static Elections extractAndValidateElections(final WebsiteConfiguration websiteConfiguration,
-            final Map<String, ElectionData> electionDataFiles, final LocalDate now) {
+            final Map<String, ElectionData> electionDataFiles) {
         Token token = Laconic.LOGGER.logMessage("Extracting and validating the election dates.");
         Elections elections = new Elections();
         Set<AreaConfiguration> areaConfigurations = websiteConfiguration.getAreaConfigurations();

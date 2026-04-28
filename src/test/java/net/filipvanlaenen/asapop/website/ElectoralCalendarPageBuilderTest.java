@@ -145,7 +145,7 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         assertEquals(expected.toString(),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, NOW).build().asString());
     }

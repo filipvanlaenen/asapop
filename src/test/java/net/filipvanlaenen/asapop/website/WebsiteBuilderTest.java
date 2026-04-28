@@ -119,7 +119,7 @@ public class WebsiteBuilderTest {
         ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
         Internationalization internationalization = createInternationalization();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         Map<String, OpinionPolls> opinionPollsMap = Map.of("mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
         ElectoralList.get("B").setAbbreviation("B");

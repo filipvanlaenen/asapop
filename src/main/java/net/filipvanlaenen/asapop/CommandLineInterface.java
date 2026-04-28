@@ -158,7 +158,7 @@ public final class CommandLineInterface {
                 Map<String, ElectionData> electionDataFiles =
                         readElectionDataFiles(websiteConfiguration, siteConfigurationFile.getParent());
                 Elections elections =
-                        ElectionsBuilder.extractAndValidateElections(websiteConfiguration, electionDataFiles, now);
+                        ElectionsBuilder.extractAndValidateElections(websiteConfiguration, electionDataFiles);
                 Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
                         readAllParliamentaryOpinionPolls(ropfDirName, websiteConfiguration);
                 Map<String, OpinionPolls> presidentialOpinionPollsMap =

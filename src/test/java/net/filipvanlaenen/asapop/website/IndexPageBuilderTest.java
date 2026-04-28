@@ -100,7 +100,7 @@ public class IndexPageBuilderTest {
         expected.append("      <ul/>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW1);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         AreaBuilder.build(websiteConfiguration, NOW1);
         assertEquals(expected.toString(), new IndexPageBuilder(websiteConfiguration, NOW1).build().asString());
     }
@@ -115,7 +115,7 @@ public class IndexPageBuilderTest {
         expected.append("      <ul/>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty(), NOW3);
+        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         AreaBuilder.build(websiteConfiguration, NOW3);
         assertEquals(expected.toString(), new IndexPageBuilder(websiteConfiguration, NOW3).build().asString());
     }
