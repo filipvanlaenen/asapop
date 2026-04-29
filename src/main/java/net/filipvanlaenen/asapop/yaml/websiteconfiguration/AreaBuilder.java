@@ -138,7 +138,9 @@ public final class AreaBuilder {
         for (String singleDate : singleDates) {
             boolean annulled = singleDate.startsWith("(");
             if (!annulled) {
-                ElectionDate ed = ElectionDate.parse(singleDate);
+                String[] simpleDates = singleDate.split("&");
+                String simpleDate = simpleDates[simpleDates.length - 1];
+                ElectionDate ed = ElectionDate.parse(simpleDate);
                 dates.addLast(ed);
             }
         }
