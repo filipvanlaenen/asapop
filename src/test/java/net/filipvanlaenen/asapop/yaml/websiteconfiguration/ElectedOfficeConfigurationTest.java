@@ -1,6 +1,8 @@
 package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,5 +57,18 @@ public class ElectedOfficeConfigurationTest {
         Map<String, String> translatedNames = Map.of("ab", "Foo");
         electedOffice.setTranslatedNames(translatedNames);
         assertEquals(translatedNames, electedOffice.getTranslatedNames());
+    }
+
+    /**
+     * Verifies that the getter method <code>getDefunct</code> is wired correctly to the setter method
+     * <code>setDefunct</code>.
+     */
+    @Test
+    public void getDefunctShouldBeWiredCorrectlyToSetDefunct() {
+        ElectedOfficeConfiguration electedOffice = new ElectedOfficeConfiguration();
+        electedOffice.setDefunct(false);
+        assertFalse(electedOffice.getDefunct());
+        electedOffice.setDefunct(true);
+        assertTrue(electedOffice.getDefunct());
     }
 }
