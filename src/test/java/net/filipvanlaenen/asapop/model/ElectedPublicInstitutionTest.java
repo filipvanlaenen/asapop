@@ -74,8 +74,8 @@ public class ElectedPublicInstitutionTest {
     }
 
     /**
-     * Verifies that the <code>getDefunct</code> returns true for the defunct test instance. This unit test uses the
-     * subclass <code>ElectedBody</code>.
+     * Verifies that the <code>getDefunct</code> method returns true for the defunct test instance. This unit test uses
+     * the subclass <code>ElectedBody</code>.
      */
     @Test
     public void getDefunctShouldReturnTrueForDefunctTestInstance() {
@@ -83,7 +83,8 @@ public class ElectedPublicInstitutionTest {
     }
 
     /**
-     * Verifies that the <code>getId</code> returns the ID. This unit test uses the subclass <code>ElectedBody</code>.
+     * Verifies that the <code>getId</code> method returns the ID. This unit test uses the subclass
+     * <code>ElectedBody</code>.
      */
     @Test
     public void getIdShouldReturnTheId() {
@@ -91,8 +92,8 @@ public class ElectedPublicInstitutionTest {
     }
 
     /**
-     * Verifies that the <code>getLanguagesOfProperNames</code> returns the language codes for all proper names. This
-     * unit test uses the subclass <code>ElectedBody</code>.
+     * Verifies that the <code>getLanguagesOfProperNames</code> method returns the language codes for all proper names.
+     * This unit test uses the subclass <code>ElectedBody</code>.
      */
     @Test
     public void getLanguagesOfProperNamesShouldReturnAllLanguageCodesForTheProperNames() {
