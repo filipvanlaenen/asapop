@@ -35,11 +35,11 @@ public class CsvFilesBuilderTest {
     /**
      * The content for the opinion polls CSV file for France.
      */
-    private static final String POLLS_FRANCE_CSV =
+    private static final String POLLS_FRANCE_P13_CSV =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
-                    + "Participation,Precision,F,G,Other\n"
+                    + "Participation,Precision,F,G,H,I,Other\n"
                     + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
-                    + "40%,Not Available\n";
+                    + "40%,2%,2%,Not Available\n";
     /**
      * The content for the opinion polls CSV file for Flanders.
      */
@@ -90,8 +90,8 @@ public class CsvFilesBuilderTest {
         ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
         expected.put(Paths.get("_csv", "be-vlg.csv"), POLLS_FLANDERS_CSV);
         expected.put(Paths.get("_csv", "be-vlg.v1.csv"), POLLS_FLANDERS_CSV);
-        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_CSV);
-        expected.put(Paths.get("_csv", "fr_p13.v1.csv"), POLLS_FRANCE_CSV);
+        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_P13_CSV);
+        expected.put(Paths.get("_csv", "fr_p13.v1.csv"), POLLS_FRANCE_P13_CSV);
         expected.put(Paths.get("_csv", "mk.csv"), POLLS_NORTH_MACEDONIA_CSV);
         expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_NORTH_MACEDONIA_CSV);
         expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
@@ -103,7 +103,8 @@ public class CsvFilesBuilderTest {
         ElectoralList.get("P").setAbbreviation("P");
         ElectoralList.get("Q").setAbbreviation("Q");
         OpinionPolls opinionPolls = RichOpinionPollsFile
-                .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 F:55 G:40", "F: FR001 •A:F", "G: FR002 •A:G")
+                .parse(TOKEN, "•PF: ACME •FS: 2021-07-27 •FE: 2021-07-28 F:55 G:40 H: 2 I: 2", "F: FR001 •A:F",
+                        "G: FR002 •A:G", "H: FR1970A •A:H", "I: FR1970B •A:I")
                 .getOpinionPollsDeprecated();
         Map<String, OpinionPolls> presidentialOpinionPollsMap = Map.of("fr_p13", opinionPolls);
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
