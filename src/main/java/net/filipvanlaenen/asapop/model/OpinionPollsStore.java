@@ -38,7 +38,7 @@ public class OpinionPollsStore {
             ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResponseScenariosByYearByArea =
             ModifiableMap.empty();
-    private static int numberOfResultsValues = 0;
+    private static int numberOfResultValues = 0;
     private static ModifiableIntegerMap<String> numberOfResultValuesByArea = ModifiableIntegerMap.<String>empty();
     // TODO: Switch to UpdatableSortedIntegerMap
     private static ModifiableSortedIntegerMap<Integer> numberOfResultValuesByMonth =
@@ -88,7 +88,7 @@ public class OpinionPollsStore {
             numberOfResponseScenarios += thisNumberOfResponseScenarios;
             numberOfResponseScenariosByArea.augment(areaCode, thisNumberOfResponseScenarios);
             int thisNumberOfResultValues = opinionPoll.getNumberOfResultValues();
-            numberOfResultsValues += thisNumberOfResultValues;
+            numberOfResultValues += thisNumberOfResultValues;
             numberOfResultValuesByArea.augment(areaCode, thisNumberOfResultValues);
             int year = opinionPoll.getEndDate().getYear();
             if (numberOfOpinionPollsByYear.containsKey(year)) {
@@ -176,7 +176,7 @@ public class OpinionPollsStore {
     }
 
     public static int getNumberOfResultValues() {
-        return numberOfResultsValues;
+        return numberOfResultValues;
     }
 
     public static int getNumberOfResultValues(final String areaCode) {

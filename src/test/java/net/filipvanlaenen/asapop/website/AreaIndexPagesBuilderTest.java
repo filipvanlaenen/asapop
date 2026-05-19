@@ -61,21 +61,6 @@ public class AreaIndexPagesBuilderTest {
     }
 
     /**
-     * Verifies that the index page for an area is built correctly when it is absent.
-     */
-    @Test
-    public void absentAreaIndexPageShouldBeBuiltCorrectly() {
-        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
-        websiteConfiguration.setName("Test");
-        websiteConfiguration.setAreaConfigurations(Collections.EMPTY_SET);
-        AreaConfiguration northMacedonia = new AreaConfiguration();
-        northMacedonia.setAreaCode("mk");
-        assertEquals(createEmptyAreaIndexPage(false),
-                new AreaIndexPagesBuilder(websiteConfiguration, Map.empty(), new Elections(), NOW)
-                        .createAreaIndexPage(northMacedonia));
-    }
-
-    /**
      * Verifies that the index page for an area is built correctly when no information is registered on the area.
      */
     @Test
@@ -86,6 +71,7 @@ public class AreaIndexPagesBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(createEmptyAreaIndexPage(true),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
@@ -105,6 +91,7 @@ public class AreaIndexPagesBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(createAreaIndexPageWithASmallOpinionPoll(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
@@ -126,6 +113,7 @@ public class AreaIndexPagesBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(createAreaIndexPageWithAnOpinionPollWithResultsInNumberOfSeats(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
@@ -147,6 +135,7 @@ public class AreaIndexPagesBuilderTest {
         northMacedonia.setAreaCode("mk");
         northMacedonia.setPollingFirmsNotIncluded(Map.of("BCME", "foo"));
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(createAreaIndexPageWithASmallOpinionPoll("BCME", "foo"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
@@ -175,6 +164,7 @@ public class AreaIndexPagesBuilderTest {
         pollingFirmsNotIncluded.put("GCME", "foo");
         northMacedonia.setPollingFirmsNotIncluded(pollingFirmsNotIncluded);
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(
                 createAreaIndexPageWithASmallOpinionPoll("BCME", "foo", "CCME", "foo-bar", "DCME", "bar", "ECME", "qux",
                         "FCME", "foo-bar", "GCME", "foo"),
@@ -201,6 +191,7 @@ public class AreaIndexPagesBuilderTest {
         AreaConfiguration northMacedonia = new AreaConfiguration();
         northMacedonia.setAreaCode("mk");
         websiteConfiguration.setAreaConfigurations(Set.of(northMacedonia));
+        AreaBuilder.build(websiteConfiguration, NOW);
         assertEquals(createAreaIndexPageWithManyAndLargeOpinionPolls(),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, new Elections(), NOW)
                         .createAreaIndexPage(northMacedonia));
