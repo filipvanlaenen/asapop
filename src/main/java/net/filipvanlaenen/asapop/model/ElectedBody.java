@@ -1,71 +1,26 @@
 package net.filipvanlaenen.asapop.model;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-
 import net.filipvanlaenen.asapop.website.Language;
-import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedValueCollection;
-import net.filipvanlaenen.kolektoj.SortedCollection;
 
-public class ElectedBody {
-    private final boolean defunct;
-    private final OrderedCollection<OrderedValueCollection<ElectionDate>> elections;
-    private final String id;
-    private final Map<String, String> properNames;
-    private final Map<Language, String> translatedNames;
-
+/**
+ * Class representing an elected body.
+ */
+public class ElectedBody extends ElectedPublicInstitution {
+    /**
+     * Constructor defining a new elected body.
+     *
+     * @param id              The ID.
+     * @param properNames     The proper names.
+     * @param translatedNames The translated names.
+     * @param elections       The elections.
+     * @param defunct         Whether the elected body is defunct.
+     */
     public ElectedBody(final String id, final Map<String, String> properNames,
             final Map<Language, String> translatedNames,
             final OrderedCollection<OrderedValueCollection<ElectionDate>> elections, final boolean defunct) {
-        this.id = id;
-        this.properNames = Map.of(properNames);
-        this.translatedNames = Map.of(translatedNames);
-        this.elections = OrderedCollection.of(elections);
-        this.defunct = defunct;
-    }
-
-    public Collection<String> getAllProperNames() {
-        return properNames.getValues();
-    }
-
-    public boolean getDefunct() {
-        return defunct;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Collection<String> getLanguagesOfProperNames() {
-        return properNames.getKeys();
-    }
-
-    public String getName(final Language language) {
-        String id = language.getId();
-        if (properNames.containsKey(id)) {
-            return properNames.get(id);
-        }
-        if (translatedNames.containsKey(language)) {
-            return translatedNames.get(language);
-        }
-        return null;
-    }
-
-    public ElectionDate getNextElectionDate(final LocalDate now) {
-        for (OrderedValueCollection<ElectionDate> electionDates : elections) {
-            for (ElectionDate electionDate : electionDates) {
-                if (!electionDate.getEndDate().isBefore(now)) {
-                    return electionDate;
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getAllProperNamesConcatenated() {
-        return String.join(" · ", SortedCollection.of(Comparator.naturalOrder(), getAllProperNames()));
+        super(id, properNames, translatedNames, elections, defunct);
     }
 }

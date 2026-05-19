@@ -106,6 +106,7 @@ public final class AreaBuilder {
      */
     private static ElectedOffice buildElectedOffice(final ElectedOfficeConfiguration electedOfficeConfiguration,
             final LocalDate now, final Token areaToken) {
+        boolean defunct = electedOfficeConfiguration.getDefunct() == Boolean.TRUE;
         Token electedOfficeToken = Laconic.LOGGER.logMessage(areaToken,
                 "Extracting and validating the elected office %s.", electedOfficeConfiguration.getId());
         Map<Language, String> translatedNames = electedOfficeConfiguration.getTranslatedNames().stream()
@@ -118,11 +119,11 @@ public final class AreaBuilder {
         }
         Laconic.LOGGER.logMessage("Validating for future election dates against the date %s.", now.toString(),
                 electedOfficeToken);
-        if (!hasFutureDate(elections, now)) {
+        if (!defunct && !hasFutureDate(elections, now)) {
             Laconic.LOGGER.logError("No election dates set in the future.", electedOfficeToken);
         }
         return new ElectedOffice(electedOfficeConfiguration.getId(), electedOfficeConfiguration.getProperNames(),
-                translatedNames, elections);
+                translatedNames, elections, defunct);
     }
 
     /**

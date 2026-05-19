@@ -12,6 +12,10 @@ import net.filipvanlaenen.kolektoj.OrderedCollection;
  */
 public class ElectedOfficeConfiguration {
     /**
+     * Flag indicating that the elected office won't have new elections.
+     */
+    private Boolean defunct;
+    /**
      * The election dates for the elected office.
      */
     @JsonDeserialize(using = OrderedStringCollectionDeserializer.class)
@@ -30,6 +34,15 @@ public class ElectedOfficeConfiguration {
      */
     @JsonDeserialize(using = StringToStringMapDeserializer.class)
     private Map<String, String> translatedNames;
+
+    /**
+     * Returns whether the elected body is defunct or not.
+     *
+     * @return The flag indicating whether the elected body is defunct.
+     */
+    public Boolean getDefunct() {
+        return defunct;
+    }
 
     /**
      * Returns the election dates.
@@ -65,6 +78,15 @@ public class ElectedOfficeConfiguration {
      */
     public Map<String, String> getTranslatedNames() {
         return translatedNames;
+    }
+
+    /**
+     * Sets whether the elected body is defunct or not.
+     *
+     * @param defunct The flag whether the elected body is defunct.
+     */
+    public void setDefunct(final Boolean defunct) {
+        this.defunct = defunct;
     }
 
     /**
