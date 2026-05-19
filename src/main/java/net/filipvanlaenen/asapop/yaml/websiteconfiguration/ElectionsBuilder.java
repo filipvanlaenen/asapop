@@ -66,8 +66,6 @@ public final class ElectionsBuilder {
                         electionDataFiles);
                 addElectionList(elections, electionLists.getPresidential(), areaCode, ElectionType.PRESIDENTIAL,
                         electionDataFiles);
-                addElectionList(elections, electionLists.getEuropean(), areaCode, ElectionType.EUROPEAN,
-                        electionDataFiles);
             }
         }
         return elections;

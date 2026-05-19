@@ -2,12 +2,12 @@ package net.filipvanlaenen.asapop.yaml.websiteconfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.io.ByteArrayOutputStream;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.asapop.LaconicConfigurator;
 import net.filipvanlaenen.asapop.model.ElectionType;
 import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.kolektoj.Map;
@@ -16,10 +16,6 @@ import net.filipvanlaenen.kolektoj.Map;
  * Unit tests on the <code>ElectionsBuilder</code> class.
  */
 public class ElectionsBuilderTest {
-    /**
-     * Today's date.
-     */
-    private static final LocalDate NOW = LocalDate.of(2022, Month.SEPTEMBER, 7);
     /**
      * The area code for the unit tests.
      */
@@ -30,26 +26,28 @@ public class ElectionsBuilderTest {
     private static final String ELECTION_DATE = "2023-04-29";
 
     /**
+     * Verifies that a warning is logged when the deprecated elections field is encountered.
+     */
+    @Test
+    public void shouldLogAWarningForDeprecatedElectionsField() {
+        ByteArrayOutputStream outputStream = LaconicConfigurator.resetLaconicOutputStream();
+        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
+        ElectionLists elections = createElectionLists(websiteConfiguration);
+        elections.setNational(createElectionList());
+        ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
+        String expected = "‡   Extracting and validating the election dates.\n"
+                + "‡ ⬐ Extracting and validating the election dates for area bg.\n"
+                + "‡ The area contains the deprecated elections field.\n";
+        assertEquals(expected, outputStream.toString());
+    }
+
+    /**
      * Verifies that an empty instance of elections is extracted from an empty website configuration.
      */
     @Test
     public void shouldExtractEmptyElectionsFromEmptyWebsiteConfiguration() {
         Elections elections = ElectionsBuilder.extractAndValidateElections(new WebsiteConfiguration(), Map.empty());
         assertEquals(new Elections(), elections);
-    }
-
-    /**
-     * Verifies that an elections instance with one European election is extracted from a website configuration with one
-     * European election.
-     */
-    @Test
-    public void shouldExtractOneEuropeanElectionFromWebsiteConfigurationWithOneEuropeanElection() {
-        WebsiteConfiguration websiteConfiguration = new WebsiteConfiguration();
-        ElectionLists elections = createElectionLists(websiteConfiguration);
-        elections.setEuropean(createElectionList());
-        Elections expected = new Elections();
-        expected.addElection(AREA_CODE, ElectionType.EUROPEAN, 1, ELECTION_DATE, null);
-        assertEquals(expected, ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty()));
     }
 
     /**
