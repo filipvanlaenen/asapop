@@ -13,8 +13,17 @@ import net.filipvanlaenen.nombrajkolektoj.integers.SortedIntegerMap;
  * A class holding all opinion polls, with indexes.
  */
 public class OpinionPollsStore {
+    /**
+     * An ordered integer collection with the numbers of all the months.
+     */
     private static final OrderedIntegerCollection ALL_MONTHS = OrderedIntegerCollection.createSequence(i -> i + 1, 12);
+    /**
+     * The total number of opinion polls in the store.
+     */
     private static int numberOfOpinionPolls = 0;
+    /**
+     * An integer map with the number of opinion polls, indexed by area.
+     */
     private static ModifiableIntegerMap<String> numberOfOpinionPollsByArea = ModifiableIntegerMap.<String>empty();
     // TODO: Switch to UpdatableSortedIntegerMap
     private static ModifiableSortedIntegerMap<Integer> numberOfOpinionPollsByMonth =
@@ -51,6 +60,12 @@ public class OpinionPollsStore {
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResultValuesByYearByArea =
             ModifiableMap.empty();
 
+    /**
+     * Adds a collection opinion polls associated with an area.
+     *
+     * @param areaCode     The code for the area.
+     * @param opinionPolls A collection opinion polls.
+     */
     public static void addAll(final String areaCode, final Collection<OpinionPoll> opinionPolls) {
         if (!numberOfOpinionPollsByArea.containsKey(areaCode)) {
             numberOfOpinionPollsByArea.add(areaCode, 0);
@@ -119,30 +134,70 @@ public class OpinionPollsStore {
         }
     }
 
+    /**
+     * Returns the total number of opinion polls in the store.
+     *
+     * @return The total number of opinion polls in the store.
+     */
     public static int getNumberOfOpinionPolls() {
         return numberOfOpinionPolls;
     }
 
+    /**
+     * Returns the number of opinion polls for an area in the store.
+     *
+     * @param areaCode The code for the area.
+     * @return The number of opinion polls for an area in the store.
+     */
     public static int getNumberOfOpinionPolls(final String areaCode) {
         return numberOfOpinionPollsByArea.get(areaCode);
     }
 
-    public static int getNumberOfOpinionPolls(final String areaCode, final int thisYear) {
-        return numberOfOpinionPollsByYearByArea.get(areaCode).get(thisYear, 0);
+    /**
+     * Returns the number of opinion polls for an area and a given year in the store.
+     *
+     * @param areaCode The code for the area.
+     * @param year     The year.
+     * @return The number of opinion polls for an area and a given year in the store.
+     */
+    public static int getNumberOfOpinionPolls(final String areaCode, final int year) {
+        return numberOfOpinionPollsByYearByArea.get(areaCode).get(year, 0);
     }
 
+    /**
+     * Returns a map with the number of opinion polls by month in the store.
+     *
+     * @return A map with the number of opinion polls by month in the store.
+     */
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth() {
         return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByMonth);
     }
 
+    /**
+     * Returns a map with the number of opinion polls by month for an area in the store.
+     *
+     * @param areaCode The code for the area.
+     * @return A map with the number of opinion polls by month for an area in the store.
+     */
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByMonth(final String areaCode) {
         return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByMonthByArea.get(areaCode));
     }
 
+    /**
+     * Returns a map with the number of opinion polls by year in the store.
+     *
+     * @return A map with the number of opinion polls by year in the store.
+     */
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByYear() {
         return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByYear);
     }
 
+    /**
+     * Returns a map with the number of opinion polls by year for an area in the store.
+     *
+     * @param areaCode The code for the area.
+     * @return A map with the number of opinion polls by year for an area in the store.
+     */
     public static SortedIntegerMap<Integer> getNumberOfOpinionPollsByYear(final String areaCode) {
         return SortedIntegerMap.of(Comparator.naturalOrder(), numberOfOpinionPollsByYearByArea.get(areaCode));
     }
