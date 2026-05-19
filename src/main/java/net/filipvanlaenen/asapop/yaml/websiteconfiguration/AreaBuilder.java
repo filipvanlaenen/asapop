@@ -50,14 +50,13 @@ public final class AreaBuilder {
             final Token token) {
         String areaCode = areaConfiguration.getAreaCode();
         Token areaToken = Laconic.LOGGER.logMessage(token, "Extracting and validating the area %s.", areaCode);
-        ModifiableCollection<net.filipvanlaenen.asapop.model.ElectedBody> electedBodies = ModifiableCollection.empty();
+        ModifiableCollection<ElectedBody> electedBodies = ModifiableCollection.empty();
         if (areaConfiguration.getElectedBodies() != null) {
             for (ElectedBodyConfiguration electedBody : areaConfiguration.getElectedBodies()) {
                 electedBodies.add(buildElectedBody(electedBody, now, areaToken));
             }
         }
-        ModifiableCollection<net.filipvanlaenen.asapop.model.ElectedOffice> electedOffices =
-                ModifiableCollection.empty();
+        ModifiableCollection<ElectedOffice> electedOffices = ModifiableCollection.empty();
         if (areaConfiguration.getElectedOffices() != null) {
             for (ElectedOfficeConfiguration electedOffice : areaConfiguration.getElectedOffices()) {
                 electedOffices.add(buildElectedOffice(electedOffice, now, areaToken));

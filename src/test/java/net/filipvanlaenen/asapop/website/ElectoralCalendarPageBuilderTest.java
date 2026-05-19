@@ -8,11 +8,9 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 
@@ -145,7 +143,6 @@ public class ElectoralCalendarPageBuilderTest {
         expected.append("  </body>\n");
         expected.append("</html>");
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         assertEquals(expected.toString(),
                 new ElectoralCalendarPageBuilder(websiteConfiguration, NOW).build().asString());
     }

@@ -8,12 +8,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionList;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionLists;
-import net.filipvanlaenen.asapop.yaml.websiteconfiguration.ElectionsBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 
@@ -100,7 +98,6 @@ public class IndexPageBuilderTest {
         expected.append("      <ul/>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         AreaBuilder.build(websiteConfiguration, NOW1);
         assertEquals(expected.toString(), new IndexPageBuilder(websiteConfiguration, NOW1).build().asString());
     }
@@ -115,7 +112,6 @@ public class IndexPageBuilderTest {
         expected.append("      <ul/>\n");
         addBottom(expected);
         WebsiteConfiguration websiteConfiguration = createWebsiteConfiguration();
-        Elections elections = ElectionsBuilder.extractAndValidateElections(websiteConfiguration, Map.empty());
         AreaBuilder.build(websiteConfiguration, NOW3);
         assertEquals(expected.toString(), new IndexPageBuilder(websiteConfiguration, NOW3).build().asString());
     }
