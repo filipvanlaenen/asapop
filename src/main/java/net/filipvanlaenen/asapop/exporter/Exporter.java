@@ -68,7 +68,8 @@ public abstract class Exporter {
      * Calculates the precision of an opinion poll.
      *
      * @param opinionPoll         The opinion poll.
-     * @param electoralListIdSets The sets of IDs of the electoral lists to export.
+     * @param electoralListIdSets An ordered collection with the sets of IDs for the electoral lists to be exported.
+     * @param candidateIds        An ordered collection with candidate IDs.
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final OpinionPoll opinionPoll,
@@ -96,7 +97,8 @@ public abstract class Exporter {
      * Calculates the precision of a response scenario.
      *
      * @param responseScenario    The response scenario.
-     * @param electoralListIdSets The sets of IDs of the electoral lists to export.
+     * @param electoralListIdSets An ordered collection with the sets of IDs for the electoral lists to be exported.
+     * @param candidateIds        An ordered collection with candidate IDs.
      * @return The precision as a string.
      */
     static ResultValue.Precision calculatePrecision(final ResponseScenario responseScenario,
@@ -272,7 +274,9 @@ public abstract class Exporter {
      * Extracts all the results from an opinion poll.
      *
      * @param opinionPoll         The opinion poll to extract the results from.
-     * @param electoralListIdSets The sets of IDs of the electoral lists for which to extract the results.
+     * @param electoralListIdSets An ordered collection with the sets of IDs of the electoral lists for which to extract
+     *                            the results.
+     * @param candidateIds        An ordered collection with candidate IDs for which to extract the results.
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final OpinionPoll opinionPoll,
@@ -292,7 +296,9 @@ public abstract class Exporter {
      * Extracts all the results from a response scenario.
      *
      * @param responseScenario    The response scenario to extract the results from.
-     * @param electoralListIdSets The sets of IDs of the electoral lists for which to extract the results.
+     * @param electoralListIdSets An ordered collection with the sets of IDs of the electoral lists for which to extract
+     *                            the results.
+     * @param candidateIds        An ordered collection with candidate IDs for which to extract the results.
      * @return A set of numbers representing the results.
      */
     private static Set<ResultValue> extractResults(final ResponseScenario responseScenario,
