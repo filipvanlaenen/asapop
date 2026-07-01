@@ -14,7 +14,7 @@ public final class ElectoralList {
     /**
      * A map with all the instances.
      */
-    private static final ModifiableMap<String, ElectoralList> instances = ModifiableMap.<String, ElectoralList>empty();
+    private static final ModifiableMap<String, ElectoralList> INSTANCES = ModifiableMap.<String, ElectoralList>empty();
     /**
      * The abbreviation for the electoral list.
      */
@@ -32,8 +32,11 @@ public final class ElectoralList {
      */
     private String romanizedAbbreviation;
 
+    /**
+     * Empties the map with the instances.
+     */
     public static void clear() {
-        instances.clear();
+        INSTANCES.clear();
     }
 
     /**
@@ -43,11 +46,11 @@ public final class ElectoralList {
      * @return The electoral list with that ID, or a new instance.
      */
     public static ElectoralList get(final String id) {
-        if (instances.containsKey(id)) {
-            return instances.get(id);
+        if (INSTANCES.containsKey(id)) {
+            return INSTANCES.get(id);
         }
         ElectoralList newInstance = new ElectoralList(id);
-        instances.put(id, newInstance);
+        INSTANCES.put(id, newInstance);
         return newInstance;
     }
 
@@ -73,8 +76,13 @@ public final class ElectoralList {
         return ids.stream().map(id -> get(id)).collect(Collectors.toSet());
     }
 
+    /**
+     * Returns all instances.
+     *
+     * @return All instances.
+     */
     public static Collection<ElectoralList> getAll() {
-        return instances.getValues();
+        return INSTANCES.getValues();
     }
 
     /**
