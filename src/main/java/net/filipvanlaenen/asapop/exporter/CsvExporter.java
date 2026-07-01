@@ -1,5 +1,8 @@
 package net.filipvanlaenen.asapop.exporter;
 
+/**
+ * Superclass for all CSV exporters.
+ */
 public abstract class CsvExporter extends Exporter {
     /**
      * Returns the string if it isn't null, and the empty string otherwise.
