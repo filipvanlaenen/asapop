@@ -441,7 +441,7 @@ public class SaporExporter extends Exporter {
     /**
      * Gets the area for a response scenario, which is either the one registered on the response scenario, or the one
      * registered on the poll.
-     * 
+     *
      * @param opinionPoll      The opinion poll.
      * @param responseScenario The response scenario.
      * @return The area.
@@ -517,7 +517,7 @@ public class SaporExporter extends Exporter {
     /**
      * Gets the scope for a response scenario, which is either the one registered on the response scenario, or the one
      * registered on the poll.
-     * 
+     *
      * @param opinionPoll      The opinion poll.
      * @param responseScenario The response scenario.
      * @return The scope.
@@ -538,12 +538,12 @@ public class SaporExporter extends Exporter {
 
     /**
      * Returns whether a response scenario matches.
-     * 
+     *
      * @param opinionPoll      The opinion poll.
      * @param responseScenario The response scenario.
      * @return True of the response scenario matches.
      */
-    private boolean isMatchingResponseScenario(final OpinionPoll opinionPoll, ResponseScenario responseScenario) {
+    private boolean isMatchingResponseScenario(final OpinionPoll opinionPoll, final ResponseScenario responseScenario) {
         return (region == null || region.equals(getArea(opinionPoll, responseScenario)))
                 && (scope == null || scope.equals(getScope(opinionPoll, responseScenario)));
     }
@@ -553,8 +553,10 @@ public class SaporExporter extends Exporter {
      *
      * @param saporBody                            A map with the values for the Sapor body.
      * @param additiveSaporMapping                 The additive SAPOR mapping.
-     * @param actualElectoralListCombinationValues A map with the actual values, i.e. either the nominal values or half
-     *                                             the precision for zero values.
+     * @param actualElectoralListCombinationValues A map with the actual values for electoral list combinations, i.e.
+     *                                             either the nominal values or half the precision for zero values.
+     * @param actualCandidateValues                A map with the actual values for candidates, i.e. either the nominal
+     *                                             values or half the precision for zero values.
      * @param calculationSampleSize                The sample size to be used for the calculations.
      * @param scale                                The scale.
      * @param remainder                            The remainder so far.
@@ -598,8 +600,10 @@ public class SaporExporter extends Exporter {
      *
      * @param saporBody                             A map with the values for the Sapor body.
      * @param additiveSplittingSaporMapping         The additive splitting SAPOR mapping.
-     * @param actualElectoralListCombinationsValues A map with the actual values, i.e. either the nominal values or half
-     *                                              the precision for zero values.
+     * @param actualElectoralListCombinationsValues A map with the actual values for electoral list combinations, i.e.
+     *                                              either the nominal values or half the precision for zero values.
+     * @param actualCandidateValues                 A map with the actual values for candidates, i.e. either the nominal
+     *                                              values or half the precision for zero values.
      * @param calculationSampleSize                 The sample size to be used for the calculations.
      * @param scale                                 The scale.
      * @param remainder                             The remainder so far.
@@ -651,8 +655,10 @@ public class SaporExporter extends Exporter {
      *
      * @param saporBody                             A map with the values for the Sapor body.
      * @param directSaporMapping                    The direct SAPOR mapping.
-     * @param actualElectoralListCombinationsValues A map with the actual values, i.e. either the nominal values or half
-     *                                              the precision for zero values.
+     * @param actualElectoralListCombinationsValues A map with the actual values for electoral list combinations, i.e.
+     *                                              either the nominal values or half the precision for zero values.
+     * @param actualCandidateValues                 A map with the actual values for candidates, i.e. either the nominal
+     *                                              values or half the precision for zero values.
      * @param calculationSampleSize                 The sample size to be used for the calculations.
      * @param scale                                 The scale.
      * @param remainder                             The remainder so far.
@@ -740,8 +746,10 @@ public class SaporExporter extends Exporter {
      *
      * @param saporBody                             A map with the values for the Sapor body.
      * @param splittingSaporMapping                 The splitting SAPOR mapping.
-     * @param actualElectoralListCombinationsValues A map with the actual values, i.e. either the nominal values or half
-     *                                              the precision for zero values.
+     * @param actualElectoralListCombinationsValues A map with the actual values for electoral list combinations, i.e.
+     *                                              either the nominal values or half the precision for zero values.
+     * @param actualCandidateValues                 A map with the actual values for candidates, i.e. either the nominal
+     *                                              values or half the precision for zero values.
      * @param calculationSampleSize                 The sample size to be used for the calculations.
      * @param scale                                 The scale.
      * @param remainder                             The remainder so far.
