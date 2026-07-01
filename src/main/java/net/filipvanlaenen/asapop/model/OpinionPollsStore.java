@@ -1,5 +1,6 @@
 package net.filipvanlaenen.asapop.model;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 
 import net.filipvanlaenen.kolektoj.Collection;
@@ -17,6 +18,10 @@ public final class OpinionPollsStore {
      * An ordered integer collection with the numbers of all the months.
      */
     private static final OrderedIntegerCollection ALL_MONTHS = OrderedIntegerCollection.createSequence(i -> i + 1, 12);
+    /**
+     * The most recent date registered on an opinion poll, indexed by area.
+     */
+    private static ModifiableMap<String, LocalDate> mostRecentDateByArea = ModifiableMap.<String, LocalDate>empty();
     /**
      * The total number of opinion polls in the store.
      */
@@ -151,6 +156,12 @@ public final class OpinionPollsStore {
         ModifiableSortedIntegerMap<Integer> numberOfResultValuesByYearForThisArea =
                 numberOfResultValuesByYearByArea.get(areaCode);
         for (OpinionPoll opinionPoll : opinionPolls) {
+            LocalDate endDate = opinionPoll.getEndDate();
+            if (!mostRecentDateByArea.containsKey(areaCode)) {
+                mostRecentDateByArea.add(areaCode, endDate);
+            } else if (endDate.isAfter(mostRecentDateByArea.get(areaCode))) {
+                mostRecentDateByArea.put(areaCode, endDate);
+            }
             numberOfOpinionPolls += 1;
             numberOfOpinionPollsByArea.augment(areaCode, 1);
             int thisNumberOfResponseScenarios = opinionPoll.getNumberOfResponseScenarios();
@@ -186,6 +197,48 @@ public final class OpinionPollsStore {
                 numberOfResultValuesByYearForThisArea.add(year, thisNumberOfResultValues);
             }
         }
+    }
+
+    /**
+     * Clears all the data in the store.
+     */
+    public static void clear() {
+        mostRecentDateByArea = ModifiableMap.<String, LocalDate>empty();
+        numberOfOpinionPolls = 0;
+        numberOfOpinionPollsByArea = ModifiableIntegerMap.<String>empty();
+        // TODO: Switch to UpdatableSortedIntegerMap
+        numberOfOpinionPollsByMonth = ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS);
+        // TODO: Switch to UpdatableSortedIntegerMap
+        numberOfOpinionPollsByMonthByArea = ModifiableMap.empty();
+        numberOfOpinionPollsByYear = ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
+        numberOfOpinionPollsByYearByArea = ModifiableMap.empty();
+        numberOfResponseScenarios = 0;
+        numberOfResponseScenariosByArea = ModifiableIntegerMap.<String>empty();
+        // TODO: Switch to UpdatableSortedIntegerMap
+        numberOfResponseScenariosByMonth =
+                ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS);
+        // TODO: Switch to UpdatableSortedIntegerMap
+        numberOfResponseScenariosByMonthByArea = ModifiableMap.empty();
+        numberOfResponseScenariosByYear = ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
+        numberOfResponseScenariosByYearByArea = ModifiableMap.empty();
+        numberOfResultValues = 0;
+        numberOfResultValuesByArea = ModifiableIntegerMap.<String>empty();
+        // TODO: Switch to UpdatableSortedIntegerMap
+        numberOfResultValuesByMonth = ModifiableSortedIntegerMap.<Integer>of(Comparator.naturalOrder(), 0, ALL_MONTHS);
+        // TODO: Switch to UpdatableSortedIntegerMap
+        numberOfResultValuesByMonthByArea = ModifiableMap.empty();
+        numberOfResultValuesByYear = ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
+        numberOfResultValuesByYearByArea = ModifiableMap.empty();
+    }
+
+    /**
+     * Returns the most recent date on an opinion poll for an area in the store.
+     *
+     * @param areaCode The code for the area.
+     * @return The most recent date on an opinion poll in the store.
+     */
+    public static LocalDate getMostRecentDate(final String areaCode) {
+        return mostRecentDateByArea.get(areaCode);
     }
 
     /**

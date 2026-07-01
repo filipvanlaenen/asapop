@@ -142,6 +142,7 @@ public class StatisticsPageBuilderTest {
      */
     @Test
     public void statisticsPageIsBuiltCorrectly() throws IOException {
+        OpinionPollsStore.clear();
         Map<String, OpinionPolls> opinionPollsMap = createOpinionPollsMap();
         for (Entry<String, OpinionPolls> ops : opinionPollsMap) {
             for (OpinionPoll op : ops.value().getOpinionPolls()) {

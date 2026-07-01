@@ -94,14 +94,6 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies that the most recent date is calculated correctly.
-     */
-    @Test
-    public void getMostRecentDateShouldBeCorrect() {
-        assertEquals(DATE2, opinionPolls.getMostRecentDate());
-    }
-
-    /**
      * Verifies that the lowest sample size for a polling firm is calculated correctly.
      */
     @Test

@@ -484,7 +484,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 int numberOfResponseScenariosYtd = OpinionPollsStore.getNumberOfResponseScenarios(areaCode, thisYear);
                 int numberOfResultValues = OpinionPollsStore.getNumberOfResultValues(areaCode);
                 int numberOfResultValuesYtd = OpinionPollsStore.getNumberOfResultValues(areaCode, thisYear);
-                LocalDate mostRecentDate = opinionPolls.getMostRecentDate();
+                LocalDate mostRecentDate = OpinionPollsStore.getMostRecentDate(areaCode);
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
                         opinionPolls.getNumberOfOpinionPolls(threeYearBeforeMostRecentDate);

@@ -127,22 +127,6 @@ public final class OpinionPolls {
     }
 
     /**
-     * Returns the most recent date.
-     *
-     * @return The most recent date.
-     */
-    public LocalDate getMostRecentDate() {
-        LocalDate result = LocalDate.MIN;
-        for (OpinionPoll opinionPoll : opinionPolls) {
-            LocalDate endDate = opinionPoll.getEndDate();
-            if (endDate.isAfter(result)) {
-                result = endDate;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns the number of opinion polls with an end date on or after the date.
      *
      * @param fromDate The cut-off date to count the number of opinion polls.
