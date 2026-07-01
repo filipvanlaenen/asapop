@@ -314,6 +314,23 @@ public final class CommandLineInterface {
             }
         }
 
+        /**
+         * Executes the command, passing the arguments from the command line.
+         *
+         * @param args The arguments from the command line.
+         * @throws IOException Thrown if something related to IO goes wrong.
+         */
+        abstract void execute(String[] args) throws IOException;
+
+        /**
+         * Merges two maps, one with the proper names and one with the translated names, into a single map. Only the
+         * names for the languages in the <code>Language</code> enumeration are added from the proper names.
+         *
+         * @param properNames     The proper names.
+         * @param translatedNames The translated names.
+         * @return A new map with proper names for supported languages added if they were missing in the translated
+         *         names.
+         */
         private static Map<String, String> mergeProperAndTranslatedNames(final Map<String, String> properNames,
                 final Map<String, String> translatedNames) {
             ModifiableMap<String, String> result = ModifiableMap.of(translatedNames);
@@ -325,14 +342,6 @@ public final class CommandLineInterface {
             }
             return result;
         }
-
-        /**
-         * Executes the command, passing the arguments from the command line.
-         *
-         * @param args The arguments from the command line.
-         * @throws IOException Thrown if something related to IO goes wrong.
-         */
-        abstract void execute(String[] args) throws IOException;
 
         /**
          * Reads all the opinion polls related to parliamentary elections.
