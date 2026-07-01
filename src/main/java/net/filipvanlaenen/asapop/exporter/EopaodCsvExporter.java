@@ -57,7 +57,8 @@ public final class EopaodCsvExporter extends CsvExporter {
      * @param opinionPolls          The opinion polls to export.
      * @param area                  The area to filter opinion polls and response scenarios on.
      * @param includeAreaAsNational The area to be included as national.
-     * @param electoralListIdSets   A list with the sets of IDs for the electoral lists to be exported.
+     * @param electoralListIdSets   An ordered collection with the sets of IDs for the electoral lists to be exported.
+     * @param candidateIds          An ordered collection with candidate IDs.
      * @return A string containing the opinion polls in the CSV file format for EOPAOD.
      */
     public static String export(final OpinionPolls opinionPolls, final String area, final String includeAreaAsNational,
@@ -90,7 +91,8 @@ public final class EopaodCsvExporter extends CsvExporter {
      * @param opinionPoll           The opinion poll to export.
      * @param area                  The area to filter opinion polls on.
      * @param includeAreaAsNational The area to be included as national.
-     * @param electoralListIdSets   A list with the sets of IDs of the electoral lists to be exported.
+     * @param electoralListIdSets   An ordered collection with the sets of IDs for the electoral lists to be exported.
+     * @param candidateIds          An ordered collection with candidate IDs.
      * @return A string containing the opinion poll in the CSV file format for EOPAOD.
      */
     static String export(final OpinionPoll opinionPoll, final String area, final String includeAreaAsNational,
@@ -145,7 +147,8 @@ public final class EopaodCsvExporter extends CsvExporter {
      * @param opinionPoll           The opinion poll this response scenario relates to.
      * @param area                  The area to filter response scenarios on.
      * @param includeAreaAsNational The area to be included as national.
-     * @param electoralListIdSets   A list with the sets of IDs of the electoral lists to be exported.
+     * @param electoralListIdSets   An ordered collection with the sets of IDs for the electoral lists to be exported.
+     * @param candidateIds          An ordered collection with candidate IDs.
      * @return A string containing the response scenario in the CSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final String area,
