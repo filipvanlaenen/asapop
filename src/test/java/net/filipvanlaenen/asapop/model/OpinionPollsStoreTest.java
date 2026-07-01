@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.kolektoj.Collection;
+import net.filipvanlaenen.nombrajkolektoj.NumericMap;
 
 /**
  * Unit tests on the class <code>OpinionPollsStore</code>.
@@ -17,9 +18,21 @@ public class OpinionPollsStoreTest {
      */
     private static final int THREE = 3;
     /**
+     * The magic number four.
+     */
+    private static final int FOUR = 4;
+    /**
+     * The magic number five.
+     */
+    private static final int FIVE = 5;
+    /**
+     * The magic number six.
+     */
+    private static final int SIX = 6;
+    /**
      * A date to run the unit tests on.
      */
-    private static final LocalDate DATE1 = LocalDate.parse("2022-12-28");
+    private static final LocalDate DATE1 = LocalDate.parse("2022-11-28");
     /**
      * Another date to run the unit tests on.
      */
@@ -66,5 +79,50 @@ public class OpinionPollsStoreTest {
     public void getNumberOfOpinionPollsShouldBeCorrect() {
         populateOpinionPollsStore();
         assertEquals(THREE, OpinionPollsStore.getNumberOfOpinionPolls());
+    }
+
+    /**
+     * Verifies that the correct number of opinion polls by area is returned.
+     */
+    @Test
+    public void getNumberOfOpinionPollsByAreaShouldBeCorrect() {
+        populateOpinionPollsStore();
+        assertEquals(2, OpinionPollsStore.getNumberOfOpinionPolls("aa"));
+    }
+
+    /**
+     * Verifies that the correct number of response scenarios is returned.
+     */
+    @Test
+    public void getNumberOfResponseScenariosShouldBeCorrect() {
+        populateOpinionPollsStore();
+        assertEquals(FIVE, OpinionPollsStore.getNumberOfResponseScenarios());
+    }
+
+    /**
+     * Verifies that the correct number of response scenarios by area is returned.
+     */
+    @Test
+    public void getNumberOfResponseScenariosByAreaShouldBeCorrect() {
+        populateOpinionPollsStore();
+        assertEquals(THREE, OpinionPollsStore.getNumberOfResponseScenarios("aa"));
+    }
+
+    /**
+     * Verifies that the correct number of result values is returned.
+     */
+    @Test
+    public void getNumberOfResultValuesShouldBeCorrect() {
+        populateOpinionPollsStore();
+        assertEquals(SIX, OpinionPollsStore.getNumberOfResultValues());
+    }
+
+    /**
+     * Verifies that the correct number of result values by area is returned.
+     */
+    @Test
+    public void getNumberOfResultValuesByAreaShouldBeCorrect() {
+        populateOpinionPollsStore();
+        assertEquals(FOUR, OpinionPollsStore.getNumberOfResultValues("aa"));
     }
 }
