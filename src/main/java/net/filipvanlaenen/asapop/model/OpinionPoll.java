@@ -581,6 +581,11 @@ public final class OpinionPoll {
         return area;
     }
 
+    /**
+     * Returns the candidates.
+     *
+     * @return The candidates.
+     */
     public Set<Candidate> getCandidates() {
         return mainResponseScenario.getCandidates();
     }
