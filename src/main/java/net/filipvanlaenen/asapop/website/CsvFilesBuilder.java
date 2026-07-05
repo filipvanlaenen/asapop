@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.filipvanlaenen.asapop.exporter.ElectoralListsCsvExporter;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
+import net.filipvanlaenen.asapop.exporter.OpinionPollsCsvExporterVersion2;
 import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
@@ -93,10 +94,13 @@ public class CsvFilesBuilder {
                 OrderedCollection<Set<String>> electoralListKeySets = csvConfiguration.getElectoralListIds().stream()
                         .map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
                         .collect(Collectors.toOrderedCollection());
-                String outputContent = EopaodCsvExporter.export(opinionPolls, "--",
+                String outputContent1 = EopaodCsvExporter.export(opinionPolls, "--",
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets, OrderedCollection.empty());
-                csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent);
-                csvFilesMap.put(Paths.get("_csv", areaCode + ".v1.csv"), outputContent);
+                String outputContent2 = OpinionPollsCsvExporterVersion2.export(opinionPolls, "--",
+                        csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets, OrderedCollection.empty());
+                csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent1);
+                csvFilesMap.put(Paths.get("_csv", areaCode + ".v1.csv"), outputContent1);
+                csvFilesMap.put(Paths.get("_csv", areaCode + ".v2.csv"), outputContent2);
             }
             AreaSubdivisionConfiguration[] subdivisions = areaConfiguration.getSubdivisions();
             if (subdivisions != null) {
@@ -108,12 +112,18 @@ public class CsvFilesBuilder {
                                 .stream().map(key -> new HashSet<String>(Arrays.asList(key.split("\\+"))))
                                 .collect(Collectors.toOrderedCollection());
                         String subdivisionAreaCode = subdivision.getAreaCode();
-                        String outputContent = EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
-                                null, electoralListKeySets, OrderedCollection.empty());
+                        String outputContent1 =
+                                EopaodCsvExporter.export(opinionPolls, subdivisionAreaCode.toUpperCase(), null,
+                                        electoralListKeySets, OrderedCollection.empty());
+                        String outputContent2 =
+                                OpinionPollsCsvExporterVersion2.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
+                                        null, electoralListKeySets, OrderedCollection.empty());
                         csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"),
-                                outputContent);
+                                outputContent1);
                         csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".v1.csv"),
-                                outputContent);
+                                outputContent1);
+                        csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".v2.csv"),
+                                outputContent2);
                     }
                 }
             }
@@ -153,9 +163,12 @@ public class CsvFilesBuilder {
                     candidateKeys2.add(candidateId);
                 }
             }
-            String outputContent = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
-            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent);
-            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".v1.csv"), outputContent);
+            String outputContent1 = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
+            String outputContent2 =
+                    OpinionPollsCsvExporterVersion2.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
+            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent1);
+            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".v1.csv"), outputContent1);
+            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".v2.csv"), outputContent2);
         }
     }
 }
