@@ -65,10 +65,8 @@ public final class OpinionPollsCsvExporterVersion2 extends CsvExporter {
     public static String export(final OpinionPolls opinionPolls, final String area, final String includeAreaAsNational,
             final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
         StringBuffer sb = new StringBuffer();
-        sb.append("# Format: Version 2 of the CSV format for opinion polls\n");
-        sb.append("# For version 1, see the file with the same name but the .v1.csv extension\n");
-        sb.append("#\n");
-        sb.append("Ephemeral Poll ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
+        sb.append(
+                "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size");
         sb.append(",Sample Size Qualification,Participation,Precision");
         for (Set<String> electoralListIdSet : electoralListIdSets) {
             sb.append(",");
@@ -110,6 +108,7 @@ public final class OpinionPollsCsvExporterVersion2 extends CsvExporter {
         if (areaMatches(area, includeAreaAsNational, opinionPoll.getArea())) {
             ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
             elements.add(Integer.toString(ephemeralId));
+            elements.add("1");
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
             elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
             elements.addAll(exportDates(opinionPoll));
@@ -136,12 +135,15 @@ public final class OpinionPollsCsvExporterVersion2 extends CsvExporter {
             elements.add(percentageOrNotAvailable(opinionPoll.getOther(), precision, scale));
             lines.add(String.join(",", elements));
         }
-        for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
-            String responseScenarioLine = export(responseScenario, opinionPoll, ephemeralId, area,
-                    includeAreaAsNational, electoralListIdSets, candidateIds);
+        List<ResponseScenario> responseScenarios = opinionPoll.getAlternativeResponseScenarios();
+        int ephemeralReponseScenarioId = 2;
+        for (ResponseScenario responseScenario : responseScenarios) {
+            String responseScenarioLine = export(responseScenario, opinionPoll, ephemeralId, ephemeralReponseScenarioId,
+                    area, includeAreaAsNational, electoralListIdSets, candidateIds);
             if (responseScenarioLine != null) {
                 lines.add(responseScenarioLine);
             }
+            ephemeralReponseScenarioId++;
         }
         if (lines.isEmpty()) {
             return null;
@@ -162,7 +164,7 @@ public final class OpinionPollsCsvExporterVersion2 extends CsvExporter {
      * @return A string containing the response scenario in the CSV file format for EOPAOD.
      */
     static String export(final ResponseScenario responseScenario, final OpinionPoll opinionPoll, final int ephemeralId,
-            final String area, final String includeAreaAsNational,
+            final int ephemeralReponseScenarioId, final String area, final String includeAreaAsNational,
             final OrderedCollection<Set<String>> electoralListIdSets, final OrderedCollection<String> candidateIds) {
         if (!areaMatches(area, includeAreaAsNational,
                 secondIfFirstNull(responseScenario.getArea(), opinionPoll.getArea()))) {
@@ -170,6 +172,7 @@ public final class OpinionPollsCsvExporterVersion2 extends CsvExporter {
         }
         ModifiableOrderedCollection<String> elements = ModifiableOrderedCollection.empty();
         elements.add(Integer.toString(ephemeralId));
+        elements.add(Integer.toString(ephemeralReponseScenarioId));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportPollingFirms(opinionPoll))));
         elements.add(escapeCommasAndQuotes(emptyIfNull(exportCommissioners(opinionPoll))));
         elements.addAll(exportDates(opinionPoll));
