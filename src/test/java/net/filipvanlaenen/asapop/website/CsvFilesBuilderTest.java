@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,25 +28,45 @@ import net.filipvanlaenen.laconic.Token;
  */
 public class CsvFilesBuilderTest {
     /**
-     * The content for the opinion polls CSV file for North Macedonia.
+     * The content for the opinion polls CSV file for North Macedonia, version 1.
      */
-    private static final String POLLS_NORTH_MACEDONIA_CSV =
+    private static final String POLLS_NORTH_MACEDONIA_CSV1 =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                     + "Participation,Precision,A,B,Other\n";
     /**
-     * The content for the opinion polls CSV file for France.
+     * The content for the opinion polls CSV file for North Macedonia, version 2.
      */
-    private static final String POLLS_FRANCE_P13_CSV =
+    private static final String POLLS_NORTH_MACEDONIA_CSV2 =
+            "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,"
+                    + "Scope,Sample Size,Sample Size Qualification,Participation,Precision,A,B,Other\n";
+    /**
+     * The content for the opinion polls CSV file for France, version 1.
+     */
+    private static final String POLLS_FRANCE_P13_CSV1 =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                     + "Participation,Precision,F,G,H,I,Other\n"
                     + "ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
                     + "40%,2%,2%,Not Available\n";
     /**
-     * The content for the opinion polls CSV file for Flanders.
+     * The content for the opinion polls CSV file for France, version 2.
      */
-    private static final String POLLS_FLANDERS_CSV =
+    private static final String POLLS_FRANCE_P13_CSV2 =
+            "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,"
+                    + "Scope,Sample Size,Sample Size Qualification,Participation,Precision,F,G,H,I,Other\n"
+                    + "1,1,ACME,,2021-07-27,2021-07-28,Not Available,Not Available,Not Available,Not Available,1%,55%,"
+                    + "40%,2%,2%,Not Available\n";
+    /**
+     * The content for the opinion polls CSV file for Flanders, version 1.
+     */
+    private static final String POLLS_FLANDERS_CSV1 =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,Sample Size Qualification,"
                     + "Participation,Precision,P,Q,Other\n";
+    /**
+     * The content for the opinion polls CSV file for Flanders, version 2.
+     */
+    private static final String POLLS_FLANDERS_CSV2 =
+            "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,"
+                    + "Scope,Sample Size,Sample Size Qualification,Participation,Precision,P,Q,Other\n";
     /**
      * The content for the electoral lists CSV file.
      */
@@ -88,12 +109,15 @@ public class CsvFilesBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         ElectoralList.clear();
         ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
-        expected.put(Paths.get("_csv", "be-vlg.csv"), POLLS_FLANDERS_CSV);
-        expected.put(Paths.get("_csv", "be-vlg.v1.csv"), POLLS_FLANDERS_CSV);
-        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_P13_CSV);
-        expected.put(Paths.get("_csv", "fr_p13.v1.csv"), POLLS_FRANCE_P13_CSV);
-        expected.put(Paths.get("_csv", "mk.csv"), POLLS_NORTH_MACEDONIA_CSV);
-        expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_NORTH_MACEDONIA_CSV);
+        expected.put(Paths.get("_csv", "be-vlg.csv"), POLLS_FLANDERS_CSV1);
+        expected.put(Paths.get("_csv", "be-vlg.v1.csv"), POLLS_FLANDERS_CSV1);
+        expected.put(Paths.get("_csv", "be-vlg.v2.csv"), POLLS_FLANDERS_CSV2);
+        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_P13_CSV1);
+        expected.put(Paths.get("_csv", "fr_p13.v1.csv"), POLLS_FRANCE_P13_CSV1);
+        expected.put(Paths.get("_csv", "fr_p13.v2.csv"), POLLS_FRANCE_P13_CSV2);
+        expected.put(Paths.get("_csv", "mk.csv"), POLLS_NORTH_MACEDONIA_CSV1);
+        expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_NORTH_MACEDONIA_CSV1);
+        expected.put(Paths.get("_csv", "mk.v2.csv"), POLLS_NORTH_MACEDONIA_CSV2);
         expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
         expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV);
         Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
@@ -112,7 +136,8 @@ public class CsvFilesBuilderTest {
         Map<Path, String> actual = builder.build();
         ModifiableMap<Path, String> unexpected = ModifiableMap.of(actual);
         unexpected.removeIf(e -> expected.containsKey(e.key()));
-        assertTrue(unexpected.isEmpty());
-        assertTrue(expected.containsSame(actual));
+        assertTrue(unexpected.isEmpty(),
+                unexpected.getKeys().stream().map(Object::toString).collect(Collectors.joining(", ")));
+        assertTrue(actual.containsSame(expected));
     }
 }

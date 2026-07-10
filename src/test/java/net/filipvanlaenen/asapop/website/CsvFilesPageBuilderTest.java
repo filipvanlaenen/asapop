@@ -99,22 +99,22 @@ public class CsvFilesPageBuilderTest {
         expected.append("        </thead>\n");
         expected.append("        <tbody>\n");
         expected.append("          <tr>\n");
-        expected.append(
-                "            <td><a href=\"_csv/gl.csv\">gl.csv</a> (<a href=\"_csv/gl.v1.csv\">v1</a>)</td>\n");
+        expected.append("            <td><a href=\"_csv/gl.csv\">gl.csv</a> (<a href=\"_csv/gl.v2.csv\">v2</a>,"
+                + " <a href=\"_csv/gl.v1.csv\">v1</a>)</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_gl\" href=\"gl/index.html\"> </a>\n");
         expected.append("            </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
-        expected.append(
-                "            <td><a href=\"_csv/mk.csv\">mk.csv</a> (<a href=\"_csv/mk.v1.csv\">v1</a>)</td>\n");
+        expected.append("            <td><a href=\"_csv/mk.csv\">mk.csv</a> (<a href=\"_csv/mk.v2.csv\">v2</a>,"
+                + " <a href=\"_csv/mk.v1.csv\">v1</a>)</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_mk\" href=\"mk/index.html\"> </a>\n");
         expected.append("            </td>\n");
         expected.append("          </tr>\n");
         expected.append("          <tr>\n");
-        expected.append(
-                "            <td><a href=\"_csv/rs.csv\">rs.csv</a> (<a href=\"_csv/rs.v1.csv\">v1</a>)</td>\n");
+        expected.append("            <td><a href=\"_csv/rs.csv\">rs.csv</a> (<a href=\"_csv/rs.v2.csv\">v2</a>,"
+                + " <a href=\"_csv/rs.v1.csv\">v1</a>)</td>\n");
         expected.append("            <td>\n");
         expected.append("              <a class=\"_area_rs\" href=\"rs/index.html\"> </a>\n");
         expected.append("            </td>\n");

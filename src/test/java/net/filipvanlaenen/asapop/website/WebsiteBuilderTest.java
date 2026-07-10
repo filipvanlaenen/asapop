@@ -32,11 +32,17 @@ import net.filipvanlaenen.laconic.Token;
  */
 public class WebsiteBuilderTest {
     /**
-     * The content of a sample opinion polls CSV file.
+     * The content of a sample opinion polls CSV file, version 1.
      */
-    private static final String POLLS_CSV =
+    private static final String POLLS_CSV1 =
             "Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,Scope,Sample Size,"
                     + "Sample Size Qualification,Participation,Precision,A,B,Other\n";
+    /**
+     * The content of a sample opinion polls CSV file, version 2.
+     */
+    private static final String POLLS_CSV2 =
+            "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,"
+                    + "Scope,Sample Size,Sample Size Qualification,Participation,Precision,A,B,Other\n";
     /**
      * The content of a sample electoral lists CSV file.
      */
@@ -150,8 +156,9 @@ public class WebsiteBuilderTest {
         expected.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         String tooltipScriptContent = "function tooltip(text) {}";
         expected.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
-        expected.put(Paths.get("_csv", "mk.csv"), POLLS_CSV);
-        expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_CSV);
+        expected.put(Paths.get("_csv", "mk.csv"), POLLS_CSV1);
+        expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_CSV1);
+        expected.put(Paths.get("_csv", "mk.v2.csv"), POLLS_CSV2);
         expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
         expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV);
         expected.put(Paths.get("_widgets", "tables", "mk.html"),
