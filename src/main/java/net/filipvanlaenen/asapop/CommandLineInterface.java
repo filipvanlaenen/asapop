@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -302,10 +301,18 @@ public final class CommandLineInterface {
                                 "Loading the scrape configuration file.");
                         ScrapeConfiguration scrapeConfiguration =
                                 objectMapper.readValue(scrapeConfigurationPath.toFile(), ScrapeConfiguration.class);
-                        Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
-                        String[] ropfContent = readFile(ropfPath);
-                        RichOpinionPollsFile richOpinionPollsFile =
-                                RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
+                        String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
+                        if (possibleNextElectionPageNames.length > 0) {
+                            for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
+                                Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
+                                        "Checking whether the English Wikipedia page %s exists.", ropfFileName);
+                            }
+                        } else {
+                            Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
+                            String[] ropfContent = readFile(ropfPath);
+                            RichOpinionPollsFile richOpinionPollsFile =
+                                    RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
+                        }
                     } else {
                         Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
                                 scrapeConfigurationFileToken, ropfFileToken);
