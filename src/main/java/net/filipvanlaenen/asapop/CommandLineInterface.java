@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +14,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +38,7 @@ import net.filipvanlaenen.asapop.yaml.AnalysisBuilder;
 import net.filipvanlaenen.asapop.yaml.ElectionData;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Terms;
+import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.ScrapeConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
@@ -52,6 +53,7 @@ import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
+import net.filipvanlaenen.kolektoj.collectors.Collectors;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -94,12 +96,13 @@ public final class CommandLineInterface {
     private static void printUsage() {
         System.out.println("Usage:");
         System.out.println("  analyze <ropf-file-name> <election-yaml-file-name> <analysis-result-yaml-file-name>");
-        System.out.println(
-                "  build <site-dir-name> <website-configuration-yaml-file-name> <custom-style-sheet-file-name>");
+        System.out.println("  build <site-dir-name> <website-configuration-yaml-file-name> <ropf-dir-name>"
+                + " <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
         System.out.println("  format <ropf-file-name> [-o=<ID-combinations>]");
         System.out.println("  parse <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
+        System.out.println("  scrape <ropf-dir-name> <scrape-configuration-dir-name>");
     }
 
     /**
@@ -269,6 +272,46 @@ public final class CommandLineInterface {
                         saporExporter.export(opinionPolls, configurationFileToken, inputFileToken);
                 writeFiles(saporDirName, saporDirectory.asMap());
             }
+        },
+        /**
+         * Command to scrape ROPF files.
+         */
+        SCRAPE {
+            @Override
+            void execute(final String[] args) throws IOException {
+                String ropfDirName = args[1];
+                String scrapeConfigurationDirName = args[2];
+                Token ropfToken = Laconic.LOGGER.logMessage("Reading the ROPF files from %s.", ropfDirName);
+                Token scrapeToken = Laconic.LOGGER.logMessage("Searching for scrape configuration files in %s.",
+                        scrapeConfigurationDirName);
+                Path ropfDir = Paths.get(ropfDirName);
+                Collection<Path> ropfPaths = Files.list(ropfDir).filter(path -> path.toString().endsWith(".ropf"))
+                        .collect(Collectors.toCollection());
+                for (Path ropfPath : ropfPaths) {
+                    String ropfFileName = ropfPath.getFileName().toString();
+                    Token ropfFileToken =
+                            Laconic.LOGGER.logMessage(ropfToken, "Scraping for ROPF file %s.", ropfFileName);
+                    String scrapeConfigurationFileName = ropfFileName.replace("ropf", "yaml");
+                    Token scrapeConfigurationFileToken = Laconic.LOGGER.logMessage(scrapeToken,
+                            "Looking for scrape configuration file %s.", scrapeConfigurationFileName);
+                    Path scrapeConfigurationPath = Path.of(scrapeConfigurationDirName, scrapeConfigurationFileName);
+                    if (Files.exists(scrapeConfigurationPath)) {
+                        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+                        objectMapper.setSerializationInclusion(Include.NON_NULL);
+                        Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
+                                "Loading the scrape configuration file.");
+                        ScrapeConfiguration scrapeConfiguration =
+                                objectMapper.readValue(scrapeConfigurationPath.toFile(), ScrapeConfiguration.class);
+                        Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
+                        String[] ropfContent = readFile(ropfPath);
+                        RichOpinionPollsFile richOpinionPollsFile =
+                                RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
+                    } else {
+                        Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
+                                scrapeConfigurationFileToken, ropfFileToken);
+                    }
+                }
+            }
         };
 
         /**
@@ -356,9 +399,9 @@ public final class CommandLineInterface {
             Token token = Laconic.LOGGER.logMessage("Parsing parliamentary opinion polls files from directory %s.",
                     ropfDirName);
             ModifiableMap<String, OpinionPolls> opinionPollsMap = ModifiableMap.<String, OpinionPolls>empty();
-            Set<String> areaCodes =
-                    websiteConfiguration.getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null)
-                            .map(areaConfigutation -> areaConfigutation.getAreaCode()).collect(Collectors.toSet());
+            Set<String> areaCodes = websiteConfiguration.getAreaConfigurations().stream()
+                    .filter(ac -> ac.getAreaCode() != null).map(areaConfigutation -> areaConfigutation.getAreaCode())
+                    .collect(java.util.stream.Collectors.toSet());
             for (String areaCode : areaCodes) {
                 Path ropfPath = Paths.get(ropfDirName, areaCode + ".ropf");
                 if (Files.exists(ropfPath)) {
@@ -387,10 +430,10 @@ public final class CommandLineInterface {
                     .logMessage("Parsing presidential election opinion polls files from directory %s.", ropfDirName);
             ModifiableMap<String, OpinionPolls> opinionPollsMap = ModifiableMap.<String, OpinionPolls>empty();
             Set<AreaConfiguration> areasWithPresidentialElections =
-                    websiteConfiguration
-                            .getAreaConfigurations().stream().filter(ac -> ac.getAreaCode() != null
-                                    && ac.getElections() != null && ac.getElections().getPresidential() != null)
-                            .collect(Collectors.toSet());
+                    websiteConfiguration.getAreaConfigurations().stream()
+                            .filter(ac -> ac.getAreaCode() != null && ac.getElections() != null
+                                    && ac.getElections().getPresidential() != null)
+                            .collect(java.util.stream.Collectors.toSet());
             Set<String> presidentialOpinionPollCodes = new HashSet<String>();
             for (AreaConfiguration areaConfiguration : areasWithPresidentialElections) {
                 String areaCode = areaConfiguration.getAreaCode();
