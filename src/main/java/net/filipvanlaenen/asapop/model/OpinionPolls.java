@@ -127,22 +127,6 @@ public final class OpinionPolls {
     }
 
     /**
-     * Returns the number of opinion polls with an end date on or after the date.
-     *
-     * @param fromDate The cut-off date to count the number of opinion polls.
-     * @return The number of opinion polls with an end date on or after the date.
-     */
-    public int getNumberOfOpinionPolls(final LocalDate fromDate) {
-        int result = 0;
-        for (OpinionPoll opinionPoll : opinionPolls) {
-            if (!opinionPoll.getEndDate().isBefore(fromDate)) {
-                result += 1;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns the opinion polls.
      *
      * @return An unmodifiable set with the opinion polls.

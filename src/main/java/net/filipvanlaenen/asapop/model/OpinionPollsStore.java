@@ -1,5 +1,7 @@
 package net.filipvanlaenen.asapop.model;
 
+import static net.filipvanlaenen.kolektoj.Map.KeyAndValueCardinality.DUPLICATE_KEYS_WITH_DISTINCT_VALUES;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 
@@ -112,6 +114,11 @@ public final class OpinionPollsStore {
      */
     private static ModifiableMap<String, ModifiableSortedIntegerMap<Integer>> numberOfResultValuesByYearByArea =
             ModifiableMap.empty();
+    /**
+     * A map with the opinion polls, indexed by area.
+     */
+    private static ModifiableMap<String, OpinionPoll> opinionPollsByArea =
+            ModifiableMap.of(DUPLICATE_KEYS_WITH_DISTINCT_VALUES);
 
     /**
      * Private constructor to prevent instantiation of this utility class.
@@ -126,7 +133,7 @@ public final class OpinionPollsStore {
      * @param opinionPolls A collection opinion polls.
      */
     public static void addAll(final String areaCode, final Collection<OpinionPoll> opinionPolls) {
-        if (!numberOfOpinionPollsByArea.containsKey(areaCode)) {
+        if (!opinionPollsByArea.containsKey(areaCode)) {
             numberOfOpinionPollsByArea.add(areaCode, 0);
             numberOfResponseScenariosByArea.add(areaCode, 0);
             numberOfResultValuesByArea.add(areaCode, 0);
@@ -156,6 +163,7 @@ public final class OpinionPollsStore {
         ModifiableSortedIntegerMap<Integer> numberOfResultValuesByYearForThisArea =
                 numberOfResultValuesByYearByArea.get(areaCode);
         for (OpinionPoll opinionPoll : opinionPolls) {
+            opinionPollsByArea.add(areaCode, opinionPoll);
             LocalDate endDate = opinionPoll.getEndDate();
             if (!mostRecentDateByArea.containsKey(areaCode)) {
                 mostRecentDateByArea.add(areaCode, endDate);
@@ -229,6 +237,7 @@ public final class OpinionPollsStore {
         numberOfResultValuesByMonthByArea = ModifiableMap.empty();
         numberOfResultValuesByYear = ModifiableSortedIntegerMap.<Integer>empty(Comparator.naturalOrder());
         numberOfResultValuesByYearByArea = ModifiableMap.empty();
+        opinionPollsByArea = ModifiableMap.of(DUPLICATE_KEYS_WITH_DISTINCT_VALUES);
     }
 
     /**
@@ -258,6 +267,17 @@ public final class OpinionPollsStore {
      */
     public static int getNumberOfOpinionPolls(final String areaCode) {
         return numberOfOpinionPollsByArea.get(areaCode);
+    }
+
+    /**
+     * Returns the number of opinion polls for an area with an end date on or after a given date.
+     *
+     * @param areaCode The code for the area.
+     * @param date     The date.
+     * @return The number of opinion polls for an area with an end date on or after the provided date.
+     */
+    public static int getNumberOfOpinionPollsOnOrAfter(final String areaCode, final LocalDate date) {
+        return (int) opinionPollsByArea.getAll(areaCode).stream().filter(op -> !op.getEndDate().isBefore(date)).count();
     }
 
     /**

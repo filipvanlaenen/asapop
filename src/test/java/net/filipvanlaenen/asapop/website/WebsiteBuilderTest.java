@@ -137,8 +137,7 @@ public class WebsiteBuilderTest {
                 new ICalendarFileBuilder(websiteConfiguration, NOW, internationalization).build(TOKEN));
         expected.put(Paths.get("csv.html"), new CsvFilesPageBuilder(websiteConfiguration).build().asString());
         expected.put(Paths.get("statistics.html"),
-                new StatisticsPageBuilder(websiteConfiguration, internationalization, opinionPollsMap, NOW).build()
-                        .asString());
+                new StatisticsPageBuilder(websiteConfiguration, internationalization, NOW).build().asString());
         expected.put(Paths.get("lv", "index.html"),
                 new AreaIndexPagesBuilder(websiteConfiguration, opinionPollsMap, elections, NOW)
                         .createAreaIndexPage(latvia));

@@ -151,8 +151,9 @@ public class StatisticsPageBuilderTest {
         }
         String expected = new String(
                 getClass().getClassLoader().getResourceAsStream("StatisticsPageBuilderTest.html").readAllBytes());
-        assertEquals(expected, new StatisticsPageBuilder(createWebsiteConfiguration(), createInternationalization(),
-                opinionPollsMap, NOW).build().asString());
+        assertEquals(expected,
+                new StatisticsPageBuilder(createWebsiteConfiguration(), createInternationalization(), NOW).build()
+                        .asString());
     }
 
     /**

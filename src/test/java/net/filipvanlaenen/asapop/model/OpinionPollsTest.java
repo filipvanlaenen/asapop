@@ -86,14 +86,6 @@ public class OpinionPollsTest {
     }
 
     /**
-     * Verifies that the number of opinion polls from a date is counted correctly.
-     */
-    @Test
-    public void getNumberOfOpinionPollsFromADateShouldBeCorrect() {
-        assertEquals(2, opinionPolls.getNumberOfOpinionPolls(DATE2));
-    }
-
-    /**
      * Verifies that the lowest sample size for a polling firm is calculated correctly.
      */
     @Test

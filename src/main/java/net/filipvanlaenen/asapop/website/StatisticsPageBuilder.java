@@ -10,11 +10,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.WebsiteConfiguration;
-import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableCollection;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
@@ -183,25 +181,18 @@ final class StatisticsPageBuilder extends PageBuilder {
      * Today's day.
      */
     private final LocalDate now;
-    /**
-     * A map with the opinion polls.
-     */
-    private final Map<String, OpinionPolls> opinionPollsMap;
 
     /**
      * Constructor taking the website configuration and the map with the opinion polls as its parameter.
      *
      * @param websiteConfiguration The website configuration.
      * @param internationalization The internationalization dictionary.
-     * @param opinionPollsMap      The map with the opinion polls.
      * @param now                  Today's day.
      * @param startOfYear          The start of the year.
      */
     StatisticsPageBuilder(final WebsiteConfiguration websiteConfiguration,
-            final Internationalization internationalization, final Map<String, OpinionPolls> opinionPollsMap,
-            final LocalDate now) {
+            final Internationalization internationalization, final LocalDate now) {
         super(websiteConfiguration);
-        this.opinionPollsMap = opinionPollsMap;
         this.internationalization = internationalization;
         this.now = now;
     }
@@ -477,7 +468,6 @@ final class StatisticsPageBuilder extends PageBuilder {
             String areaSymbol = areaCode.toUpperCase();
             tdAreaName.addElement(new A(" ").clazz(areaClass).href(areaCode + "/index.html"));
             if (OpinionPollsStore.hasOpinionPolls(areaCode)) {
-                OpinionPolls opinionPolls = opinionPollsMap.get(areaCode);
                 int numberOfOpinionPolls = OpinionPollsStore.getNumberOfOpinionPolls(areaCode);
                 int numberOfOpinionPollsYtd = OpinionPollsStore.getNumberOfOpinionPolls(areaCode, thisYear);
                 int numberOfResponseScenarios = OpinionPollsStore.getNumberOfResponseScenarios(areaCode);
@@ -487,7 +477,7 @@ final class StatisticsPageBuilder extends PageBuilder {
                 LocalDate mostRecentDate = OpinionPollsStore.getMostRecentDate(areaCode);
                 LocalDate threeYearBeforeMostRecentDate = mostRecentDate.minusDays(THREE_YEARS_AS_DAYS);
                 int numberOfOpinionPollsLastThreeYears =
-                        opinionPolls.getNumberOfOpinionPolls(threeYearBeforeMostRecentDate);
+                        OpinionPollsStore.getNumberOfOpinionPollsOnOrAfter(areaCode, threeYearBeforeMostRecentDate);
                 double numberOfOpinionPollsPerDay = ((double) numberOfOpinionPollsLastThreeYears) / THREE_YEARS_AS_DAYS;
                 long daysSinceLastOpinionPoll = ChronoUnit.DAYS.between(mostRecentDate, now);
                 CurrencyQualification currencyQualification = CurrencyQualification

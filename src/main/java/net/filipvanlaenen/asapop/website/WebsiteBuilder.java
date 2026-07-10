@@ -112,8 +112,7 @@ public class WebsiteBuilder {
                 new ICalendarFileBuilder(websiteConfiguration, now, internationalization).build(token));
         website.put("csv.html", new CsvFilesPageBuilder(websiteConfiguration).build());
         website.put("statistics.html",
-                new StatisticsPageBuilder(websiteConfiguration, internationalization, parliamentaryOpinionPollsMap, now)
-                        .build());
+                new StatisticsPageBuilder(websiteConfiguration, internationalization, now).build());
         website.putAll(
                 new CsvFilesBuilder(websiteConfiguration, parliamentaryOpinionPollsMap, presidentialOpinionPollsMap)
                         .build());
