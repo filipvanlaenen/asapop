@@ -5,6 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -75,7 +79,7 @@ public final class CommandLineInterface {
      * @param args The arguments.
      * @throws IOException Thrown if something related to IO goes wrong.
      */
-    public static void main(final String... args) throws IOException {
+    public static void main(final String... args) throws IOException, InterruptedException {
         if (args.length < 1) {
             printUsage();
             return;
@@ -277,7 +281,7 @@ public final class CommandLineInterface {
          */
         SCRAPE {
             @Override
-            void execute(final String[] args) throws IOException {
+            void execute(final String[] args) throws IOException, InterruptedException {
                 String ropfDirName = args[1];
                 String scrapeConfigurationDirName = args[2];
                 Token ropfToken = Laconic.LOGGER.logMessage("Reading the ROPF files from %s.", ropfDirName);
@@ -302,16 +306,32 @@ public final class CommandLineInterface {
                         ScrapeConfiguration scrapeConfiguration =
                                 objectMapper.readValue(scrapeConfigurationPath.toFile(), ScrapeConfiguration.class);
                         String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
-                        if (possibleNextElectionPageNames.length > 0) {
+                        if (possibleNextElectionPageNames != null) {
                             for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
                                 Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
                                         "Checking whether the English Wikipedia page %s exists.", ropfFileName);
+                                String url = "https://en.wikipedia.org/wiki/";
+                                String outputFile = "wikipedia_java.html";
+                                HttpClient client = HttpClient.newHttpClient();
+                                HttpRequest request = HttpRequest.newBuilder()
+                                        .uri(URI.create(url + possibleNextElectionPageName))
+                                        // TODO: Configure contact
+                                        .header("User-Agent", "AsapopWikiBot/1.0 (contact: f.a.vanlaenen@ieee.org)")
+                                        .GET().build();
+                                HttpResponse<String> response =
+                                        client.send(request, HttpResponse.BodyHandlers.ofString());
+                                if (response.statusCode() == 200) {
+                                    Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
+                                }
                             }
+                        } else if (scrapeConfiguration.getNextElectionPageName() != null) {
+                            // TODO: Check for opinion polls header
                         } else {
                             Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
                             String[] ropfContent = readFile(ropfPath);
                             RichOpinionPollsFile richOpinionPollsFile =
                                     RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
+                            // TODO: Scrape
                         }
                     } else {
                         Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
@@ -370,7 +390,7 @@ public final class CommandLineInterface {
          * @param args The arguments from the command line.
          * @throws IOException Thrown if something related to IO goes wrong.
          */
-        abstract void execute(String[] args) throws IOException;
+        abstract void execute(String[] args) throws IOException, InterruptedException;
 
         /**
          * Merges two maps, one with the proper names and one with the translated names, into a single map. Only the
