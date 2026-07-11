@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,6 +56,7 @@ import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
+import net.filipvanlaenen.kolektoj.ModifiableSortedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
 import net.filipvanlaenen.kolektoj.collectors.Collectors;
 import net.filipvanlaenen.laconic.Laconic;
@@ -72,6 +74,10 @@ public final class CommandLineInterface {
      * The integer number four.
      */
     private static final int FOUR = 4;
+    /**
+     * The integer number five.
+     */
+    private static final int FIVE = 5;
 
     /**
      * The main entry point for the command line interface.
@@ -105,7 +111,8 @@ public final class CommandLineInterface {
         System.out.println("  format <ropf-file-name> [-o=<ID-combinations>]");
         System.out.println("  parse <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
-        System.out.println("  scrape <ropf-dir-name> <scrape-configuration-dir-name>");
+        System.out
+                .println("  scrape <ropf-dir-name> <scrape-configuration-dir-name> <contact-info> <scrape-cache-dir>");
     }
 
     /**
@@ -284,14 +291,29 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException, InterruptedException {
                 String ropfDirName = args[1];
                 String scrapeConfigurationDirName = args[2];
+                String contactInfo = args[THREE];
+                String cacheDirName = args[FOUR];
+                Collection<String> ropfIgnoreList = Collection.empty();
+                if (args.length > FOUR) {
+                    for (int i = FIVE; i < args.length; i++) {
+                        if (args[i].startsWith("-i=")) {
+                            ropfIgnoreList = Collection.of(args[i].substring(THREE).split(","));
+                        }
+                    }
+                }
                 Token ropfToken = Laconic.LOGGER.logMessage("Reading the ROPF files from %s.", ropfDirName);
                 Token scrapeToken = Laconic.LOGGER.logMessage("Searching for scrape configuration files in %s.",
                         scrapeConfigurationDirName);
                 Path ropfDir = Paths.get(ropfDirName);
                 Collection<Path> ropfPaths = Files.list(ropfDir).filter(path -> path.toString().endsWith(".ropf"))
                         .collect(Collectors.toCollection());
+                ModifiableSortedCollection<String> results =
+                        ModifiableSortedCollection.empty(Comparator.naturalOrder());
                 for (Path ropfPath : ropfPaths) {
                     String ropfFileName = ropfPath.getFileName().toString();
+                    if (ropfIgnoreList.contains(ropfFileName)) {
+                        continue;
+                    }
                     Token ropfFileToken =
                             Laconic.LOGGER.logMessage(ropfToken, "Scraping for ROPF file %s.", ropfFileName);
                     String scrapeConfigurationFileName = ropfFileName.replace("ropf", "yaml");
@@ -307,6 +329,7 @@ public final class CommandLineInterface {
                                 objectMapper.readValue(scrapeConfigurationPath.toFile(), ScrapeConfiguration.class);
                         String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
                         if (possibleNextElectionPageNames != null) {
+                            boolean nextElectionPageAppeared = false;
                             for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
                                 Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
                                         "Checking whether the English Wikipedia page %s exists.", ropfFileName);
@@ -315,29 +338,41 @@ public final class CommandLineInterface {
                                 HttpClient client = HttpClient.newHttpClient();
                                 HttpRequest request = HttpRequest.newBuilder()
                                         .uri(URI.create(url + possibleNextElectionPageName))
-                                        // TODO: Configure contact
-                                        .header("User-Agent", "AsapopWikiBot/1.0 (contact: f.a.vanlaenen@ieee.org)")
-                                        .GET().build();
+                                        .header("User-Agent", "AsapopWikiBot/1.0 (contact: " + contactInfo + ")").GET()
+                                        .build();
                                 HttpResponse<String> response =
                                         client.send(request, HttpResponse.BodyHandlers.ofString());
                                 if (response.statusCode() == 200) {
                                     Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
+                                    nextElectionPageAppeared = true;
                                 }
+                            }
+                            if (nextElectionPageAppeared) {
+                                results.add(ropfFileName + ": Possible next election page exists.");
+                            } else {
+                                results.add(ropfFileName + ": None of the possible next election pages exists yet.");
                             }
                         } else if (scrapeConfiguration.getNextElectionPageName() != null) {
                             // TODO: Check for opinion polls header
+                            results.add(ropfFileName + ": Checking for opinion polls header not implemented yet.");
                         } else {
                             Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
                             String[] ropfContent = readFile(ropfPath);
                             RichOpinionPollsFile richOpinionPollsFile =
                                     RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
                             // TODO: Scrape
+                            results.add(ropfFileName + ": Scraping not implemented yet.");
                         }
                     } else {
                         Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
                                 scrapeConfigurationFileToken, ropfFileToken);
+                        results.add(ropfFileName + ": No scrape configuration file found.");
                     }
                 }
+                // TODO: Check also scrape configuration files for which there are no ROPF files yet.
+                System.out.println();
+                System.out.println("Results:");
+                System.out.println(String.join("\n", results));
             }
         };
 
