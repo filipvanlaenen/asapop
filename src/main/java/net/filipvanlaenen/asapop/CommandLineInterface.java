@@ -14,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -338,12 +340,14 @@ public final class CommandLineInterface {
                         if (possibleNextElectionPageNames != null) {
                             boolean nextElectionPageAppeared = false;
                             for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
+                                Path cachedPagePath = Paths.get(cacheDirName, possibleNextElectionPageName);
                                 Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
                                         "Checking whether the English Wikipedia page %s exists.",
                                         possibleNextElectionPageName);
                                 HttpResponse<String> response =
                                         readWikipediaPage(userAgent, possibleNextElectionPageName);
                                 if (response.statusCode() == 200) {
+                                    writeFile(cachedPagePath, response.body());
                                     Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
                                     nextElectionPageAppeared = true;
                                 }
@@ -354,8 +358,26 @@ public final class CommandLineInterface {
                                 results.add(ropfFileName + ": None of the possible next election pages exists yet.");
                             }
                         } else if (scrapeConfiguration.getNextElectionPageName() != null) {
-                            // TODO: Check for opinion polls header
-                            results.add(ropfFileName + ": Checking for opinion polls header not implemented yet.");
+                            String pageName = scrapeConfiguration.getNextElectionPageName();
+                            String page = loadPage(cacheDirName, pageName, userAgent);
+                            boolean opinionPollsHeaderFound = false;
+                            int i = 0;
+                            while (i >= 0 && !opinionPollsHeaderFound) {
+                                int j = Math.min(page.indexOf("<h", i), page.indexOf("<H", i));
+                                if (j == -1) {
+                                    i = j;
+                                } else {
+                                    int k = Math.min(page.indexOf("</h", j), page.indexOf("</H", j));
+                                    String header = page.substring(j, k);
+                                    opinionPollsHeaderFound = header.toLowerCase().contains("Opinion polls");
+                                    i = j + 1;
+                                }
+                            }
+                            if (opinionPollsHeaderFound) {
+                                results.add(ropfFileName + ": Opinion polls header exists.");
+                            } else if (verbose) {
+                                results.add(ropfFileName + ": No opinion polls header exists yet.");
+                            }
                         } else {
                             Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
                             String[] ropfContent = readFile(ropfPath);
@@ -410,6 +432,25 @@ public final class CommandLineInterface {
                 System.out.println();
                 System.out.println("Results:");
                 System.out.println(String.join("\n", results));
+            }
+
+            private String loadPage(String cacheDirName, String pageName, String userAgent)
+                    throws IOException, InterruptedException {
+                Path cachedPagePath = Paths.get(cacheDirName, pageName);
+                LocalTime now = LocalTime.now();
+                if (Files.exists(cachedPagePath) && Files.getLastModifiedTime(cachedPagePath).toInstant()
+                        .atZone(ZoneId.systemDefault()).toLocalTime().isAfter(now.minusHours(24))) {
+                    return String.join("\n", readFile(cachedPagePath));
+                } else {
+                    HttpResponse<String> response = readWikipediaPage(userAgent, pageName);
+                    if (response.statusCode() == 200) {
+                        String content = response.body();
+                        writeFile(cachedPagePath, content);
+                        return content;
+                    } else {
+                        return null;
+                    }
+                }
             }
 
             private HttpResponse<String> readWikipediaPage(String userAgent, String possibleNextElectionPageName)
