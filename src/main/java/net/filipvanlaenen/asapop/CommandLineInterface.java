@@ -116,8 +116,8 @@ public final class CommandLineInterface {
         System.out.println("  format <ropf-file-name> [-o=<ID-combinations>]");
         System.out.println("  parse <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
-        System.out
-                .println("  scrape <ropf-dir-name> <scrape-configuration-dir-name> <contact-info> <scrape-cache-dir>");
+        System.out.println("  scrape <ropf-dir-name> <scrape-configuration-dir-name> <contact-info> <scrape-cache-dir>"
+                + " [-c=<country-code>] [-i=<country-code>[,<country-code>]+] [-v]");
     }
 
     /**
@@ -300,12 +300,16 @@ public final class CommandLineInterface {
                 String scrapeConfigurationDirName = args[2];
                 String contactInfo = args[THREE];
                 String cacheDirName = args[FOUR];
+                String countryCode = null;
                 Collection<String> ropfIgnoreList = Collection.empty();
                 boolean verbose = false;
                 if (args.length > FOUR) {
                     for (int i = FIVE; i < args.length; i++) {
-                        if (args[i].startsWith("-i=")) {
-                            ropfIgnoreList = Collection.of(args[i].substring(THREE).split(","));
+                        String arg = args[i];
+                        if (arg.startsWith("-c=")) {
+                            countryCode = arg.substring(THREE);
+                        } else if (arg.startsWith("-i=")) {
+                            ropfIgnoreList = Collection.of(arg.substring(THREE).split(","));
                         } else if (args[i].equals("-v")) {
                             verbose = true;
                         }
@@ -323,7 +327,8 @@ public final class CommandLineInterface {
                 String userAgent = "AsapopWikiBot/1.0 (contact: " + contactInfo + ")";
                 for (Path ropfPath : ropfPaths) {
                     String ropfFileName = ropfPath.getFileName().toString();
-                    if (ropfIgnoreList.contains(ropfFileName)) {
+                    if (ropfIgnoreList.contains(ropfFileName)
+                            || countryCode != null && !(countryCode + ".ropf").equals(ropfFileName)) {
                         continue;
                     }
                     Token ropfFileToken =
@@ -397,7 +402,8 @@ public final class CommandLineInterface {
                         .filter(path -> path.toString().endsWith(".yaml")).collect(Collectors.toCollection());
                 for (Path scrapeConfigurationPath : scrapeConfigurationPaths) {
                     String scrapeConfigurationFileName = scrapeConfigurationPath.getFileName().toString();
-                    if (scrapeConfigurationFileNames.contains(scrapeConfigurationFileName)) {
+                    if (scrapeConfigurationFileNames.contains(scrapeConfigurationFileName)
+                            || countryCode != null && !(countryCode + ".yaml").equals(scrapeConfigurationFileName)) {
                         continue;
                     }
                     Token scrapeConfigurationFileToken = Laconic.LOGGER.logMessage(scrapeToken,
