@@ -294,6 +294,60 @@ public final class CommandLineInterface {
         SCRAPE {
             private static final String BASE_URL = "https://en.wikipedia.org/wiki/";
 
+            private void checkForNextElectionPages(final String scrapeConfigurationFileName,
+                    final String[] possibleNextElectionPageNames, final String cacheDirName, final String userAgent,
+                    final boolean verbose, final ModifiableSortedCollection<String> results,
+                    final Token scrapeConfigurationFileToken) throws IOException, InterruptedException {
+                boolean nextElectionPageAppeared = false;
+                for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
+                    Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
+                            "Checking whether the English Wikipedia page %s exists.", possibleNextElectionPageName);
+                    String content = loadPage(cacheDirName, possibleNextElectionPageName, userAgent,
+                            scrapeConfigurationFileToken);
+                    if (content != null) {
+                        Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
+                        nextElectionPageAppeared = true;
+                    }
+                }
+                if (nextElectionPageAppeared) {
+                    results.add(scrapeConfigurationFileName + ": Possible next election page exists.");
+                } else if (verbose) {
+                    results.add(scrapeConfigurationFileName + ": None of the possible next election pages exists yet.");
+                }
+            }
+
+            private void checkForOpinionPollsSection(final String scrapeConfigurationFileName,
+                    final String nextElectionPageName, final String cacheDirName, final String userAgent,
+                    final boolean verbose, final ModifiableSortedCollection<String> results,
+                    final Token scrapeConfigurationFileToken) throws IOException, InterruptedException {
+                Token nextElectionPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
+                        "Looking for the next election page %s.", nextElectionPageName);
+                String page = loadPage(cacheDirName, nextElectionPageName, userAgent, nextElectionPageToken);
+                boolean opinionPollsHeaderFound = false;
+                int i = 0;
+                while (i >= 0 && !opinionPollsHeaderFound) {
+                    int headerStart = Math.min(page.indexOf("<h", i), page.indexOf("<H", i));
+                    Token headerToken =
+                            Laconic.LOGGER.logMessage(nextElectionPageToken, "Header detected at %d.", headerStart);
+                    if (headerStart == -1) {
+                        i = headerStart;
+                    } else {
+                        int headerEnd = Math.min(page.indexOf("</h", headerStart), page.indexOf("</H", headerStart));
+                        String header = page.substring(headerStart, headerEnd);
+                        if (header.toLowerCase().contains("Opinion polls")) {
+                            Laconic.LOGGER.logError("Opinion polls section exists.", headerToken);
+                            opinionPollsHeaderFound = true;
+                        }
+                        i = headerStart + 1;
+                    }
+                }
+                if (opinionPollsHeaderFound) {
+                    results.add(scrapeConfigurationFileName + ": Opinion polls section exists.");
+                } else if (verbose) {
+                    results.add(scrapeConfigurationFileName + ": No opinion polls section exists yet.");
+                }
+            }
+
             @Override
             void execute(final String[] args) throws IOException, InterruptedException {
                 String ropfDirName = args[1];
@@ -331,71 +385,8 @@ public final class CommandLineInterface {
                             || countryCode != null && !(countryCode + ".ropf").equals(ropfFileName)) {
                         continue;
                     }
-                    Token ropfFileToken =
-                            Laconic.LOGGER.logMessage(ropfToken, "Scraping for ROPF file %s.", ropfFileName);
-                    String scrapeConfigurationFileName = ropfFileName.replace("ropf", "yaml");
-                    scrapeConfigurationFileNames.add(scrapeConfigurationFileName);
-                    Token scrapeConfigurationFileToken = Laconic.LOGGER.logMessage(scrapeToken,
-                            "Looking for scrape configuration file %s.", scrapeConfigurationFileName);
-                    Path scrapeConfigurationPath = Path.of(scrapeConfigurationDirName, scrapeConfigurationFileName);
-                    if (Files.exists(scrapeConfigurationPath)) {
-                        ScrapeConfiguration scrapeConfiguration =
-                                readScrapeConfigurationFile(scrapeConfigurationFileToken, scrapeConfigurationPath);
-                        String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
-                        if (possibleNextElectionPageNames != null) {
-                            boolean nextElectionPageAppeared = false;
-                            for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
-                                Path cachedPagePath = Paths.get(cacheDirName, possibleNextElectionPageName);
-                                Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
-                                        "Checking whether the English Wikipedia page %s exists.",
-                                        possibleNextElectionPageName);
-                                HttpResponse<String> response =
-                                        readWikipediaPage(userAgent, possibleNextElectionPageName);
-                                if (response.statusCode() == 200) {
-                                    writeFile(cachedPagePath, response.body());
-                                    Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
-                                    nextElectionPageAppeared = true;
-                                }
-                            }
-                            if (nextElectionPageAppeared) {
-                                results.add(ropfFileName + ": Possible next election page exists.");
-                            } else if (verbose) {
-                                results.add(ropfFileName + ": None of the possible next election pages exists yet.");
-                            }
-                        } else if (scrapeConfiguration.getNextElectionPageName() != null) {
-                            String pageName = scrapeConfiguration.getNextElectionPageName();
-                            String page = loadPage(cacheDirName, pageName, userAgent);
-                            boolean opinionPollsHeaderFound = false;
-                            int i = 0;
-                            while (i >= 0 && !opinionPollsHeaderFound) {
-                                int j = Math.min(page.indexOf("<h", i), page.indexOf("<H", i));
-                                if (j == -1) {
-                                    i = j;
-                                } else {
-                                    int k = Math.min(page.indexOf("</h", j), page.indexOf("</H", j));
-                                    String header = page.substring(j, k);
-                                    opinionPollsHeaderFound = header.toLowerCase().contains("Opinion polls");
-                                    i = j + 1;
-                                }
-                            }
-                            if (opinionPollsHeaderFound) {
-                                results.add(ropfFileName + ": Opinion polls header exists.");
-                            } else if (verbose) {
-                                results.add(ropfFileName + ": No opinion polls header exists yet.");
-                            }
-                        } else {
-                            Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
-                            String[] ropfContent = readFile(ropfPath);
-                            RichOpinionPollsFile richOpinionPollsFile =
-                                    RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
-                            // TODO: Scrape
-                            results.add(ropfFileName + ": Scraping not implemented yet.");
-                        }
-                    } else {
-                        Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
-                                scrapeConfigurationFileToken, ropfFileToken);
-                        results.add(ropfFileName + ": No scrape configuration file found.");
-                    }
+                    scrapeForRopfFile(ropfPath, scrapeConfigurationDirName, cacheDirName, userAgent, verbose, results,
+                            scrapeConfigurationFileNames, ropfToken, scrapeToken);
                 }
                 Path scrapeConfigurationDir = Paths.get(scrapeConfigurationDirName);
                 Collection<Path> scrapeConfigurationPaths = Files.list(scrapeConfigurationDir)
@@ -406,76 +397,114 @@ public final class CommandLineInterface {
                             || countryCode != null && !(countryCode + ".yaml").equals(scrapeConfigurationFileName)) {
                         continue;
                     }
-                    Token scrapeConfigurationFileToken = Laconic.LOGGER.logMessage(scrapeToken,
-                            "Reading scrape configuration file %s.", scrapeConfigurationFileName);
-                    ScrapeConfiguration scrapeConfiguration =
-                            readScrapeConfigurationFile(scrapeConfigurationFileToken, scrapeConfigurationPath);
-                    String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
-                    if (possibleNextElectionPageNames != null) {
-                        boolean nextElectionPageAppeared = false;
-                        for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
-                            Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
-                                    "Checking whether the English Wikipedia page %s exists.",
-                                    possibleNextElectionPageName);
-                            HttpResponse<String> response = readWikipediaPage(userAgent, possibleNextElectionPageName);
-                            if (response.statusCode() == 200) {
-                                Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
-                                nextElectionPageAppeared = true;
-                            }
-                        }
-                        if (nextElectionPageAppeared) {
-                            results.add(scrapeConfigurationFileName + ": Possible next election page exists.");
-                        } else if (verbose) {
-                            results.add(scrapeConfigurationFileName
-                                    + ": None of the possible next election pages exists yet.");
-                        }
-                    } else if (scrapeConfiguration.getNextElectionPageName() != null) {
-                        // TODO: Check for opinion polls header
-                        results.add(scrapeConfigurationFileName
-                                + ": Checking for opinion polls header not implemented yet.");
-                    }
+                    scrapeWithoutRopfFile(scrapeConfigurationPath, cacheDirName, userAgent, verbose, results,
+                            scrapeToken);
                 }
                 System.out.println();
                 System.out.println("Results:");
                 System.out.println(String.join("\n", results));
             }
 
-            private String loadPage(String cacheDirName, String pageName, String userAgent)
-                    throws IOException, InterruptedException {
+            private HttpResponse<String> getWikipediaPage(final String userAgent,
+                    final String possibleNextElectionPageName) throws IOException, InterruptedException {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + possibleNextElectionPageName))
+                        .header("User-Agent", userAgent).GET().build();
+                return client.send(request, HttpResponse.BodyHandlers.ofString());
+            }
+
+            private String loadPage(final String cacheDirName, final String pageName, final String userAgent,
+                    final Token token) throws IOException, InterruptedException {
                 Path cachedPagePath = Paths.get(cacheDirName, pageName);
+                Laconic.LOGGER.logMessage(token, "Checking presence of the page in the cache.",
+                        cachedPagePath.toString());
                 LocalTime now = LocalTime.now();
                 if (Files.exists(cachedPagePath) && Files.getLastModifiedTime(cachedPagePath).toInstant()
                         .atZone(ZoneId.systemDefault()).toLocalTime().isAfter(now.minusHours(24))) {
+                    Laconic.LOGGER.logMessage(token, "Reading the page from the cache.");
                     return String.join("\n", readFile(cachedPagePath));
                 } else {
-                    HttpResponse<String> response = readWikipediaPage(userAgent, pageName);
+                    Laconic.LOGGER.logMessage(token, "Donwloading the page from Wikipedia.");
+                    HttpResponse<String> response = getWikipediaPage(userAgent, pageName);
                     if (response.statusCode() == 200) {
                         String content = response.body();
+                        Laconic.LOGGER.logMessage(token, "Writing the page to the cache.");
                         writeFile(cachedPagePath, content);
                         return content;
                     } else {
+                        Laconic.LOGGER.logMessage(token, "Page not present on Wikipedia.");
                         return null;
                     }
                 }
             }
 
-            private HttpResponse<String> readWikipediaPage(String userAgent, String possibleNextElectionPageName)
-                    throws IOException, InterruptedException {
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + possibleNextElectionPageName))
-                        .header("User-Agent", userAgent).GET().build();
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                return response;
-            }
-
-            private ScrapeConfiguration readScrapeConfigurationFile(Token scrapeConfigurationFileToken,
-                    Path scrapeConfigurationPath) throws IOException, StreamReadException, DatabindException {
+            private ScrapeConfiguration readScrapeConfigurationFile(final Token scrapeConfigurationFileToken,
+                    final Path scrapeConfigurationPath) throws IOException, StreamReadException, DatabindException {
                 ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
                 objectMapper.setSerializationInclusion(Include.NON_NULL);
                 Laconic.LOGGER.logMessage(scrapeConfigurationFileToken, "Loading the scrape configuration file.");
                 ScrapeConfiguration scrapeConfiguration =
                         objectMapper.readValue(scrapeConfigurationPath.toFile(), ScrapeConfiguration.class);
                 return scrapeConfiguration;
+            }
+
+            private void scrapeForRopfFile(final Path ropfPath, final String scrapeConfigurationDirName,
+                    final String cacheDirName, final String userAgent, final boolean verbose,
+                    final ModifiableSortedCollection<String> results,
+                    final ModifiableCollection<String> scrapeConfigurationFileNames, final Token ropfToken,
+                    final Token scrapeToken)
+                    throws IOException, StreamReadException, DatabindException, InterruptedException {
+                String ropfFileName = ropfPath.getFileName().toString();
+                Token ropfFileToken = Laconic.LOGGER.logMessage(ropfToken, "Scraping for ROPF file %s.", ropfFileName);
+                String scrapeConfigurationFileName = ropfFileName.replace("ropf", "yaml");
+                scrapeConfigurationFileNames.add(scrapeConfigurationFileName);
+                Token scrapeConfigurationFileToken = Laconic.LOGGER.logMessage(scrapeToken,
+                        "Looking for scrape configuration file %s.", scrapeConfigurationFileName);
+                Path scrapeConfigurationPath = Path.of(scrapeConfigurationDirName, scrapeConfigurationFileName);
+                if (Files.exists(scrapeConfigurationPath)) {
+                    ScrapeConfiguration scrapeConfiguration =
+                            readScrapeConfigurationFile(scrapeConfigurationFileToken, scrapeConfigurationPath);
+                    String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
+                    String nextElectionPageName = scrapeConfiguration.getNextElectionPageName();
+                    if (possibleNextElectionPageNames != null) {
+                        checkForNextElectionPages(scrapeConfigurationFileName, possibleNextElectionPageNames,
+                                cacheDirName, userAgent, verbose, results, scrapeConfigurationFileToken);
+                    } else if (nextElectionPageName != null) {
+                        checkForOpinionPollsSection(scrapeConfigurationFileName, nextElectionPageName, cacheDirName,
+                                userAgent, verbose, results, scrapeConfigurationFileToken);
+                    } else {
+                        Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
+                        String[] ropfContent = readFile(ropfPath);
+                        RichOpinionPollsFile richOpinionPollsFile =
+                                RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
+                        // TODO: Scrape
+                        results.add(ropfFileName + ": Scraping not implemented yet.");
+                    }
+                } else {
+                    Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
+                            scrapeConfigurationFileToken, ropfFileToken);
+                    results.add(ropfFileName + ": No scrape configuration file found.");
+                }
+            }
+
+            private void scrapeWithoutRopfFile(final Path scrapeConfigurationPath, final String cacheDirName,
+                    final String userAgent, final boolean verbose, final ModifiableSortedCollection<String> results,
+                    final Token scrapeToken)
+                    throws IOException, StreamReadException, DatabindException, InterruptedException {
+                String scrapeConfigurationFileName = scrapeConfigurationPath.getFileName().toString();
+                Token scrapeConfigurationFileToken = Laconic.LOGGER.logMessage(scrapeToken,
+                        "Reading scrape configuration file %s.", scrapeConfigurationFileName);
+                ScrapeConfiguration scrapeConfiguration =
+                        readScrapeConfigurationFile(scrapeConfigurationFileToken, scrapeConfigurationPath);
+                String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
+                String nextElectionPageName = scrapeConfiguration.getNextElectionPageName();
+                if (possibleNextElectionPageNames != null) {
+                    checkForNextElectionPages(scrapeConfigurationFileName, possibleNextElectionPageNames, cacheDirName,
+                            userAgent, verbose, results, scrapeConfigurationFileToken);
+                } else if (nextElectionPageName != null) {
+                    checkForOpinionPollsSection(scrapeConfigurationFileName, nextElectionPageName, cacheDirName,
+                            userAgent, verbose, results, scrapeConfigurationFileToken);
+                }
             }
         };
 
