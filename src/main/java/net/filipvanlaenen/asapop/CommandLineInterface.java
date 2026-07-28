@@ -326,15 +326,16 @@ public final class CommandLineInterface {
                 boolean opinionPollsHeaderFound = false;
                 int i = 0;
                 while (i >= 0 && !opinionPollsHeaderFound) {
-                    int headerStart = Math.min(page.indexOf("<h", i), page.indexOf("<H", i));
-                    Token headerToken =
-                            Laconic.LOGGER.logMessage(nextElectionPageToken, "Header detected at %d.", headerStart);
+                    int headerStart =
+                            findFirstOccurence(page, i, "<h1", "<H1", "<h2", "<H2", "<h3", "<H3", "<h4", "<H4");
+                    Token headerToken = Laconic.LOGGER.logMessage(nextElectionPageToken,
+                            "Header detected starting at index %d.", headerStart);
                     if (headerStart == -1) {
                         i = headerStart;
                     } else {
-                        int headerEnd = Math.min(page.indexOf("</h", headerStart), page.indexOf("</H", headerStart));
+                        int headerEnd = findFirstOccurence(page, headerStart, "</h", "</H");
                         String header = page.substring(headerStart, headerEnd);
-                        if (header.toLowerCase().contains("Opinion polls")) {
+                        if (header.toLowerCase().contains("opinion polls")) {
                             Laconic.LOGGER.logError("Opinion polls section exists.", headerToken);
                             opinionPollsHeaderFound = true;
                         }
@@ -346,6 +347,18 @@ public final class CommandLineInterface {
                 } else if (verbose) {
                     results.add(scrapeConfigurationFileName + ": No opinion polls section exists yet.");
                 }
+            }
+
+            private int findFirstOccurence(String page, int i, String... strings) {
+                int result = -1;
+                for (String string : strings) {
+                    // TODO: Should be changed to use regular expressions
+                    int j = page.indexOf(string, i);
+                    if (j >= 0 && (result == -1 || j < result)) {
+                        result = j;
+                    }
+                }
+                return result;
             }
 
             @Override
