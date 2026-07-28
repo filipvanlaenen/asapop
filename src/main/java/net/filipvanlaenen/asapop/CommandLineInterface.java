@@ -433,7 +433,7 @@ public final class CommandLineInterface {
                         cachedPagePath.toString());
                 LocalTime now = LocalTime.now();
                 if (Files.exists(cachedPagePath) && Files.getLastModifiedTime(cachedPagePath).toInstant()
-                        .atZone(ZoneId.systemDefault()).toLocalTime().isAfter(now.minusHours(24))) {
+                        .atZone(ZoneId.systemDefault()).toLocalTime().isBefore(now.minusHours(24))) {
                     Laconic.LOGGER.logMessage(token, "Reading the page from the cache.");
                     return String.join("\n", readFile(cachedPagePath));
                 } else {
