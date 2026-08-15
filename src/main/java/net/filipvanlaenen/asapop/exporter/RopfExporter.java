@@ -114,11 +114,14 @@ public final class RopfExporter extends Exporter {
      * @param electoralLists A set of electoral lists.
      * @return A map mapping the elector list IDs to the keys.
      */
-    private static Map<String, String> calculateIdsToKeys(final Set<ElectoralList> electoralLists) {
+    private static Map<String, String> calculateIdsToKeys(final Set<ElectoralList> electoralLists,
+            final boolean useRomanizedAbbreviations) {
         Map<String, String> result = new HashMap<String, String>();
         for (ElectoralList electoralList : electoralLists) {
-            String key = electoralList.getAbbreviation()
-                    .replaceAll("[^\\p{javaUpperCase}\\p{javaLowerCase}\\p{Digit}]", "").toUpperCase();
+            String abbreviation = useRomanizedAbbreviations && electoralList.getRomanizedAbbreviation() != null
+                    ? electoralList.getRomanizedAbbreviation()
+                    : electoralList.getAbbreviation();
+            String key = abbreviation.replaceAll("[^\\p{javaUpperCase}\\p{javaLowerCase}\\p{Digit}]", "").toUpperCase();
             String id = electoralList.getId();
             if (key.isEmpty()) {
                 key = id;
@@ -365,13 +368,13 @@ public final class RopfExporter extends Exporter {
      * @return A string representing of the rich opinion polls file.
      */
     public static String export(final RichOpinionPollsFile richOpinionPollsFile,
-            final OrderedCollection<Collection<String>> idCombinations) {
+            final OrderedCollection<Collection<String>> idCombinations, final boolean useRomanizedAbbreviations) {
         StringBuffer sb = new StringBuffer();
         Set<ElectoralList> electoralLists = new HashSet<ElectoralList>();
         for (OpinionPoll opinionPoll : richOpinionPollsFile.getOpinionPollsDeprecated().getOpinionPolls()) {
             electoralLists.addAll(getElectoralLists(opinionPoll));
         }
-        Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists);
+        Map<String, String> idsToKeysMap = calculateIdsToKeys(electoralLists, useRomanizedAbbreviations);
         ModifiableOrderedCollection<Set<ElectoralList>> preorderedElectoralListCombinations =
                 ModifiableOrderedCollection.<Set<ElectoralList>>empty();
         for (Collection<String> idCombination : idCombinations) {

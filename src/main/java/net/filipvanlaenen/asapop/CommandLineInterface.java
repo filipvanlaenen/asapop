@@ -113,7 +113,7 @@ public final class CommandLineInterface {
         System.out.println("  build <site-dir-name> <website-configuration-yaml-file-name> <ropf-dir-name>"
                 + " <custom-style-sheet-file-name>");
         System.out.println("  convert <ropf-file-name> <csv-file-name> <electoral-list-key>+ [-a=<area>]");
-        System.out.println("  format <ropf-file-name> [-o=<ID-combinations>]");
+        System.out.println("  format <ropf-file-name> [-o=<ID-combinations>] [-r]");
         System.out.println("  parse <ropf-file-name>");
         System.out.println("  provide <ropf-file-name> <sapor-dir-name> <sapor-configuration-yaml-file-name>");
         System.out.println("  scrape <ropf-dir-name> <scrape-configuration-dir-name> <contact-info> <scrape-cache-dir>"
@@ -233,21 +233,27 @@ public final class CommandLineInterface {
             void execute(final String[] args) throws IOException {
                 String ropfFileName = args[1];
                 OrderedCollection<Collection<String>> idCombinations = OrderedCollection.<Collection<String>>empty();
-                if (args.length > 2 && args[2].startsWith("-o=")) {
-                    String idCombinationsOption = args[2];
-                    String idCombinationsString = idCombinationsOption.substring(THREE, idCombinationsOption.length());
-                    String[] idCombinationsArray = idCombinationsString.split(",");
-                    ModifiableOrderedCollection<Collection<String>> result =
-                            ModifiableOrderedCollection.<Collection<String>>empty();
-                    for (String idCombination : idCombinationsArray) {
-                        result.add(Collection.of(idCombination.split("\\+")));
+                boolean useRomanizedAbbreviations = false;
+                for (int i = 2; i < args.length; i++) {
+                    String arg = args[i];
+                    if (arg.startsWith("-o=")) {
+                        String idCombinationsString = arg.substring(THREE, arg.length());
+                        String[] idCombinationsArray = idCombinationsString.split(",");
+                        ModifiableOrderedCollection<Collection<String>> result =
+                                ModifiableOrderedCollection.<Collection<String>>empty();
+                        for (String idCombination : idCombinationsArray) {
+                            result.add(Collection.of(idCombination.split("\\+")));
+                        }
+                        idCombinations = result;
+                    } else if (arg.equals("-r")) {
+                        useRomanizedAbbreviations = true;
                     }
-                    idCombinations = result;
                 }
                 Token token = Laconic.LOGGER.logMessage("Parsing file %s.", ropfFileName);
                 String[] ropfContent = readFile(ropfFileName);
                 RichOpinionPollsFile richOpinionPollsFile = RichOpinionPollsFile.parse(token, ropfContent);
-                writeFile(ropfFileName, RopfExporter.export(richOpinionPollsFile, idCombinations));
+                writeFile(ropfFileName,
+                        RopfExporter.export(richOpinionPollsFile, idCombinations, useRomanizedAbbreviations));
             }
         },
         /**
@@ -370,16 +376,14 @@ public final class CommandLineInterface {
                 String countryCode = null;
                 Collection<String> ropfIgnoreList = Collection.empty();
                 boolean verbose = false;
-                if (args.length > FOUR) {
-                    for (int i = FIVE; i < args.length; i++) {
-                        String arg = args[i];
-                        if (arg.startsWith("-c=")) {
-                            countryCode = arg.substring(THREE);
-                        } else if (arg.startsWith("-i=")) {
-                            ropfIgnoreList = Collection.of(arg.substring(THREE).split(","));
-                        } else if (args[i].equals("-v")) {
-                            verbose = true;
-                        }
+                for (int i = FIVE; i < args.length; i++) {
+                    String arg = args[i];
+                    if (arg.startsWith("-c=")) {
+                        countryCode = arg.substring(THREE);
+                    } else if (arg.startsWith("-i=")) {
+                        ropfIgnoreList = Collection.of(arg.substring(THREE).split(","));
+                    } else if (args.equals("-v")) {
+                        verbose = true;
                     }
                 }
                 Token ropfToken = Laconic.LOGGER.logMessage("Reading the ROPF files from %s.", ropfDirName);
