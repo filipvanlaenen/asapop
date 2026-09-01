@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -332,14 +334,13 @@ public final class CommandLineInterface {
                 boolean opinionPollsHeaderFound = false;
                 int i = 0;
                 while (i >= 0 && !opinionPollsHeaderFound) {
-                    int headerStart =
-                            findFirstOccurence(page, i, "<h1", "<H1", "<h2", "<H2", "<h3", "<H3", "<h4", "<H4");
+                    int headerStart = findFirstOccurrenceOfAHeaderStart(page, i);
                     Token headerToken = Laconic.LOGGER.logMessage(nextElectionPageToken,
                             "Header detected starting at index %d.", headerStart);
                     if (headerStart == -1) {
                         i = headerStart;
                     } else {
-                        int headerEnd = findFirstOccurence(page, headerStart, "</h", "</H");
+                        int headerEnd = findFirstOccurrenceOfAHeaderEnd(page, headerStart);
                         String header = page.substring(headerStart, headerEnd);
                         if (header.toLowerCase().contains("opinion polls")) {
                             Laconic.LOGGER.logError("Opinion polls section exists.", headerToken);
@@ -355,16 +356,21 @@ public final class CommandLineInterface {
                 }
             }
 
-            private int findFirstOccurence(String page, int i, String... strings) {
-                int result = -1;
-                for (String string : strings) {
-                    // TODO: Should be changed to use regular expressions
-                    int j = page.indexOf(string, i);
-                    if (j >= 0 && (result == -1 || j < result)) {
-                        result = j;
-                    }
+            private int findFirstOccurrenceOf(final String page, final int fromIndex, final Pattern pattern) {
+                Matcher matcher = pattern.matcher(page);
+                if (matcher.find(fromIndex)) {
+                    return matcher.start();
+                } else {
+                    return -1;
                 }
-                return result;
+            }
+
+            private int findFirstOccurrenceOfAHeaderEnd(final String page, final int fromIndex) {
+                return findFirstOccurrenceOf(page, fromIndex, Pattern.compile("\\</h[1-4]", Pattern.CASE_INSENSITIVE));
+            }
+
+            private int findFirstOccurrenceOfAHeaderStart(final String page, final int fromIndex) {
+                return findFirstOccurrenceOf(page, fromIndex, Pattern.compile("\\<h[1-4]", Pattern.CASE_INSENSITIVE));
             }
 
             @Override
