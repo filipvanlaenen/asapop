@@ -12,6 +12,10 @@ public class ScrapeConfiguration {
      * The possible next election page names.
      */
     private String[] possibleNextElectionPageNames;
+    /**
+     * Scrape configurations for one or more tables.
+     */
+    private TableConfiguration[] tableConfigurations;
 
     /**
      * Returns the next election page name.
@@ -32,6 +36,15 @@ public class ScrapeConfiguration {
     }
 
     /**
+     * Returns the scrape configurations for one or more tables.
+     *
+     * @return The scrape configurations for one or more tables.
+     */
+    public TableConfiguration[] getTableConfigurations() {
+        return tableConfigurations;
+    }
+
+    /**
      * Sets the next election page name.
      *
      * @param nextElectionPageName The next election page name.
@@ -47,5 +60,14 @@ public class ScrapeConfiguration {
      */
     public void setPossibleNextElectionPageNames(final String[] possibleNextElectionPageNames) {
         this.possibleNextElectionPageNames = possibleNextElectionPageNames;
+    }
+
+    /**
+     * Sets the scrape configurations for one or more tables.
+     *
+     * @param tableConfigurations The scrape configurations for one or more tables.
+     */
+    public void setTableConfigurations(final TableConfiguration[] tableConfigurations) {
+        this.tableConfigurations = tableConfigurations;
     }
 }
