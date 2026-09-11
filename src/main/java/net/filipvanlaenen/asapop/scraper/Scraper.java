@@ -4,13 +4,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Scraper {
+    public final static Pattern TAG_CLOSING_PATTERN = Pattern.compile(Pattern.quote(">"));
+
     public static boolean containsHeaderWithText(final String page, final String text) {
         return containsTagPatternWithText(page, "h[1-4]", text);
     }
 
     public static boolean containsTagPatternWithText(final String page, final String tagPattern, final String text) {
         Pattern startPattern = Pattern.compile(Pattern.quote("<") + tagPattern, Pattern.CASE_INSENSITIVE);
-        Pattern tagClosingPattern = Pattern.compile(Pattern.quote(">"));
         Pattern endPattern = Pattern.compile(Pattern.quote("</") + tagPattern, Pattern.CASE_INSENSITIVE);
         Pattern textPattern = Pattern.compile(Pattern.quote(text), Pattern.CASE_INSENSITIVE);
         int i = 0;
@@ -19,7 +20,7 @@ public class Scraper {
             if (tagStart == -1) {
                 return false;
             } else {
-                int tagStartClosing = findFirstOccurrenceOf(page, tagStart, tagClosingPattern);
+                int tagStartClosing = findFirstOccurrenceOf(page, tagStart, TAG_CLOSING_PATTERN);
                 int tagEnd = findFirstOccurrenceOf(page, tagStart, endPattern);
                 String content = page.substring(tagStartClosing, tagEnd);
                 Matcher matcher = textPattern.matcher(content);
