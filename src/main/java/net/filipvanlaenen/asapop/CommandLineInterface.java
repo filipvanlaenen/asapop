@@ -331,28 +331,32 @@ public final class CommandLineInterface {
                 Token nextElectionPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
                         "Looking for the next election page %s.", nextElectionPageName);
                 String page = loadPage(cacheDirName, nextElectionPageName, userAgent, nextElectionPageToken);
-                boolean opinionPollsHeaderFound = false;
-                int i = 0;
-                while (i >= 0 && !opinionPollsHeaderFound) {
-                    int headerStart = findFirstOccurrenceOfAHeaderStart(page, i);
-                    Token headerToken = Laconic.LOGGER.logMessage(nextElectionPageToken,
-                            "Header detected starting at index %d.", headerStart);
-                    if (headerStart == -1) {
-                        i = headerStart;
-                    } else {
-                        int headerEnd = findFirstOccurrenceOfAHeaderEnd(page, headerStart);
-                        String header = page.substring(headerStart, headerEnd);
-                        if (header.toLowerCase().contains("opinion polls")) {
-                            Laconic.LOGGER.logError("Opinion polls section exists.", headerToken);
-                            opinionPollsHeaderFound = true;
+                if (page == null) {
+                    results.add(scrapeConfigurationFileName + ": Next election page missing.");
+                } else {
+                    boolean opinionPollsHeaderFound = false;
+                    int i = 0;
+                    while (i >= 0 && !opinionPollsHeaderFound) {
+                        int headerStart = findFirstOccurrenceOfAHeaderStart(page, i);
+                        Token headerToken = Laconic.LOGGER.logMessage(nextElectionPageToken,
+                                "Header detected starting at index %d.", headerStart);
+                        if (headerStart == -1) {
+                            i = headerStart;
+                        } else {
+                            int headerEnd = findFirstOccurrenceOfAHeaderEnd(page, headerStart);
+                            String header = page.substring(headerStart, headerEnd);
+                            if (header.toLowerCase().contains("opinion polls")) {
+                                Laconic.LOGGER.logError("Opinion polls section exists.", headerToken);
+                                opinionPollsHeaderFound = true;
+                            }
+                            i = headerStart + 1;
                         }
-                        i = headerStart + 1;
                     }
-                }
-                if (opinionPollsHeaderFound) {
-                    results.add(scrapeConfigurationFileName + ": Opinion polls section exists.");
-                } else if (verbose) {
-                    results.add(scrapeConfigurationFileName + ": No opinion polls section exists yet.");
+                    if (opinionPollsHeaderFound) {
+                        results.add(scrapeConfigurationFileName + ": Opinion polls section exists.");
+                    } else if (verbose) {
+                        results.add(scrapeConfigurationFileName + ": No opinion polls section exists yet.");
+                    }
                 }
             }
 
@@ -431,7 +435,8 @@ public final class CommandLineInterface {
             private HttpResponse<String> getWikipediaPage(final String userAgent,
                     final String possibleNextElectionPageName) throws IOException, InterruptedException {
                 HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + possibleNextElectionPageName))
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(BASE_URL + possibleNextElectionPageName + "?redirect=no"))
                         .header("User-Agent", userAgent).GET().build();
                 return client.send(request, HttpResponse.BodyHandlers.ofString());
             }
@@ -451,9 +456,14 @@ public final class CommandLineInterface {
                     HttpResponse<String> response = getWikipediaPage(userAgent, pageName);
                     if (response.statusCode() == 200) {
                         String content = response.body();
-                        Laconic.LOGGER.logMessage(token, "Writing the page to the cache.");
-                        writeFile(cachedPagePath, content);
-                        return content;
+                        if (content.contains("<span id=\"redirectsub\">Redirect page</span>")) {
+                            Laconic.LOGGER.logMessage(token, "Page is a redirect page.");
+                            return null;
+                        } else {
+                            Laconic.LOGGER.logMessage(token, "Writing the page to the cache.");
+                            writeFile(cachedPagePath, content);
+                            return content;
+                        }
                     } else {
                         Laconic.LOGGER.logMessage(token, "Page not present on Wikipedia.");
                         return null;
