@@ -310,8 +310,8 @@ public final class CommandLineInterface {
                 for (String possibleNextElectionPageName : possibleNextElectionPageNames) {
                     Token wikipediaPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
                             "Checking whether the English Wikipedia page %s exists.", possibleNextElectionPageName);
-                    String content = loadPage(cacheDirName, possibleNextElectionPageName, userAgent,
-                            scrapeConfigurationFileToken);
+                    String content =
+                            loadPage(cacheDirName, possibleNextElectionPageName, userAgent, wikipediaPageToken);
                     if (content != null) {
                         Laconic.LOGGER.logError("Page exists.", wikipediaPageToken);
                         nextElectionPageAppeared = true;
@@ -458,6 +458,9 @@ public final class CommandLineInterface {
                         String content = response.body();
                         if (content.contains("<span id=\"redirectsub\">Redirect page</span>")) {
                             Laconic.LOGGER.logMessage(token, "Page is a redirect page.");
+                            if (Files.exists(cachedPagePath)) {
+                                Files.delete(cachedPagePath);
+                            }
                             return null;
                         } else {
                             Laconic.LOGGER.logMessage(token, "Writing the page to the cache.");
@@ -466,6 +469,9 @@ public final class CommandLineInterface {
                         }
                     } else {
                         Laconic.LOGGER.logMessage(token, "Page not present on Wikipedia.");
+                        if (Files.exists(cachedPagePath)) {
+                            Files.delete(cachedPagePath);
+                        }
                         return null;
                     }
                 }
