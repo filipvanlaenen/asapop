@@ -14,6 +14,7 @@ import net.filipvanlaenen.asapop.model.Candidate;
 import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.model.OpinionPoll;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
+import net.filipvanlaenen.asapop.model.ResponseScenario;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.CsvConfiguration;
@@ -161,6 +162,17 @@ public class CsvFilesBuilder {
                 for (Candidate candidate : opinionPoll.getCandidates()) {
                     String candidateId = candidate.getId();
                     candidateKeys2.add(candidateId);
+                }
+                for (ResponseScenario responseScenario : opinionPoll.getAlternativeResponseScenarios()) {
+                    for (Set<ElectoralList> candidateKeySet : responseScenario.getElectoralListSets()) {
+                        Set<String> candidateKey = new HashSet<String>();
+                        candidateKey.add(candidateKeySet.iterator().next().getId());
+                        candidateKeys.add(candidateKey);
+                    }
+                    for (Candidate candidate : responseScenario.getCandidates()) {
+                        String candidateId = candidate.getId();
+                        candidateKeys2.add(candidateId);
+                    }
                 }
             }
             String outputContent1 = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
