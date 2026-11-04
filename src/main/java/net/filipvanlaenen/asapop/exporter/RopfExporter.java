@@ -42,11 +42,12 @@ public final class RopfExporter extends Exporter {
      *
      * @param key                   The width of the electoral list's keys.
      * @param id                    The width of the electoral list's IDs.
+     * @param externalId            The width of the electoral list's external IDs.
      * @param abbreviation          The width of the electoral list's abbreviations.
      * @param romanizedAbbreviation The width of the electoral list's romanized abbreviations.
      * @param languageCode          The widths of the electoral list's language codes.
      */
-    private record ElectoralListWidths(int key, int id, int abbreviation, int romanizedAbbreviation,
+    private record ElectoralListWidths(int key, int id, int externalId, int abbreviation, int romanizedAbbreviation,
             Map<String, Integer> languageCode) {
     }
 
@@ -86,11 +87,15 @@ public final class RopfExporter extends Exporter {
         }
         int idWidth = 0;
         int abbreviationWidth = 0;
+        int externalIdWidth = 0;
         int romanizedAbbreviationWidth = 0;
         Map<String, Integer> languageCodeWidth = new HashMap<String, Integer>();
         for (ElectoralList electoralList : electoralLists) {
             idWidth = Math.max(idWidth, electoralList.getId().length());
             abbreviationWidth = Math.max(abbreviationWidth, electoralList.getAbbreviation().length());
+            if (electoralList.getExternalId() != null) {
+                externalIdWidth = Math.max(externalIdWidth, electoralList.getExternalId().length());
+            }
             if (electoralList.getRomanizedAbbreviation() != null) {
                 romanizedAbbreviationWidth =
                         Math.max(romanizedAbbreviationWidth, electoralList.getRomanizedAbbreviation().length());
@@ -104,8 +109,8 @@ public final class RopfExporter extends Exporter {
                 }
             }
         }
-        return new ElectoralListWidths(electoralListKeyWidth, idWidth, abbreviationWidth, romanizedAbbreviationWidth,
-                languageCodeWidth);
+        return new ElectoralListWidths(electoralListKeyWidth, idWidth, externalIdWidth, abbreviationWidth,
+                romanizedAbbreviationWidth, languageCodeWidth);
     }
 
     /**
@@ -221,6 +226,12 @@ public final class RopfExporter extends Exporter {
         sb.append(pad(idsToKeysMap.get(id) + ":", electoralListWidths.key + 1));
         sb.append(" ");
         sb.append(pad(id, electoralListWidths.id));
+        if (electoralList.getExternalId() != null) {
+            sb.append(" •I: ");
+            sb.append(pad(electoralList.getExternalId(), electoralListWidths.externalId));
+        } else if (electoralListWidths.externalId > 0) {
+            sb.append(pad("", electoralListWidths.externalId + FIVE));
+        }
         sb.append(" •A: ");
         sb.append(pad(electoralList.getAbbreviation(), electoralListWidths.abbreviation));
         if (electoralList.getRomanizedAbbreviation() != null) {

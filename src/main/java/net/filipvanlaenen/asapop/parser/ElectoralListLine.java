@@ -46,6 +46,10 @@ final class ElectoralListLine extends Line {
      */
     private String abbreviation;
     /**
+     * The external ID for the electoral list.
+     */
+    private String externalId;
+    /**
      * The ID for the electoral list.
      */
     private final String id;
@@ -152,6 +156,9 @@ final class ElectoralListLine extends Line {
         case "A":
             abbreviation = value;
             break;
+        case "I":
+            externalId = value;
+            break;
         case "R":
             romanizedAbbreviation = value;
             break;
@@ -167,6 +174,7 @@ final class ElectoralListLine extends Line {
     void updateElectoralList() {
         ElectoralList electoralList = ElectoralList.get(id);
         electoralList.setAbbreviation(abbreviation);
+        electoralList.setExternalId(externalId);
         electoralList.setRomanizedAbbreviation(romanizedAbbreviation);
         electoralList.setNames(names);
     }

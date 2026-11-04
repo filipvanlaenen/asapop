@@ -20,6 +20,10 @@ public final class ElectoralList {
      */
     private String abbreviation;
     /**
+     * The external ID of the electoral list.
+     */
+    private String externalId;
+    /**
      * The ID of the electoral list.
      */
     private final String id;
@@ -124,6 +128,15 @@ public final class ElectoralList {
     }
 
     /**
+     * Returns the external ID of the electoral list.
+     *
+     * @return The external ID of the electoral list.
+     */
+    public String getExternalId() {
+        return externalId;
+    }
+
+    /**
      * Returns the ID of the electoral list.
      *
      * @return The ID of the electoral list.
@@ -167,6 +180,15 @@ public final class ElectoralList {
      */
     public void setAbbreviation(final String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    /**
+     * Sets the external ID for the electoral list.
+     *
+     * @param externalId The external ID for the electoral list.
+     */
+    public void setExternalId(final String externalId) {
+        this.externalId = externalId;
     }
 
     /**

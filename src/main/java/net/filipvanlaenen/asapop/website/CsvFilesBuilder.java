@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.filipvanlaenen.asapop.exporter.ElectoralListsCsvExporter;
+import net.filipvanlaenen.asapop.exporter.ElectoralListsCsvExporterVersion2;
 import net.filipvanlaenen.asapop.exporter.EopaodCsvExporter;
 import net.filipvanlaenen.asapop.exporter.OpinionPollsCsvExporterVersion2;
 import net.filipvanlaenen.asapop.model.Candidate;
@@ -77,8 +78,12 @@ public class CsvFilesBuilder {
      * @param csvFilesMap The map with the CSV files.
      */
     private void buildAndAddElectoralListCsvFiles(final ModifiableMap<Path, String> csvFilesMap) {
-        csvFilesMap.put(Paths.get("_csv", "electorallists.csv"), ElectoralListsCsvExporter.export());
-        csvFilesMap.put(Paths.get("_csv", "electorallists.v1.csv"), ElectoralListsCsvExporter.export());
+        String outputContent1 = ElectoralListsCsvExporter.export();
+        String outputContent2 = ElectoralListsCsvExporterVersion2.export();
+        csvFilesMap.put(Paths.get("_csv", "electorallists.csv"), outputContent2);
+        // TODO: Remove version 1 after 4 May 2027
+        csvFilesMap.put(Paths.get("_csv", "electorallists.v1.csv"), outputContent1);
+        csvFilesMap.put(Paths.get("_csv", "electorallists.v2.csv"), outputContent2);
     }
 
     /**
@@ -99,7 +104,8 @@ public class CsvFilesBuilder {
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets, OrderedCollection.empty());
                 String outputContent2 = OpinionPollsCsvExporterVersion2.export(opinionPolls, "--",
                         csvConfiguration.getIncludeAreaAsNational(), electoralListKeySets, OrderedCollection.empty());
-                csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent1);
+                csvFilesMap.put(Paths.get("_csv", areaCode + ".csv"), outputContent2);
+                // TODO: Remove version 1 after 4 May 2027
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".v1.csv"), outputContent1);
                 csvFilesMap.put(Paths.get("_csv", areaCode + ".v2.csv"), outputContent2);
             }
@@ -120,7 +126,8 @@ public class CsvFilesBuilder {
                                 OpinionPollsCsvExporterVersion2.export(opinionPolls, subdivisionAreaCode.toUpperCase(),
                                         null, electoralListKeySets, OrderedCollection.empty());
                         csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".csv"),
-                                outputContent1);
+                                outputContent2);
+                        // TODO: Remove version 1 after 4 May 2027
                         csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".v1.csv"),
                                 outputContent1);
                         csvFilesMap.put(Paths.get("_csv", areaCode + "-" + subdivisionAreaCode + ".v2.csv"),
