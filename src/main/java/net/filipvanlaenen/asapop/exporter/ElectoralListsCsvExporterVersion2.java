@@ -30,7 +30,7 @@ public final class ElectoralListsCsvExporterVersion2 extends CsvExporter {
         }, ElectoralList.getAll());
         int numberOfLanguages =
                 electoralLists.stream().map(el -> el.getLanguageCodes().size()).max(Integer::compare).get();
-        sb.append("ID,Abbreviation,Romanized Abbreviation");
+        sb.append("ID,External ID,Abbreviation,Romanized Abbreviation");
         for (int i = 1; i <= numberOfLanguages; i++) {
             sb.append(",Language Code ");
             sb.append(i);
