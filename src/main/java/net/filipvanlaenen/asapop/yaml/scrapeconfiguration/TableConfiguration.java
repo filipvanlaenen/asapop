@@ -4,8 +4,12 @@ public class TableConfiguration {
     private String h2Content;
     private String h3Content;
     private String h4Content;
-    private int tableIndex;
+    private Integer tableIndex;
     private ColumnConfiguration[] columns;
+
+    public ColumnConfiguration[] getColumns() {
+        return columns;
+    }
 
     public String getH2Content() {
         return h2Content;
@@ -19,12 +23,12 @@ public class TableConfiguration {
         return h4Content;
     }
 
-    public int getTableIndex() {
+    public Integer getTableIndex() {
         return tableIndex;
     }
 
-    public ColumnConfiguration[] getColumns() {
-        return columns;
+    public void setColumns(final ColumnConfiguration[] columns) {
+        this.columns = columns;
     }
 
     public void setH2Content(final String h2Content) {
@@ -39,11 +43,7 @@ public class TableConfiguration {
         this.h4Content = h4Content;
     }
 
-    public void setTableIndex(final int tableIndex) {
+    public void setTableIndex(final Integer tableIndex) {
         this.tableIndex = tableIndex;
-    }
-
-    public void setColumns(final ColumnConfiguration[] columns) {
-        this.columns = columns;
     }
 }

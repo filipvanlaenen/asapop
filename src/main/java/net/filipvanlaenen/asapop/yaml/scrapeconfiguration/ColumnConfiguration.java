@@ -1,9 +1,14 @@
 package net.filipvanlaenen.asapop.yaml.scrapeconfiguration;
 
 public class ColumnConfiguration {
+    private String columnType;
     private String headerContent;
     private int headerRow;
-    private String columnType;
+    private String resultKeys;
+
+    public String getColumnType() {
+        return columnType;
+    }
 
     public String getHeaderContent() {
         return headerContent;
@@ -13,8 +18,12 @@ public class ColumnConfiguration {
         return headerRow;
     }
 
-    public String getColumnType() {
-        return columnType;
+    public String getResultKeys() {
+        return resultKeys;
+    }
+
+    public void setColumnType(final String columnType) {
+        this.columnType = columnType;
     }
 
     public void setHeaderContent(final String headerContent) {
@@ -25,7 +34,7 @@ public class ColumnConfiguration {
         this.headerRow = headerRow;
     }
 
-    public void setColumnType(final String columnType) {
-        this.columnType = columnType;
+    public void setResultKeys(final String resultKeys) {
+        this.resultKeys = resultKeys;
     }
 }

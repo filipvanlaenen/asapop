@@ -39,6 +39,7 @@ import net.filipvanlaenen.asapop.model.Elections;
 import net.filipvanlaenen.asapop.model.OpinionPolls;
 import net.filipvanlaenen.asapop.model.OpinionPollsStore;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
+import net.filipvanlaenen.asapop.scraper.Scraper;
 import net.filipvanlaenen.asapop.website.Internationalization;
 import net.filipvanlaenen.asapop.website.Language;
 import net.filipvanlaenen.asapop.website.Website;
@@ -49,6 +50,7 @@ import net.filipvanlaenen.asapop.yaml.ElectionData;
 import net.filipvanlaenen.asapop.yaml.SaporConfiguration;
 import net.filipvanlaenen.asapop.yaml.Terms;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.ScrapeConfiguration;
+import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.TableConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaBuilder;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaConfiguration;
 import net.filipvanlaenen.asapop.yaml.websiteconfiguration.AreaSubdivisionConfiguration;
@@ -448,7 +450,7 @@ public final class CommandLineInterface {
                         cachedPagePath.toString());
                 LocalTime now = LocalTime.now();
                 if (Files.exists(cachedPagePath) && Files.getLastModifiedTime(cachedPagePath).toInstant()
-                        .atZone(ZoneId.systemDefault()).toLocalTime().isBefore(now.minusHours(24))) {
+                        .atZone(ZoneId.systemDefault()).toLocalTime().isAfter(now.minusHours(24))) {
                     Laconic.LOGGER.logMessage(token, "Reading the page from the cache.");
                     return String.join("\n", readFile(cachedPagePath));
                 } else {
@@ -505,19 +507,33 @@ public final class CommandLineInterface {
                             readScrapeConfigurationFile(scrapeConfigurationFileToken, scrapeConfigurationPath);
                     String[] possibleNextElectionPageNames = scrapeConfiguration.getPossibleNextElectionPageNames();
                     String nextElectionPageName = scrapeConfiguration.getNextElectionPageName();
+                    TableConfiguration[] tableConfigurations = scrapeConfiguration.getTableConfigurations();
                     if (possibleNextElectionPageNames != null) {
                         checkForNextElectionPages(scrapeConfigurationFileName, possibleNextElectionPageNames,
                                 cacheDirName, userAgent, verbose, results, scrapeConfigurationFileToken);
-                    } else if (nextElectionPageName != null) {
-                        checkForOpinionPollsSection(scrapeConfigurationFileName, nextElectionPageName, cacheDirName,
-                                userAgent, verbose, results, scrapeConfigurationFileToken);
-                    } else {
+                    } else if (tableConfigurations != null) {
                         Laconic.LOGGER.logMessage(ropfFileToken, "Parsing the ROPF file.");
                         String[] ropfContent = readFile(ropfPath);
                         RichOpinionPollsFile richOpinionPollsFile =
                                 RichOpinionPollsFile.parse(ropfFileToken, ropfContent);
-                        // TODO: Scrape
-                        results.add(ropfFileName + ": Scraping not implemented yet.");
+                        Token nextElectionPageToken = Laconic.LOGGER.logMessage(scrapeConfigurationFileToken,
+                                "Looking for the next election page %s.", nextElectionPageName);
+                        String page = loadPage(cacheDirName, nextElectionPageName, userAgent, nextElectionPageToken);
+                        if (page == null) {
+                            results.add(scrapeConfigurationFileName + ": Next election page missing.");
+                        } else {
+                            Scraper scraper = new Scraper(page);
+                            for (TableConfiguration tableConfiguration : tableConfigurations) {
+                                results.add(ropfFileName + ": " + scraper.scrape(tableConfiguration,scrapeToken));
+                            }
+                        }
+                    } else if (nextElectionPageName != null) {
+                        checkForOpinionPollsSection(scrapeConfigurationFileName, nextElectionPageName, cacheDirName,
+                                userAgent, verbose, results, scrapeConfigurationFileToken);
+                    } else {
+                        Laconic.LOGGER.logError("No valid scrape configuration found for the ROPF file.",
+                                scrapeConfigurationFileToken, ropfFileToken);
+                        results.add(ropfFileName + ": No valid scrape configuration found.");
                     }
                 } else {
                     Laconic.LOGGER.logError("No scrape configuration file found for the ROPF file.",
