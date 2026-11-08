@@ -146,4 +146,8 @@ public interface DateMonthOrYear {
     static DateMonthOrYear of(LocalDate localDate) {
         return new Date(localDate);
     }
+
+    static DateMonthOrYear of(YearMonth yearMonth) {
+        return new Month(yearMonth);
+    }
 }

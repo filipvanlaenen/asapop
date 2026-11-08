@@ -1,6 +1,7 @@
 package net.filipvanlaenen.asapop.scraper;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -226,7 +227,7 @@ public class Scraper {
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
-            if (!row.isEmpty()) {
+            if (!row.isEmpty() && !row.get(0).getFlatDisplayText().toLowerCase().contains("election")) {
                 int j = 0;
                 String pollingFirm = null;
                 DateMonthOrYear endDate = null;
@@ -295,20 +296,27 @@ public class Scraper {
         }
     }
 
-    private DateMonthOrYear parseFieldwordPeriod(String displayText) {
-        // TODO
-        Pattern pattern = Pattern.compile("(\\d{1,2})\\s*[–-]\\s*(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})");
-        Matcher matcher = pattern.matcher(displayText);
+    private DateMonthOrYear parseFieldwordPeriod(final String fragment) {
+        Pattern pattern =
+                Pattern.compile("((\\d{1,2})(\\s+([A-Za-z]{3}))?\\s*[–-]\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})");
+        Matcher matcher = pattern.matcher(fragment);
 
         if (matcher.matches()) {
-            String startDay = matcher.group(1);
-            String endDay = matcher.group(2);
-            String month = matcher.group(3);
-            String year = matcher.group(4);
+            String startDay = matcher.group(2);
+            String startMonth = matcher.group(4);
+            String endDay = matcher.group(5);
+            String endMonth = matcher.group(6);
+            String year = matcher.group(7);
+            if (startDay == null) {
+                startDay = endDay;
+            }
+            if (startMonth == null) {
+                startMonth = endMonth;
+            }
 
             // 2. Bouw de twee volledige datum-strings op
-            String startDateStr = startDay + " " + month + " " + year;
-            String endDateStr = endDay + " " + month + " " + year;
+            String startDateStr = startDay + " " + startMonth + " " + year;
+            String endDateStr = endDay + " " + endMonth + " " + year;
 
             // 3. Definieer de formatter (gebruik US/UK locale voor Engelse maandnamen zoals 'Feb')
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
@@ -317,6 +325,29 @@ public class Scraper {
             LocalDate startDate = LocalDate.parse(startDateStr, formatter);
             LocalDate endDate = LocalDate.parse(endDateStr, formatter);
             return DateMonthOrYear.of(endDate);
+        } else {
+            String text = fragment.replaceAll("Mid[–-]", "").replaceAll("Late[–-]", "");
+            Pattern monthPattern = Pattern.compile("(([A-Za-z]{3})?\\s*[–-]\\s*)?([A-Za-z]{3})\\s+(\\d{4})");
+            Matcher monthMatcher = monthPattern.matcher(text);
+            if (monthMatcher.matches()) {
+                String startMonth = monthMatcher.group(2);
+                String endMonth = monthMatcher.group(3);
+                String year = monthMatcher.group(4);
+                if (startMonth == null) {
+                    startMonth = endMonth;
+                }
+                // 2. Bouw de twee volledige datum-strings op
+                String startDateStr = startMonth + " " + year;
+                String endDateStr = endMonth + " " + year;
+
+                // 3. Definieer de formatter (gebruik US/UK locale voor Engelse maandnamen zoals 'Feb')
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
+
+                // 4. Parse naar LocalDate objecten
+                YearMonth startDate = YearMonth.parse(startDateStr, formatter);
+                YearMonth endDate = YearMonth.parse(endDateStr, formatter);
+                return DateMonthOrYear.of(endDate);
+            }
         }
         return null;
     }
