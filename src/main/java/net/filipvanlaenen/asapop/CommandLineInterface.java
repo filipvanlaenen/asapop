@@ -524,8 +524,10 @@ public final class CommandLineInterface {
                         } else {
                             Scraper scraper = new Scraper(page);
                             for (TableConfiguration tableConfiguration : tableConfigurations) {
-                                results.add(ropfFileName + ": "
-                                        + scraper.scrape(tableConfiguration, richOpinionPollsFile, scrapeToken));
+                                String result = scraper.scrape(tableConfiguration, richOpinionPollsFile, scrapeToken);
+                                if (verbose || !Scraper.ALL_OK.equals(result)) {
+                                    results.add(ropfFileName + ": " + result);
+                                }
                             }
                         }
                     } else if (nextElectionPageName != null) {

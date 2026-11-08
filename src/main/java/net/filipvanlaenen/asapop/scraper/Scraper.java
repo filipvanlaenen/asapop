@@ -81,6 +81,7 @@ public class Scraper {
     }
 
     public final static Pattern TAG_CLOSING_PATTERN = Pattern.compile(Pattern.quote(">"));
+    public static final String ALL_OK = "Found no unmatched polls or unparsed rows.";
     private final String page;
 
     public Scraper(String page) {
@@ -284,7 +285,7 @@ public class Scraper {
                         + " unparsed row(s).";
             }
         } else if (unmatched == 0 && unparsed == 0) {
-            return "Found no unmatched polls or unparsed rows.";
+            return ALL_OK;
         } else if (unparsed == 0) {
             return "Found " + unmatched + " unmatched poll(s).";
         } else if (unmatched == 0) {
