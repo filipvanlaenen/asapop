@@ -1,14 +1,21 @@
 package net.filipvanlaenen.asapop.yaml.scrapeconfiguration;
 
 public class TableConfiguration {
+    private ColumnConfiguration[] columns;
+    private Integer footRows;
     private String h2Content;
     private String h3Content;
     private String h4Content;
+    private Integer headRows;
+    private PollingFirmAliases[] pollingFirmAliases;
     private Integer tableIndex;
-    private ColumnConfiguration[] columns;
 
     public ColumnConfiguration[] getColumns() {
         return columns;
+    }
+
+    public Integer getFootRows() {
+        return footRows;
     }
 
     public String getH2Content() {
@@ -23,12 +30,24 @@ public class TableConfiguration {
         return h4Content;
     }
 
+    public Integer getHeadRows() {
+        return headRows;
+    }
+
+    public PollingFirmAliases[] getPollingFirmAliases() {
+        return pollingFirmAliases;
+    }
+
     public Integer getTableIndex() {
         return tableIndex;
     }
 
     public void setColumns(final ColumnConfiguration[] columns) {
         this.columns = columns;
+    }
+
+    public void setFootRows(final Integer footRows) {
+        this.footRows = footRows;
     }
 
     public void setH2Content(final String h2Content) {
@@ -41,6 +60,14 @@ public class TableConfiguration {
 
     public void setH4Content(final String h4Content) {
         this.h4Content = h4Content;
+    }
+
+    public void setHeadRows(final Integer headRows) {
+        this.headRows = headRows;
+    }
+
+    public void setPollingFirmAliases(final PollingFirmAliases[] pollingFirmAliases) {
+        this.pollingFirmAliases = pollingFirmAliases;
     }
 
     public void setTableIndex(final Integer tableIndex) {

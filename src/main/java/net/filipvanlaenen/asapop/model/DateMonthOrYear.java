@@ -142,4 +142,8 @@ public interface DateMonthOrYear {
      * @return The start of the date, month or year.
      */
     LocalDate getStart();
+
+    static DateMonthOrYear of(LocalDate localDate) {
+        return new Date(localDate);
+    }
 }

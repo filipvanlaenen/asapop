@@ -1,9 +1,16 @@
 package net.filipvanlaenen.asapop.scraper;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.filipvanlaenen.asapop.model.DateMonthOrYear;
+import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.ColumnConfiguration;
+import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.PollingFirmAliases;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.TableConfiguration;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.Map.Entry;
@@ -16,6 +23,7 @@ import net.filipvanlaenen.laconic.Token;
 public class Scraper {
     private static class Cell {
         private final String content;
+        private String displayText;
 
         Cell(String content) {
             this.content = content;
@@ -34,6 +42,27 @@ public class Scraper {
 
         String getContent() {
             return content;
+        }
+
+        private String remove(final String fragment, String tag) {
+            Pattern opening = Pattern.compile(
+                    Pattern.quote("<") + tag + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote(">"),
+                    Pattern.CASE_INSENSITIVE);
+            Pattern closing = Pattern.compile(Pattern.quote("</") + tag + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
+            Matcher m = opening.matcher(fragment);
+            String fragment2 = m.replaceAll("");
+            Matcher n = closing.matcher(fragment2);
+            return n.replaceAll("");
+        }
+
+        String getDisplayText() {
+            if (displayText == null) {
+                String fragment = content.substring(findFirstOccurrenceOf(content, 0, TAG_CLOSING_PATTERN) + 1,
+                        content.length() - 5);
+                fragment = remove(fragment, "a");
+                displayText = fragment;
+            }
+            return displayText;
         }
     }
 
@@ -99,16 +128,16 @@ public class Scraper {
         return result;
     }
 
-    private int getStartOfTagPattern(String fragment, String tagPattern) {
+    private static int getStartOfTagPattern(String fragment, String tagPattern) {
         return getNextStartOfTagPattern(fragment, tagPattern, 0);
     }
 
-    private int getNextStartOfTagPattern(String fragment, String tagPattern, int i) {
+    private static int getNextStartOfTagPattern(String fragment, String tagPattern, int i) {
         Pattern startPattern = Pattern.compile(Pattern.quote("<") + tagPattern, Pattern.CASE_INSENSITIVE);
         return findFirstOccurrenceOf(fragment, i, startPattern);
     }
 
-    private int getStartOfEndTagPattern(String fragment, String tagPattern) {
+    private static int getStartOfEndTagPattern(String fragment, String tagPattern) {
         Pattern startPattern =
                 Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
         return findFirstOccurrenceOf(fragment, 0, startPattern);
@@ -118,8 +147,8 @@ public class Scraper {
         return containsTagPatternWithText(page, Pattern.quote(tag), text);
     }
 
-    private static int findFirstOccurrenceOf(final String page, final int fromIndex, final Pattern pattern) {
-        Matcher matcher = pattern.matcher(page);
+    private static int findFirstOccurrenceOf(final String fragment, final int fromIndex, final Pattern pattern) {
+        Matcher matcher = pattern.matcher(fragment);
         if (matcher.find(fromIndex)) {
             return matcher.start();
         } else {
@@ -127,7 +156,8 @@ public class Scraper {
         }
     }
 
-    public String scrape(TableConfiguration tableConfiguration, final Token scrapeToken) {
+    public String scrape(TableConfiguration tableConfiguration, RichOpinionPollsFile richOpinionPollsFile,
+            final Token scrapeToken) {
         String fragment = reduceByHeader(page, tableConfiguration.getH2Content(), "h2", scrapeToken);
         fragment = reduceByHeader(fragment, tableConfiguration.getH3Content(), "h3", scrapeToken);
         fragment = reduceByHeader(fragment, tableConfiguration.getH4Content(), "h4", scrapeToken);
@@ -136,28 +166,123 @@ public class Scraper {
         OrderedCollection<OrderedCollection<String>> cellStrings = extractCellsFromRows(rows);
         Map<Integer, Map<Integer, Cell>> cells = parseCellStrings(cellStrings);
         int c = 0;
+        boolean scrapeConfigurationError = false;
         for (ColumnConfiguration cc : tableConfiguration.getColumns()) {
             if (cells.containsKey(cc.getHeaderRow() - 1)) {
                 if (cells.get(cc.getHeaderRow() - 1).containsKey(c)) {
                     // TODO: Match correctly, including whitespaces
-                    if (!cells.get(cc.getHeaderRow() - 1).get(c).getContent().contains(cc.getHeaderContent())) {
+                    if (!cells.get(cc.getHeaderRow() - 1).get(c).getDisplayText().contains(cc.getHeaderContent())) {
                         Laconic.LOGGER.logError("Table does not contain header %s in the expected position.",
                                 cc.getHeaderContent() + (cc.getHeaderRow() - 1) + "," + c, scrapeToken);
+                        scrapeConfigurationError = true;
                     }
                 } else {
                     Laconic.LOGGER.logError("Table does not contain %d column(s).", c + 1, scrapeToken);
+                    scrapeConfigurationError = true;
                 }
             } else {
                 Laconic.LOGGER.logError("Table does not contain %d row(s).", cc.getHeaderRow(), scrapeToken);
+                scrapeConfigurationError = true;
             }
             c++;
         }
-        // TODO: Parse the polling firm column
-        // TODO: Parse the fieldwork period column
-        // TODO: Parse the sample size column
-        // TODO: Parse the result value columns
-        // TODO: Parse the other column
-        return "Scraping not implemented yet.";
+        ModifiableMap<String, String> pollingFirmAliases = ModifiableMap.empty();
+        if (tableConfiguration.getPollingFirmAliases() != null) {
+            PollingFirmAliases[] aliases = tableConfiguration.getPollingFirmAliases();
+            for (PollingFirmAliases a : aliases) {
+                for (String s : a.getAliases()) {
+                    pollingFirmAliases.add(s, a.getName());
+                }
+            }
+        }
+        Integer headRows = tableConfiguration.getHeadRows();
+        int firstRow = headRows == null ? 0 : headRows;
+        Integer footRows = tableConfiguration.getFootRows();
+        int lastRow = cells.size() - (footRows == null ? 0 : footRows);
+        int unmatched = 0;
+        int unparsed = 0;
+        for (int i = firstRow; i < lastRow; i++) {
+            Map<Integer, Cell> row = cells.get(i);
+            if (!row.isEmpty()) {
+                int j = 0;
+                String pollingFirm = null;
+                DateMonthOrYear endDate = null;
+                for (ColumnConfiguration cc : tableConfiguration.getColumns()) {
+                    if ("pollingFirm".equals(cc.getColumnType())) {
+                        pollingFirm = row.get(j).getDisplayText();
+                        if (pollingFirmAliases.containsKey(pollingFirm)) {
+                            pollingFirm = pollingFirmAliases.get(pollingFirm);
+                        }
+                    } else if ("fieldworkPeriod".equals(cc.getColumnType())) {
+                        String fieldwordPeriod = row.get(j).getDisplayText();
+                        endDate = parseFieldwordPeriod(fieldwordPeriod);
+                    }
+                    j++;
+                }
+                if (pollingFirm != null && endDate != null) {
+                    boolean match = false;
+                    for (OpinionPoll op : richOpinionPollsFile.getOpinionPolls()) {
+                        if (pollingFirm.equals(op.getPollingFirm()) && endDate.equals(op.getFieldworkEnd())) {
+                            match = true;
+                        }
+                    }
+                    if (!match) {
+                        unmatched++;
+                        System.out.println(
+                                "Found an unmatched poll on row " + (i + 1) + ": " + pollingFirm + " & " + endDate);
+                    }
+                } else {
+                    unparsed++;
+                    System.out.println("Row " + (i + 1) + " didn't have both polling firm and fieldword end date.");
+                }
+            }
+        }
+        if (scrapeConfigurationError) {
+            if (unmatched == 0 && unparsed == 0) {
+                return "Scrape configuration error.";
+            } else if (unparsed == 0) {
+                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s).";
+            } else if (unmatched == 0) {
+                return "Scrape configuration error. Found also " + unparsed + " unparsed row(s).";
+            } else {
+                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s) and " + unparsed
+                        + " unparsed row(s).";
+            }
+        } else if (unmatched == 0 && unparsed == 0) {
+            return "Found no unmatched polls or unparsed rows.";
+        } else if (unparsed == 0) {
+            return "Found " + unmatched + " unmatched poll(s).";
+        } else if (unmatched == 0) {
+            return "Found " + unparsed + " unparsed row(s).";
+        } else {
+            return "Found " + unmatched + " unmatched poll(s) and " + unparsed + " unparsed row(s).";
+        }
+    }
+
+    private DateMonthOrYear parseFieldwordPeriod(String displayText) {
+        // TODO
+        Pattern pattern = Pattern.compile("(\\d{1,2})\\s*[–-]\\s*(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})");
+        Matcher matcher = pattern.matcher(displayText);
+
+        if (matcher.matches()) {
+            String startDay = matcher.group(1);
+            String endDay = matcher.group(2);
+            String month = matcher.group(3);
+            String year = matcher.group(4);
+
+            // 2. Bouw de twee volledige datum-strings op
+            String startDateStr = startDay + " " + month + " " + year;
+            String endDateStr = endDay + " " + month + " " + year;
+
+            // 3. Definieer de formatter (gebruik US/UK locale voor Engelse maandnamen zoals 'Feb')
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+
+            // 4. Parse naar LocalDate objecten
+            LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+            LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+            return DateMonthOrYear.of(endDate);
+        }
+        return null;
     }
 
     private Map<Integer, Map<Integer, Cell>> parseCellStrings(

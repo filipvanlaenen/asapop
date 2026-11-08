@@ -524,7 +524,8 @@ public final class CommandLineInterface {
                         } else {
                             Scraper scraper = new Scraper(page);
                             for (TableConfiguration tableConfiguration : tableConfigurations) {
-                                results.add(ropfFileName + ": " + scraper.scrape(tableConfiguration,scrapeToken));
+                                results.add(ropfFileName + ": "
+                                        + scraper.scrape(tableConfiguration, richOpinionPollsFile, scrapeToken));
                             }
                         }
                     } else if (nextElectionPageName != null) {
