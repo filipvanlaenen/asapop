@@ -24,6 +24,7 @@ public class Scraper {
     private static class Cell {
         private final String content;
         private String displayText;
+        private String flatDisplayText;
 
         Cell(String content) {
             this.content = content;
@@ -40,29 +41,42 @@ public class Scraper {
             }
         }
 
-        String getContent() {
-            return content;
-        }
-
-        private String remove(final String fragment, String tag) {
+        private String removeTagButKeepContent(final String fragment, String tagPattern) {
             Pattern opening = Pattern.compile(
-                    Pattern.quote("<") + tag + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote(">"),
+                    Pattern.quote("<") + tagPattern + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote(">"),
                     Pattern.CASE_INSENSITIVE);
-            Pattern closing = Pattern.compile(Pattern.quote("</") + tag + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
+            Pattern closing =
+                    Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
             Matcher m = opening.matcher(fragment);
             String fragment2 = m.replaceAll("");
             Matcher n = closing.matcher(fragment2);
             return n.replaceAll("");
         }
 
+        private String replaceTag(final String fragment, String tag, String result) {
+            Pattern single = Pattern.compile(
+                    Pattern.quote("<") + tag + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote("/>"),
+                    Pattern.CASE_INSENSITIVE);
+            Matcher m = single.matcher(fragment);
+            return m.replaceAll(result);
+        }
+
         String getDisplayText() {
             if (displayText == null) {
                 String fragment = content.substring(findFirstOccurrenceOf(content, 0, TAG_CLOSING_PATTERN) + 1,
                         content.length() - 5);
-                fragment = remove(fragment, "a");
-                displayText = fragment;
+                fragment = removeTagButKeepContent(fragment, "a");
+                fragment = replaceTag(fragment, "br", "\n");
+                displayText = fragment.trim();
             }
             return displayText;
+        }
+
+        String getFlatDisplayText() {
+            if (flatDisplayText == null) {
+                flatDisplayText = getDisplayText().replaceAll("\\s+", " ");
+            }
+            return flatDisplayText;
         }
     }
 
@@ -165,26 +179,33 @@ public class Scraper {
         OrderedCollection<String> rows = extractTags(fragment, "tr");
         OrderedCollection<OrderedCollection<String>> cellStrings = extractCellsFromRows(rows);
         Map<Integer, Map<Integer, Cell>> cells = parseCellStrings(cellStrings);
-        int c = 0;
+        int columnIndex = 0;
         boolean scrapeConfigurationError = false;
         for (ColumnConfiguration cc : tableConfiguration.getColumns()) {
-            if (cells.containsKey(cc.getHeaderRow() - 1)) {
-                if (cells.get(cc.getHeaderRow() - 1).containsKey(c)) {
-                    // TODO: Match correctly, including whitespaces
-                    if (!cells.get(cc.getHeaderRow() - 1).get(c).getDisplayText().contains(cc.getHeaderContent())) {
-                        Laconic.LOGGER.logError("Table does not contain header %s in the expected position.",
-                                cc.getHeaderContent() + (cc.getHeaderRow() - 1) + "," + c, scrapeToken);
+            Token validateColumnHeaderToken = Laconic.LOGGER.logMessage(scrapeToken,
+                    "Validating the header of the column at position %d.", columnIndex + 1);
+            int rowIndex = cc.getHeaderRow() - 1;
+            if (cells.containsKey(rowIndex)) {
+                Laconic.LOGGER.logMessage("Validating the header of the column at row %d.", rowIndex + 1,
+                        validateColumnHeaderToken);
+                if (cells.get(columnIndex).containsKey(columnIndex)) {
+                    String header = cells.get(rowIndex).get(columnIndex).getFlatDisplayText();
+                    Laconic.LOGGER.logMessage("Validating the header “%s”.", header, validateColumnHeaderToken);
+                    if (!header.equals(cc.getHeaderContent())) {
+                        Laconic.LOGGER.logError("Header text isn't equal to “%s”.", cc.getHeaderContent(),
+                                validateColumnHeaderToken);
                         scrapeConfigurationError = true;
                     }
                 } else {
-                    Laconic.LOGGER.logError("Table does not contain %d column(s).", c + 1, scrapeToken);
+                    Laconic.LOGGER.logError("Table does not contain %d column(s).", columnIndex + 1,
+                            validateColumnHeaderToken);
                     scrapeConfigurationError = true;
                 }
             } else {
-                Laconic.LOGGER.logError("Table does not contain %d row(s).", cc.getHeaderRow(), scrapeToken);
+                Laconic.LOGGER.logError("Table does not contain %d row(s).", rowIndex + 1, validateColumnHeaderToken);
                 scrapeConfigurationError = true;
             }
-            c++;
+            columnIndex++;
         }
         ModifiableMap<String, String> pollingFirmAliases = ModifiableMap.empty();
         if (tableConfiguration.getPollingFirmAliases() != null) {
@@ -202,20 +223,35 @@ public class Scraper {
         int unmatched = 0;
         int unparsed = 0;
         for (int i = firstRow; i < lastRow; i++) {
+            Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
             if (!row.isEmpty()) {
                 int j = 0;
                 String pollingFirm = null;
                 DateMonthOrYear endDate = null;
                 for (ColumnConfiguration cc : tableConfiguration.getColumns()) {
+                    Token parseCellToken =
+                            Laconic.LOGGER.logMessage(parseRowToken, "Parsing the cell at position %d.", j + 1);
                     if ("pollingFirm".equals(cc.getColumnType())) {
                         pollingFirm = row.get(j).getDisplayText();
+                        Laconic.LOGGER.logMessage("Found the name “%s” for the polling firm.", pollingFirm,
+                                parseCellToken);
                         if (pollingFirmAliases.containsKey(pollingFirm)) {
                             pollingFirm = pollingFirmAliases.get(pollingFirm);
+                            Laconic.LOGGER.logMessage("Converted the alias of the polling firm to the name “%s”.",
+                                    pollingFirm, parseCellToken);
                         }
                     } else if ("fieldworkPeriod".equals(cc.getColumnType())) {
                         String fieldwordPeriod = row.get(j).getDisplayText();
+                        Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
+                                parseCellToken);
                         endDate = parseFieldwordPeriod(fieldwordPeriod);
+                        if (endDate == null) {
+                            Laconic.LOGGER.logError("Could not extract a fieldwork end date.", parseCellToken);
+                        } else {
+                            Laconic.LOGGER.logMessage("Found %s for the fieldwork end date.", endDate.toString(),
+                                    parseCellToken);
+                        }
                     }
                     j++;
                 }
@@ -228,12 +264,11 @@ public class Scraper {
                     }
                     if (!match) {
                         unmatched++;
-                        System.out.println(
-                                "Found an unmatched poll on row " + (i + 1) + ": " + pollingFirm + " & " + endDate);
+                        Laconic.LOGGER.logError("Unmatched row.", parseRowToken);
                     }
                 } else {
                     unparsed++;
-                    System.out.println("Row " + (i + 1) + " didn't have both polling firm and fieldword end date.");
+                    Laconic.LOGGER.logError("Row is missing polling firm and/or fieldword end date.", parseRowToken);
                 }
             }
         }
