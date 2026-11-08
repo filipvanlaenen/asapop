@@ -54,6 +54,10 @@ public class Scraper {
             return n.replaceAll("");
         }
 
+        private String removeTag(final String fragment, String tag) {
+            return replaceTag(fragment, tag, "");
+        }
+
         private String replaceTag(final String fragment, String tag, String result) {
             Pattern single = Pattern.compile(
                     Pattern.quote("<") + tag + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote("/>"),
@@ -68,6 +72,8 @@ public class Scraper {
                         content.length() - 5);
                 fragment = removeTagButKeepContent(fragment, "a");
                 fragment = replaceTag(fragment, "br", "\n");
+                fragment = removeTag(fragment, "link");
+                fragment = removeTagButKeepContent(fragment, "span");
                 displayText = fragment.trim();
             }
             return displayText;
@@ -190,7 +196,7 @@ public class Scraper {
             if (cells.containsKey(rowIndex)) {
                 Laconic.LOGGER.logMessage("Validating the header of the column at row %d.", rowIndex + 1,
                         validateColumnHeaderToken);
-                if (cells.get(columnIndex).containsKey(columnIndex)) {
+                if (cells.get(rowIndex).containsKey(columnIndex)) {
                     String header = cells.get(rowIndex).get(columnIndex).getFlatDisplayText();
                     Laconic.LOGGER.logMessage("Validating the header “%s”.", header, validateColumnHeaderToken);
                     if (!header.equals(cc.getHeaderContent())) {
