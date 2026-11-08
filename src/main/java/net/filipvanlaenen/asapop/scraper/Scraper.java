@@ -223,6 +223,7 @@ public class Scraper {
         Integer footRows = tableConfiguration.getFootRows();
         int lastRow = cells.size() - (footRows == null ? 0 : footRows);
         int unmatched = 0;
+        String unmatchedPolls = "";
         int unparsed = 0;
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
@@ -231,6 +232,7 @@ public class Scraper {
                 int j = 0;
                 String pollingFirm = null;
                 DateMonthOrYear endDate = null;
+                OpinionPoll.Builder builder = new OpinionPoll.Builder();
                 for (ColumnConfiguration cc : tableConfiguration.getColumns()) {
                     Token parseCellToken =
                             Laconic.LOGGER.logMessage(parseRowToken, "Parsing the cell at position %d.", j + 1);
@@ -259,6 +261,7 @@ public class Scraper {
                 }
                 if (pollingFirm != null && endDate != null) {
                     boolean match = false;
+                    // TODO: Do this as a contains against a collection
                     for (OpinionPoll op : richOpinionPollsFile.getOpinionPolls()) {
                         if (pollingFirm.equals(op.getPollingFirm()) && endDate.equals(op.getFieldworkEnd())) {
                             match = true;
@@ -267,6 +270,7 @@ public class Scraper {
                     if (!match) {
                         unmatched++;
                         Laconic.LOGGER.logError("Unmatched row.", parseRowToken);
+                        unmatchedPolls += "\n•PF: " + pollingFirm + " •FE: " + endDate;
                     }
                 } else {
                     unparsed++;
@@ -278,21 +282,21 @@ public class Scraper {
             if (unmatched == 0 && unparsed == 0) {
                 return "Scrape configuration error.";
             } else if (unparsed == 0) {
-                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s).";
+                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s):" + unmatchedPolls;
             } else if (unmatched == 0) {
                 return "Scrape configuration error. Found also " + unparsed + " unparsed row(s).";
             } else {
-                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s) and " + unparsed
-                        + " unparsed row(s).";
+                return "Scrape configuration error. Found also " + unparsed + " unparsed row(s) and" + unmatched
+                        + " unmatched poll(s):" + unmatchedPolls;
             }
         } else if (unmatched == 0 && unparsed == 0) {
             return ALL_OK;
         } else if (unparsed == 0) {
-            return "Found " + unmatched + " unmatched poll(s).";
+            return "Found " + unmatched + " unmatched poll(s):" + unmatchedPolls;
         } else if (unmatched == 0) {
             return "Found " + unparsed + " unparsed row(s).";
         } else {
-            return "Found " + unmatched + " unmatched poll(s) and " + unparsed + " unparsed row(s).";
+            return "Found " + unparsed + " unparsed row(s) and " + unmatched + " unmatched poll(s):" + unmatchedPolls;
         }
     }
 
