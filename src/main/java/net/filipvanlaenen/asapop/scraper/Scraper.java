@@ -13,11 +13,13 @@ import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.ColumnConfiguration;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.PollingFirmAliases;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.TableConfiguration;
+import net.filipvanlaenen.kolektoj.Collection;
 import net.filipvanlaenen.kolektoj.Map;
 import net.filipvanlaenen.kolektoj.Map.Entry;
 import net.filipvanlaenen.kolektoj.ModifiableMap;
 import net.filipvanlaenen.kolektoj.ModifiableOrderedCollection;
 import net.filipvanlaenen.kolektoj.OrderedCollection;
+import net.filipvanlaenen.kolektoj.hash.HashCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
@@ -233,6 +235,9 @@ public class Scraper {
         int unmatched = 0;
         String unmatchedPolls = "";
         int unparsed = 0;
+        Collection<String> excludedPollingFirms =
+                tableConfiguration.getExcludedPollingFirms() == null ? Collection.empty()
+                        : new HashCollection<>(tableConfiguration.getExcludedPollingFirms());
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
@@ -268,7 +273,7 @@ public class Scraper {
                     j++;
                 }
                 if (pollingFirm != null && endDate != null) {
-                    boolean match = false;
+                    boolean match = excludedPollingFirms.contains(pollingFirm);
                     // TODO: Do this as a contains against a collection
                     for (OpinionPoll op : richOpinionPollsFile.getOpinionPolls()) {
                         if (pollingFirm.equals(op.getPollingFirm()) && endDate.equals(op.getFieldworkEnd())) {
