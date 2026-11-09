@@ -23,6 +23,10 @@ import net.filipvanlaenen.laconic.Token;
 
 public class Scraper {
     private static class Cell {
+        private static final String SINGLE_QUOTE_GREATER_THAN = Pattern.quote("'>");
+        private static final String SINGLE_QUOTE = Pattern.quote("'");
+        private static final String XML_ARGUMENTS = "(\\s([^" + SINGLE_QUOTE_GREATER_THAN + "]*" + SINGLE_QUOTE + "[^"
+                + SINGLE_QUOTE + "]*" + SINGLE_QUOTE + ")*[^" + SINGLE_QUOTE_GREATER_THAN + "]*)?";
         private final String content;
         private String displayText;
         private String flatDisplayText;
@@ -43,8 +47,7 @@ public class Scraper {
         }
 
         private String removeTagButKeepContent(final String fragment, String tagPattern) {
-            Pattern opening = Pattern.compile(
-                    Pattern.quote("<") + tagPattern + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote(">"),
+            Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
                     Pattern.CASE_INSENSITIVE);
             Pattern closing =
                     Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
@@ -59,8 +62,7 @@ public class Scraper {
         }
 
         private String replaceTag(final String fragment, String tag, String result) {
-            Pattern single = Pattern.compile(
-                    Pattern.quote("<") + tag + "(\\s[^" + Pattern.quote(">") + "]+)?" + Pattern.quote("/>"),
+            Pattern single = Pattern.compile(Pattern.quote("<") + tag + XML_ARGUMENTS + Pattern.quote("/>"),
                     Pattern.CASE_INSENSITIVE);
             Matcher m = single.matcher(fragment);
             return m.replaceAll(result);
