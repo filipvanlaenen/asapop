@@ -182,7 +182,7 @@ public final class EopaodCsvExporter extends CsvExporter {
             elements.add(percentageOrNotAvailable(responseScenario.getResult(electoralListIdSet), precision, scale));
         }
         for (String candidateId : candidateIds) {
-            elements.add(percentageOrNotAvailable(opinionPoll.getResult(candidateId), precision, scale));
+            elements.add(percentageOrNotAvailable(responseScenario.getResult(candidateId), precision, scale));
         }
         elements.add(percentageOrNotAvailable(responseScenario.getOther(), precision, scale));
         return String.join(",", elements);

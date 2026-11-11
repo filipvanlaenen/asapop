@@ -185,7 +185,7 @@ public class CsvFilesBuilder {
             String outputContent1 = EopaodCsvExporter.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
             String outputContent2 =
                     OpinionPollsCsvExporterVersion2.export(opinionPolls, null, null, candidateKeys, candidateKeys2);
-            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent1);
+            csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".csv"), outputContent2);
             csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".v1.csv"), outputContent1);
             csvFilesMap.put(Paths.get("_csv", presidentialElectionCode + ".v2.csv"), outputContent2);
         }
