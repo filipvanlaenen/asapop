@@ -5,6 +5,7 @@ public class ColumnConfiguration {
     private String headerContent;
     private int headerRow;
     private String resultKeys;
+    private String separator;
 
     public String getColumnType() {
         return columnType;
@@ -22,6 +23,10 @@ public class ColumnConfiguration {
         return resultKeys;
     }
 
+    public String getSeparator() {
+        return separator;
+    }
+
     public void setColumnType(final String columnType) {
         this.columnType = columnType;
     }
@@ -36,5 +41,9 @@ public class ColumnConfiguration {
 
     public void setResultKeys(final String resultKeys) {
         this.resultKeys = resultKeys;
+    }
+
+    public void setSeparator(final String separator) {
+        this.separator = separator;
     }
 }

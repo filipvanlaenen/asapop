@@ -10,6 +10,7 @@ public class TableConfiguration {
     private Integer headRows;
     private PollingFirmAliases[] pollingFirmAliases;
     private Integer tableIndex;
+    private UnreconciledPoll[] unreconciledPoll;
 
     public ColumnConfiguration[] getColumns() {
         return columns;
@@ -47,6 +48,10 @@ public class TableConfiguration {
         return tableIndex;
     }
 
+    public UnreconciledPoll[] getUnreconciledPolls() {
+        return unreconciledPoll;
+    }
+
     public void setColumns(final ColumnConfiguration[] columns) {
         this.columns = columns;
     }
@@ -81,5 +86,9 @@ public class TableConfiguration {
 
     public void setTableIndex(final Integer tableIndex) {
         this.tableIndex = tableIndex;
+    }
+
+    public void setUnreconciledPolls(final UnreconciledPoll[] unreconciledPolls) {
+        this.unreconciledPoll = unreconciledPolls;
     }
 }
