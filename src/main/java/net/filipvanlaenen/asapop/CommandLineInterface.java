@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -448,9 +449,9 @@ public final class CommandLineInterface {
                 Path cachedPagePath = Paths.get(cacheDirName, pageName);
                 Laconic.LOGGER.logMessage(token, "Checking presence of the page in the cache.",
                         cachedPagePath.toString());
-                LocalTime now = LocalTime.now();
+                ZonedDateTime now = ZonedDateTime.now();
                 if (Files.exists(cachedPagePath) && Files.getLastModifiedTime(cachedPagePath).toInstant()
-                        .atZone(ZoneId.systemDefault()).toLocalTime().isAfter(now.minusHours(24))) {
+                        .atZone(ZoneId.systemDefault()).isAfter(now.minusHours(24))) {
                     Laconic.LOGGER.logMessage(token, "Reading the page from the cache.");
                     return String.join("\n", readFile(cachedPagePath));
                 } else {

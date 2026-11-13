@@ -46,6 +46,17 @@ public class Scraper {
             this.content = content;
         }
 
+        int getColSpan() {
+            Pattern pattern = Pattern.compile(Pattern.quote("colspan=\"") + "(\\d+)" + Pattern.quote("\""),
+                    Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            } else {
+                return 1;
+            }
+        }
+
         int getRowSpan() {
             Pattern pattern = Pattern.compile(Pattern.quote("rowspan=\"") + "(\\d+)" + Pattern.quote("\""),
                     Pattern.CASE_INSENSITIVE);
@@ -105,6 +116,7 @@ public class Scraper {
                 fragment = removeTags(fragment, "link");
                 fragment = removeTagsButKeepContent(fragment, "span");
                 fragment = removeTagsWithContent(fragment, "sup");
+                fragment = removeTags(fragment, "wbr");
                 displayText = fragment.trim();
             }
             return displayText;
@@ -272,7 +284,7 @@ public class Scraper {
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
-            if (!row.isEmpty() && !row.get(0).getFlatDisplayText().toLowerCase().contains("election")) {
+            if (!row.isEmpty()) {
                 int j = 0;
                 String commissioner = null;
                 String pollingFirm = null;
@@ -325,8 +337,9 @@ public class Scraper {
                     j++;
                 }
                 if (pollingFirm != null && endDate != null) {
-                    boolean skip = excludedPollingFirms.contains(pollingFirm)
-                            || unreconciledPolls.contains(new PollKey(pollingFirm, endDate));
+                    boolean skip =
+                            pollingFirm.toLowerCase().contains("election") || excludedPollingFirms.contains(pollingFirm)
+                                    || unreconciledPolls.contains(new PollKey(pollingFirm, endDate));
                     // TODO: Do this as a contains against a collection
                     for (OpinionPoll op : richOpinionPollsFile.getOpinionPolls()) {
                         if (pollingFirm.equals(op.getPollingFirm()) && endDate.equals(op.getFieldworkEnd())) {
@@ -335,7 +348,6 @@ public class Scraper {
                     }
                     if (!skip) {
                         unmatched++;
-                        Laconic.LOGGER.logError("Unmatched row.", parseRowToken);
                         unmatchedPolls += "\n•PF: " + pollingFirm + (commissioner == null ? "" : " •C: " + commissioner)
                                 + " •FD: " + startDate + " •FE: " + endDate;
                     }
@@ -353,7 +365,7 @@ public class Scraper {
             } else if (unmatched == 0) {
                 return "Scrape configuration error. Found also " + unparsed + " unparsed row(s).";
             } else {
-                return "Scrape configuration error. Found also " + unparsed + " unparsed row(s) and" + unmatched
+                return "Scrape configuration error. Found also " + unparsed + " unparsed row(s) and " + unmatched
                         + " unmatched poll(s):" + unmatchedPolls;
             }
         } else if (unmatched == 0 && unparsed == 0) {
@@ -442,13 +454,15 @@ public class Scraper {
                 while (map.get(i).containsKey(j)) {
                     j++;
                 }
-                int rw = cell.getRowSpan();
-                // TODO: Handle colspan
-                for (int k = 0; k < rw; k++) {
+                int rs = cell.getRowSpan();
+                int cs = cell.getColSpan();
+                for (int k = 0; k < rs; k++) {
                     if (!map.containsKey(i + k)) {
                         map.add(i + k, ModifiableMap.empty());
                     }
-                    map.get(i + k).add(j, cell);
+                    for (int l = 0; l < cs; l++) {
+                        map.get(i + k).add(j + l, cell);
+                    }
                 }
                 j++;
             }
