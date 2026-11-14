@@ -381,8 +381,9 @@ public class Scraper {
                     if (!excludedPollingFirms.contains(pollingFirm) && !unreconciledPolls.contains(pk)
                             && !currentPolls.contains(pk)) {
                         unmatched++;
-                        unmatchedPolls += "\n  •PF: " + pollingFirm + (commissioner == null ? "" : " •C: " + commissioner)
-                                + " •FS: " + startDate + " •FE: " + endDate
+                        unmatchedPolls += "\n  •PF: " + pollingFirm
+                                + (commissioner == null ? "" : " •C: " + commissioner) + " •FS: " + startDate + " •FE: "
+                                + endDate + " •SC: " + tableConfiguration.getScope()
                                 + (sampleSize == null ? "" : " •SS: " + sampleSize)
                                 + results.stream().map(e -> " " + e.key() + ": " + e.value()).collect(
                                         java.util.stream.Collectors.joining())

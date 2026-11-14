@@ -9,6 +9,7 @@ public class TableConfiguration {
     private String h4Content;
     private Integer headRows;
     private PollingFirmAliases[] pollingFirmAliases;
+    private String scope;
     private Integer tableIndex;
     private UnreconciledPoll[] unreconciledPoll;
 
@@ -42,6 +43,10 @@ public class TableConfiguration {
 
     public PollingFirmAliases[] getPollingFirmAliases() {
         return pollingFirmAliases;
+    }
+
+    public String getScope() {
+        return scope;
     }
 
     public Integer getTableIndex() {
@@ -82,6 +87,10 @@ public class TableConfiguration {
 
     public void setPollingFirmAliases(final PollingFirmAliases[] pollingFirmAliases) {
         this.pollingFirmAliases = pollingFirmAliases;
+    }
+
+    public void setScope(final String scope) {
+        this.scope = scope;
     }
 
     public void setTableIndex(final Integer tableIndex) {

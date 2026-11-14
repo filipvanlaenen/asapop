@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -438,6 +437,7 @@ public final class CommandLineInterface {
             private HttpResponse<String> getWikipediaPage(final String userAgent,
                     final String possibleNextElectionPageName) throws IOException, InterruptedException {
                 HttpClient client = HttpClient.newHttpClient();
+                String[] s = possibleNextElectionPageName.split("@");
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(BASE_URL + possibleNextElectionPageName + "?redirect=no"))
                         .header("User-Agent", userAgent).GET().build();
