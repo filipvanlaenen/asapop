@@ -277,25 +277,38 @@ public class Scraper {
         Collection<String> excludedPollingFirms =
                 tableConfiguration.getExcludedPollingFirms() == null ? Collection.empty()
                         : new HashCollection<>(tableConfiguration.getExcludedPollingFirms());
-        Collection<PollKey> unreconciledPolls = tableConfiguration.getUnreconciledPolls() == null ? Collection.empty()
-                : Collection.of(tableConfiguration.getUnreconciledPolls()).stream()
-                        .map(u -> new PollKey(u.getPollingFirm(), DateMonthOrYear.parse(u.getEndDate())))
-                        .collect(Collectors.toCollection());
+        Collection<PollKey> unreconciledPolls =
+                new HashCollection<PollKey>(tableConfiguration.getUnreconciledPolls() == null ? Collection.empty()
+                        : Collection.of(tableConfiguration.getUnreconciledPolls()).stream()
+                                .map(u -> new PollKey(u.getPollingFirm(), DateMonthOrYear.parse(u.getDate())))
+                                .collect(Collectors.toCollection()));
+        Collection<PollKey> currentPolls = new HashCollection<PollKey>(richOpinionPollsFile.getOpinionPolls().stream()
+                .map(p -> new PollKey(p.getPollingFirm(),
+                        p.getFieldworkEnd() == null ? DateMonthOrYear.of(p.getPublicationDate()) : p.getFieldworkEnd()))
+                .collect(Collectors.toCollection()));
+        OrderedCollection<ColumnConfiguration> columns = OrderedCollection.of(tableConfiguration.getColumns());
+        int pollingFirmIndex = 0;
+        for (int i = 0; i < columns.size(); i++) {
+            if (Collection.of("pollingFirm", "pollingFirmAndCommissioner").contains(columns.getAt(i).getColumnType())) {
+                pollingFirmIndex = i;
+            }
+        }
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
-            if (!row.isEmpty()) {
+            if (!row.isEmpty() && !row.get(pollingFirmIndex).getFlatDisplayText().toLowerCase().contains("election")) {
                 int j = 0;
                 String commissioner = null;
                 String pollingFirm = null;
                 DateMonthOrYear startDate = null;
                 DateMonthOrYear endDate = null;
-                OpinionPoll.Builder builder = new OpinionPoll.Builder();
-                for (ColumnConfiguration cc : tableConfiguration.getColumns()) {
+                String sampleSize = null;
+                for (ColumnConfiguration cc : columns) {
                     Token parseCellToken =
                             Laconic.LOGGER.logMessage(parseRowToken, "Parsing the cell at position %d.", j + 1);
-                    if ("pollingFirm".equals(cc.getColumnType())) {
-                        pollingFirm = row.get(j).getDisplayText();
+                    String columnType = cc.getColumnType();
+                    if ("pollingFirm".equals(columnType)) {
+                        pollingFirm = row.get(j).getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Found the name “%s” for the polling firm.", pollingFirm,
                                 parseCellToken);
                         if (pollingFirmAliases.containsKey(pollingFirm)) {
@@ -303,8 +316,8 @@ public class Scraper {
                             Laconic.LOGGER.logMessage("Converted the alias of the polling firm to the name “%s”.",
                                     pollingFirm, parseCellToken);
                         }
-                    } else if ("pollingFirmAndCommissioner".equals(cc.getColumnType())) {
-                        String pollingFirmAndCommissioner = row.get(j).getDisplayText();
+                    } else if ("pollingFirmAndCommissioner".equals(columnType)) {
+                        String pollingFirmAndCommissioner = row.get(j).getFlatDisplayText();
                         if (pollingFirmAndCommissioner.contains(cc.getSeparator())) {
                             String[] r = pollingFirmAndCommissioner.split(Pattern.quote(cc.getSeparator()));
                             pollingFirm = r[0];
@@ -319,12 +332,11 @@ public class Scraper {
                             Laconic.LOGGER.logMessage("Converted the alias of the polling firm to the name “%s”.",
                                     pollingFirm, parseCellToken);
                         }
-                    } else if ("fieldworkPeriod".equals(cc.getColumnType())) {
-                        String fieldwordPeriod = row.get(j).getDisplayText();
+                    } else if ("fieldworkPeriod".equals(columnType)) {
+                        String fieldwordPeriod = row.get(j).getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
                                 parseCellToken);
                         Period period = parseFieldwordPeriod(fieldwordPeriod);
-
                         if (period == null) {
                             Laconic.LOGGER.logError("Could not extract a fieldwork period.", parseCellToken);
                         } else {
@@ -333,23 +345,19 @@ public class Scraper {
                             Laconic.LOGGER.logMessage("Found %s for the fieldwork end date.", endDate.toString(),
                                     parseCellToken);
                         }
+                    } else if ("sampleSize".equals(columnType)) {
+                        sampleSize = row.get(j).getFlatDisplayText().replaceAll(",", "");
                     }
                     j++;
                 }
                 if (pollingFirm != null && endDate != null) {
-                    boolean skip =
-                            pollingFirm.toLowerCase().contains("election") || excludedPollingFirms.contains(pollingFirm)
-                                    || unreconciledPolls.contains(new PollKey(pollingFirm, endDate));
-                    // TODO: Do this as a contains against a collection
-                    for (OpinionPoll op : richOpinionPollsFile.getOpinionPolls()) {
-                        if (pollingFirm.equals(op.getPollingFirm()) && endDate.equals(op.getFieldworkEnd())) {
-                            skip = true;
-                        }
-                    }
-                    if (!skip) {
+                    PollKey pk = new PollKey(pollingFirm, endDate);
+                    if (!excludedPollingFirms.contains(pollingFirm) && !unreconciledPolls.contains(pk)
+                            && !currentPolls.contains(pk)) {
                         unmatched++;
                         unmatchedPolls += "\n•PF: " + pollingFirm + (commissioner == null ? "" : " •C: " + commissioner)
-                                + " •FD: " + startDate + " •FE: " + endDate;
+                                + " •FS: " + startDate + " •FE: " + endDate
+                                + (sampleSize == null ? "" : " •SS: " + sampleSize);
                     }
                 } else {
                     unparsed++;

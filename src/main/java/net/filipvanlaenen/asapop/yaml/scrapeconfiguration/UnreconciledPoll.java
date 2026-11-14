@@ -1,19 +1,19 @@
 package net.filipvanlaenen.asapop.yaml.scrapeconfiguration;
 
 public class UnreconciledPoll {
-    private String endDate;
+    private String date;
     private String pollingFirm;
 
-    public String getEndDate() {
-        return endDate;
+    public String getDate() {
+        return date;
     }
 
     public String getPollingFirm() {
         return pollingFirm;
     }
 
-    public void setEndDate(final String endDate) {
-        this.endDate = endDate;
+    public void setDate(final String date) {
+        this.date = date;
     }
 
     public void setPollingFirm(final String pollingFirm) {
