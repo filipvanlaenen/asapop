@@ -3,12 +3,15 @@ package net.filipvanlaenen.asapop.scraper;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.filipvanlaenen.asapop.exporter.RopfExporter;
 import net.filipvanlaenen.asapop.model.DateMonthOrYear;
-import net.filipvanlaenen.asapop.model.OpinionPoll;
+import net.filipvanlaenen.asapop.model.ElectoralList;
 import net.filipvanlaenen.asapop.parser.RichOpinionPollsFile;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.ColumnConfiguration;
 import net.filipvanlaenen.asapop.yaml.scrapeconfiguration.PollingFirmAliases;
@@ -112,6 +115,7 @@ public class Scraper {
                 String fragment = content.substring(findFirstOccurrenceOf(content, 0, TAG_CLOSING_PATTERN) + 1,
                         content.length() - 5);
                 fragment = removeTagsButKeepContent(fragment, "a");
+                fragment = removeTagsButKeepContent(fragment, "b");
                 fragment = replaceTags(fragment, "br", "\n");
                 fragment = removeTags(fragment, "link");
                 fragment = removeTagsButKeepContent(fragment, "span");
@@ -293,6 +297,15 @@ public class Scraper {
                 pollingFirmIndex = i;
             }
         }
+        Set<ElectoralList> ids = new HashSet<ElectoralList>();
+        for (ColumnConfiguration cc : columns) {
+            if ("resultValue".equals(cc.getColumnType())) {
+                for (String i : cc.getResultKeys().split("\\+")) {
+                    ids.add(ElectoralList.get(i));
+                }
+            }
+        }
+        java.util.Map<String, String> idsToKeysMap = RopfExporter.calculateIdsToKeys(ids, false);
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
@@ -302,7 +315,10 @@ public class Scraper {
                 String pollingFirm = null;
                 DateMonthOrYear startDate = null;
                 DateMonthOrYear endDate = null;
+                String noResponses = null;
+                String other = null;
                 String sampleSize = null;
+                ModifiableMap<String, String> results = ModifiableMap.empty();
                 for (ColumnConfiguration cc : columns) {
                     Token parseCellToken =
                             Laconic.LOGGER.logMessage(parseRowToken, "Parsing the cell at position %d.", j + 1);
@@ -347,6 +363,16 @@ public class Scraper {
                         }
                     } else if ("sampleSize".equals(columnType)) {
                         sampleSize = row.get(j).getFlatDisplayText().replaceAll(",", "");
+                    } else if ("resultValue".equals(columnType)) {
+                        String r = row.get(j).getFlatDisplayText();
+                        if (!"–".equals(r)) {
+                            results.add(RopfExporter.asKeysString(idsToKeysMap,
+                                    ElectoralList.get(Set.of(cc.getResultKeys().split("\\+")))), r);
+                        }
+                    } else if ("other".equals(columnType)) {
+                        other = row.get(j).getFlatDisplayText();
+                    } else if ("noResponses".equals(columnType)) {
+                        noResponses = row.get(j).getFlatDisplayText();
                     }
                     j++;
                 }
@@ -355,9 +381,13 @@ public class Scraper {
                     if (!excludedPollingFirms.contains(pollingFirm) && !unreconciledPolls.contains(pk)
                             && !currentPolls.contains(pk)) {
                         unmatched++;
-                        unmatchedPolls += "\n•PF: " + pollingFirm + (commissioner == null ? "" : " •C: " + commissioner)
+                        unmatchedPolls += "\n  •PF: " + pollingFirm + (commissioner == null ? "" : " •C: " + commissioner)
                                 + " •FS: " + startDate + " •FE: " + endDate
-                                + (sampleSize == null ? "" : " •SS: " + sampleSize);
+                                + (sampleSize == null ? "" : " •SS: " + sampleSize)
+                                + results.stream().map(e -> " " + e.key() + ": " + e.value()).collect(
+                                        java.util.stream.Collectors.joining())
+                                + (other == null ? "" : " •O: " + other)
+                                + (noResponses == null ? "" : " •N: " + noResponses);
                     }
                 } else {
                     unparsed++;

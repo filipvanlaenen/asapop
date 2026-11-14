@@ -64,7 +64,7 @@ public final class RopfExporter extends Exporter {
      * @param electoralListCombination A set of electoral lists.
      * @return A string with the electoral list keys.
      */
-    private static String asKeysString(final Map<String, String> idsToKeysMap,
+    public static String asKeysString(final Map<String, String> idsToKeysMap,
             final Set<ElectoralList> electoralListCombination) {
         List<String> keys =
                 electoralListCombination.stream().map(el -> idsToKeysMap.get(el.getId())).collect(Collectors.toList());
@@ -119,7 +119,7 @@ public final class RopfExporter extends Exporter {
      * @param electoralLists A set of electoral lists.
      * @return A map mapping the elector list IDs to the keys.
      */
-    private static Map<String, String> calculateIdsToKeys(final Set<ElectoralList> electoralLists,
+    public static Map<String, String> calculateIdsToKeys(final Set<ElectoralList> electoralLists,
             final boolean useRomanizedAbbreviations) {
         Map<String, String> result = new HashMap<String, String>();
         for (ElectoralList electoralList : electoralLists) {
