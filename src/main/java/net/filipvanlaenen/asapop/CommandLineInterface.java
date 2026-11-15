@@ -451,7 +451,7 @@ public final class CommandLineInterface {
                         cachedPagePath.toString());
                 ZonedDateTime now = ZonedDateTime.now();
                 if (Files.exists(cachedPagePath) && Files.getLastModifiedTime(cachedPagePath).toInstant()
-                        .atZone(ZoneId.systemDefault()).isAfter(now.minusHours(24))) {
+                        .atZone(ZoneId.systemDefault()).isAfter(now.minusHours(16))) {
                     Laconic.LOGGER.logMessage(token, "Reading the page from the cache.");
                     return String.join("\n", readFile(cachedPagePath));
                 } else {

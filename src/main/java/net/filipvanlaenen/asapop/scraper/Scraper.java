@@ -118,6 +118,7 @@ public class Scraper {
                 fragment = removeTagsButKeepContent(fragment, "b");
                 fragment = replaceTags(fragment, "br", "\n");
                 fragment = removeTags(fragment, "link");
+                fragment = removeTagsButKeepContent(fragment, "small");
                 fragment = removeTagsButKeepContent(fragment, "span");
                 fragment = removeTagsWithContent(fragment, "sup");
                 fragment = removeTags(fragment, "wbr");
@@ -365,7 +366,7 @@ public class Scraper {
                         sampleSize = row.get(j).getFlatDisplayText().replaceAll(",", "");
                     } else if ("resultValue".equals(columnType)) {
                         String r = row.get(j).getFlatDisplayText();
-                        if (!"–".equals(r)) {
+                        if (!Collection.of("", "–").contains(r)) {
                             results.add(RopfExporter.asKeysString(idsToKeysMap,
                                     ElectoralList.get(Set.of(cc.getResultKeys().split("\\+")))), r);
                         }
