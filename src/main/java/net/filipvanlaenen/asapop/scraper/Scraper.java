@@ -71,6 +71,10 @@ public class Scraper {
             }
         }
 
+        boolean isEmpty() {
+            return Collection.of("", "–").contains(getFlatDisplayText());
+        }
+
         private String removeTagsWithContent(final String fragment, String tagPattern) {
             Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
                     Pattern.CASE_INSENSITIVE);
@@ -311,7 +315,6 @@ public class Scraper {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
             if (!row.isEmpty() && !row.get(pollingFirmIndex).getFlatDisplayText().toLowerCase().contains("election")) {
-                int j = 0;
                 String commissioner = null;
                 String pollingFirm = null;
                 DateMonthOrYear startDate = null;
@@ -320,12 +323,16 @@ public class Scraper {
                 String other = null;
                 String sampleSize = null;
                 ModifiableMap<String, String> results = ModifiableMap.empty();
+                int j = 0;
+                int remainingColSpan = 0;
+                String lastKey = null;
                 for (ColumnConfiguration cc : columns) {
                     Token parseCellToken =
                             Laconic.LOGGER.logMessage(parseRowToken, "Parsing the cell at position %d.", j + 1);
                     String columnType = cc.getColumnType();
+                    Cell cell = row.get(j);
                     if ("pollingFirm".equals(columnType)) {
-                        pollingFirm = row.get(j).getFlatDisplayText();
+                        pollingFirm = cell.getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Found the name “%s” for the polling firm.", pollingFirm,
                                 parseCellToken);
                         if (pollingFirmAliases.containsKey(pollingFirm)) {
@@ -334,7 +341,7 @@ public class Scraper {
                                     pollingFirm, parseCellToken);
                         }
                     } else if ("pollingFirmAndCommissioner".equals(columnType)) {
-                        String pollingFirmAndCommissioner = row.get(j).getFlatDisplayText();
+                        String pollingFirmAndCommissioner = cell.getFlatDisplayText();
                         if (pollingFirmAndCommissioner.contains(cc.getSeparator())) {
                             String[] r = pollingFirmAndCommissioner.split(Pattern.quote(cc.getSeparator()));
                             pollingFirm = r[0];
@@ -350,7 +357,7 @@ public class Scraper {
                                     pollingFirm, parseCellToken);
                         }
                     } else if ("fieldworkPeriod".equals(columnType)) {
-                        String fieldwordPeriod = row.get(j).getFlatDisplayText();
+                        String fieldwordPeriod = cell.getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
                                 parseCellToken);
                         Period period = parseFieldwordPeriod(fieldwordPeriod);
@@ -363,17 +370,36 @@ public class Scraper {
                                     parseCellToken);
                         }
                     } else if ("sampleSize".equals(columnType)) {
-                        sampleSize = row.get(j).getFlatDisplayText().replaceAll(",", "");
+                        if (!cell.isEmpty()) {
+                            sampleSize = cell.getFlatDisplayText().replaceAll(",", "");
+                        }
                     } else if ("resultValue".equals(columnType)) {
-                        String r = row.get(j).getFlatDisplayText();
-                        if (!Collection.of("", "–").contains(r)) {
-                            results.add(RopfExporter.asKeysString(idsToKeysMap,
-                                    ElectoralList.get(Set.of(cc.getResultKeys().split("\\+")))), r);
+                        if (remainingColSpan > 0) {
+                            if (!cell.isEmpty()) {
+                                String key = RopfExporter.asKeysString(idsToKeysMap,
+                                        ElectoralList.get(Set.of(cc.getResultKeys().split("\\+"))));
+                                String result = results.remove(lastKey);
+                                lastKey = lastKey + "+" + key;
+                                results.add(lastKey, result);
+                            }
+                            remainingColSpan--;
+                        } else if (!cell.isEmpty()) {
+                            lastKey = RopfExporter.asKeysString(idsToKeysMap,
+                                    ElectoralList.get(Set.of(cc.getResultKeys().split("\\+"))));
+                            results.add(lastKey, cell.getFlatDisplayText());
+                            remainingColSpan = cell.getColSpan() - 1;
+                        }
+                        if (remainingColSpan == 0) {
+                            lastKey = null;
                         }
                     } else if ("other".equals(columnType)) {
-                        other = row.get(j).getFlatDisplayText();
+                        if (!cell.isEmpty()) {
+                            other = cell.getFlatDisplayText();
+                        }
                     } else if ("noResponses".equals(columnType)) {
-                        noResponses = row.get(j).getFlatDisplayText();
+                        if (!cell.isEmpty()) {
+                            noResponses = cell.getFlatDisplayText();
+                        }
                     }
                     j++;
                 }
