@@ -27,13 +27,26 @@ import net.filipvanlaenen.kolektoj.hash.HashCollection;
 import net.filipvanlaenen.laconic.Laconic;
 import net.filipvanlaenen.laconic.Token;
 
+/**
+ * Class scraping a Wikipedia table against a collection of polls using a scraping configuration.
+ */
 public class Scraper {
-    public record PollKey(String pollingFirm, DateMonthOrYear endDate) {
-
+    /**
+     * A record capturing the data elements to determine the presence of a poll in a collection of polls.
+     *
+     * @param pollingFirm The name of the polling firm.
+     * @param endDate     The end date of the poll.
+     */
+    private record PollKey(String pollingFirm, DateMonthOrYear endDate) {
     }
 
-    private record Period(DateMonthOrYear startDate, DateMonthOrYear endDate) {
-
+    /**
+     * A record for a fieldwork period with a start date and an end date.
+     *
+     * @param startDate The start date of the fieldwork period.
+     * @param endDate   The end date of the fieldwork period.
+     */
+    private record FieldworkPeriod(DateMonthOrYear startDate, DateMonthOrYear endDate) {
     }
 
     private static class Cell {
@@ -360,7 +373,7 @@ public class Scraper {
                         String fieldwordPeriod = cell.getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
                                 parseCellToken);
-                        Period period = parseFieldwordPeriod(fieldwordPeriod);
+                        FieldworkPeriod period = parseFieldwordPeriod(fieldwordPeriod);
                         if (period == null) {
                             Laconic.LOGGER.logError("Could not extract a fieldwork period.", parseCellToken);
                         } else {
@@ -445,7 +458,7 @@ public class Scraper {
         }
     }
 
-    private Period parseFieldwordPeriod(final String fragment) {
+    private FieldworkPeriod parseFieldwordPeriod(final String fragment) {
         Pattern pattern =
                 Pattern.compile("((\\d{1,2})(\\s+([A-Za-z]{3}))?\\s*[–-]\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})");
         Matcher matcher = pattern.matcher(fragment);
@@ -473,7 +486,7 @@ public class Scraper {
             // 4. Parse naar LocalDate objecten
             LocalDate startDate = LocalDate.parse(startDateStr, formatter);
             LocalDate endDate = LocalDate.parse(endDateStr, formatter);
-            return new Period(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
+            return new FieldworkPeriod(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
         } else {
             String text = fragment.replaceAll("Mid[–-]", "").replaceAll("Late[–-]", "");
             Pattern monthPattern =
@@ -500,7 +513,7 @@ public class Scraper {
                 // 4. Parse naar LocalDate objecten
                 YearMonth startDate = YearMonth.parse(startDateStr, formatter);
                 YearMonth endDate = YearMonth.parse(endDateStr, formatter);
-                return new Period(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
+                return new FieldworkPeriod(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
             }
         }
         return null;
