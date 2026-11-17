@@ -9,6 +9,7 @@ import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -44,9 +45,14 @@ public class WebsiteBuilderTest {
             "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,"
                     + "Scope,Sample Size,Sample Size Qualification,Participation,Precision,A,B,Other\n";
     /**
-     * The content of a sample electoral lists CSV file.
+     * The content of a sample electoral lists CSV file, version 1.
      */
-    private static final String ELECTORAL_LISTS_CSV = "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n";
+    private static final String ELECTORAL_LISTS_CSV1 = "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n";
+    /**
+     * The content of a sample electoral lists CSV file, version 2.
+     */
+    private static final String ELECTORAL_LISTS_CSV2 =
+            "ID,External ID,Abbreviation,Romanized Abbreviation\n" + ",,A,\n" + ",,B,\n";
     /**
      * Today's date.
      */
@@ -155,11 +161,12 @@ public class WebsiteBuilderTest {
         expected.put(Paths.get("_js", "sorting.js"), sortingScriptContent);
         String tooltipScriptContent = "function tooltip(text) {}";
         expected.put(Paths.get("_js", "tooltip.js"), tooltipScriptContent);
-        expected.put(Paths.get("_csv", "mk.csv"), POLLS_CSV1);
+        expected.put(Paths.get("_csv", "mk.csv"), POLLS_CSV2);
         expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_CSV1);
         expected.put(Paths.get("_csv", "mk.v2.csv"), POLLS_CSV2);
-        expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
-        expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV);
+        expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV2);
+        expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV1);
+        expected.put(Paths.get("_csv", "electorallists.v2.csv"), ELECTORAL_LISTS_CSV2);
         expected.put(Paths.get("_widgets", "tables", "mk.html"),
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" + "  <head>\n"
                         + "    <meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\"/>\n"
@@ -178,9 +185,12 @@ public class WebsiteBuilderTest {
                 Map.empty(), elections, baseStyleSheetContent, customStyleSheetContent, navigationScriptContent,
                 sortingScriptContent, tooltipScriptContent, NOW);
         Map<Path, String> actual = builder.build().asMap();
-        ModifiableMap<Path, String> unexpected = ModifiableMap.of(actual);
-        unexpected.removeIf(e -> expected.containsKey(e.key()));
-        assertTrue(unexpected.isEmpty());
+        Map<Path, String> actualButNotExpected = Map.differenceOf(actual, expected);
+        Map<Path, String> expectedButNotActual = Map.differenceOf(expected, actual);
+        assertTrue(actualButNotExpected.isEmpty(),
+                actualButNotExpected.getKeys().stream().map(Object::toString).collect(Collectors.joining(", ")));
+        assertTrue(expectedButNotActual.isEmpty(),
+                expectedButNotActual.getKeys().stream().map(Object::toString).collect(Collectors.joining(", ")));
         assertTrue(expected.containsSame(actual));
     }
 }

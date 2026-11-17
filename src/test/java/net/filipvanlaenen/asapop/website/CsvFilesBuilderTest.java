@@ -68,10 +68,15 @@ public class CsvFilesBuilderTest {
             "Ephemeral Poll ID,Ephemeral Response Scenario ID,Polling Firm,Commissioners,Fieldwork Start,Fieldwork End,"
                     + "Scope,Sample Size,Sample Size Qualification,Participation,Precision,P,Q,Other\n";
     /**
-     * The content for the electoral lists CSV file.
+     * The content for the electoral lists CSV file, version 1.
      */
-    private static final String ELECTORAL_LISTS_CSV =
+    private static final String ELECTORAL_LISTS_CSV1 =
             "ID,Abbreviation,Romanized Abbreviation\n" + ",A,\n" + ",B,\n" + ",F,\n" + ",G,\n" + ",P,\n" + ",Q,\n";
+    /**
+     * The content for the electoral lists CSV file, version 2.
+     */
+    private static final String ELECTORAL_LISTS_CSV2 = "ID,External ID,Abbreviation,Romanized Abbreviation\n" + ",,A,\n"
+            + ",,B,\n" + ",,F,\n" + ",,G,\n" + ",,P,\n" + ",,Q,\n";
     /**
      * A Laconic logging token for unit testing.
      */
@@ -109,17 +114,18 @@ public class CsvFilesBuilderTest {
     public void websiteShouldBeBuiltCorrectly() {
         ElectoralList.clear();
         ModifiableMap<Path, String> expected = ModifiableMap.<Path, String>empty();
-        expected.put(Paths.get("_csv", "be-vlg.csv"), POLLS_FLANDERS_CSV1);
+        expected.put(Paths.get("_csv", "be-vlg.csv"), POLLS_FLANDERS_CSV2);
         expected.put(Paths.get("_csv", "be-vlg.v1.csv"), POLLS_FLANDERS_CSV1);
         expected.put(Paths.get("_csv", "be-vlg.v2.csv"), POLLS_FLANDERS_CSV2);
-        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_P13_CSV1);
+        expected.put(Paths.get("_csv", "fr_p13.csv"), POLLS_FRANCE_P13_CSV2);
         expected.put(Paths.get("_csv", "fr_p13.v1.csv"), POLLS_FRANCE_P13_CSV1);
         expected.put(Paths.get("_csv", "fr_p13.v2.csv"), POLLS_FRANCE_P13_CSV2);
-        expected.put(Paths.get("_csv", "mk.csv"), POLLS_NORTH_MACEDONIA_CSV1);
+        expected.put(Paths.get("_csv", "mk.csv"), POLLS_NORTH_MACEDONIA_CSV2);
         expected.put(Paths.get("_csv", "mk.v1.csv"), POLLS_NORTH_MACEDONIA_CSV1);
         expected.put(Paths.get("_csv", "mk.v2.csv"), POLLS_NORTH_MACEDONIA_CSV2);
-        expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV);
-        expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV);
+        expected.put(Paths.get("_csv", "electorallists.csv"), ELECTORAL_LISTS_CSV2);
+        expected.put(Paths.get("_csv", "electorallists.v1.csv"), ELECTORAL_LISTS_CSV1);
+        expected.put(Paths.get("_csv", "electorallists.v2.csv"), ELECTORAL_LISTS_CSV2);
         Map<String, OpinionPolls> parliamentaryOpinionPollsMap =
                 Map.of("be", new OpinionPolls(Collections.EMPTY_SET), "mk", new OpinionPolls(Collections.EMPTY_SET));
         ElectoralList.get("A").setAbbreviation("A");
@@ -134,10 +140,12 @@ public class CsvFilesBuilderTest {
         CsvFilesBuilder builder = new CsvFilesBuilder(createWebsiteConfiguration(), parliamentaryOpinionPollsMap,
                 presidentialOpinionPollsMap);
         Map<Path, String> actual = builder.build();
-        ModifiableMap<Path, String> unexpected = ModifiableMap.of(actual);
-        unexpected.removeIf(e -> expected.containsKey(e.key()));
-        assertTrue(unexpected.isEmpty(),
-                unexpected.getKeys().stream().map(Object::toString).collect(Collectors.joining(", ")));
-        assertTrue(actual.containsSame(expected));
+        Map<Path, String> actualButNotExpected = Map.differenceOf(actual, expected);
+        Map<Path, String> expectedButNotActual = Map.differenceOf(expected, actual);
+        assertTrue(actualButNotExpected.isEmpty(),
+                actualButNotExpected.getKeys().stream().map(Object::toString).collect(Collectors.joining(", ")));
+        assertTrue(expectedButNotActual.isEmpty(),
+                expectedButNotActual.getKeys().stream().map(Object::toString).collect(Collectors.joining(", ")));
+        assertTrue(expected.containsSame(actual));
     }
 }
