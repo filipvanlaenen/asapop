@@ -295,7 +295,6 @@ public class Scraper {
         int lastRow = cells.size() - (footRows == null ? 0 : footRows);
         int unmatched = 0;
         String unmatchedPolls = "";
-        int unparsed = 0;
         Collection<String> excludedPollingFirms =
                 tableConfiguration.getExcludedPollingFirms() == null ? Collection.empty()
                         : new HashCollection<>(tableConfiguration.getExcludedPollingFirms());
@@ -430,31 +429,19 @@ public class Scraper {
                                 + (other == null ? "" : " •O: " + other)
                                 + (noResponses == null ? "" : " •N: " + noResponses);
                     }
-                } else {
-                    unparsed++;
-                    Laconic.LOGGER.logError("Row is missing polling firm and/or fieldword end date.", parseRowToken);
                 }
             }
         }
         if (scrapeConfigurationError) {
-            if (unmatched == 0 && unparsed == 0) {
+            if (unmatched == 0) {
                 return "Scrape configuration error.";
-            } else if (unparsed == 0) {
-                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s):" + unmatchedPolls;
-            } else if (unmatched == 0) {
-                return "Scrape configuration error. Found also " + unparsed + " unparsed row(s).";
             } else {
-                return "Scrape configuration error. Found also " + unparsed + " unparsed row(s) and " + unmatched
-                        + " unmatched poll(s):" + unmatchedPolls;
+                return "Scrape configuration error. Found also " + unmatched + " unmatched poll(s):" + unmatchedPolls;
             }
-        } else if (unmatched == 0 && unparsed == 0) {
-            return ALL_OK;
-        } else if (unparsed == 0) {
-            return "Found " + unmatched + " unmatched poll(s):" + unmatchedPolls;
         } else if (unmatched == 0) {
-            return "Found " + unparsed + " unparsed row(s).";
+            return ALL_OK;
         } else {
-            return "Found " + unparsed + " unparsed row(s) and " + unmatched + " unmatched poll(s):" + unmatchedPolls;
+            return "Found " + unmatched + " unmatched poll(s):" + unmatchedPolls;
         }
     }
 
