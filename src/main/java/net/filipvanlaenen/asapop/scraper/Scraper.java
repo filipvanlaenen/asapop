@@ -375,6 +375,7 @@ public class Scraper {
                         FieldworkPeriod period = parseFieldwordPeriod(fieldwordPeriod);
                         if (period == null) {
                             Laconic.LOGGER.logError("Could not extract a fieldwork period.", parseCellToken);
+                            scrapeConfigurationError = true;
                         } else {
                             startDate = period.startDate;
                             endDate = period.endDate();
