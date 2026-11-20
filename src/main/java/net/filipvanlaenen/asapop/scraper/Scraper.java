@@ -377,6 +377,8 @@ public class Scraper {
             }
         }
         java.util.Map<String, String> idsToKeysMap = RopfExporter.calculateIdsToKeys(ids, false);
+        Integer defaultYear = tableConfiguration.getDefaultYear();
+        String defaultYearString = defaultYear == null ? null : Integer.toString(defaultYear);
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
             Map<Integer, Cell> row = cells.get(i);
@@ -426,7 +428,7 @@ public class Scraper {
                         String fieldwordPeriod = cell.getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
                                 parseCellToken);
-                        FieldworkPeriod period = parseFieldwordPeriod(fieldwordPeriod);
+                        FieldworkPeriod period = parseFieldwordPeriod(fieldwordPeriod, defaultYearString);
                         if (period == null) {
                             Laconic.LOGGER.logError("Could not extract a fieldwork period.", parseCellToken);
                             scrapeConfigurationError = true;
@@ -470,7 +472,7 @@ public class Scraper {
                     }
                     j++;
                 }
-                if (pollingFirm != null && endDate != null) {
+                if (pollingFirm != null && !pollingFirm.isBlank() && endDate != null) {
                     PollKey pk = new PollKey(pollingFirm, endDate);
                     if (!excludedPollingFirms.contains(pollingFirm) && !unreconciledPolls.contains(pk)
                             && !currentPolls.contains(pk)) {
@@ -500,9 +502,9 @@ public class Scraper {
         }
     }
 
-    private FieldworkPeriod parseFieldwordPeriod(final String fragment) {
-        Pattern pattern =
-                Pattern.compile("((\\d{1,2})(\\s+([A-Za-z]{3}))?\\s*[–-]\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})\\s+(\\d{4})");
+    private FieldworkPeriod parseFieldwordPeriod(final String fragment, final String defaultYear) {
+        Pattern pattern = Pattern
+                .compile("((\\d{1,2})(\\s+([A-Za-z]{3}))?\\s*[–-]\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})(\\s+(\\d{4}))?");
         Matcher matcher = pattern.matcher(fragment);
 
         if (matcher.matches()) {
@@ -510,12 +512,15 @@ public class Scraper {
             String startMonth = matcher.group(4);
             String endDay = matcher.group(5);
             String endMonth = matcher.group(6);
-            String year = matcher.group(7);
+            String year = matcher.group(8);
             if (startDay == null) {
                 startDay = endDay;
             }
             if (startMonth == null) {
                 startMonth = endMonth;
+            }
+            if (year == null) {
+                year = defaultYear;
             }
 
             // 2. Bouw de twee volledige datum-strings op
@@ -532,15 +537,18 @@ public class Scraper {
         } else {
             String text = fragment.replaceAll("Mid[–-]", "").replaceAll("Late[–-]", "");
             Pattern monthPattern =
-                    Pattern.compile("((([A-Za-z]{3})(\\s+(\\d{4}))?)?\\s*[–-]\\s*)?([A-Za-z]{3})\\s+(\\d{4})");
+                    Pattern.compile("((([A-Za-z]{3})(\\s+(\\d{4}))?)?\\s*[–-]\\s*)?([A-Za-z]{3})(\\s+(\\d{4}))?");
             Matcher monthMatcher = monthPattern.matcher(text);
             if (monthMatcher.matches()) {
                 String startMonth = monthMatcher.group(3);
                 String startYear = monthMatcher.group(5);
                 String endMonth = monthMatcher.group(6);
-                String year = monthMatcher.group(7);
+                String year = monthMatcher.group(8);
                 if (startMonth == null) {
                     startMonth = endMonth;
+                }
+                if (year == null) {
+                    year = defaultYear;
                 }
                 if (startYear == null) {
                     startYear = year;

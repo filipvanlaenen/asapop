@@ -2,6 +2,7 @@ package net.filipvanlaenen.asapop.yaml.scrapeconfiguration;
 
 public class TableConfiguration {
     private ColumnConfiguration[] columns;
+    private Integer defaultYear;
     private String[] excludedPollingFirms;
     private Integer footRows;
     private String h2Content;
@@ -15,6 +16,10 @@ public class TableConfiguration {
 
     public ColumnConfiguration[] getColumns() {
         return columns;
+    }
+
+    public Integer getDefaultYear() {
+        return defaultYear;
     }
 
     public String[] getExcludedPollingFirms() {
@@ -59,6 +64,10 @@ public class TableConfiguration {
 
     public void setColumns(final ColumnConfiguration[] columns) {
         this.columns = columns;
+    }
+
+    public void setDefaultYear(final Integer defaultYear) {
+        this.defaultYear = defaultYear;
     }
 
     public void setExcludedPollingFirms(final String[] excludedPollingFirms) {
