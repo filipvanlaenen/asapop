@@ -3,6 +3,7 @@ package net.filipvanlaenen.asapop.yaml.scrapeconfiguration;
 public class ColumnConfiguration {
     private String columnType;
     private String headerContent;
+    private String headerImage;
     private int headerRow;
     private String resultKeys;
     private String separator;
@@ -13,6 +14,10 @@ public class ColumnConfiguration {
 
     public String getHeaderContent() {
         return headerContent;
+    }
+
+    public String getHeaderImage() {
+        return headerImage;
     }
 
     public int getHeaderRow() {
@@ -33,6 +38,10 @@ public class ColumnConfiguration {
 
     public void setHeaderContent(final String headerContent) {
         this.headerContent = headerContent;
+    }
+
+    public void setHeaderImage(final String headerImage) {
+        this.headerImage = headerImage;
     }
 
     public void setHeaderRow(final int headerRow) {

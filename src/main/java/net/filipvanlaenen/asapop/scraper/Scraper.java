@@ -57,6 +57,7 @@ public class Scraper {
         private final String content;
         private String displayText;
         private String flatDisplayText;
+        private String image;
 
         Cell(String content) {
             this.content = content;
@@ -71,6 +72,46 @@ public class Scraper {
             } else {
                 return 1;
             }
+        }
+
+        String getDisplayText() {
+            if (displayText == null) {
+                String fragment = content.substring(findFirstOccurrenceOf(content, 0, TAG_CLOSING_PATTERN) + 1,
+                        content.length() - 5);
+                fragment = removeTagsButKeepContent(fragment, "a");
+                fragment = removeTagsButKeepContent(fragment, "b");
+                fragment = replaceTags(fragment, "br", "\n");
+                fragment = removeTags(fragment, "img");
+                fragment = removeTags(fragment, "link");
+                fragment = removeTagsButKeepContent(fragment, "small");
+                fragment = removeTagsButKeepContent(fragment, "span");
+                fragment = removeTagsWithContent(fragment, "sup");
+                fragment = removeTags(fragment, "wbr");
+                displayText = fragment.trim();
+            }
+            return displayText;
+        }
+
+        String getFlatDisplayText() {
+            if (flatDisplayText == null) {
+                flatDisplayText = getDisplayText().replaceAll("\\s+", " ");
+            }
+            return flatDisplayText;
+        }
+
+        String getImage() {
+            if (image == null) {
+                OrderedCollection<String> images = extractEmptyTags(content, "img");
+                Pattern pattern = Pattern.compile(Pattern.quote("resource=\"https://en.wikipedia.org/wiki/File:")
+                        + "([^" + Pattern.quote("\"") + "]+)" + Pattern.quote("\""), Pattern.CASE_INSENSITIVE);
+                for (String img : images) {
+                    Matcher matcher = pattern.matcher(img);
+                    if (matcher.find()) {
+                        image = matcher.group(1);
+                    }
+                }
+            }
+            return image;
         }
 
         int getRowSpan() {
@@ -88,6 +129,28 @@ public class Scraper {
             return Collection.of("", "–").contains(getFlatDisplayText());
         }
 
+        private String replaceTags(final String fragment, String tag, String result) {
+            Pattern single = Pattern.compile(Pattern.quote("<") + tag + XML_ARGUMENTS + Pattern.quote("/>"),
+                    Pattern.CASE_INSENSITIVE);
+            Matcher m = single.matcher(fragment);
+            return m.replaceAll(result);
+        }
+
+        private String removeTags(final String fragment, String tag) {
+            return replaceTags(fragment, tag, "");
+        }
+
+        private String removeTagsButKeepContent(final String fragment, String tagPattern) {
+            Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
+                    Pattern.CASE_INSENSITIVE);
+            Pattern closing =
+                    Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
+            Matcher m = opening.matcher(fragment);
+            String fragment2 = m.replaceAll("");
+            Matcher n = closing.matcher(fragment2);
+            return n.replaceAll("");
+        }
+
         private String removeTagsWithContent(final String fragment, String tagPattern) {
             Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
                     Pattern.CASE_INSENSITIVE);
@@ -103,52 +166,6 @@ public class Scraper {
                 n = closing.matcher(result);
             }
             return result;
-        }
-
-        private String removeTagsButKeepContent(final String fragment, String tagPattern) {
-            Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
-                    Pattern.CASE_INSENSITIVE);
-            Pattern closing =
-                    Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
-            Matcher m = opening.matcher(fragment);
-            String fragment2 = m.replaceAll("");
-            Matcher n = closing.matcher(fragment2);
-            return n.replaceAll("");
-        }
-
-        private String removeTags(final String fragment, String tag) {
-            return replaceTags(fragment, tag, "");
-        }
-
-        private String replaceTags(final String fragment, String tag, String result) {
-            Pattern single = Pattern.compile(Pattern.quote("<") + tag + XML_ARGUMENTS + Pattern.quote("/>"),
-                    Pattern.CASE_INSENSITIVE);
-            Matcher m = single.matcher(fragment);
-            return m.replaceAll(result);
-        }
-
-        String getDisplayText() {
-            if (displayText == null) {
-                String fragment = content.substring(findFirstOccurrenceOf(content, 0, TAG_CLOSING_PATTERN) + 1,
-                        content.length() - 5);
-                fragment = removeTagsButKeepContent(fragment, "a");
-                fragment = removeTagsButKeepContent(fragment, "b");
-                fragment = replaceTags(fragment, "br", "\n");
-                fragment = removeTags(fragment, "link");
-                fragment = removeTagsButKeepContent(fragment, "small");
-                fragment = removeTagsButKeepContent(fragment, "span");
-                fragment = removeTagsWithContent(fragment, "sup");
-                fragment = removeTags(fragment, "wbr");
-                displayText = fragment.trim();
-            }
-            return displayText;
-        }
-
-        String getFlatDisplayText() {
-            if (flatDisplayText == null) {
-                flatDisplayText = getDisplayText().replaceAll("\\s+", " ");
-            }
-            return flatDisplayText;
         }
     }
 
@@ -192,11 +209,33 @@ public class Scraper {
         return -1;
     }
 
-    private OrderedCollection<String> extractTags(String fragment, String tagPattern) {
+    private static OrderedCollection<String> extractEmptyTags(String fragment, String tagPattern) {
+        return extractEmptyTags(fragment, tagPattern, tagPattern.length());
+    }
+
+    private static OrderedCollection<String> extractEmptyTags(String fragment, String tagPattern, int patternLength) {
+        Pattern startPattern = Pattern.compile(Pattern.quote("<") + tagPattern, Pattern.CASE_INSENSITIVE);
+        Pattern endPattern = Pattern.compile(Pattern.quote("/>"), Pattern.CASE_INSENSITIVE);
+        ModifiableOrderedCollection<String> result = ModifiableOrderedCollection.empty();
+        int i = 0;
+        while (i >= 0) {
+            int tagStart = findFirstOccurrenceOf(fragment, i, startPattern);
+            if (tagStart == -1) {
+                return result;
+            } else {
+                int tagEnd = findFirstOccurrenceOf(fragment, tagStart, endPattern);
+                result.add(fragment.substring(tagStart, tagEnd + patternLength + 3));
+                i = tagEnd + 1;
+            }
+        }
+        return result;
+    }
+
+    private static OrderedCollection<String> extractTags(String fragment, String tagPattern) {
         return extractTags(fragment, tagPattern, tagPattern.length());
     }
 
-    private OrderedCollection<String> extractTags(String fragment, String tagPattern, int patternLength) {
+    private static OrderedCollection<String> extractTags(String fragment, String tagPattern, int patternLength) {
         Pattern startPattern = Pattern.compile(Pattern.quote("<") + tagPattern, Pattern.CASE_INSENSITIVE);
         Pattern endPattern =
                 Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
@@ -259,13 +298,28 @@ public class Scraper {
                     "Validating the header of the column at position %d.", columnIndex + 1);
             int rowIndex = cc.getHeaderRow() - 1;
             if (cells.containsKey(rowIndex)) {
-                Laconic.LOGGER.logMessage("Validating the header of the column at row %d.", rowIndex + 1,
+                Laconic.LOGGER.logMessage("Validating the header of the column on row %d.", rowIndex + 1,
                         validateColumnHeaderToken);
                 if (cells.get(rowIndex).containsKey(columnIndex)) {
-                    String header = cells.get(rowIndex).get(columnIndex).getFlatDisplayText();
-                    Laconic.LOGGER.logMessage("Validating the header “%s”.", header, validateColumnHeaderToken);
-                    if (!header.equals(cc.getHeaderContent())) {
-                        Laconic.LOGGER.logError("Header text isn't equal to “%s”.", cc.getHeaderContent(),
+                    if (cc.getHeaderContent() != null) {
+                        String header = cells.get(rowIndex).get(columnIndex).getFlatDisplayText();
+                        Laconic.LOGGER.logMessage("Validating the header “%s”.", header, validateColumnHeaderToken);
+                        if (!header.equals(cc.getHeaderContent())) {
+                            Laconic.LOGGER.logError("Header text isn't equal to “%s”.", cc.getHeaderContent(),
+                                    validateColumnHeaderToken);
+                            scrapeConfigurationError = true;
+                        }
+                    } else if (cc.getHeaderImage() != null) {
+                        String image = cells.get(rowIndex).get(columnIndex).getImage();
+                        Laconic.LOGGER.logMessage("Validating the header image “%s”.", image,
+                                validateColumnHeaderToken);
+                        if (!image.equals(cc.getHeaderImage())) {
+                            Laconic.LOGGER.logError("Header image isn't equal to “%s”.", cc.getHeaderImage(),
+                                    validateColumnHeaderToken);
+                            scrapeConfigurationError = true;
+                        }
+                    } else {
+                        Laconic.LOGGER.logError("Column configuration doesn't contain content or image to validate.",
                                 validateColumnHeaderToken);
                         scrapeConfigurationError = true;
                     }
