@@ -126,7 +126,7 @@ public class Scraper {
         }
 
         boolean isEmpty() {
-            return Collection.of("", "–").contains(getFlatDisplayText());
+            return Collection.of("", "–", "—N/a").contains(getFlatDisplayText());
         }
 
         private String replaceTags(final String fragment, String tag, String result) {
