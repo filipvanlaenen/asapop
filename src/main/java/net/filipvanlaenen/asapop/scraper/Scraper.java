@@ -126,7 +126,7 @@ public class Scraper {
         }
 
         boolean isEmpty() {
-            return Collection.of("", "–", "—N/a").contains(getFlatDisplayText());
+            return Collection.of("", "–", "—N/a", "?").contains(getFlatDisplayText());
         }
 
         private String replaceTags(final String fragment, String tag, String result) {
@@ -198,7 +198,7 @@ public class Scraper {
             } else {
                 int tagStartClosing = findFirstOccurrenceOf(page, tagStart, TAG_CLOSING_PATTERN);
                 int tagEnd = findFirstOccurrenceOf(page, tagStart, endPattern);
-                String content = page.substring(tagStartClosing, tagEnd);
+                String content = page.substring(tagStartClosing + 1, tagEnd);
                 Matcher matcher = textPattern.matcher(content);
                 if (matcher.find()) {
                     return tagStart;
@@ -287,6 +287,7 @@ public class Scraper {
         String fragment = reduceByHeader(page, tableConfiguration.getH2Content(), "h2", scrapeToken);
         fragment = reduceByHeader(fragment, tableConfiguration.getH3Content(), "h3", scrapeToken);
         fragment = reduceByHeader(fragment, tableConfiguration.getH4Content(), "h4", scrapeToken);
+        fragment = reduceByHeader(fragment, tableConfiguration.getH5Content(), "h5", scrapeToken);
         fragment = reduceToTable(fragment, tableConfiguration.getTableIndex(), scrapeToken);
         OrderedCollection<String> rows = extractTags(fragment, "tr");
         OrderedCollection<OrderedCollection<String>> cellStrings = extractCellsFromRows(rows);
@@ -390,6 +391,7 @@ public class Scraper {
                 String noResponses = null;
                 String other = null;
                 String sampleSize = null;
+                String excluded = null;
                 ModifiableMap<String, String> results = ModifiableMap.empty();
                 int j = 0;
                 int remainingColSpan = 0;
@@ -442,6 +444,12 @@ public class Scraper {
                         if (!cell.isEmpty()) {
                             sampleSize = cell.getFlatDisplayText().replaceAll(",", "");
                         }
+                    } else if ("turnout".equals(columnType)) {
+                        if (!cell.isEmpty()) {
+                            String turnout = cell.getFlatDisplayText().replaceAll(",", "");
+                            double t = Double.parseDouble(turnout);
+                            excluded = String.format(Locale.US, "%.1f", 100D - t);
+                        }
                     } else if ("resultValue".equals(columnType)) {
                         if (remainingColSpan > 0) {
                             if (!cell.isEmpty()) {
@@ -481,6 +489,7 @@ public class Scraper {
                                 + (commissioner == null ? "" : " •C: " + commissioner) + " •FS: " + startDate + " •FE: "
                                 + endDate + " •SC: " + tableConfiguration.getScope()
                                 + (sampleSize == null ? "" : " •SS: " + sampleSize)
+                                + (excluded == null ? "" : " •EX: " + excluded)
                                 + results.stream().map(e -> " " + e.key() + ": " + e.value()).collect(
                                         java.util.stream.Collectors.joining())
                                 + (other == null ? "" : " •O: " + other)

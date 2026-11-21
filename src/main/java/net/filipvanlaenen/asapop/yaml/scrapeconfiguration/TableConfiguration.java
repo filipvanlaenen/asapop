@@ -8,6 +8,7 @@ public class TableConfiguration {
     private String h2Content;
     private String h3Content;
     private String h4Content;
+    private String h5Content;
     private Integer headRows;
     private PollingFirmAliases[] pollingFirmAliases;
     private String scope;
@@ -40,6 +41,10 @@ public class TableConfiguration {
 
     public String getH4Content() {
         return h4Content;
+    }
+
+    public String getH5Content() {
+        return h5Content;
     }
 
     public Integer getHeadRows() {
@@ -88,6 +93,10 @@ public class TableConfiguration {
 
     public void setH4Content(final String h4Content) {
         this.h4Content = h4Content;
+    }
+
+    public void setH5Content(final String h5Content) {
+        this.h5Content = h5Content;
     }
 
     public void setHeadRows(final Integer headRows) {
