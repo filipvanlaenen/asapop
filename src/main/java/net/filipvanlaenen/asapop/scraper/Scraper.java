@@ -56,6 +56,7 @@ public class Scraper {
                 + SINGLE_QUOTE + "]*" + SINGLE_QUOTE + ")*[^" + SINGLE_QUOTE_GREATER_THAN + "]*)?";
         private final String content;
         private String displayText;
+        private String firstLineOfDisplayText;
         private String flatDisplayText;
         private String image;
 
@@ -90,6 +91,13 @@ public class Scraper {
                 displayText = fragment.trim();
             }
             return displayText;
+        }
+
+        String getFirstLineOfDisplayText() {
+            if (firstLineOfDisplayText == null) {
+                firstLineOfDisplayText = getDisplayText().split("\n")[0];
+            }
+            return firstLineOfDisplayText;
         }
 
         String getFlatDisplayText() {
@@ -379,6 +387,7 @@ public class Scraper {
         }
         java.util.Map<String, String> idsToKeysMap = RopfExporter.calculateIdsToKeys(ids, false);
         Integer defaultYear = tableConfiguration.getDefaultYear();
+        boolean firstLineOfResultsOnly = Boolean.TRUE == tableConfiguration.getFirstLineOfResultsOnly();
         String defaultYearString = defaultYear == null ? null : Integer.toString(defaultYear);
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
@@ -463,8 +472,12 @@ public class Scraper {
                         } else if (!cell.isEmpty()) {
                             lastKey = RopfExporter.asKeysString(idsToKeysMap,
                                     ElectoralList.get(Set.of(cc.getResultKeys().split("\\+"))));
-                            results.add(lastKey, cell.getFlatDisplayText());
-                            remainingColSpan = cell.getColSpan() - 1;
+                            String resultValue = firstLineOfResultsOnly ? cell.getFirstLineOfDisplayText()
+                                    : cell.getFlatDisplayText();
+                            if (!"?".equals(resultValue)) {
+                                results.add(lastKey, resultValue);
+                                remainingColSpan = cell.getColSpan() - 1;
+                            }
                         }
                         if (remainingColSpan == 0) {
                             lastKey = null;
@@ -498,7 +511,9 @@ public class Scraper {
                 }
             }
         }
-        if (scrapeConfigurationError) {
+        if (scrapeConfigurationError)
+
+        {
             if (unmatched == 0) {
                 return "Scrape configuration error.";
             } else {

@@ -5,6 +5,7 @@ public class TableConfiguration {
     private Integer defaultYear;
     private String[] excludedPollingFirms;
     private Integer footRows;
+    private Boolean firstLineOfResultsOnly;
     private String h2Content;
     private String h3Content;
     private String h4Content;
@@ -25,6 +26,10 @@ public class TableConfiguration {
 
     public String[] getExcludedPollingFirms() {
         return excludedPollingFirms;
+    }
+
+    public Boolean getFirstLineOfResultsOnly() {
+        return firstLineOfResultsOnly;
     }
 
     public Integer getFootRows() {
@@ -77,6 +82,10 @@ public class TableConfiguration {
 
     public void setExcludedPollingFirms(final String[] excludedPollingFirms) {
         this.excludedPollingFirms = excludedPollingFirms;
+    }
+
+    public void setFirstLineOfResultsOnly(final Boolean firstLineOfResultsOnly) {
+        this.firstLineOfResultsOnly = firstLineOfResultsOnly;
     }
 
     public void setFootRows(final Integer footRows) {
