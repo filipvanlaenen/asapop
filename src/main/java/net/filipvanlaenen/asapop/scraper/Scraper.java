@@ -54,6 +54,7 @@ public class Scraper {
         private static final String SINGLE_QUOTE = Pattern.quote("'");
         private static final String XML_ARGUMENTS = "(\\s([^" + SINGLE_QUOTE_GREATER_THAN + "]*" + SINGLE_QUOTE + "[^"
                 + SINGLE_QUOTE + "]*" + SINGLE_QUOTE + ")*[^" + SINGLE_QUOTE_GREATER_THAN + "]*)?";
+        private static final Cell EMPTY = new Cell("");
         private final String content;
         private String displayText;
         private String firstLineOfDisplayText;
@@ -409,7 +410,7 @@ public class Scraper {
                     Token parseCellToken =
                             Laconic.LOGGER.logMessage(parseRowToken, "Parsing the cell at position %d.", j + 1);
                     String columnType = cc.getColumnType();
-                    Cell cell = row.get(j);
+                    Cell cell = row.containsKey(j) ? row.get(j) : Cell.EMPTY;
                     if ("pollingFirm".equals(columnType)) {
                         pollingFirm = cell.getFlatDisplayText();
                         Laconic.LOGGER.logMessage("Found the name “%s” for the polling firm.", pollingFirm,
