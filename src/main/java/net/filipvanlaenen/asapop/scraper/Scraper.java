@@ -455,7 +455,7 @@ public class Scraper {
                         }
                     } else if ("turnout".equals(columnType)) {
                         if (!cell.isEmpty()) {
-                            String turnout = cell.getFlatDisplayText().replaceAll(",", "");
+                            String turnout = cell.getFlatDisplayText().replaceAll(",", "").split("–")[0];
                             double t = Double.parseDouble(turnout);
                             excluded = String.format(Locale.US, "%.1f", 100D - t);
                         }

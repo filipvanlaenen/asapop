@@ -83,6 +83,7 @@ public final class RichOpinionPollsFile {
     public static RichOpinionPollsFile parse(final Token fileToken, final String... lines) {
         Set<OpinionPoll> opinionPolls = new HashSet<OpinionPoll>();
         List<CommentLine> commentLines = new ArrayList<CommentLine>();
+        List<ElectoralListsLine> electoralListsLines = new ArrayList<ElectoralListsLine>();
         Map<String, ElectoralList> electoralListKeyMap = new HashMap<String, ElectoralList>();
         Map<String, Candidate> candidateKeyMap = new HashMap<String, Candidate>();
         OpinionPoll lastOpinionPoll = null;
@@ -124,6 +125,9 @@ public final class RichOpinionPollsFile {
             } else if (CommentLine.isCommentLine(line)) {
                 Laconic.LOGGER.logMessage("Line is recognized as a comment line.", token);
                 commentLines.add(CommentLine.parse(line));
+            } else if (ElectoralListsLine.isElectoralListsLine(line)) {
+                Laconic.LOGGER.logMessage("Line is recognized as an electoral lists line.", token);
+                electoralListsLines.add(ElectoralListsLine.parse(line));
             } else if (!ElectoralListLine.isElectoralListLine(line) && !CandidateLine.isCandidateLine(line)
                     && !EmptyLine.isEmptyLine(line)) {
                 Laconic.LOGGER.logError("Line doesn't have a recognized line format.", token);

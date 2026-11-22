@@ -27,7 +27,7 @@ public final class CommentLine extends Line {
     /**
      * Returns the content of the comment line.
      *
-     * @return The content of the comment line.F
+     * @return The content of the comment line.
      */
     public String getContent() {
         return content;
