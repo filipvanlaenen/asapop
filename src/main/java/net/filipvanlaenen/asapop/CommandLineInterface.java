@@ -525,7 +525,8 @@ public final class CommandLineInterface {
                         } else {
                             Scraper scraper = new Scraper(page);
                             for (TableConfiguration tableConfiguration : tableConfigurations) {
-                                String result = scraper.scrape(tableConfiguration, richOpinionPollsFile, scrapeToken);
+                                String result =
+                                        scraper.scrape(tableConfiguration, richOpinionPollsFile, nextElectionPageToken);
                                 if (verbose || !Scraper.ALL_OK.equals(result)) {
                                     results.add(ropfFileName + ": " + result);
                                 }

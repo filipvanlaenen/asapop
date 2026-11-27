@@ -308,18 +308,20 @@ public class Scraper {
                                     pollingFirm, parseCellToken);
                         }
                     } else if ("fieldworkPeriod".equals(columnType)) {
-                        String fieldwordPeriod = cell.getFlatDisplayText();
-                        Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
-                                parseCellToken);
-                        FieldworkPeriod period = parseFieldwordPeriod(fieldwordPeriod, defaultYearString);
-                        if (period == null) {
-                            Laconic.LOGGER.logError("Could not extract a fieldwork period.", parseCellToken);
-                            scrapeConfigurationError = true;
-                        } else {
-                            startDate = period.startDate;
-                            endDate = period.endDate();
-                            Laconic.LOGGER.logMessage("Found %s for the fieldwork end date.", endDate.toString(),
+                        if (!cell.isEmpty()) {
+                            String fieldwordPeriod = cell.getFlatDisplayText();
+                            Laconic.LOGGER.logMessage("Parsing the fieldwork period text “%s”.", fieldwordPeriod,
                                     parseCellToken);
+                            FieldworkPeriod period = parseFieldwordPeriod(fieldwordPeriod, defaultYearString);
+                            if (period == null) {
+                                Laconic.LOGGER.logError("Could not extract a fieldwork period.", parseCellToken);
+                                scrapeConfigurationError = true;
+                            } else {
+                                startDate = period.startDate;
+                                endDate = period.endDate();
+                                Laconic.LOGGER.logMessage("Found %s for the fieldwork end date.", endDate.toString(),
+                                        parseCellToken);
+                            }
                         }
                     } else if ("sampleSize".equals(columnType)) {
                         if (!cell.isEmpty()) {
@@ -371,9 +373,9 @@ public class Scraper {
                             && !currentPolls.contains(pk)) {
                         unmatched++;
                         unmatchedPolls += "\n  •PF: " + pollingFirm
-                                + (commissioner == null ? "" : " •C: " + commissioner) + " •FS: " + startDate + " •FE: "
-                                + endDate + " •SC: " + tableConfiguration.getScope()
-                                + (sampleSize == null ? "" : " •SS: " + sampleSize)
+                                + (commissioner == null ? "" : " •C: " + commissioner)
+                                + (startDate == null ? "" : " •FS: " + startDate) + " •FE: " + endDate + " •SC: "
+                                + tableConfiguration.getScope() + (sampleSize == null ? "" : " •SS: " + sampleSize)
                                 + (excluded == null ? "" : " •EX: " + excluded)
                                 + results.stream().map(e -> " " + e.key() + ": " + e.value()).collect(
                                         java.util.stream.Collectors.joining())
@@ -402,7 +404,6 @@ public class Scraper {
         Pattern pattern = Pattern
                 .compile("((\\d{1,2})(\\s+([A-Za-z]{3}))?\\s*[–-]\\s*)?(\\d{1,2})\\s+([A-Za-z]{3})(\\s+(\\d{4}))?");
         Matcher matcher = pattern.matcher(fragment);
-
         if (matcher.matches()) {
             String startDay = matcher.group(2);
             String startMonth = matcher.group(4);
@@ -418,48 +419,52 @@ public class Scraper {
             if (year == null) {
                 year = defaultYear;
             }
-
-            // 2. Bouw de twee volledige datum-strings op
             String startDateStr = startDay + " " + startMonth + " " + year;
             String endDateStr = endDay + " " + endMonth + " " + year;
-
-            // 3. Definieer de formatter (gebruik US/UK locale voor Engelse maandnamen zoals 'Feb')
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
-
-            // 4. Parse naar LocalDate objecten
             LocalDate startDate = LocalDate.parse(startDateStr, formatter);
             LocalDate endDate = LocalDate.parse(endDateStr, formatter);
             return new FieldworkPeriod(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
         } else {
-            String text = fragment.replaceAll("Mid[–-]", "").replaceAll("Late[–-]", "");
-            Pattern monthPattern =
-                    Pattern.compile("((([A-Za-z]{3})(\\s+(\\d{4}))?)?\\s*[–-]\\s*)?([A-Za-z]{3})(\\s+(\\d{4}))?");
-            Matcher monthMatcher = monthPattern.matcher(text);
-            if (monthMatcher.matches()) {
-                String startMonth = monthMatcher.group(3);
-                String startYear = monthMatcher.group(5);
-                String endMonth = monthMatcher.group(6);
-                String year = monthMatcher.group(8);
-                if (startMonth == null) {
-                    startMonth = endMonth;
-                }
+            Pattern pattern2 = Pattern.compile("\\?\\s*[–-]\\s*(\\d{1,2})\\s+([A-Za-z]{3})(\\s+(\\d{4}))?");
+            Matcher matcher2 = pattern2.matcher(fragment);
+            if (matcher2.matches()) {
+                String endDay = matcher2.group(1);
+                String endMonth = matcher2.group(2);
+                String year = matcher2.group(4);
                 if (year == null) {
                     year = defaultYear;
                 }
-                if (startYear == null) {
-                    startYear = year;
+                String endDateStr = endDay + " " + endMonth + " " + year;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+                LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+                return new FieldworkPeriod(null, DateMonthOrYear.of(endDate));
+            } else {
+                String text = fragment.replaceAll("Mid[–-]", "").replaceAll("Late[–-]", "");
+                Pattern monthPattern =
+                        Pattern.compile("((([A-Za-z]{3})(\\s+(\\d{4}))?)?\\s*[–-]\\s*)?([A-Za-z]{3})(\\s+(\\d{4}))?");
+                Matcher monthMatcher = monthPattern.matcher(text);
+                if (monthMatcher.matches()) {
+                    String startMonth = monthMatcher.group(3);
+                    String startYear = monthMatcher.group(5);
+                    String endMonth = monthMatcher.group(6);
+                    String year = monthMatcher.group(8);
+                    if (startMonth == null) {
+                        startMonth = endMonth;
+                    }
+                    if (year == null) {
+                        year = defaultYear;
+                    }
+                    if (startYear == null) {
+                        startYear = year;
+                    }
+                    String startDateStr = startMonth + " " + startYear;
+                    String endDateStr = endMonth + " " + year;
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
+                    YearMonth startDate = YearMonth.parse(startDateStr, formatter);
+                    YearMonth endDate = YearMonth.parse(endDateStr, formatter);
+                    return new FieldworkPeriod(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
                 }
-                // 2. Bouw de twee volledige datum-strings op
-                String startDateStr = startMonth + " " + startYear;
-                String endDateStr = endMonth + " " + year;
-
-                // 3. Definieer de formatter (gebruik US/UK locale voor Engelse maandnamen zoals 'Feb')
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
-
-                // 4. Parse naar LocalDate objecten
-                YearMonth startDate = YearMonth.parse(startDateStr, formatter);
-                YearMonth endDate = YearMonth.parse(endDateStr, formatter);
-                return new FieldworkPeriod(DateMonthOrYear.of(startDate), DateMonthOrYear.of(endDate));
             }
         }
         return null;
