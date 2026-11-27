@@ -263,6 +263,8 @@ public class Scraper {
         String defaultYearString = defaultYear == null ? null : Integer.toString(defaultYear);
         for (int i = firstRow; i < lastRow; i++) {
             Token parseRowToken = Laconic.LOGGER.logMessage(scrapeToken, "Parsing the row at position %d.", i + 1);
+            boolean allResultValuesIdentical = true;
+            Cell lastResultValueCell = null;
             Map<Integer, Cell> row = cells.get(i);
             if (!row.isEmpty() && !row.get(pollingFirmIndex).getFlatDisplayText().toLowerCase().contains("election")) {
                 String commissioner = null;
@@ -334,6 +336,10 @@ public class Scraper {
                             excluded = String.format(Locale.US, "%.1f", 100D - t);
                         }
                     } else if ("resultValue".equals(columnType)) {
+                        if (lastResultValueCell == null) {
+                            lastResultValueCell = cell;
+                        }
+                        allResultValuesIdentical = cell == lastResultValueCell;
                         if (remainingColSpan > 0) {
                             if (!cell.isEmpty()) {
                                 String key = RopfExporter.asKeysString(idsToKeysMap,
@@ -367,7 +373,7 @@ public class Scraper {
                     }
                     j++;
                 }
-                if (pollingFirm != null && !pollingFirm.isBlank() && endDate != null) {
+                if (!allResultValuesIdentical && pollingFirm != null && !pollingFirm.isBlank() && endDate != null) {
                     PollKey pk = new PollKey(pollingFirm, endDate);
                     if (!excludedPollingFirms.contains(pollingFirm) && !unreconciledPolls.contains(pk)
                             && !currentPolls.contains(pk)) {
