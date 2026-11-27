@@ -49,136 +49,7 @@ public class Scraper {
     private record FieldworkPeriod(DateMonthOrYear startDate, DateMonthOrYear endDate) {
     }
 
-    private static class Cell {
-        private static final String SINGLE_QUOTE_GREATER_THAN = Pattern.quote("'>");
-        private static final String SINGLE_QUOTE = Pattern.quote("'");
-        private static final String XML_ARGUMENTS = "(\\s([^" + SINGLE_QUOTE_GREATER_THAN + "]*" + SINGLE_QUOTE + "[^"
-                + SINGLE_QUOTE + "]*" + SINGLE_QUOTE + ")*[^" + SINGLE_QUOTE_GREATER_THAN + "]*)?";
-        private static final Cell EMPTY = new Cell("");
-        private final String content;
-        private String displayText;
-        private String firstLineOfDisplayText;
-        private String flatDisplayText;
-        private String image;
-
-        Cell(String content) {
-            this.content = content;
-        }
-
-        int getColSpan() {
-            Pattern pattern = Pattern.compile(Pattern.quote("colspan=\"") + "(\\d+)" + Pattern.quote("\""),
-                    Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(content);
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.group(1));
-            } else {
-                return 1;
-            }
-        }
-
-        String getDisplayText() {
-            if (displayText == null) {
-                String fragment = content.substring(findFirstOccurrenceOf(content, 0, TAG_CLOSING_PATTERN) + 1,
-                        content.length() - 5);
-                fragment = removeTagsButKeepContent(fragment, "a");
-                fragment = removeTagsButKeepContent(fragment, "b");
-                fragment = replaceTags(fragment, "br", "\n");
-                fragment = removeTags(fragment, "img");
-                fragment = removeTags(fragment, "link");
-                fragment = removeTagsButKeepContent(fragment, "small");
-                fragment = removeTagsButKeepContent(fragment, "span");
-                fragment = removeTagsWithContent(fragment, "sup");
-                fragment = removeTags(fragment, "wbr");
-                displayText = fragment.trim();
-            }
-            return displayText;
-        }
-
-        String getFirstLineOfDisplayText() {
-            if (firstLineOfDisplayText == null) {
-                firstLineOfDisplayText = getDisplayText().split("\n")[0];
-            }
-            return firstLineOfDisplayText;
-        }
-
-        String getFlatDisplayText() {
-            if (flatDisplayText == null) {
-                flatDisplayText = getDisplayText().replaceAll("\\s+", " ");
-            }
-            return flatDisplayText;
-        }
-
-        String getImage() {
-            if (image == null) {
-                OrderedCollection<String> images = extractEmptyTags(content, "img");
-                Pattern pattern = Pattern.compile(Pattern.quote("resource=\"https://en.wikipedia.org/wiki/File:")
-                        + "([^" + Pattern.quote("\"") + "]+)" + Pattern.quote("\""), Pattern.CASE_INSENSITIVE);
-                for (String img : images) {
-                    Matcher matcher = pattern.matcher(img);
-                    if (matcher.find()) {
-                        image = matcher.group(1);
-                    }
-                }
-            }
-            return image;
-        }
-
-        int getRowSpan() {
-            Pattern pattern = Pattern.compile(Pattern.quote("rowspan=\"") + "(\\d+)" + Pattern.quote("\""),
-                    Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(content);
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.group(1));
-            } else {
-                return 1;
-            }
-        }
-
-        boolean isEmpty() {
-            return Collection.of("", "–", "—N/a", "?").contains(getFlatDisplayText());
-        }
-
-        private String replaceTags(final String fragment, String tag, String result) {
-            Pattern single = Pattern.compile(Pattern.quote("<") + tag + XML_ARGUMENTS + Pattern.quote("/>"),
-                    Pattern.CASE_INSENSITIVE);
-            Matcher m = single.matcher(fragment);
-            return m.replaceAll(result);
-        }
-
-        private String removeTags(final String fragment, String tag) {
-            return replaceTags(fragment, tag, "");
-        }
-
-        private String removeTagsButKeepContent(final String fragment, String tagPattern) {
-            Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
-                    Pattern.CASE_INSENSITIVE);
-            Pattern closing =
-                    Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
-            Matcher m = opening.matcher(fragment);
-            String fragment2 = m.replaceAll("");
-            Matcher n = closing.matcher(fragment2);
-            return n.replaceAll("");
-        }
-
-        private String removeTagsWithContent(final String fragment, String tagPattern) {
-            Pattern opening = Pattern.compile(Pattern.quote("<") + tagPattern + XML_ARGUMENTS + Pattern.quote(">"),
-                    Pattern.CASE_INSENSITIVE);
-            Pattern closing =
-                    Pattern.compile(Pattern.quote("</") + tagPattern + Pattern.quote(">"), Pattern.CASE_INSENSITIVE);
-            String result = fragment;
-            Matcher m = opening.matcher(result);
-            Matcher n = closing.matcher(result);
-            while (m.find()) {
-                n.find();
-                result = result.substring(0, m.start()) + result.substring(n.end());
-                m = opening.matcher(result);
-                n = closing.matcher(result);
-            }
-            return result;
-        }
-    }
-
-    public final static Pattern TAG_CLOSING_PATTERN = Pattern.compile(Pattern.quote(">"));
+    private final static Pattern GREATER_THAN_PATTERN = Pattern.compile(Pattern.quote(">"));
     public static final String ALL_OK = "Found no unmatched polls or unparsed rows.";
     private final String page;
 
@@ -205,7 +76,7 @@ public class Scraper {
             if (tagStart == -1) {
                 return -1;
             } else {
-                int tagStartClosing = findFirstOccurrenceOf(page, tagStart, TAG_CLOSING_PATTERN);
+                int tagStartClosing = findFirstOccurrenceOf(page, tagStart, GREATER_THAN_PATTERN);
                 int tagEnd = findFirstOccurrenceOf(page, tagStart, endPattern);
                 String content = page.substring(tagStartClosing + 1, tagEnd);
                 Matcher matcher = textPattern.matcher(content);
@@ -218,7 +89,7 @@ public class Scraper {
         return -1;
     }
 
-    private static OrderedCollection<String> extractEmptyTags(String fragment, String tagPattern) {
+    static OrderedCollection<String> extractEmptyTags(String fragment, String tagPattern) {
         return extractEmptyTags(fragment, tagPattern, tagPattern.length());
     }
 
@@ -282,7 +153,7 @@ public class Scraper {
         return containsTagPatternWithText(page, Pattern.quote(tag), text);
     }
 
-    private static int findFirstOccurrenceOf(final String fragment, final int fromIndex, final Pattern pattern) {
+    static int findFirstOccurrenceOf(final String fragment, final int fromIndex, final Pattern pattern) {
         Matcher matcher = pattern.matcher(fragment);
         if (matcher.find(fromIndex)) {
             return matcher.start();
@@ -477,7 +348,7 @@ public class Scraper {
                                     : cell.getFlatDisplayText();
                             if (!"?".equals(resultValue)) {
                                 results.add(lastKey, resultValue);
-                                remainingColSpan = cell.getColSpan() - 1;
+                                remainingColSpan = cell.getColspan() - 1;
                             }
                         }
                         if (remainingColSpan == 0) {
@@ -608,8 +479,8 @@ public class Scraper {
                 while (map.get(i).containsKey(j)) {
                     j++;
                 }
-                int rs = cell.getRowSpan();
-                int cs = cell.getColSpan();
+                int rs = cell.getRowspan();
+                int cs = cell.getColspan();
                 for (int k = 0; k < rs; k++) {
                     if (!map.containsKey(i + k)) {
                         map.add(i + k, ModifiableMap.empty());
