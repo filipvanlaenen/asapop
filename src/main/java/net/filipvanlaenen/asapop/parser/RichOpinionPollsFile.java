@@ -32,6 +32,7 @@ public final class RichOpinionPollsFile {
      * A list with the comment lines.
      */
     private final List<CommentLine> commentLines;
+    private final List<ElectoralListsLine> electoralListsLines;
 
     /**
      * Private constructor creating a new instance from a set of opinion polls and the warnings collected while parsing.
@@ -39,9 +40,11 @@ public final class RichOpinionPollsFile {
      * @param opinionPollsSet The set with the opinion polls.
      * @param commentLines    A list with the comment lines.
      */
-    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet, final List<CommentLine> commentLines) {
+    private RichOpinionPollsFile(final Set<OpinionPoll> opinionPollsSet,
+            final List<ElectoralListsLine> electoralListsLines, final List<CommentLine> commentLines) {
         this.opinionPollsDeprecated = new OpinionPolls(opinionPollsSet);
         this.opinionPolls = Collection.of(opinionPollsSet.toArray(new OpinionPoll[] {}));
+        this.electoralListsLines = electoralListsLines;
         this.commentLines = commentLines;
     }
 
@@ -52,6 +55,10 @@ public final class RichOpinionPollsFile {
      */
     public List<CommentLine> getCommentLines() {
         return commentLines;
+    }
+
+    public List<ElectoralListsLine> getElectoralListsLines() {
+        return electoralListsLines;
     }
 
     /**
@@ -133,6 +140,6 @@ public final class RichOpinionPollsFile {
                 Laconic.LOGGER.logError("Line doesn't have a recognized line format.", token);
             }
         }
-        return new RichOpinionPollsFile(opinionPolls, commentLines);
+        return new RichOpinionPollsFile(opinionPolls, electoralListsLines, commentLines);
     }
 }
