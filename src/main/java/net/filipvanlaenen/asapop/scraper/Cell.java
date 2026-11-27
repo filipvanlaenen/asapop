@@ -112,6 +112,7 @@ class Cell {
             fragment = removeTagsButKeepContent(fragment, "a");
             fragment = removeTagsButKeepContent(fragment, "b");
             fragment = replaceTags(fragment, "br", "\n");
+            fragment = removeTagsButKeepContent(fragment, "div");
             fragment = removeTags(fragment, "img");
             fragment = removeTags(fragment, "link");
             fragment = removeTagsButKeepContent(fragment, "small");
